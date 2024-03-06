@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="65">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <logicalFolder name="config" displayName="config" projectFiles="true">
+        <logicalFolder name="keystream_connect"
+                       displayName="keystream_connect"
+                       projectFiles="true">
+          <logicalFolder name="library" displayName="library" projectFiles="true">
+            <logicalFolder name="cryptoauthlib"
+                           displayName="cryptoauthlib"
+                           projectFiles="true">
+              <logicalFolder name="atcacert" displayName="atcacert" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_check_config.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_host_hw.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_host_sw.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_date.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_client.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_pem.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_der.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_def.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="calib" displayName="calib" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_execution.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_device.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_command.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_basic.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_aes_gcm.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_config_check.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                <logicalFolder name="hashes" displayName="hashes" projectFiles="true">
+                  <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/hashes/sha1_routines.h</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/hashes/sha2_routines.h</itemPath>
+                </logicalFolder>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/crypto_hw_config_check.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_sw.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_hw_aes.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_sw_sha2.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_sw_sha1.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/crypto_sw_config_check.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="hal" displayName="hal" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/hal/atca_hal.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="host" displayName="host" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/host/atca_host_config_check.h</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/host/atca_host.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="jwt" displayName="jwt" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/jwt/atca_jwt.h</itemPath>
+              </logicalFolder>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_device.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/cryptoauthlib.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_status.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/cal_buffer.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/cal_internal.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_debug.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_config_check.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_platform.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_config.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_iface.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_devtypes.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_helpers.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_compiler.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_version.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_basic.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_cfgs.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="kta_lib" displayName="kta_lib" projectFiles="true">
+              <logicalFolder name="COMMON" displayName="COMMON" projectFiles="true">
+                <logicalFolder name="logmodule" displayName="logmodule" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/COMMON/logmodule/include/KTALog.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="COMMSTACK" displayName="COMMSTACK" projectFiles="true">
+                <logicalFolder name="http" displayName="http" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/include/http_if.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/include/http.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/include/k_comm_defs.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/include/k_sal_com.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/include/comm_if.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
+                <logicalFolder name="include" displayName="include" projectFiles="true">
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/include/k_kta.h</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/include/k_defs.h</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/include/k_version.h</itemPath>
+                </logicalFolder>
+                <logicalFolder name="kta" displayName="kta" projectFiles="true">
+                  <logicalFolder name="common" displayName="common" projectFiles="true">
+                    <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/crypto/include/k_crypto.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="general" displayName="general" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/general/include/general.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="icpp_parser" displayName="icpp_parser" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/icpp_parser/include/icpp_parser.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="version" displayName="version" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/version/include/kta_version.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                  </logicalFolder>
+                  <logicalFolder name="modules" displayName="modules" projectFiles="true">
+                    <logicalFolder name="acthandler" displayName="acthandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/acthandler/include/acthandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="cmdhandler" displayName="cmdhandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/cmdhandler/include/cmdhandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="config" displayName="config" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/config/include/config.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="reghandler" displayName="reghandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/reghandler/include/reghandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                  </logicalFolder>
+                </logicalFolder>
+                <logicalFolder name="salapi" displayName="salapi" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/k_sal_log.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/slotConfig.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/k_sal_platform.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/k_sal.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/k_sal_object.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/k_sal_rot.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/k_sal_storage.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/k_sal_crypto.h</itemPath>
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include/cryptoConfig.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+              <itemPath>../src/config/keystream_connect/library/kta_lib/cust_def_device.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/kta_lib/ktaFieldMgntHook.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/kta_lib/cust_def_signer.h</itemPath>
+              <itemPath>../src/config/keystream_connect/library/kta_lib/ktaConfig.h</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="peripheral" displayName="peripheral" projectFiles="true">
+            <logicalFolder name="clock" displayName="clock" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/clock/plib_clock.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="evsys" displayName="evsys" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/evsys/plib_evsys.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nvic" displayName="nvic" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/nvic/plib_nvic.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nvmctrl" displayName="nvmctrl" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/nvmctrl/plib_nvmctrl.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="port" displayName="port" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/port/plib_port.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="sercom" displayName="sercom" projectFiles="true">
+              <logicalFolder name="i2c_master" displayName="i2c_master" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/peripheral/sercom/i2c_master/plib_sercom2_i2c_master.h</itemPath>
+                <itemPath>../src/config/keystream_connect/peripheral/sercom/i2c_master/plib_sercom_i2c_master_common.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="usart" displayName="usart" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/peripheral/sercom/usart/plib_sercom_usart_common.h</itemPath>
+                <itemPath>../src/config/keystream_connect/peripheral/sercom/usart/plib_sercom3_usart.h</itemPath>
+              </logicalFolder>
+            </logicalFolder>
+          </logicalFolder>
+          <itemPath>../src/config/keystream_connect/device_vectors.h</itemPath>
+          <itemPath>../src/config/keystream_connect/interrupts.h</itemPath>
+          <itemPath>../src/config/keystream_connect/device_cache.h</itemPath>
+          <itemPath>../src/config/keystream_connect/device.h</itemPath>
+          <itemPath>../src/config/keystream_connect/toolchain_specifics.h</itemPath>
+          <itemPath>../src/config/keystream_connect/definitions.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="packs" displayName="packs" projectFiles="true">
+        <logicalFolder name="ATSAMD21E18A_DFP"
+                       displayName="ATSAMD21E18A_DFP"
+                       projectFiles="true">
+          <logicalFolder name="component" displayName="component" projectFiles="true">
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/dsu.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/eic.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/wdt.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/dac.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/ptc.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/sercom.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/nvmctrl.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/adc.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/port.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/evsys.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/ac.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/i2s.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/rtc.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/hmatrixb.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/pac.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/gclk.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/fuses.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/dmac.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/tcc.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/usb.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/sysctrl.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/pm.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/mtb.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/component/tc.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="instance" displayName="instance" projectFiles="true">
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/sercom0.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/gclk.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/pac2.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/tc7.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/sbmatrix.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/adc.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/nvmctrl.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/pac0.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/ac.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/tcc2.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/dmac.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/usb.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/evsys.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/pac1.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/sercom5.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/ptc.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/i2s.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/tcc0.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/sercom4.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/dac.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/tc3.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/tcc1.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/sercom3.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/mtb.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/dsu.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/tc4.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/fuses.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/wdt.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/sysctrl.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/pm.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/sercom2.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/rtc.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/port.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/eic.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/tc5.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/sercom1.h</itemPath>
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/instance/tc6.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="pio" displayName="pio" projectFiles="true">
+            <itemPath>../src/packs/ATSAMD21E18A_DFP/pio/samd21e18a.h</itemPath>
+          </logicalFolder>
+          <itemPath>../src/packs/ATSAMD21E18A_DFP/samd21e18a.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="CMSIS" displayName="CMSIS" projectFiles="true">
+          <logicalFolder name="CMSIS" displayName="CMSIS" projectFiles="true">
+            <logicalFolder name="Core" displayName="Core" projectFiles="true">
+              <logicalFolder name="Include" displayName="Include" projectFiles="true">
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_version.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_compiler.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_gcc.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/core_cm0plus.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cachel1_armv7.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_armcc.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/mpu_armv7.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_iccarm.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_armclang.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_armclang_ltm.h</itemPath>
+              </logicalFolder>
+            </logicalFolder>
+          </logicalFolder>
+        </logicalFolder>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="LinkerScript"
+                   displayName="Linker Files"
+                   projectFiles="true">
+      <logicalFolder name="config" displayName="config" projectFiles="true">
+        <logicalFolder name="keystream_connect"
+                       displayName="keystream_connect"
+                       projectFiles="true">
+          <itemPath>../src/config/keystream_connect/ATSAMD21E18A.ld</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="config" displayName="config" projectFiles="true">
+        <logicalFolder name="keystream_connect"
+                       displayName="keystream_connect"
+                       projectFiles="true">
+          <logicalFolder name="library" displayName="library" projectFiles="true">
+            <logicalFolder name="cryptoauthlib"
+                           displayName="cryptoauthlib"
+                           projectFiles="true">
+              <logicalFolder name="atcacert" displayName="atcacert" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_host_hw.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_host_sw.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_date.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_der.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_client.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_pem.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_def.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="calib" displayName="calib" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_nonce.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_info.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_secureboot.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_execution.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_lock.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_gendig.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_random.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_write.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_counter.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_mac.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_ecdh.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_hmac.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_aes_gcm.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_verify.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_command.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_genkey.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_selftest.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_kdf.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_updateextra.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_basic.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_sign.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_sha.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_helpers.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_derivekey.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_aes.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_checkmac.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_read.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_delete.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_privwrite.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                <logicalFolder name="hashes" displayName="hashes" projectFiles="true">
+                  <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/hashes/sha1_routines.c</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/hashes/sha2_routines.c</itemPath>
+                </logicalFolder>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_hw_aes_ctr.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_hw_aes_cbcmac.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_hw_aes_cmac.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_sw_aes_gcm.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_pbkdf2.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_hw_aes_ccm.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_hw_aes_cbc.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_pad.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_sw_sha2.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/crypto/atca_crypto_sw_sha1.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="hal" displayName="hal" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/hal/ATECC608_0.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/hal/hal_gpio_harmony.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/hal/atca_hal.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/hal/hal_i2c_harmony.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/hal/hal_cortex_m_delay.c</itemPath>
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/hal/hal_harmony_init.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="host" displayName="host" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/host/atca_host.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="jwt" displayName="jwt" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/library/cryptoauthlib/jwt/atca_jwt.c</itemPath>
+              </logicalFolder>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_device.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_debug.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_helpers.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/cal_buffer.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_iface.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_basic.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_cfgs.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="kta_lib" displayName="kta_lib" projectFiles="true">
+              <logicalFolder name="COMMON" displayName="COMMON" projectFiles="true">
+                <logicalFolder name="logmodule" displayName="logmodule" projectFiles="true">
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/COMMON/logmodule/KTALog.c</itemPath>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="COMMSTACK" displayName="COMMSTACK" projectFiles="true">
+                <logicalFolder name="http" displayName="http" projectFiles="true">
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/k_sal_com.c</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/comm_if.c</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/http.c</itemPath>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
+                <logicalFolder name="kta" displayName="kta" projectFiles="true">
+                  <logicalFolder name="common" displayName="common" projectFiles="true">
+                    <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                      <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/crypto/crypto.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="general" displayName="general" projectFiles="true">
+                      <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/general/general.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="icpp_parser" displayName="icpp_parser" projectFiles="true">
+                      <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/icpp_parser/icpp_parser.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="version" displayName="version" projectFiles="true">
+                      <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/version/version.c</itemPath>
+                    </logicalFolder>
+                  </logicalFolder>
+                  <logicalFolder name="ktamgr" displayName="ktamgr" projectFiles="true">
+                    <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/ktamgr/ktamgr.c</itemPath>
+                  </logicalFolder>
+                  <logicalFolder name="modules" displayName="modules" projectFiles="true">
+                    <logicalFolder name="acthandler" displayName="acthandler" projectFiles="true">
+                      <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/acthandler/acthandler.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="cmdhandler" displayName="cmdhandler" projectFiles="true">
+                      <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/cmdhandler/cmdhandler.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="config" displayName="config" projectFiles="true">
+                      <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/config/config.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="reghandler" displayName="reghandler" projectFiles="true">
+                      <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/reghandler/reghandler.c</itemPath>
+                    </logicalFolder>
+                  </logicalFolder>
+                </logicalFolder>
+                <logicalFolder name="salapi" displayName="salapi" projectFiles="true">
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/k_sal_log.c</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/k_sal_crypto.c</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/k_sal_storage.c</itemPath>
+                  <itemPath>../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/k_sal_object.c</itemPath>
+                </logicalFolder>
+              </logicalFolder>
+              <itemPath>../src/config/keystream_connect/library/kta_lib/cust_def_device.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/kta_lib/ktaFieldMgntHook.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/kta_lib/cust_def_signer.c</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="peripheral" displayName="peripheral" projectFiles="true">
+            <logicalFolder name="clock" displayName="clock" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/clock/plib_clock.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="evsys" displayName="evsys" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/evsys/plib_evsys.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nvic" displayName="nvic" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/nvic/plib_nvic.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nvmctrl" displayName="nvmctrl" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/nvmctrl/plib_nvmctrl.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="port" displayName="port" projectFiles="true">
+              <itemPath>../src/config/keystream_connect/peripheral/port/plib_port.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="sercom" displayName="sercom" projectFiles="true">
+              <logicalFolder name="i2c_master" displayName="i2c_master" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/peripheral/sercom/i2c_master/plib_sercom2_i2c_master.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="usart" displayName="usart" projectFiles="true">
+                <itemPath>../src/config/keystream_connect/peripheral/sercom/usart/plib_sercom3_usart.c</itemPath>
+              </logicalFolder>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="stdio" displayName="stdio" projectFiles="true">
+            <itemPath>../src/config/keystream_connect/stdio/xc32_monitor.c</itemPath>
+          </logicalFolder>
+          <itemPath>../src/config/keystream_connect/startup_xc32.c</itemPath>
+          <itemPath>../src/config/keystream_connect/interrupts.c</itemPath>
+          <itemPath>../src/config/keystream_connect/exceptions.c</itemPath>
+          <itemPath>../src/config/keystream_connect/initialization.c</itemPath>
+          <itemPath>../src/config/keystream_connect/libc_syscalls.c</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <itemPath>../src/main.c</itemPath>
+      <itemPath>../src/config/keystream_connect/pin_configurations.csv</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+      <itemPath>keystream_connect.mc3</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="keystream_connect" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>ATSAMD21E18A</targetDevice>
+        <targetHeader></targetHeader>
+        <targetPluginBoard></targetPluginBoard>
+        <platformTool>nEdbgTool</platformTool>
+        <languageToolchain>XC32</languageToolchain>
+        <languageToolchainVersion>4.30</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <packs>
+        <pack name="SAMD21_DFP" vendor="Microchip" version="3.6.144"/>
+        <pack name="CMSIS" vendor="ARM" version="5.4.0"/>
+      </packs>
+      <ScriptingSettings>
+      </ScriptingSettings>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+        <archiverTool>
+        </archiverTool>
+        <loading>
+          <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>false</parseOnProdLoad>
+          <alternateLoadableFile></alternateLoadableFile>
+        </loading>
+        <subordinates>
+        </subordinates>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeUseCleanTarget>false</makeUseCleanTarget>
+        <makeCustomizationPreStep></makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep></makeCustomizationPostStep>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+        <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
+        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+      </makeCustomizationType>
+      <C32>
+        <property key="additional-warnings" value="true"/>
+        <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories"
+                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/config/keystream_connect/library/kta_lib;../src/config/keystream_connect/library/kta_lib/../cryptoauthlib/atcacert;../src/config/keystream_connect/library/kta_lib/COMMON/logmodule/include;../src/config/keystream_connect/library/kta_lib/COMMSTACK/http;../src/config/keystream_connect/library/kta_lib/COMMSTACK/http/include;../src/config/keystream_connect/library/kta_lib/SOURCE/include;../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/general/include;../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/keystream_connect/library/kta_lib/SOURCE/kta/common/version/include;../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/keystream_connect/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/keystream_connect/library/kta_lib/SOURCE/salapi/include;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="isolate-each-function" value="true"/>
+        <property key="make-warnings-into-errors" value="true"/>
+        <property key="optimization-level" value="-O1"/>
+        <property key="place-data-into-section" value="true"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros"
+                  value="CLOUD_CONFIG_AWS;CLOUD_CONNECT_WITH_CUSTOM_CERTS;OBJECT_MANAGEMENT_FEATURE"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="support-ansi" value="false"/>
+        <property key="tentative-definitions" value="-fno-common"/>
+        <property key="toplevel-reordering" value=""/>
+        <property key="unaligned-access" value=""/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32>
+      <C32-AR>
+        <property key="additional-options-chop-files" value="false"/>
+      </C32-AR>
+      <C32-AS>
+        <property key="assembler-symbols" value=""/>
+        <property key="enable-symbols" value="true"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="expand-macros" value="false"/>
+        <property key="extra-include-directories-for-assembler" value=""/>
+        <property key="extra-include-directories-for-preprocessor" value=""/>
+        <property key="false-conditionals" value="false"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="keep-locals" value="false"/>
+        <property key="list-assembly" value="false"/>
+        <property key="list-source" value="false"/>
+        <property key="list-symbols" value="false"/>
+        <property key="oXC32asm-list-to-file" value="false"/>
+        <property key="omit-debug-dirs" value="false"/>
+        <property key="omit-forms" value="false"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="warning-level" value=""/>
+      </C32-AS>
+      <C32-CO>
+        <property key="coverage-enable" value=""/>
+        <property key="stack-guidance" value="false"/>
+      </C32-CO>
+      <C32-LD>
+        <property key="additional-options-use-response-files" value="false"/>
+        <property key="additional-options-write-sla" value="false"/>
+        <property key="allocate-dinit" value="false"/>
+        <property key="appendMe" value=""/>
+        <property key="code-dinit" value="false"/>
+        <property key="ebase-addr" value=""/>
+        <property key="enable-check-sections" value="false"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="exclude-standard-libraries" value="false"/>
+        <property key="extra-lib-directories" value=""/>
+        <property key="fill-flash-options-addr" value=""/>
+        <property key="fill-flash-options-const" value=""/>
+        <property key="fill-flash-options-how" value="0"/>
+        <property key="fill-flash-options-inc-const" value="1"/>
+        <property key="fill-flash-options-increment" value=""/>
+        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-what" value="0"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-cross-reference-file" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="heap-size" value="512"/>
+        <property key="input-libraries" value=""/>
+        <property key="kseg-length" value=""/>
+        <property key="kseg-origin" value=""/>
+        <property key="linker-symbols" value=""/>
+        <property key="map-file" value="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"/>
+        <property key="no-device-startup-code" value="true"/>
+        <property key="no-startup-files" value="false"/>
+        <property key="oXC32ld-extra-opts" value=""/>
+        <property key="optimization-level" value=""/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="remove-unused-sections" value="true"/>
+        <property key="report-memory-usage" value="false"/>
+        <property key="serial-length" value=""/>
+        <property key="serial-origin" value=""/>
+        <property key="stack-size" value=""/>
+        <property key="symbol-stripping" value=""/>
+        <property key="trace-symbols" value=""/>
+        <property key="warn-section-align" value="false"/>
+      </C32-LD>
+      <C32CPP>
+        <property key="additional-warnings" value="false"/>
+        <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
+        <property key="check-new" value="false"/>
+        <property key="eh-specs" value="true"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exceptions" value="true"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories"
+                  value="../src;../src/config/keystream_connect;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="isolate-each-function" value="true"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value="-O1"/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="rtti" value="true"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="toplevel-reordering" value=""/>
+        <property key="unaligned-access" value=""/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32CPP>
+      <C32Global>
+        <property key="common-include-directories" value=""/>
+        <property key="gp-relative-option" value=""/>
+        <property key="legacy-libc" value="false"/>
+        <property key="mdtcm" value=""/>
+        <property key="mitcm" value=""/>
+        <property key="mstacktcm" value="false"/>
+        <property key="omit-pack-options" value="1"/>
+        <property key="relaxed-math" value="false"/>
+        <property key="save-temps" value="false"/>
+        <property key="stack-smashing" value=""/>
+        <property key="wpo-lto" value="false"/>
+      </C32Global>
+    </conf>
+  </confs>
+</configurationDescriptor>

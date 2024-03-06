@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Package name="kta_lib">
+    <Dependencies>
+        <Dependency name="cryptoauthlib" version="v3.7.3"/>
+    </Dependencies>
+</Package>

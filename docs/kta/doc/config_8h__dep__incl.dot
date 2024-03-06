@@ -1,0 +1,17 @@
+digraph "config.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="config.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="keySTREAM Trusted Agent - Device configuration module."];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="icpp_parser.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$icpp__parser_8c.html",tooltip="keySTREAM Trusted Agent - icpp parser."];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="ktamgr.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$ktamgr_8c.html",tooltip="keySTREAM Trusted Agent manager."];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="acthandler.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$acthandler_8c.html",tooltip="keySTREAM Trusted Agent - Activation handler."];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="config.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$config_8c.html",tooltip="keySTREAM Trusted Agent - Device configuration module."];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="reghandler.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$reghandler_8c.html",tooltip="keySTREAM Trusted Agent - Registration module"];
+}

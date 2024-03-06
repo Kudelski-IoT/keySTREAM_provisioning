@@ -1,0 +1,17 @@
+digraph "microchip" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_60864ceb768185ac6327ae001cbbf6bb {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_60864ceb768185ac6327ae001cbbf6bb.html"];
+    dir_60864ceb768185ac6327ae001cbbf6bb [shape=plaintext label="microchip"];
+    dir_9e363f36f24bb47b41c92bb586f92876 [shape=box label="include" color="black" fillcolor="white" style="filled" URL="dir_9e363f36f24bb47b41c92bb586f92876.html"];
+    dir_86de2fa927f02998ccd20e25e1a56489 [shape=box label="sam_d21" color="black" fillcolor="white" style="filled" URL="dir_86de2fa927f02998ccd20e25e1a56489.html"];
+  }
+  dir_d44c64559bbebec7f509842c48db8b23 [shape=box label="include" URL="dir_d44c64559bbebec7f509842c48db8b23.html"];
+  dir_d44c64559bbebec7f509842c48db8b23->dir_9e363f36f24bb47b41c92bb586f92876 [headlabel="1", labeldistance=1.5 headhref="dir_000002_000001.html"];
+  dir_d44c64559bbebec7f509842c48db8b23->dir_60864ceb768185ac6327ae001cbbf6bb [headlabel="1", labeldistance=1.5 headhref="dir_000002_000000.html"];
+  dir_60864ceb768185ac6327ae001cbbf6bb->dir_9e363f36f24bb47b41c92bb586f92876 [headlabel="4", labeldistance=1.5 headhref="dir_000000_000001.html"];
+  dir_60864ceb768185ac6327ae001cbbf6bb->dir_d44c64559bbebec7f509842c48db8b23 [headlabel="8", labeldistance=1.5 headhref="dir_000000_000002.html"];
+  dir_86de2fa927f02998ccd20e25e1a56489->dir_d44c64559bbebec7f509842c48db8b23 [headlabel="1", labeldistance=1.5 headhref="dir_000003_000002.html"];
+}

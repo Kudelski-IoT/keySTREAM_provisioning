@@ -1,0 +1,12 @@
+package:
+  format-version: "1.0.0"
+  name: "keySTREAM_provisioning"
+  version: "v1.2.6"
+  type: "api"
+  status: "production"
+  required: false
+
+  dependencies:
+    - name: "cryptoauthlib"
+      type: "package"
+      version: "v3.7.3"

@@ -1,0 +1,118 @@
+<structure>
+    <loc srcpath="keySTREAM_provisioning" dstpath="kta_lib">
+        <dir name="kta_lib">
+            <dir name="kta_provisioning">
+                <dir name="COMMON">
+                    <dir name="logmodule">
+                        <dir name="include">
+                            <file name="KTALog.h.ftl"/>
+                        </dir>
+                        <file name="KTALog.c"/>
+                    </dir>
+                </dir>
+                <dir name="COMMSTACK">
+                    <dir name="http">
+                        <dir name="include">
+                            <file name="comm_if.h"/>
+                            <file name="http_if.h"/>
+                            <file name="http.h"/>
+                            <file name="k_comm_defs.h"/>
+                            <file name="k_sal_com.h"/>
+                        </dir>
+                        <file name="comm_if.c"/>
+                        <file name="http.c"/>
+                        <file name="k_sal_com.c"/>
+                    </dir>
+                </dir>
+                <dir name="SOURCE">
+                    <dir name="include">
+                        <file name="k_defs.h"/>
+                        <file name="k_kta.h"/>
+                        <file name="k_version.h"/>
+                    </dir>
+                    <dir name="kta">
+                        <dir name="common">
+                            <dir name="crypto">
+                                <dir name="include">
+                                    <file name="k_crypto.h"/>
+                                </dir>
+                                <file name="crypto.c"/>
+                            </dir>
+                            <dir name="general">
+                                <dir name="include">
+                                    <file name="general.h"/>
+                                </dir>
+                                <file name="general.c"/>
+                            </dir>
+                            <dir name="icpp_parser">
+                                <dir name="include">
+                                    <file name="icpp_parser.h"/>
+                                </dir>
+                                <file name="icpp_parser.c"/>
+                            </dir>
+                            <dir name="version">
+                                <dir name="include">
+                                    <file name="kta_version.h"/>
+                                </dir>
+                                <file name="version.c"/>
+                            </dir>
+                        </dir>
+                        <dir name="ktamgr">
+                            <file name="ktamgr.c"/>
+                        </dir>
+                        <dir name="modules">
+                            <dir name="acthandler">
+                                <dir name="include">
+                                    <file name="acthandler.h"/>
+                                </dir>
+                                <file name="acthandler.c"/>
+                            </dir>
+                            <dir name="cmdhandler">
+                                <dir name="include">
+                                    <file name="cmdhandler.h"/>
+                                </dir>
+                                <file name="cmdhandler.c"/>
+                            </dir>
+                            <dir name="config">
+                                <dir name="include">
+                                    <file name="config.h"/>
+                                </dir>
+                                <file name="config.c"/>
+                            </dir>
+                            <dir name="reghandler">
+                                <dir name="include">
+                                    <file name="reghandler.h"/>
+                                </dir>
+                                <file name="reghandler.c"/>
+                            </dir>
+                        </dir>
+                    </dir>
+                    <dir name="salapi">
+                        <dir name="include">
+                            <file name="cryptoConfig.h"/>
+                            <file name="k_sal_crypto.h"/>
+                            <file name="k_sal_log.h"/>
+                            <file name="k_sal_object.h"/>
+                            <file name="k_sal_platform.h"/>
+                            <file name="k_sal_rot.h"/>
+                            <file name="k_sal_storage.h"/>
+                            <file name="k_sal.h"/>
+                            <file name="slotConfig.h"/>
+                        </dir>
+                        <file name="k_sal_crypto.c"/>
+                        <file name="k_sal_log.c"/>
+                        <file name="k_sal_object.c"/>
+                        <file name="k_sal_storage.c"/>
+                    </dir>
+                </dir>
+                <file name="cust_def_device.c"/>
+                <file name="cust_def_device.h"/>
+                <file name="cust_def_signer.c"/>
+                <file name="cust_def_signer.h"/>
+                <file name="ktaConfig.h.ftl"/>
+                <file name="ktaFieldMgntHook.c"/>
+                <file name="ktaFieldMgntHook.h"/>
+            </dir>
+        </dir>
+    </loc>
+</structure>

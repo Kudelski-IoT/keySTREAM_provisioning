@@ -1,0 +1,285 @@
+/* Customized Kudelski Doxygen CSS for doxygen 1.9.6 */
+
+/* -- Custom Doxygen CSS --- */
+@font-face {
+    font-family: 'Arial';
+    src: url('WorkSans-Italic-VariableFont_wght.ttf') format('truetype');
+    src: url('WorkSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('WorkSans-Italic-VariableFont_wght.ttf') format('truetype');
+    src: url('WorkSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Tahoma';
+    src: url('WorkSans-Italic-VariableFont_wght.ttf') format('truetype');
+    src: url('WorkSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lucida Grande';
+    src: url('WorkSans-Italic-VariableFont_wght.ttf') format('truetype');
+    src: url('WorkSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Watermark */
+
+body:before {
+    content: "";
+    white-space: pre;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    pointer-events: none;
+    
+    color: Grey;
+    font: 400% 'Work Sans', Roboto,sans-serif;
+    display: grid;
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    opacity: 0.2;
+    transform: rotate(-45deg);
+}
+
+body, table, div, p, dl {
+    line-height: 24px;
+}
+
+p.reference, p.definition {
+	font: 14px/24px;
+}
+
+.title {
+    font-size: 200%;
+}
+
+h1.glow, h2.glow, h3.glow, h4.glow, h5.glow, h6.glow {
+	text-shadow: 0 0 15px #E73843;
+}
+
+div.navtab {
+	border-right: 1px solid #A3B4D7;
+	padding-right: 15px;
+	text-align: right;
+	line-height: 110%;
+}
+
+div.navtab table {
+	border-spacing: 0;
+}
+
+td.navtab {
+	padding-right: 6px;
+	padding-left: 6px;
+}
+
+td.navtabHL {
+	background-image: url('tab_a.png');
+	background-repeat:repeat-x;
+	padding-right: 6px;
+	padding-left: 6px;
+}
+
+td.navtabHL a, td.navtabHL a:visited {
+	color: #fff;
+	text-shadow: 0px 1px 1px rgba(0, 0, 0, 1.0);
+}
+
+a.navtab {
+	font-weight: bold;
+}
+
+div.qindex{
+	text-align: center;
+	width: 100%;
+	line-height: 140%;
+	font-size: 130%;
+	color: #A0A0A0;
+}
+
+dt.alphachar{
+	font-size: 180%;
+	font-weight: bold;
+}
+
+.alphachar a{
+	color: black;
+}
+
+.alphachar a:hover, .alphachar a:visited{
+	text-decoration: none;
+}
+
+.classindex dl {
+	padding: 25px;
+	column-count:1
+}
+
+.classindex dd {
+	display:inline-block;
+	margin-left: 50px;
+	width: 90%;
+	line-height: 1.15em;
+}
+
+.classindex dl.odd {
+	background-color: #F8F9FC;
+}
+
+@media(min-width: 1120px) {
+	.classindex dl {
+		column-count:2
+	}
+}
+
+@media(min-width: 1320px) {
+	.classindex dl {
+		column-count:3
+	}
+}
+
+
+ul {
+    margin-top: 0em; /* Remove spacing at top of <ul> */
+}
+
+p + ul {
+    margin-top: -1em; /* Remove spacing between <p> and <ul> */
+}
+
+p + ol {
+    margin-top: -1em; /* Remove spacing between <p> and <ol> */
+}
+
+div.line.glow {
+	background-color: #E73843;
+	box-shadow: 0 0 10px #E73843;
+}
+
+.memberdecls td.glow, .fieldtable tr.glow {
+	background-color: #E73843;
+	box-shadow: 0 0 15px #E73843;
+}
+
+.memitem.glow {
+	box-shadow: 0 0 15px #E73843;
+}
+
+.directory td.entry {
+	padding-top: 6px;
+	padding-bottom: 3px;
+}
+
+.directory td.desc {
+	padding-top: 6px;
+    padding-bottom: 3px;
+}
+
+
+/* Add table shadow*/
+table.doxtable {
+    box-shadow: 5px 5px 5px #999;
+}
+
+table.doxtable th {
+	background-color: #212C55;
+}
+
+/* Banded table */
+table.doxtable tr:nth-child(odd) {
+    background: rgba(198, 204, 228, 0.3);
+}
+
+.fieldtable tr:nth-child(odd) {
+    background: rgba(198, 204, 228, 0.3);
+}
+
+.navpath li.footer
+{
+    font-size: 9pt;
+    position: absolute; /* Position the footer absolutely */
+    bottom: 0; /* Position at the bottom */
+    left: 50%; /* Move to the horizontal center */
+    transform: translateX(-50%); /* Adjust for centering */
+}
+
+div.ingroups
+{
+    font-size: 10pt;
+}
+
+.image
+{
+    text-align: left;
+}
+
+.plantumlgraph
+{
+    text-align: left;
+}
+
+div.toc li {
+	font: 12px/1.2;
+}
+
+div.toc h3 {
+	font: bold 14px/1.2;
+}
+
+/* @group Markdown */
+
+table.markdownTable {
+	box-shadow: 5px 5px 5px #999;
+}
+
+/* Banded table */
+table.markdownTable tr:nth-child(odd) {
+  background: rgba(198, 204, 228, 0.3);
+}
+
+th.markdownTableHeadLeft, th.markdownTableHeadRight, th.markdownTableHeadCenter, th.markdownTableHeadNone {
+	background-color: #212C55;
+}
+
+/* --- Custom Nav tree CSS --- */
+
+#nav-tree .label {
+  font: 14px;
+}
+
+#nav-tree .label a {
+    font-size: 13px;
+}
+
+/* --- Custom Tabs CSS --- */
+
+.sm-dox a, .sm-dox a:focus, .sm-dox a:hover, .sm-dox a:active {
+  padding-right: 24px;
+  font-size: 14px;
+}
+
+/* --- Custom Search CSS --- */
+
+#MSearchField {
+  height: 1.1em;
+}
+
+.SelectItem {
+  font: 9pt;
+}
+
