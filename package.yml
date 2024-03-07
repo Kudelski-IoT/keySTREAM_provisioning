@@ -10,3 +10,6 @@ package:
     - name: "cryptoauthlib"
       type: "package"
       version: "v3.7.3"
+    - name: "csp"
+      type: "package"
+      version: "v3.18.2"

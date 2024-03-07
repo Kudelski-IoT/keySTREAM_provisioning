@@ -2,5 +2,6 @@
 <Package name="kta_lib">
     <Dependencies>
         <Dependency name="cryptoauthlib" version="v3.7.3"/>
+        <Dependency name="csp" version="v3.18.2"/>
     </Dependencies>
 </Package>
