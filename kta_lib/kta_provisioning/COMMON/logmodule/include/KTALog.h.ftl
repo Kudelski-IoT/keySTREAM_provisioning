@@ -51,6 +51,9 @@ extern "C" {
 /* CONSTANTS, TYPES, ENUM                                                                        */
 /* --------------------------------------------------------------------------------------------- */
 
+/** @brief Set an argument/return value as unused */
+#define M_UNUSED(xArg)            (void)(xArg)
+
 #define LOG_KTA_ENABLE ${KTA_LOG_INT}
 
 #if LOG_KTA_ENABLE

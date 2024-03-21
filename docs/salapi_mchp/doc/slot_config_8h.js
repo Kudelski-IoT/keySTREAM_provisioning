@@ -2,6 +2,8 @@ var slot_config_8h =
 [
     [ "C_KTA__SLOT_BLOCK_0", "slot_config_8h.html#a982825ab5cbf48fe7a26d3bb79aace7c", null ],
     [ "C_KTA__SLOT_BLOCK_1", "slot_config_8h.html#a9fe8bbab9768eb72c99d5fa7e60fd7cb", null ],
+    [ "C_KTA__SLOT_BLOCK_4", "slot_config_8h.html#a6af606f6e929a2afc0404e8f5d43c69f", null ],
+    [ "C_KTA__SLOT_BLOCK_5", "slot_config_8h.html#a807aa53b83e435715c656c8e550b69df", null ],
     [ "C_KTA__BLOCK_OFFSET_0", "slot_config_8h.html#a1e4b75e7c4e7e4f5a2464629af979e0b", null ],
     [ "C_KTA__BLOCK_OFFSET_1", "slot_config_8h.html#a0f42a45dbc14bfde08f1146d71122a84", null ],
     [ "C_KTA__BLOCK_OFFSET_2", "slot_config_8h.html#a77a822d4561424ec54da4814776a13a2", null ],

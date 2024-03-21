@@ -89,8 +89,46 @@ $(document).ready(function(){initNavTree('md_doxy_integration_kta_integration.ht
 <div class="contents">
 <div class="textblock"><p>MPLAB® Harmony is a software development framework consisting of compatible and interoperable modules that include peripheral libraries (PLIBs), drivers, system services, middleware, and third-party libraries. The MPLAB Harmony Configurator (MHC) is a GUI-based tool that provides an easy way to enable and configure various MPLAB Harmony modules. The MHC is a plug-in to the MPLAB X Integrated Development Environment (IDE). More Details about MPLAB Harmony v3 can be found at <a href="https://www.microchip.com/harmony">MPLAB Harmony</a></p>
 <h1><a class="anchor" id="autotoc_md1"></a>
-Setup Requirements:</h1>
-<p>1) To add and configure peripheral libraries for the MCU, follow these steps, as shown in figure below.</p><ul>
+Integration Steps:</h1>
+<p>1) Open MPLAB X IDE version 6.20 or greater.Click on Content Manager as shown below.</p>
+<div class="image">
+<img src="CM_click.png" alt=""/>
+</div>
+   <p>2) Once Content Manager is loaded, look for Harmony 3 - Kudelski keySTREAM Solutions.</p>
+<div class="image">
+<img src="navigate_kudelski_ks_solution.png" alt=""/>
+</div>
+   <p>3) Expand Harmony 3 - Kudelski keySTREAM Solutions and select version as shown below.</p>
+<div class="image">
+<img src="kta_version_select.png" alt=""/>
+</div>
+   <p>4) Click on Apply as shown below.</p>
+<div class="image">
+<img src="kta_version_apply.png" alt=""/>
+</div>
+   <p>5) The library and its dependencies will be downloaded as shown below.</p>
+<div class="image">
+<img src="download_progress.png" alt=""/>
+</div>
+   <p>6) Once all the dependency downloading is completed, close the Content Manager window.</p>
+<p>7) Then click on new project and select Microchip Embedded -&gt; Application Projects as shown in figure and click Next.</p>
+<div class="image">
+<img src="new-Proj_001.png" alt=""/>
+</div>
+   <p>8) Select the device from dropdown as shown in figure and click Next.</p>
+<div class="image">
+<img src="new-Projdev_selection.png" alt=""/>
+</div>
+   <p>9) Select the compiler and click Next as shown below.</p>
+<div class="image">
+<img src="new-Proj_complr_selection.png" alt=""/>
+</div>
+   <p>10) Enter Project Name and Project Location as shown in figure and click on Finish.</p>
+<div class="image">
+<img src="new-Proj_folder_selection.png" alt=""/>
+</div>
+   <p>11) Wait until project loading completes.</p>
+<p>12) To add and configure peripheral libraries for the MCU, follow these steps, as shown in figure below.</p><ul>
 <li>Go to the "Resources Management" tab located on the left side.</li>
 <li>Navigate to "Device Resources."</li>
 <li>Expand the "Libraries" section.</li>
@@ -99,44 +137,44 @@ Setup Requirements:</h1>
 <div class="image">
 <img src="configure_peripheral.png" alt=""/>
 </div>
-   <p>2) Expand the "Third-Party Libraries" section, then click on the KTA_LIB to add and configure the desired library KTA_LIB, as shown in figure below.</p>
+   <p>13) Expand the "Third-Party Libraries" section, then click on the KTA_LIB to add and configure the desired library KTA_LIB, as shown in figure below.</p>
 <div class="image">
 <img src="Third_party.png" alt=""/>
 </div>
-   <p>3) The KTA_LIB depends on two components: STDIO and CryptoAuthLib. Please select "Yes" to load and activate these components. as shown in figure below.</p>
+   <p>14) The KTA_LIB depends on two components: STDIO and CryptoAuthLib. Please select "Yes" to load and activate these components. as shown in figure below.</p>
 <div class="image">
 <img src="Components_activation.png" alt=""/>
 </div>
    <div class="image">
 <img src="Components_activation_1.png" alt=""/>
 </div>
-   <p>4) Click on the KTA_LIB Module on the Project graph to access the configuration options, if wish to enable log, please configure the appropriate configuration options accordingly, as shown in figure below..</p>
+   <p>15) Click on the KTA_LIB Module on the Project graph to access the configuration options, if wish to enable log, please configure the appropriate configuration options accordingly, as shown in figure below..</p>
 <div class="image">
 <img src="Enable_log.png" alt=""/>
 </div>
-   <p>6) Provide the Device Public UID in the configuration option. as shown in figure below.</p>
+   <p>16) Provide the Device Public UID in the configuration option. as shown in figure below.</p>
 <div class="image">
 <img src="Device_Profile_Uid.png" alt=""/>
 </div>
-   <p>7) Please Resolve the dependency of STDIO by Right-clicking the UART within the STDIO Module in Project graph and navigate to "Satisfiers," and select "SERCOM3 (sercom3).", as shown in figure below.</p>
+   <p>17) Please Resolve the dependency of STDIO by Right-clicking the UART within the STDIO Module in Project graph and navigate to "Satisfiers," and select "SERCOM3 (sercom3).", as shown in figure below.</p>
 <div class="image">
 <img src="Uart.png" alt=""/>
 </div>
-   <p>8) You can notice that STDIO dependency is resolved, as shown in figure below.</p>
+   <p>18) You can notice that STDIO dependency is resolved, as shown in figure below.</p>
 <div class="image">
 <img src="Uart_sercom.png" alt=""/>
 </div>
-   <p>9) Click on the "Resource Management" tab, then Navigate to Project Resources. Finally, click on "Generate" to successfully load the project. as shown in figure below.</p>
+   <p>19) Click on the "Resource Management" tab, then Navigate to Project Resources. Finally, click on "Generate" to successfully load the project. as shown in figure below.</p>
 <div class="image">
 <img src="generate.png" alt=""/>
 </div>
-   <p>10) Once code is generated it can be compiled and flashed into the device.</p>
+   <p>20) Once code is generated it can be compiled and flashed into the device.</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
 keySTREAM Trusted Agent Release Notes</h1>
-<p>see <a href="md_doxy_integration_release_notes.html#autotoc_md8"><code>Release Notes</code></a></p>
+<p>see <a href="md_doxy_integration_release_notes.html"><code>Release Notes</code></a></p>
 <h1><a class="anchor" id="autotoc_md3"></a>
 keySTREAM Trusted Agent License</h1>
-<p>see <a href="license.txt"><code>LICENSE</code></a> </p>
+<p>see <a href="md_doxy_integration_license.html"><code>LICENSE</code></a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

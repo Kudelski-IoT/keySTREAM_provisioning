@@ -57,12 +57,11 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
+/** @brief keySTREAM PROD CoAP Url. */
+#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)"icpp.mss.iot.kudelski.com"
 
-/** @brief keySTREAM CIE CoAP Url. */
-#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)""
-
-/** @brief keySTREAM CIE http Url. */
-#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       (const uint8_t*)"icph-cie.iot-transfer.com"
+/** @brief keySTREAM PROD http Url. */
+#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       (const uint8_t*)"icph.mss.iot.kudelski.com"
 
 /** @brief L1 Segmentation Seed of CIE. */
 #define C_KTA_APP__L1_SEG_SEED_CIE          {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b,\

@@ -7,6 +7,7 @@ var k__kta_8h =
     [ "C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE", "group__g__kta__api.html#gadcfd52133edabe3a1a32aee86e6ec367", null ],
     [ "C_K__CONTEXT_VERSION_MAX_SIZE", "group__g__kta__api.html#gac76c5edeed2326a3878133e2c83eb9d0", null ],
     [ "C_KTA__VERSION_MAX_SIZE", "group__g__kta__api.html#gad65b1fa39e42237da6ac382c3136bdca", null ],
+    [ "C_K__CONN_REQ_MAX_SIZE", "group__g__kta__api.html#gaf1f6e8c29b1daa6e4083b6dbcecfb4a5", null ],
     [ "TKktaKeyStreamStatus", "group__g__kta__api.html#gaae332fe18ad4822069439374ce313962", [
       [ "E_K_KTA_KS_STATUS_NONE", "group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8", null ],
       [ "E_K_KTA_KS_STATUS_NO_OPERATION", "group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f", null ],
