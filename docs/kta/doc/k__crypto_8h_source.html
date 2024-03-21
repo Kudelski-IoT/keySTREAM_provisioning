@@ -87,101 +87,124 @@ $(document).ready(function(){initNavTree('k__crypto_8h_source.html',''); initRes
 <div class="title">k_crypto.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="k__crypto_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/******************************************************************************</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (c) 2023-2024 Nagravision Sàrl. All rights reserved.</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> ******************************************************************************/</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#ifndef KTACIPHER_H</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define KTACIPHER_H</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">/* IMPORTS                                                                    */</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="k__defs_8h.html">k_defs.h</a>&quot;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">/* CONSTANTS, TYPES, ENUM                                                     */</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="k__crypto_8h.html#a6b3ef58f9b799554641d4a709183084d">   37</a></span>&#160;<span class="preprocessor">#define C_K_CRYPTO__AES_BLOCK_SIZE (16u)</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="k__crypto_8h.html#a8923c413fd4fb7aad82cf97d5fd5e382">   40</a></span>&#160;<span class="preprocessor">#define C_K_CRYPTO__PAD_START_BYTE (0x80u)</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">/* VARIABLES                                                                  */</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">/* FUNCTIONS                                                                  */</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a843a5e4a1d5220fc7fbcb24e4d9b5688">ktacipherEncrypt</a></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;(</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keyword">const</span> uint8_t* xpClearMsg,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keywordtype">size_t</span>         xClearMsgLen,</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  uint8_t*       xpEncryptedMsg,</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordtype">size_t</span>*        xpEncryptedMsgLen</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a944875d5c528c273173a030bc286c401">ktacipherDecrypt</a></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;(</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="keyword">const</span> uint8_t* xpEncryptedMsg,</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <span class="keywordtype">size_t</span>         xEncryptedMsgLen,</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  uint8_t*       xpClearMsg,</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="keywordtype">size_t</span>*        xpClearMsgLen</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a7f2f673578a35354e7cf7955709ee2ad">ktacipherSignMsg</a></div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;(</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="keyword">const</span> uint8_t* xpMsgToSign,</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="keywordtype">size_t</span>         xMsgToSignLen,</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  uint8_t*       xpComputedMac</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a485479311212dd3878545bfd53400e50">ktacipherVerifySignedMsg</a></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;(</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <span class="keyword">const</span> uint8_t* xpMsgToVerify,</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <span class="keywordtype">size_t</span>         xMsgToVerifyLen,</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <span class="keyword">const</span> uint8_t* xpMacToVerify</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a8996bfd2e6f88ddf793861206599d1b5">ktacipherAddPadding</a></div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;(</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <span class="keyword">const</span> uint8_t* xpData,</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span>   xDataLength,</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  uint8_t*       xpPaddedData,</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  <span class="keywordtype">size_t</span>*        xpPaddedDataLength</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;);</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a4e314aa0353e0df47179e556f57943da">ktacipherRemovePadding</a></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;(</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  <span class="keyword">const</span> uint8_t* xpData,</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <span class="keywordtype">size_t</span>*        xpDataLength</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;);</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;}</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor">#endif // KTACIPHER_H</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<a href="k__crypto_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*******************************************************************************</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">*************************keySTREAM Trusted Agent (&quot;KTA&quot;)************************</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (c) 2023-2024 Nagravision Sàrl</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">* Subject to your compliance with these terms, you may use the Nagravision Sàrl</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">* Software and any derivatives exclusively with Nagravision&#39;s products. It is your</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">* responsibility to comply with third party license terms applicable to your</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">* use of third party software (including open source software) that may accompany</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">* Nagravision Software.</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">* Redistribution of this Nagravision Software in source or binary form is allowed</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">* and must include the above terms of use and the following disclaimer with the</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">* distribution and accompanying materials.</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">* THIS SOFTWARE IS SUPPLIED BY NAGRAVISION &quot;AS IS&quot;. NO WARRANTIES, WHETHER EXPRESS,</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">* IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">* NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE. IN NO</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">* EVENT WILL NAGRAVISION BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">* OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">* THE SOFTWARE, HOWEVER CAUSED, EVEN IF NAGRAVISION HAS BEEN ADVISED OF THE</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">* POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW,</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">* NAGRAVISION &#39;S TOTAL LIABILITY ON ALL CLAIMS IN ANY WAY RELATED TO THIS</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">* SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">* TO NAGRAVISION FOR THIS SOFTWARE.</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">********************************************************************************/</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#ifndef KTACIPHER_H</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define KTACIPHER_H</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">/* IMPORTS                                                                    */</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="k__defs_8h.html">k_defs.h</a>&quot;</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">/* CONSTANTS, TYPES, ENUM                                                     */</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="k__crypto_8h.html#a6b3ef58f9b799554641d4a709183084d">   60</a></span>&#160;<span class="preprocessor">#define C_K_CRYPTO__AES_BLOCK_SIZE (16u)</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="k__crypto_8h.html#a8923c413fd4fb7aad82cf97d5fd5e382">   63</a></span>&#160;<span class="preprocessor">#define C_K_CRYPTO__PAD_START_BYTE (0x80u)</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">/* VARIABLES                                                                  */</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">/* FUNCTIONS                                                                  */</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a843a5e4a1d5220fc7fbcb24e4d9b5688">ktacipherEncrypt</a></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;(</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keyword">const</span> uint8_t* xpClearMsg,</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="keywordtype">size_t</span>         xClearMsgLen,</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  uint8_t*       xpEncryptedMsg,</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keywordtype">size_t</span>*        xpEncryptedMsgLen</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a944875d5c528c273173a030bc286c401">ktacipherDecrypt</a></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;(</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="keyword">const</span> uint8_t* xpEncryptedMsg,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="keywordtype">size_t</span>         xEncryptedMsgLen,</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  uint8_t*       xpClearMsg,</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="keywordtype">size_t</span>*        xpClearMsgLen</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a7f2f673578a35354e7cf7955709ee2ad">ktacipherSignMsg</a></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;(</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <span class="keyword">const</span> uint8_t* xpMsgToSign,</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <span class="keywordtype">size_t</span>         xMsgToSignLen,</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  uint8_t*       xpComputedMac</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a485479311212dd3878545bfd53400e50">ktacipherVerifySignedMsg</a></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;(</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <span class="keyword">const</span> uint8_t* xpMsgToVerify,</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  <span class="keywordtype">size_t</span>         xMsgToVerifyLen,</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <span class="keyword">const</span> uint8_t* xpMacToVerify</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a8996bfd2e6f88ddf793861206599d1b5">ktacipherAddPadding</a></div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;(</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <span class="keyword">const</span> uint8_t* xpData,</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span>   xDataLength,</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  uint8_t*       xpPaddedData,</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  <span class="keywordtype">size_t</span>*        xpPaddedDataLength</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;);</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="k__crypto_8h.html#a4e314aa0353e0df47179e556f57943da">ktacipherRemovePadding</a></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;(</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;  <span class="keyword">const</span> uint8_t* xpData,</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;  <span class="keywordtype">size_t</span>*        xpDataLength</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;);</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;}</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="preprocessor">#endif // KTACIPHER_H</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="ak__crypto_8h_html_a8996bfd2e6f88ddf793861206599d1b5"><div class="ttname"><a href="k__crypto_8h.html#a8996bfd2e6f88ddf793861206599d1b5">ktacipherAddPadding</a></div><div class="ttdeci">TKStatus ktacipherAddPadding(const uint8_t *xpData, const size_t xDataLength, uint8_t *xpPaddedData, size_t *xpPaddedDataLength)</div><div class="ttdoc">Add padding to data buffer.</div><div class="ttdef"><b>Definition:</b> crypto.c:124</div></div>
-<div class="ttc" id="ak__crypto_8h_html_a4e314aa0353e0df47179e556f57943da"><div class="ttname"><a href="k__crypto_8h.html#a4e314aa0353e0df47179e556f57943da">ktacipherRemovePadding</a></div><div class="ttdeci">TKStatus ktacipherRemovePadding(const uint8_t *xpData, size_t *xpDataLength)</div><div class="ttdoc">Remove padding from given data.</div><div class="ttdef"><b>Definition:</b> crypto.c:252</div></div>
-<div class="ttc" id="ak__crypto_8h_html_a843a5e4a1d5220fc7fbcb24e4d9b5688"><div class="ttname"><a href="k__crypto_8h.html#a843a5e4a1d5220fc7fbcb24e4d9b5688">ktacipherEncrypt</a></div><div class="ttdeci">TKStatus ktacipherEncrypt(const uint8_t *xpClearMsg, size_t xClearMsgLen, uint8_t *xpEncryptedMsg, size_t *xpEncryptedMsgLen)</div><div class="ttdoc">Encrypt the given message.</div><div class="ttdef"><b>Definition:</b> crypto.c:54</div></div>
-<div class="ttc" id="ak__crypto_8h_html_a485479311212dd3878545bfd53400e50"><div class="ttname"><a href="k__crypto_8h.html#a485479311212dd3878545bfd53400e50">ktacipherVerifySignedMsg</a></div><div class="ttdeci">TKStatus ktacipherVerifySignedMsg(const uint8_t *xpMsgToVerify, size_t xMsgToVerifyLen, const uint8_t *xpMacToVerify)</div><div class="ttdoc">Verfiy the signed message.</div><div class="ttdef"><b>Definition:</b> crypto.c:217</div></div>
-<div class="ttc" id="ak__crypto_8h_html_a7f2f673578a35354e7cf7955709ee2ad"><div class="ttname"><a href="k__crypto_8h.html#a7f2f673578a35354e7cf7955709ee2ad">ktacipherSignMsg</a></div><div class="ttdeci">TKStatus ktacipherSignMsg(const uint8_t *xpMsgToSign, size_t xMsgToSignLen, uint8_t *xpComputedMac)</div><div class="ttdoc">Sign the given message.</div><div class="ttdef"><b>Definition:</b> crypto.c:92</div></div>
-<div class="ttc" id="agroup__g__kta__api_html_ga5fb1b599f29f45874740e356a97d7d25"><div class="ttname"><a href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a></div><div class="ttdeci">TKStatus</div><div class="ttdoc">keySTREAM Trusted Agent return status codes.</div><div class="ttdef"><b>Definition:</b> k_defs.h:48</div></div>
+<div class="ttc" id="ak__crypto_8h_html_a8996bfd2e6f88ddf793861206599d1b5"><div class="ttname"><a href="k__crypto_8h.html#a8996bfd2e6f88ddf793861206599d1b5">ktacipherAddPadding</a></div><div class="ttdeci">TKStatus ktacipherAddPadding(const uint8_t *xpData, const size_t xDataLength, uint8_t *xpPaddedData, size_t *xpPaddedDataLength)</div><div class="ttdoc">Add padding to data buffer.</div><div class="ttdef"><b>Definition:</b> crypto.c:147</div></div>
+<div class="ttc" id="ak__crypto_8h_html_a4e314aa0353e0df47179e556f57943da"><div class="ttname"><a href="k__crypto_8h.html#a4e314aa0353e0df47179e556f57943da">ktacipherRemovePadding</a></div><div class="ttdeci">TKStatus ktacipherRemovePadding(const uint8_t *xpData, size_t *xpDataLength)</div><div class="ttdoc">Remove padding from given data.</div><div class="ttdef"><b>Definition:</b> crypto.c:274</div></div>
+<div class="ttc" id="ak__crypto_8h_html_a843a5e4a1d5220fc7fbcb24e4d9b5688"><div class="ttname"><a href="k__crypto_8h.html#a843a5e4a1d5220fc7fbcb24e4d9b5688">ktacipherEncrypt</a></div><div class="ttdeci">TKStatus ktacipherEncrypt(const uint8_t *xpClearMsg, size_t xClearMsgLen, uint8_t *xpEncryptedMsg, size_t *xpEncryptedMsgLen)</div><div class="ttdoc">Encrypt the given message.</div><div class="ttdef"><b>Definition:</b> crypto.c:77</div></div>
+<div class="ttc" id="ak__crypto_8h_html_a485479311212dd3878545bfd53400e50"><div class="ttname"><a href="k__crypto_8h.html#a485479311212dd3878545bfd53400e50">ktacipherVerifySignedMsg</a></div><div class="ttdeci">TKStatus ktacipherVerifySignedMsg(const uint8_t *xpMsgToVerify, size_t xMsgToVerifyLen, const uint8_t *xpMacToVerify)</div><div class="ttdoc">Verfiy the signed message.</div><div class="ttdef"><b>Definition:</b> crypto.c:239</div></div>
+<div class="ttc" id="ak__crypto_8h_html_a7f2f673578a35354e7cf7955709ee2ad"><div class="ttname"><a href="k__crypto_8h.html#a7f2f673578a35354e7cf7955709ee2ad">ktacipherSignMsg</a></div><div class="ttdeci">TKStatus ktacipherSignMsg(const uint8_t *xpMsgToSign, size_t xMsgToSignLen, uint8_t *xpComputedMac)</div><div class="ttdoc">Sign the given message.</div><div class="ttdef"><b>Definition:</b> crypto.c:115</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_ga5fb1b599f29f45874740e356a97d7d25"><div class="ttname"><a href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a></div><div class="ttdeci">TKStatus</div><div class="ttdoc">keySTREAM Trusted Agent return status codes.</div><div class="ttdef"><b>Definition:</b> k_defs.h:71</div></div>
 <div class="ttc" id="ak__defs_8h_html"><div class="ttname"><a href="k__defs_8h.html">k_defs.h</a></div><div class="ttdoc">keySTREAM Trusted Agent - Type definitions.</div></div>
-<div class="ttc" id="ak__crypto_8h_html_a944875d5c528c273173a030bc286c401"><div class="ttname"><a href="k__crypto_8h.html#a944875d5c528c273173a030bc286c401">ktacipherDecrypt</a></div><div class="ttdeci">TKStatus ktacipherDecrypt(const uint8_t *xpEncryptedMsg, size_t xEncryptedMsgLen, uint8_t *xpClearMsg, size_t *xpClearMsgLen)</div><div class="ttdoc">Decrypt the given encrypted message.</div><div class="ttdef"><b>Definition:</b> crypto.c:179</div></div>
+<div class="ttc" id="ak__crypto_8h_html_a944875d5c528c273173a030bc286c401"><div class="ttname"><a href="k__crypto_8h.html#a944875d5c528c273173a030bc286c401">ktacipherDecrypt</a></div><div class="ttdeci">TKStatus ktacipherDecrypt(const uint8_t *xpEncryptedMsg, size_t xEncryptedMsgLen, uint8_t *xpClearMsg, size_t *xpClearMsgLen)</div><div class="ttdoc">Decrypt the given encrypted message.</div><div class="ttdef"><b>Definition:</b> crypto.c:201</div></div>
 <!-- HTML footer for doxygen 1.9.1-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

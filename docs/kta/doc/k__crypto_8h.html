@@ -333,7 +333,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">xpMsgToSign</td><td>Clear message to sign. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">xMsgToSignLen</td><td>Clear message to sign length. </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">xpComputedMac</td><td>[in] Pointer to buffer to carry computed MAC. [out] Actual MAC message.</td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">xpComputedMac</td><td>[in] Pointer to buffer to carry computed MAC. [out] Actual MAC message. Data must be at least C_K_KTA__HMAC_MAX_SIZE</td></tr>
   </table>
   </dd>
 </dl>
@@ -384,7 +384,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">xpMsgToVerify</td><td>Message buffer to verify the signature. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">xMsgToVerifyLen</td><td>Message buffer length to verify the signature. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">xpMacToVerify</td><td>Mac to verify with message buffer.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xpMacToVerify</td><td>Mac to verify with message buffer. Data must be at least C_K_KTA__HMAC_MAX_SIZE</td></tr>
   </table>
   </dd>
 </dl>

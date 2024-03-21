@@ -87,41 +87,54 @@ $(document).ready(function(){initNavTree('md_doxy_integration_release_notes.html
 <div class="title">keySTREAM Trusted Agent Release Notes </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md5"></a>
-Release v1.2.6</h1>
-<h2><a class="anchor" id="autotoc_md6"></a>
-New Features</h2>
-<h3><a class="anchor" id="autotoc_md7"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md6"></a>
+Release v1.2.6 (03/21/2024)</h1>
+<h2><a class="anchor" id="autotoc_md7"></a>
+Updates</h2>
+<h3><a class="anchor" id="autotoc_md8"></a>
 Device Onboarding</h3>
 <ul>
 <li>Device Onboarding is the process by which a device is registered in keySTREAM server with a certain device identity and attached to a certain device vendor. Device onboarding is performed automatically by keySTREAM as part of the in-field device identity provisioning process.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md8"></a>
+<h3><a class="anchor" id="autotoc_md9"></a>
 Device Certificate Renewal</h3>
 <ul>
 <li>A new certificate will be generated and provisioned to the device before the old one expires. Renewing a certificate does not mean changing the associated key pair. <b>The key pair stays the same.</b></li>
 </ul>
-<h3><a class="anchor" id="autotoc_md9"></a>
+<h3><a class="anchor" id="autotoc_md10"></a>
 Key Renewal</h3>
 <ul>
 <li>This Option Enables the User to Renew the key pair from keySTREAM UI.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md10"></a>
+<h3><a class="anchor" id="autotoc_md11"></a>
 Device Refurbish</h3>
 <ul>
 <li>A device can be brought back to factory provisioned state at any time using the device refurbishment functionality.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md11"></a>
+<h3><a class="anchor" id="autotoc_md12"></a>
 Optional Multi Device Profile Public Uid</h3>
 <ul>
 <li>Added Mutable Device Profile Public UID Feature in KTA.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h3><a class="anchor" id="autotoc_md13"></a>
+Slot 8 Config Update</h3>
+<ul>
+<li>Storage of Signer Issuer Common Name, Signer Subject Common Name, Leaf Issuer Common Name, Signer Issuer Organisation Name, Signer Issuer Oraganisation Unit Name, Signer Subject Organisation Name, Signer Expiry Date, Leaf Expiry Date and Leaf Issuer Organisation Name has been updated.</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md14"></a>
+CAL Update 3.7.4</h3>
+<ul>
+<li>KTA code has been integrated with cryptoauthlib (3.7.4).</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md15"></a>
 Fixes</h2>
 <ul>
-<li>Changes Done to Support Integration of KTA with Latest Cryptoauthlib.</li>
+<li>Changes Done to Support Integration of KTA with Latest Cryptoauthlib (3.7.4).</li>
 <li>Fixed Compilation Warnings.</li>
-<li>Updated Doxygen Header's for KTA Source Files. </li>
+<li>Updated Doxygen Header's for KTA Source Files.</li>
+<li>Device Reboot issue fixed.</li>
+<li>Key Renewal issue fixed.</li>
+<li>Expiry Date issue fixed. </li>
 </ul>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

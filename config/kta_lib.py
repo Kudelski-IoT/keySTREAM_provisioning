@@ -116,7 +116,7 @@ def instantiateComponent(ktaComponent):
     ktaSymbol.setDependencies(ktaSetValue, ["KTA_LOG_BOOL"])
 
     ktaSymbol = ktaComponent.createStringSymbol("KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID", None)
-    ktaSymbol.setLabel("Enter Device Public UID")
+    ktaSymbol.setLabel("Enter Fleet Profile Public UID")
     ktaSymbol.setVisible(True)
     ktaSymbol.setDefaultValue("")
     
