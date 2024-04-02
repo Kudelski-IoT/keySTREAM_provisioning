@@ -1,6 +1,7 @@
 ## keySTREAM Trusted Agent Release Notes
 
-## Release v1.2.6 (03/21/2024)
+## Release v1.0.0 (03/21/2024)
+- It is based on KTA v1.2.6
 
 ### Updates
 
@@ -19,14 +20,14 @@
 #### Optional Multi Device Profile Public Uid 
 - Added Mutable Device Profile Public UID Feature in KTA.
 
-#### Slot 8 Config Update
+#### Slot 8 Config Update (2PKI Solutions)
 - Storage of Signer Issuer Common Name, Signer Subject Common Name, Leaf Issuer Common Name, Signer Issuer Organisation Name, Signer Issuer Oraganisation Unit Name, Signer Subject Organisation Name, Signer Expiry Date, Leaf Expiry Date and Leaf Issuer Organisation Name has been updated.
 
 #### CAL Update 3.7.4
 - KTA code has been integrated with cryptoauthlib (3.7.4).
 
 ### Fixes
-- Changes Done to Support Integration of KTA with Latest Cryptoauthlib (3.7.4).
+- Changes Done to Support Integration of KTA with Cryptoauthlib (3.7.4).
 - Fixed Compilation Warnings. 
 - Updated Doxygen Header's for KTA Source Files.
 - Device Reboot issue fixed.
