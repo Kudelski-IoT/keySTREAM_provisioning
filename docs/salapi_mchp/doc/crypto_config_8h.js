@@ -17,7 +17,7 @@ var crypto_config_8h =
     [ "C_KTA__FIELD_L2_ENC_INPUT_DATA", "crypto_config_8h.html#a274f02356911e1ac8d687544bc676d8f", null ],
     [ "C_KTA__FIELD_L2_ENC_INPUT_DATA_SIZE", "crypto_config_8h.html#a36ea92423ceaf785149a297df331c1b8", null ],
     [ "C_KTA__FIELD_L2_AUTH_INPUT_DATA", "crypto_config_8h.html#aebe51a07e91d59d1ddec576863647eee", null ],
-    [ "C_KTA__FIELD_L2_AUTH_INPUT_DATA_SIZE", "crypto_config_8h.html#a1fe39fb3e4ed9fe962143e7c1b741dc9", null ],
+    [ "C_KTA__FIELD_L2_AUTH_IN_DATA_SIZE", "crypto_config_8h.html#a984b74462f65caf06f19cfef36ff94a0", null ],
     [ "C_KTA__ROT_SOL_ID", "crypto_config_8h.html#a647d0495352ca6d2b1f1c737d6c7f9af", null ],
     [ "C_KTA__ROT_SOL_ID_SIZE", "crypto_config_8h.html#acf9d7e19e97ec600424c578a292cb35d", null ],
     [ "C_KTA__FIELD_KEY_FIXED_INFO_L1SEGSEED_POS", "crypto_config_8h.html#a66589e37efde84390a49857fc41c65a9", null ],

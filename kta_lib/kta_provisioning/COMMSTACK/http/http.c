@@ -213,14 +213,13 @@ TCommIfStatus httpInit
   M_UNUSED(xIpProtocol);
   M_INTL_HTTP_DEBUG(("Start of %s", __func__));
 
-  for (;;)
+  if ((NULL == xpUri) || (NULL == xpHost) || (0U == xPort))
   {
-    if ((NULL == xpUri) || (NULL == xpHost) || (0U == xPort))
-    {
-      M_INTL_HTTP_ERROR(("Invalid Parameter"));
-      status = E_COMM_IF_STATUS_PARAMETER;
-      break;
-    }
+    M_INTL_HTTP_ERROR(("Invalid Parameter"));
+    status = E_COMM_IF_STATUS_PARAMETER;
+  }
+  else
+  {
     retVal = strncmp((const char*)xpHost, "http://", 7);
     if (retVal == 0)
     {
@@ -244,10 +243,8 @@ TCommIfStatus httpInit
       if (E_COMM_IF_STATUS_OK != status)
       {
         M_INTL_HTTP_ERROR(("salComConnect Failed"));
-        break;
       }
     }
-    break;
   }
 
   M_INTL_HTTP_DEBUG(("End of %s", __func__));
@@ -267,22 +264,21 @@ TCommIfStatus httpMsgExchange
 )
 {
   TCommIfStatus status = E_COMM_IF_STATUS_ERROR;
-  int ret = 0;
+  unsigned int ret = 0;
 
   M_INTL_HTTP_DEBUG(("Start of %s", __func__));
 
-  for (;;)
+  if ((NULL == xpMsgToSend) ||
+      (0UL == xSendSize) ||
+      (NULL == xpRecvMsgBuffer) ||
+      (NULL == xpRecvMsgBufferSize) ||
+      (0u == *xpRecvMsgBufferSize))
   {
-    if ((NULL == xpMsgToSend) ||
-        (0UL == xSendSize) ||
-        (NULL == xpRecvMsgBuffer) ||
-        (NULL == xpRecvMsgBufferSize) ||
-        (0 == *xpRecvMsgBufferSize))
-    {
-      M_INTL_HTTP_ERROR(("Invalid Parameter"));
-      status = E_COMM_IF_STATUS_PARAMETER;
-      break;
-    }
+    M_INTL_HTTP_ERROR(("Invalid Parameter"));
+    status = E_COMM_IF_STATUS_PARAMETER;
+  }
+  else
+  {
     ret = httpPost(&gHttpInfo,
                     gHttpInfo.url.path,
                     xpMsgToSend,
@@ -296,8 +292,8 @@ TCommIfStatus httpMsgExchange
       M_INTL_HTTP_DEBUG(("Received Data %ld", gHttpInfo.bodyLen));
       *xpRecvMsgBufferSize = gHttpInfo.bodyLen;
     }
-    break;
   }
+
   M_INTL_HTTP_DEBUG(("End of %s", __func__));
   return status;
 }
@@ -325,6 +321,10 @@ TCommIfStatus httpTerm(void)
  * @implements pStrToken
  *
  **/
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 static char* pStrToken
 (
   char*  xpSrc,
@@ -339,54 +339,47 @@ static char* pStrToken
   /* L-trim. */
   pPtr = xpSrc;
 
-  for (;;)
+  while (1)
   {
-    while (1)
+    if ((*pPtr == '\n') || (*pPtr == (char)0))
     {
-      if ((*pPtr == '\n') || (*pPtr == 0))
-      {
-        pPtr = NULL; /* Value does not exists. */
-        break;
-      }
-      if ((*pPtr != ' ') && (*pPtr != '\t'))
-      {
-        break;
-      }
-      pPtr++;
+      pPtr = NULL; /* Value does not exists. */
+      goto end;
     }
-
-    if (pPtr == NULL)
+    if ((*pPtr != ' ') && (*pPtr != '\t'))
     {
       break;
     }
-
-    pSt = pPtr;
-    while (1)
-    {
-      pEd = pPtr;
-      if ((*pPtr == ' ') || (*pPtr == '\t'))
-      {
-        pEd--;
-        pPtr++;
-        break;
-      }
-      if ((*pPtr == '\n') || (*pPtr == 0))
-      {
-        break;
-      }
-      pPtr++;
-    }
-    len = (int)(pEd - pSt + 1);
-    if ((xSize > 0) && (len >= xSize))
-    {
-      len = xSize - 1;
-    }
-
-    (void)strncpy(xpDst, pSt, len);
-    xpDst[len] = 0;
-
-    break;
+    pPtr++;
   }
+
+  pSt = pPtr;
+  while (1)
+  {
+    pEd = pPtr;
+    if ((*pPtr == ' ') || (*pPtr == '\t'))
+    {
+      pEd--;
+      pPtr++;
+      break;
+    }
+    if ((*pPtr == '\n') || (*pPtr == (char)0))
+    {
+      break;
+    }
+    pPtr++;
+  }
+
+  len = (int)(pEd - pSt + 1);
+  if ((xSize > 0) && (len >= xSize))
+  {
+    len = xSize - 1;
+  }
+
+  (void)strncpy(xpDst, pSt, len);
+  xpDst[len] = 0;
+
+end:
   return pPtr;
 }
 
@@ -406,7 +399,7 @@ static int lstrncasecmp
 
   for (; i < n; i++)
   {
-    if (tolower(xpS1[i]) != tolower(xpS2[i]))
+    if (tolower((uint8_t)xpS1[i]) != tolower((uint8_t)xpS2[i]))
     {
       matched = 0;
       break;
@@ -419,6 +412,10 @@ static int lstrncasecmp
 /**
  * @implements httpHeader
  *
+ **/
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
  **/
 static int httpHeader
 (
@@ -434,83 +431,83 @@ static int httpHeader
 
   pToken = xpParam;
 
-  for (;;)
+  pToken = pStrToken(pToken, aT1, C_HTTP_TOKEN_MAX_LEN);
+  if (pToken == NULL)
   {
-    pToken = pStrToken(pToken, aT1, C_HTTP_TOKEN_MAX_LEN);
-    if (pToken == NULL)
-    {
-      retVal = -1;
-      break;
-    }
-    pToken = pStrToken(pToken, aT2, C_HTTP_TOKEN_MAX_LEN);
-    if (pToken == NULL)
-    {
-      retVal = -1;
-      break;
-    }
-
-    M_INTL_HTTP_DEBUG(("%s %s", aT1, aT2));
-    if (lstrncasecmp(aT1, "HTTP", 4) == 0)
-    {
-      errno = 0;
-      xpHttpInfo->response.status = strtol(aT2, NULL, 10);
-      if (0 != errno)
-      {
-        M_INTL_HTTP_ERROR(("Error Occured %d", errno));
-        retVal = -1;
-        break;
-      }
-
-    }
-    else if (lstrncasecmp(aT1, "set-cookie:", 11) == 0)
-    {
-      (void)snprintf(xpHttpInfo->response.cookie, C_HTTP__HEADER_FIELD_SIZE, "%s", aT2);
-    }
-    else if (lstrncasecmp(aT1, "location:", 9) == 0)
-    {
-      len = (int)strlen(aT2);
-      (void)strncpy(xpHttpInfo->response.location, aT2, len);
-      xpHttpInfo->response.location[len] = 0;
-    }
-    else if (lstrncasecmp(aT1, "content-length:", 15) == 0)
-    {
-      errno = 0;
-      xpHttpInfo->response.contentLength = strtol(aT2, NULL, 10);
-      if (0 != errno)
-      {
-        M_INTL_HTTP_ERROR(("Error Occured %d", errno));
-        retVal = -1;
-        break;
-      }
-
-    }
-    else if (lstrncasecmp(aT1, "transfer-encoding:", 18) == 0)
-    {
-      if (lstrncasecmp(aT2, "chunked", 7) == 0)
-      {
-
-        xpHttpInfo->response.chunked = C_HTTP__TRUE;
-        M_INTL_HTTP_DEBUG(("chunked set"));
-      }
-    }
-    else if (lstrncasecmp(aT1, "connection:", 11) == 0)
-    {
-      if (lstrncasecmp(aT2, "close", 5) == 0)
-      {
-
-        xpHttpInfo->response.close = C_HTTP__TRUE;
-      }
-    } else {
-      break;
-    }
-    break;
+    retVal = -1;
+    goto end;
   }
+  pToken = pStrToken(pToken, aT2, C_HTTP_TOKEN_MAX_LEN);
+  if (pToken == NULL)
+  {
+    retVal = -1;
+    goto end;
+  }
+
+  M_INTL_HTTP_DEBUG(("%s %s", aT1, aT2));
+  if (lstrncasecmp(aT1, "HTTP", 4) == 0)
+  {
+    errno = 0;
+    xpHttpInfo->response.status = strtol(aT2, NULL, 10);
+    if (0 != errno)
+    {
+      M_INTL_HTTP_ERROR(("Error Occured %d", errno));
+      retVal = -1;
+      goto end;
+    }
+  }
+  else if (lstrncasecmp(aT1, "set-cookie:", 11) == 0)
+  {
+    (void)snprintf(xpHttpInfo->response.cookie, C_HTTP__HEADER_FIELD_SIZE, "%s", aT2);
+  }
+  else if (lstrncasecmp(aT1, "location:", 9) == 0)
+  {
+    len = (int)strlen(aT2);
+    (void)strncpy(xpHttpInfo->response.location, aT2, len);
+    xpHttpInfo->response.location[len] = 0;
+  }
+  else if (lstrncasecmp(aT1, "content-length:", 15) == 0)
+  {
+    errno = 0;
+    xpHttpInfo->response.contentLength = strtol(aT2, NULL, 10);
+    if (0 != errno)
+    {
+      M_INTL_HTTP_ERROR(("Error Occured %d", errno));
+      retVal = -1;
+      goto end;
+    }
+  }
+  else if (lstrncasecmp(aT1, "transfer-encoding:", 18) == 0)
+  {
+    if (lstrncasecmp(aT2, "chunked", 7) == 0)
+    {
+      xpHttpInfo->response.chunked = C_HTTP__TRUE;
+      M_INTL_HTTP_DEBUG(("chunked set"));
+    }
+  }
+  else if (lstrncasecmp(aT1, "connection:", 11) == 0)
+  {
+    if (lstrncasecmp(aT2, "close", 5) == 0)
+    {
+      xpHttpInfo->response.close = C_HTTP__TRUE;
+    }
+  }
+  else
+  {
+    goto end;
+  }
+
+end:
   return retVal;
 }
 
 /**
  * @implements httpParse
  *
+ **/
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
  **/
 static int httpParse
 (
@@ -522,14 +519,12 @@ static int httpParse
   long len;
   int  retVal = -1;
 
-  for (;;)
+  if (xpHttpInfo->recvLen == 0U)
   {
-    if (xpHttpInfo->recvLen == 0U)
-    {
-      retVal = -1;
-      break;
-    }
-
+    retVal = -1;
+  }
+  else
+  {
     pPtr1 = (char *)xpHttpInfo->pRecvBuf;
 
     while (1)
@@ -539,17 +534,17 @@ static int httpParse
         pPtr2 = strstr(pPtr1, "\r\n");
         if (pPtr2 != NULL)
         {
-          len = pPtr2 - pPtr1;
+          len = (long)(pPtr2 - pPtr1);
           *pPtr2 = 0;
 
           if (len > 0)
           {
             M_INTL_HTTP_DEBUG(("header: %s(%ld)..", pPtr1, len));
-            if (httpHeader(xpHttpInfo, pPtr1) != 0u)
+            if (httpHeader(xpHttpInfo, pPtr1) != 0)
             {
               M_INTL_HTTP_ERROR(("httpHeader returned Error"));
               retVal = -1;
-              break;
+              goto end;
             }
             pPtr1 = &pPtr2[2];    /* Skip CR+LF. */
           }
@@ -579,7 +574,6 @@ static int httpParse
                   }
                   if (xpHttpInfo->length == 0)
                   {
-
                       xpHttpInfo->response.chunked = C_HTTP__FALSE;
                   }
                   else
@@ -596,7 +590,7 @@ static int httpParse
                   xpHttpInfo->recvLen = len;
                   xpHttpInfo->length = -1;
                   retVal = 0;
-                  break;
+                  goto end;
                 }
               }
               else
@@ -604,7 +598,7 @@ static int httpParse
                 xpHttpInfo->recvLen = 0;
                 xpHttpInfo->length = -1;
                 retVal = 0;
-                break;
+                goto end;
               }
             }
             else
@@ -628,7 +622,7 @@ static int httpParse
             xpHttpInfo->recvLen = 0;
           }
           retVal = 0;
-          break;
+          goto end;
         }
       }
       else    /* Body parser. */
@@ -668,14 +662,14 @@ static int httpParse
               xpHttpInfo->recvLen = len;
               xpHttpInfo->length = -1;
               retVal = 0;
-              break;
+              goto end;
             }
           }
           else
           {
             xpHttpInfo->recvLen = 0;
             retVal = 0;
-            break;
+            goto end;
           }
         }
         else
@@ -691,21 +685,21 @@ static int httpParse
                 {
                   if (xpHttpInfo->bodySize > (xpHttpInfo->bodyLen + xpHttpInfo->length))
                   {
-                    (void)memcpy(&(xpHttpInfo->body[xpHttpInfo->bodyLen]),
-                            pPtr1,
+                    (void)memcpy((void *)&(xpHttpInfo->body[xpHttpInfo->bodyLen]),
+                            (const void *)pPtr1,
                             xpHttpInfo->length);
                     xpHttpInfo->bodyLen += xpHttpInfo->length;
                   }
                   else
                   {
-                    (void)memcpy(&(xpHttpInfo->body[xpHttpInfo->bodyLen]),
-                            pPtr1,
+                    (void)memcpy((void *)&(xpHttpInfo->body[xpHttpInfo->bodyLen]),
+                            (const void *)pPtr1,
                             xpHttpInfo->bodySize - xpHttpInfo->bodyLen);
                     xpHttpInfo->bodyLen = xpHttpInfo->bodySize;
                   }
                 }
 
-                pPtr1 += xpHttpInfo->length;
+                pPtr1 += (size_t)xpHttpInfo->length;
                 len -= xpHttpInfo->length;
 
                 if ((xpHttpInfo->response.chunked == C_HTTP__TRUE) && (len >= 2))
@@ -716,7 +710,7 @@ static int httpParse
                 else
                 {
                   retVal = -1;
-                  break;
+                  goto end;
                 }
               }
               else
@@ -726,14 +720,14 @@ static int httpParse
                 {
                   if (xpHttpInfo->bodySize > (xpHttpInfo->bodyLen + len))
                   {
-                    (void)memcpy(&(xpHttpInfo->body[xpHttpInfo->bodyLen]), pPtr1, len);
+                    (void)memcpy((void *)&(xpHttpInfo->body[xpHttpInfo->bodyLen]), (const void *)pPtr1, len);
                     xpHttpInfo->bodyLen += len;
                   }
                   else
                   {
-                    (void)memcpy(&(xpHttpInfo->body[xpHttpInfo->bodyLen]),
-                                 pPtr1,
-                                 xpHttpInfo->bodySize - xpHttpInfo->bodyLen);
+                    (void)memcpy((void *)&(xpHttpInfo->body[xpHttpInfo->bodyLen]),
+                              (const void *)pPtr1,
+                              xpHttpInfo->bodySize - xpHttpInfo->bodyLen);
                     xpHttpInfo->bodyLen = xpHttpInfo->bodySize;
                   }
                 }
@@ -744,10 +738,10 @@ static int httpParse
                 if ((xpHttpInfo->response.chunked == C_HTTP__FALSE) && (xpHttpInfo->length <= 0))
                 {
                   retVal = 1;
-                  break;
+                  goto end;
                 }
                 retVal = 0;
-                break;
+                goto end;
               }
             }
             else
@@ -755,11 +749,11 @@ static int httpParse
               if (xpHttpInfo->response.chunked == C_HTTP__FALSE)
               {
                 retVal = 1;
-                break;
+                goto end;
               }
 
               /* Chunked size check. */
-              if ((xpHttpInfo->recvLen > 2) && (strncmp(pPtr1, "\r\n", 2) == 0))
+              if ((xpHttpInfo->recvLen > 2u) && (strncmp(pPtr1, "\r\n", 2) == 0))
               {
                 pPtr1 = &pPtr1[2];
                 xpHttpInfo->length = -1;
@@ -774,14 +768,19 @@ static int httpParse
       }
     }
     retVal = 0;
-    break;
   }
+
+end:
   return retVal;
 }
 
 /**
  * @implements httpPost
  *
+ **/
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
  **/
 static int httpPost
 (
@@ -795,19 +794,17 @@ static int httpPost
 {
   TKCommStatus status = E_K_COMM_STATUS_ERROR;
   uint8_t aBuffer[C_HTTP_MAX_DATA_LEN] = {0};
-  int len;
+  unsigned int len;
   int retVal = -1;
 
   M_INTL_HTTP_DEBUG(("Start of %s", __func__));
 
-  for (;;)
+  if (NULL == xpHttpInfo)
   {
-    if (NULL == xpHttpInfo)
-    {
-      retVal = -1;
-      break;
-    }
-
+    retVal = -1;
+  }
+  else
+  {
     /* Send HTTP buffer. */
     len = snprintf((char *)aBuffer, C_HTTP_MAX_DATA_LEN,
                     "POST %s HTTP/1.1\r\n"
@@ -824,14 +821,14 @@ static int httpPost
                     xpHttpInfo->request.cookie);
 
     M_INTL_HTTP_DEBUG(("Post Header len %d", len));
-    (void)memcpy(aBuffer + len, xpData, xDataLen);
+    (void)memcpy(&aBuffer[len], xpData, xDataLen);
     len = len + (int)xDataLen;
     if (len > C_HTTP_MAX_DATA_LEN)
     {
       M_INTL_HTTP_ERROR(("Buffer Overflow"));
       (void)salComTerm(xpHttpInfo->pTls);
       retVal = -1;
-      break;
+      goto end;
     }
     status = salComWrite(xpHttpInfo->pTls, aBuffer, len);
     if (E_K_COMM_STATUS_OK != status)
@@ -839,7 +836,7 @@ static int httpPost
       M_INTL_HTTP_ERROR(("salComWrite Failed"));
       (void)salComTerm(xpHttpInfo->pTls);
       retVal = -1;
-      break;
+      goto end;
     }
 
     xpHttpInfo->response.status = 0;
@@ -862,16 +859,16 @@ static int httpPost
       M_INTL_HTTP_ERROR(("salComRead Failed"));
       (void)salComTerm(xpHttpInfo->pTls);
       retVal = -1;
-      break;
+      goto end;
     }
-    if (httpParse(xpHttpInfo) != 0u)
+    if (httpParse(xpHttpInfo) != 0)
     {
       M_INTL_HTTP_ERROR(("httpHeader returned Error"));
       retVal = -1;
-      break;
+      goto end;
     }
 
-    if (xpHttpInfo->response.close == 1)
+    if ((int)xpHttpInfo->response.close == 1)
     {
       (void)salComTerm(xpHttpInfo->pTls);
     }
@@ -882,8 +879,10 @@ static int httpPost
     M_INTL_HTTP_DEBUG(("length  : %ld", xpHttpInfo->response.contentLength));
     M_INTL_HTTP_DEBUG(("body    : %ld", xpHttpInfo->bodyLen));
     retVal = xpHttpInfo->response.status;
-    break;
+    goto end;
   }
+
+end:
   return retVal;
 }
 

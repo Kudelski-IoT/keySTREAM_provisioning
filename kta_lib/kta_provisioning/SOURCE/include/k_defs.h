@@ -62,34 +62,58 @@ extern "C" {
 #endif /* INCLUDE_OBFUSCATE_SYMBOLS */
 
 #include <stdint.h>
+
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
+
 /** @brief keySTREAM Trusted Agent return status codes. */
 typedef enum
 {
+  /**
+   * Status OK, everything is fine.
+   */
   E_K_STATUS_OK,
-  /* Status OK, everything is fine. */
+  /**
+   * Bad parameter
+   */
   E_K_STATUS_PARAMETER,
-  /* Bad parameter */
+  /**
+   * Inconsistent or unsupported data.
+   */
   E_K_STATUS_DATA,
-  /* Inconsistent or unsupported data. */
+  /**
+   * Call cannot be done at this time (due to call sequence or life cycle).
+   */
   E_K_STATUS_STATE,
-  /* Call cannot be done at this time (due to call sequence or life cycle). */
+  /**
+   * Failure on memory allocation.
+   */
   E_K_STATUS_MEMORY,
-  /* Failure on memory allocation. */
+  /**
+   * Missing, empty or non-available data.
+   */
   E_K_STATUS_MISSING,
-  /* Missing, empty or non-available data. */
+  /**
+   * Undefined error.
+   */
   E_K_STATUS_ERROR,
-  /* Undefined error. */
+  /**
+   * Decryption failed.
+   */
   E_K_STATUS_DECRYPTION,
-  /* Decryption failed. */
+  /**
+   * Already personalized.
+   */
   E_K_STATUS_PERSONALIZED,
-  /* Already personalized. */
+  /**
+   * The requested action is unsupported.
+   */
   E_K_STATUS_NOT_SUPPORTED,
-  /* The requested action is unsupported. */
+  /**
+   * Number of status values.
+   */
   E_K_NUM_STATUS
-  /* Number of status values. */
 } TKStatus;
 
 /** @} g_kta_api */

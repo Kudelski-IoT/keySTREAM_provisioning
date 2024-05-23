@@ -103,8 +103,8 @@ TKStatus ktaKeyStreamInit
  */
 TKStatus ktaKeyStreamFieldMgmt
 (
-  bool                   isFieldMgntReq,
-  TKktaKeyStreamStatus*  xpktaKSCmdStatus
+  bool                   xIsFieldMgmtReq,
+  TKktaKeyStreamStatus*  xpKtaKSCmdStatus
 );
 
 #ifdef __cplusplus

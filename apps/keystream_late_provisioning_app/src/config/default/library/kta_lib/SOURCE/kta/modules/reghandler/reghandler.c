@@ -154,6 +154,10 @@ static TKStatus lPrepareNotificationMsg
  * @brief implement ktaregBuildRegistrationRequest
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaregBuildRegistrationRequest
 (
   TKIcppProtocolMessage* xpRecvdProtoMessage,
@@ -168,95 +172,89 @@ TKStatus ktaregBuildRegistrationRequest
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (NULL == xpRecvdProtoMessage) ||
+  if ((NULL == xpRecvdProtoMessage) ||
       (NULL == xpMessageToSend) ||
       (NULL == xpMessageToSendSize) ||
-      (C_K__ICPP_MSG_MAX_SIZE > *xpMessageToSendSize)
-    )
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+      (C_K__ICPP_MSG_MAX_SIZE > *xpMessageToSendSize))
+  {
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     /* keySTREAM should give activation response based on dos key. */
     if (E_K_ICPP_PARSER_CRYPTO_TYPE_DOS_BASED != xpRecvdProtoMessage->cryptoVersion)
     {
       M_KTALOG__ERR("Received wrong crypto version from the server, cryptoVersion = [%d]",
                     xpRecvdProtoMessage->cryptoVersion);
-      break;
     }
-
-    /* Fill the crypto version to use (for activation request dos based encryption is used). */
-    // REQ RQ_M-KTA-REGT-FN-0010(1) : Check crypto version
-    // REQ RQ_M-KTA-REGT-FN-0020_01(1) : Registeration Info crypto version
-    protoMessage.cryptoVersion  = E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED;
-    /* Fill the mode of encryption (for activation request partial encryption is used). */
-    // REQ RQ_M-KTA-REGT-FN-0020_02(1) : Registeration Info partial encryption mode
-    protoMessage.encMode  = E_K_ICPP_PARSER_FULL_ENC_MODE;
-
-    /**
-     *  Fill the message type with "E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
-     *  registration notification response (client -> server).
-     */
-    // REQ RQ_M-KTA-REGT-FN-0020_03(1) : Registeration Info message type
-    protoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
-    /* Fill transaction ID. */
-    // REQ RQ_M-KTA-REGT-FN-0020_04(1) : Registeration Info transaction id
-    (void)memcpy(protoMessage.transactionId,
-                 xpRecvdProtoMessage->transactionId,
-                 C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES);
-    /* Fill rotKeySetId as it is which is received from keyStream. */
-    // REQ RQ_M-KTA-REGT-FN-0020_05(1) : Registeration Info rot key set id
-    protoMessage.rotKeySetId = xpRecvdProtoMessage->rotKeySetId;
-    // REQ RQ_M-KTA-REGT-FN-0020_06(1) : Registeration Info rot public uid
-    status = salStorageGetValue(C_K_KTA__ROT_PUBLIC_UID_STORAGE_ID,
-                                protoMessage.rotPublicUID,
-                                &rotPublicUidLen);
-
-    if ((E_K_STATUS_OK != status) || (0u == rotPublicUidLen))
+    else
     {
-      M_KTALOG__ERR("SAL API failed while reading rotPublicUID, status = [%d]", status);
-      break;
+      /* Fill the crypto version to use (for activation request dos based encryption is used). */
+      // REQ RQ_M-KTA-REGT-FN-0010(1) : Check crypto version
+      // REQ RQ_M-KTA-REGT-FN-0020_01(1) : Registeration Info crypto version
+      protoMessage.cryptoVersion  = E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED;
+      /* Fill the mode of encryption (for activation request partial encryption is used). */
+      // REQ RQ_M-KTA-REGT-FN-0020_02(1) : Registeration Info partial encryption mode
+      protoMessage.encMode  = E_K_ICPP_PARSER_FULL_ENC_MODE;
+
+      /* Fill the message type with "E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
+        registration notification response (client -> server). */
+      // REQ RQ_M-KTA-REGT-FN-0020_03(1) : Registeration Info message type
+      protoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
+      /* Fill transaction ID. */
+      // REQ RQ_M-KTA-REGT-FN-0020_04(1) : Registeration Info transaction id
+      (void)memcpy(protoMessage.transactionId,
+                  xpRecvdProtoMessage->transactionId,
+                  C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES);
+      /* Fill rotKeySetId as it is which is received from keyStream. */
+      // REQ RQ_M-KTA-REGT-FN-0020_05(1) : Registeration Info rot key set id
+      protoMessage.rotKeySetId = xpRecvdProtoMessage->rotKeySetId;
+      // REQ RQ_M-KTA-REGT-FN-0020_06(1) : Registeration Info rot public uid
+      status = salStorageGetValue(C_K_KTA__ROT_PUBLIC_UID_STORAGE_ID,
+                                  protoMessage.rotPublicUID,
+                                  &rotPublicUidLen);
+
+      if ((E_K_STATUS_OK != status) || (0u == rotPublicUidLen))
+      {
+        M_KTALOG__ERR("SAL API failed while reading rotPublicUID, status = [%d]", status);
+        goto end;
+      }
+
+      /* Get registration information. */
+      status = lGetRegistrationInfo(&xpRegInfo);
+
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("Collecting registration info failed, status = [%d]", status);
+        goto end;
+      }
+
+      /* Prepare registration response message. */
+      // REQ RQ_M-KTA-REGT-FN-0020(1) : Registeration Info ICPP Message
+      status = lPrepareNotificationMsg(&protoMessage, &xpRegInfo);
+
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("Preparing registration response message failed, status = [%d]", status);
+        goto end;
+      }
+
+      status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
+                                    C_GEN__ENCRYPT | C_GEN__SIGNING),
+                                  &protoMessage,
+                                  xpMessageToSend,
+                                  xpMessageToSendSize);
+
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", status);
+        goto end;
+      }
     }
-
-    /* Get registration information. */
-    status = lGetRegistrationInfo(&xpRegInfo);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("Collecting registration info failed, status = [%d]", status);
-      break;
-    }
-
-    /* Prepare registration response message. */
-    // REQ RQ_M-KTA-REGT-FN-0020(1) : Registeration Info ICPP Message
-    status = lPrepareNotificationMsg(&protoMessage, &xpRegInfo);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("Preparing registration response message failed, status = [%d]", status);
-      break;
-    }
-
-    status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
-                                  C_GEN__ENCRYPT | C_GEN__SIGNING),
-                                 &protoMessage,
-                                 xpMessageToSend,
-                                 xpMessageToSendSize);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", status);
-      break;
-    }
-
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -278,33 +276,30 @@ static TKStatus lGetRegistrationInfo
   uint8_t aAckSeqCnt[C_ACK_SEQ_CNT_SIZE]       = {0x00, 0x00, 0x00};
   uint8_t aKtaCapability[C_KTA_CAPABILITY_SIZE] = C_KTA_CAPABILITY;
 
-  for (;;)
+  status = ktaGetContextInfoConfig(&(xpRegInfo->contextInfo));
+
+  if (E_K_STATUS_OK != status)
   {
-    status = ktaGetContextInfoConfig(&(xpRegInfo->contextInfo));
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("Reading context specific data from platform failed, status = [%d]", status);
-      break;
-    }
-
+    M_KTALOG__ERR("Reading context specific data from platform failed, status = [%d]", status);
+  }
+  else
+  {
     /* Fetch required info (Device info from config module). */
     status =  ktaGetDeviceInfoConfig(&(xpRegInfo->deviceInfo));
 
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Reading device info from config failed, status = [%d]", status);
-      break;
     }
-
-    (void)memcpy(xpRegInfo->aAckSeqCnt, aAckSeqCnt, sizeof(aAckSeqCnt));
-    (void)memcpy(xpRegInfo->aKtaCapability, aKtaCapability, sizeof(aKtaCapability));
-    (void)memcpy(xpRegInfo->aKtaVersion,
-                 xpRegInfo->contextInfo.ktaVersion,
-                 C_KTA__VERSION_MAX_SIZE);
-    break;
+    else
+    {
+      (void)memcpy(xpRegInfo->aAckSeqCnt, aAckSeqCnt, sizeof(aAckSeqCnt));
+      (void)memcpy(xpRegInfo->aKtaCapability, aKtaCapability, sizeof(aKtaCapability));
+      (void)memcpy(xpRegInfo->aKtaVersion,
+                  xpRegInfo->contextInfo.ktaVersion,
+                  C_KTA__VERSION_MAX_SIZE);
+    }
   }
-
   return status;
 }
 
@@ -321,109 +316,105 @@ static TKStatus lPrepareNotificationMsg
   uint32_t currentPos = 0;
   TKStatus status = E_K_STATUS_ERROR;
 
-  for (;;)
-  {
-    /* This is for handling the current position. */
-    currentPos = xpProtoMessage->commandsCount;
-    xpProtoMessage->commandsCount = xpProtoMessage->commandsCount + 1;
+  /* This is for handling the current position. */
+  currentPos = xpProtoMessage->commandsCount;
+  xpProtoMessage->commandsCount = xpProtoMessage->commandsCount + 1u;
 
-    /**
-     * Set the command tag with "E_K_ICCP_PARSER_COMMAND_TAG_REGISTERATION_INFO" to indicated the
-     * the command is for registration notification.
-     */
-    xpProtoMessage->commands[currentPos].commandTag =
-      E_K_ICPP_PARSER_COMMAND_TAG_REGISTERATION_INFO;
+  /**
+   * Set the command tag with "E_K_ICCP_PARSER_COMMAND_TAG_REGISTERATION_INFO" to indicated the
+   * the command is for registration notification.
+   */
+  xpProtoMessage->commands[currentPos].commandTag =
+    E_K_ICPP_PARSER_COMMAND_TAG_REGISTERATION_INFO;
 
-    /* Two fields are available for this message type. */
-    xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount = 7;
+  /* Two fields are available for this message type. */
+  xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount = 7u;
 
-    /**
-     * Set the first field tag with "E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT" to indicate that
-     * the first field contains ack seq cnt.
-     */
-    // REQ RQ_M-KTA-REGT-FN-0011_01(1) : Acknowledgement sequence count
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[0].fieldTag   =
-      E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[0].fieldLen   =
-      sizeof(xpRegInfo->aAckSeqCnt);
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[0].fieldValue =
-      xpRegInfo->aAckSeqCnt;
+  /**
+   * Set the first field tag with "E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT" to indicate that
+   * the first field contains ack seq cnt.
+   */
+  // REQ RQ_M-KTA-REGT-FN-0011_01(1) : Acknowledgement sequence count
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[0].fieldTag   =
+    E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[0].fieldLen   =
+    sizeof(xpRegInfo->aAckSeqCnt);
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[0].fieldValue =
+    xpRegInfo->aAckSeqCnt;
 
-    /**
-     * Set the second  field tag with "E_K_ICPP_PARSER_FIELD_TAG_KTA_CAPABILITY" to indicate that
-     * the second field contains kta_capability.
-     */
-    // REQ RQ_M-KTA-REGT-FN-0011_02(1) : KTA Capability
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[1].fieldTag   =
-      E_K_ICPP_PARSER_FIELD_TAG_KTA_CAPABILITY;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[1].fieldLen   =
-      sizeof(xpRegInfo->aKtaCapability);
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[1].fieldValue =
-      xpRegInfo->aKtaCapability;
+  /**
+   * Set the second  field tag with "E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY" to indicate that
+   * the second field contains kta_capability.
+   */
+  // REQ RQ_M-KTA-REGT-FN-0011_02(1) : KTA Capability
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[1].fieldTag   =
+    E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[1].fieldLen   =
+    sizeof(xpRegInfo->aKtaCapability);
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[1].fieldValue =
+    xpRegInfo->aKtaCapability;
 
-    /**
-     * Set the third field tag with "E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID" to indicate that
-     * the third field contains kta_context_profile_uid.
-     */
-    // REQ RQ_M-KTA-REGT-FN-0011_03(1) : KTA Context Profile Uid
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[2].fieldTag   =
-      E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[2].fieldLen   =
-      sizeof(xpRegInfo->contextInfo.ktaContextProfileUid);
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[2].fieldValue =
-      xpRegInfo->contextInfo.ktaContextProfileUid;
+  /**
+   * Set the third field tag with "E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID" to indicate that
+   * the third field contains kta_context_profile_uid.
+   */
+  // REQ RQ_M-KTA-REGT-FN-0011_03(1) : KTA Context Profile Uid
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[2].fieldTag   =
+    E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[2].fieldLen   =
+    sizeof(xpRegInfo->contextInfo.ktaContextProfileUid);
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[2].fieldValue =
+    xpRegInfo->contextInfo.ktaContextProfileUid;
 
-    /**
-     * Set the fourth field tag with "E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_SERIAL_NO" to indicate that
-     * the fourth field contains kta_context_serial_number.
-     */
-    // REQ RQ_M-KTA-REGT-FN-0011_04(1) : KTA Context Serial No
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[3].fieldTag   =
-      E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_SERIAL_NO;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[3].fieldLen   =
-      sizeof(xpRegInfo->contextInfo.ktaContexSerialNumber);
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[3].fieldValue =
-      xpRegInfo->contextInfo.ktaContexSerialNumber;
+  /**
+   * Set the fourth field tag with "E_K_ICPP_PARSER_FLD_TAG_KTA_CTX_SERIAL_NO" to indicate that
+   * the fourth field contains kta_context_serial_number.
+   */
+  // REQ RQ_M-KTA-REGT-FN-0011_04(1) : KTA Context Serial No
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[3].fieldTag   =
+    E_K_ICPP_PARSER_FLD_TAG_KTA_CTX_SERIAL_NO;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[3].fieldLen   =
+    sizeof(xpRegInfo->contextInfo.ktaContexSerialNumber);
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[3].fieldValue =
+    xpRegInfo->contextInfo.ktaContexSerialNumber;
 
-    /**
-     * Set the fifth field tag with "E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_VER" to indicate that
-     * the fifth field contains kta_context_version.
-     */
-    // REQ RQ_M-KTA-REGT-FN-0011_05(1) : KTA Context Version
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[4].fieldTag   =
-      E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_VER;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[4].fieldLen   =
-      sizeof(xpRegInfo->contextInfo.ktaContextVersion);
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[4].fieldValue =
-      xpRegInfo->contextInfo.ktaContextVersion;
+  /**
+   * Set the fifth field tag with "E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER" to indicate that
+   * the fifth field contains kta_context_version.
+   */
+  // REQ RQ_M-KTA-REGT-FN-0011_05(1) : KTA Context Version
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[4].fieldTag   =
+    E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[4].fieldLen   =
+    sizeof(xpRegInfo->contextInfo.ktaContextVersion);
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[4].fieldValue =
+    xpRegInfo->contextInfo.ktaContextVersion;
 
-    /**
-     * Set the sixth field tag with "E_K_ICPP_PARSER_FIELD_TAG_KTA_VER" to indicate that
-     * the sixth field contains Kta_version.
-     */
-    // REQ RQ_M-KTA-REGT-FN-0011_06(1) : KTA Version
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[5].fieldTag   =
-      E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[5].fieldLen   =
-      strnlen((char*)xpRegInfo->aKtaVersion, C_KTA__VERSION_MAX_SIZE);
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[5].fieldValue =
-      xpRegInfo->aKtaVersion;
+  /**
+   * Set the sixth field tag with "E_K_ICPP_PARSER_FIELD_TAG_KTA_VER" to indicate that
+   * the sixth field contains Kta_version.
+   */
+  // REQ RQ_M-KTA-REGT-FN-0011_06(1) : KTA Version
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[5].fieldTag   =
+    E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[5].fieldLen   =
+    strnlen((char*)xpRegInfo->aKtaVersion, C_KTA__VERSION_MAX_SIZE);
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[5].fieldValue =
+    xpRegInfo->aKtaVersion;
 
-    /**
-     * Set the Seventh field tag with "E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO" to indicate that
-     * the Seventh field contains device_serial_number.
-     */
-    // REQ RQ_M-KTA-REGT-FN-0011_07(1) : Device Serial Number
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[6].fieldTag   =
-      E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[6].fieldLen   =
-      xpRegInfo->deviceInfo.deviceSerailNoLength;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[6].fieldValue =
-      xpRegInfo->deviceInfo.deviceSerailNo;
+  /**
+   * Set the Seventh field tag with "E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO" to indicate that
+   * the Seventh field contains device_serial_number.
+   */
+  // REQ RQ_M-KTA-REGT-FN-0011_07(1) : Device Serial Number
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[6].fieldTag   =
+    E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[6].fieldLen   =
+    xpRegInfo->deviceInfo.deviceSerailNoLength;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[6].fieldValue =
+    xpRegInfo->deviceInfo.deviceSerailNo;
 
-    status = E_K_STATUS_OK;
-    break;
-  }
+  status = E_K_STATUS_OK;
 
   return status;
 }
