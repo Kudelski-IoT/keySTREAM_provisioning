@@ -168,7 +168,7 @@
   }
 
 /** @brief Field auth key size. */
-#define C_KTA__FIELD_L2_AUTH_INPUT_DATA_SIZE         (60u)
+#define C_KTA__FIELD_L2_AUTH_IN_DATA_SIZE         (60u)
 
 /** @brief Rot Sol Id. */
 #define C_KTA__ROT_SOL_ID {0x00, 0x17  \
@@ -189,7 +189,7 @@
 /** @brief Vendor specific command response size (Obj Mgnt). */
 #define C_K__ICPP_CMD_RESPONSE_SIZE_VENDOR_SPECIFIC  (160u)
 
-/** @brief Chip attestation certificate tag: E_K_ICPP_PARSER_FIELD_TAG_CMD_PUBLIC_KEY. */
+/** @brief Chip attestation certificate tag: E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY. */
 #define C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC  (0xF6u)
 
 /* -------------------------------------------------------------------------- */

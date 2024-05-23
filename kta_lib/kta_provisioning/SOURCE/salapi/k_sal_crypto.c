@@ -229,34 +229,29 @@ K_SAL_API TKStatus salRotGetChipUID
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (NULL == xpChipUid) ||
+  if ((NULL == xpChipUid) ||
       (NULL == xpChipUidLen) ||
       (0u == *xpChipUidLen) ||
-      (C_K_KTA__CHIPSET_UID_MAX_SIZE > *xpChipUidLen)
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      (C_K_KTA__CHIPSET_UID_MAX_SIZE > *xpChipUidLen))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     /* Reading serial number into the buffer */
     atcaStatus = atcab_read_serial_number(xpChipUid);
 
     if (ATCA_SUCCESS != atcaStatus)
     {
       M_KTALOG__ERR("atcab_read_serial_number Failed[%d]", atcaStatus);
-      break;
     }
-
-    *xpChipUidLen = strlen((const char*)xpChipUid);
-    M_KTALOG__HEX("Chip Uid:", xpChipUid, *xpChipUidLen);
-
-    status = E_K_STATUS_OK;
-    break; /* always */
+    else
+    {
+      *xpChipUidLen = strlen((const char*)xpChipUid);
+      M_KTALOG__HEX("Chip Uid:", xpChipUid, *xpChipUidLen);
+      status = E_K_STATUS_OK;
+    }
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -267,6 +262,10 @@ K_SAL_API TKStatus salRotGetChipUID
  * @brief implement salRotGetChipCertificate
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salRotGetChipCertificate
 (
   uint8_t*  xpChipCert,
@@ -287,20 +286,16 @@ K_SAL_API TKStatus salRotGetChipCertificate
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (NULL == xpChipCert) ||
+  if ((NULL == xpChipCert) ||
       (NULL == xpChipCertLen) ||
       (0u == *xpChipCertLen) ||
-      (C_K_KTA__CHIP_CERT_MAX_SIZE > *xpChipCertLen)
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      (C_K_KTA__CHIP_CERT_MAX_SIZE > *xpChipCertLen))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     xpChipCert[0] = 0xF6;
     xpChipCert[1] = 0x00;
     xpChipCert[2] = 0xA0;
@@ -311,7 +306,7 @@ K_SAL_API TKStatus salRotGetChipCertificate
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_nonce_rand() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     cryptoStatus = atcab_genkey(slotChipSK, aPublicKey);
@@ -319,7 +314,7 @@ K_SAL_API TKStatus salRotGetChipCertificate
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_genkey() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     cryptoStatus = atcab_genkey_base(GENKEY_MODE_DIGEST, slotChipSK, NULL, NULL);
@@ -327,7 +322,7 @@ K_SAL_API TKStatus salRotGetChipCertificate
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_genkey_base() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     cryptoStatus = atcab_sign_internal(slotSign, false, false, aSignature);
@@ -335,7 +330,7 @@ K_SAL_API TKStatus salRotGetChipCertificate
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_sign_internal() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     (void)memcpy(&xpChipCert[C_SAL_CRYPTO_CHIP_CERT_TAG_AND_VAL_LENGTH], aPublicKey,
@@ -355,7 +350,7 @@ K_SAL_API TKStatus salRotGetChipCertificate
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcah_nonce() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     (void)memcpy(&xpChipCert[C_SAL_CRYPTO_RANDOM_VALUE_OFFSET], nonceParams.temp_key->value,
@@ -365,9 +360,9 @@ K_SAL_API TKStatus salRotGetChipCertificate
              C_SAL_CRYPTO_KEY_SIZE_32_BYTE;
 
     status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   *xpChipCertLen = tmpLen;
 
   M_KTALOG__END("End, status : %d", status);
@@ -379,6 +374,10 @@ K_SAL_API TKStatus salRotGetChipCertificate
  * @brief implement salRotKeyPairGeneration
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salRotKeyPairGeneration
 (
   uint8_t*  xpPublicKey
@@ -391,36 +390,34 @@ K_SAL_API TKStatus salRotKeyPairGeneration
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if (NULL == xpPublicKey)
   {
-    if (NULL == xpPublicKey)
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     cryptoStatus = atcab_genkey(privateKeyId, aPublicKey);
 
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_genkey() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     if (lSetValueById(C_K_KTA__VOLATILE_ID, &privateKeyId, 1) != E_K_STATUS_OK)
     {
       M_KTALOG__ERR("lSetValueById Failed");
-      break;
+      goto end;
     }
 
     (void)memcpy(xpPublicKey, aPublicKey, C_SAL_CRYPTO_KEY_SIZE_64_BYTE);
     M_KTALOG__HEX("Public Key:", xpPublicKey, C_SAL_CRYPTO_KEY_SIZE_64_BYTE);
 
     status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -429,6 +426,10 @@ K_SAL_API TKStatus salRotKeyPairGeneration
  * @brief implement salRotKeyAgreement
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salRotKeyAgreement
 (
   uint32_t        xPrivateKeyId,
@@ -445,25 +446,21 @@ K_SAL_API TKStatus salRotKeyAgreement
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      ((C_K_KTA__CHIP_SK_ID != xPrivateKeyId) && (C_K_KTA__VOLATILE_ID != xPrivateKeyId)) ||
+  if (((C_K_KTA__CHIP_SK_ID != xPrivateKeyId) && (C_K_KTA__VOLATILE_ID != xPrivateKeyId)) ||
       (NULL == xpPeerPublicKey) ||
       ((1u == exposeSecret) && (NULL == xpSharedSecret)) ||
       ((0u == exposeSecret) &&
-       ((xSharedSecretTarget != C_K_KTA__VOLATILE_2_ID) || (NULL != xpSharedSecret)))
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      ((xSharedSecretTarget != C_K_KTA__VOLATILE_2_ID) || (NULL != xpSharedSecret))))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     if (lGetValueById(xPrivateKeyId, &keyID, 1) != E_K_STATUS_OK)
     {
       M_KTALOG__ERR("lGetValueById Failed");
-      break;
+      goto end;
     }
 
     /* Output to volatile key identifier */
@@ -479,7 +476,7 @@ K_SAL_API TKStatus salRotKeyAgreement
       if (cryptoStatus != ATCA_SUCCESS)
       {
         M_KTALOG__ERR("atcab_ecdh_base() failed with ret=0x%08X", cryptoStatus);
-        break;
+        goto end;
       }
 
       M_KTALOG__INFO("Generated shared secret for act Req");
@@ -489,18 +486,18 @@ K_SAL_API TKStatus salRotKeyAgreement
                         aSecret, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
       {
         M_KTALOG__ERR("lSetValueById Failed");
-        break;
+        goto end;
       }
     }
     else  /* Export to buffer */
     {
       cryptoStatus = atcab_ecdh_base(ECDH_MODE_COPY_OUTPUT_BUFFER,
-                                     (uint32_t)keyID, xpPeerPublicKey, xpSharedSecret, NULL);
+                                     (uint16_t)keyID, xpPeerPublicKey, xpSharedSecret, NULL);
 
       if (cryptoStatus != ATCA_SUCCESS)
       {
         M_KTALOG__ERR("atcab_ecdh_base() failed with ret=0x%08X", cryptoStatus);
-        break;
+        goto end;
       }
 
       M_KTALOG__INFO("Generated shared secret for reg request");
@@ -508,9 +505,9 @@ K_SAL_API TKStatus salRotKeyAgreement
     }
 
     status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -546,21 +543,17 @@ K_SAL_API TKStatus salRotHkdfExtractAndExpand
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      ((C_K_KTA__HKDF_ACT_MODE != xMode) && (C_K_KTA__HKDF_GEN_MODE != xMode)) ||
+  if (((C_K_KTA__HKDF_ACT_MODE != xMode) && (C_K_KTA__HKDF_GEN_MODE != xMode)) ||
       ((C_K_KTA__HKDF_GEN_MODE == xMode) && (NULL == xpSecret)) ||
       (NULL == xpSalt) ||
       (0u == infoLen) ||
-      (NULL == xpInfo)
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      (NULL == xpInfo))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     M_KTALOG__INFO("salRotHkdfExtractAndExpand");
     M_KTALOG__HEX("Info:", xpInfo, infoLen);
 
@@ -616,7 +609,7 @@ K_SAL_API TKStatus salRotHkdfExtractAndExpand
           break;
         }
 
-        cryptoStatus = atcab_nonce_load(NONCE_MODE_TARGET_TEMPKEY, aL1Key, l1KeySize);
+        cryptoStatus = atcab_nonce_load(NONCE_MODE_TARGET_TEMPKEY, aL1Key, (uint16_t)l1KeySize);
 
         if (cryptoStatus != ATCA_SUCCESS)
         {
@@ -712,8 +705,6 @@ K_SAL_API TKStatus salRotHkdfExtractAndExpand
       }
       break;
     }
-
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -724,6 +715,10 @@ K_SAL_API TKStatus salRotHkdfExtractAndExpand
  * @brief implement salRotKeyDerivation
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salRotKeyDerivation
 (
   uint32_t        xKeyId,
@@ -738,20 +733,16 @@ K_SAL_API TKStatus salRotKeyDerivation
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      ((C_K_KTA__VOLATILE_2_ID != xKeyId) && (C_K_KTA__L1_FIELD_KEY_ID != xKeyId)) ||
+  if (((C_K_KTA__VOLATILE_2_ID != xKeyId) && (C_K_KTA__L1_FIELD_KEY_ID != xKeyId)) ||
       (0u == xInputDataLen) ||
       (NULL == xpInputData) ||
-      ((C_K_KTA__VOLATILE_2_ID != xDerivedKeyId) && (C_K_KTA__VOLATILE_3_ID != xDerivedKeyId))
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      ((C_K_KTA__VOLATILE_2_ID != xDerivedKeyId) && (C_K_KTA__VOLATILE_3_ID != xDerivedKeyId)))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     M_KTALOG__INFO("xpInputData for key Id: %x", xKeyId);
     M_KTALOG__HEX("InputData:", xpInputData, xInputDataLen);
 
@@ -760,7 +751,7 @@ K_SAL_API TKStatus salRotKeyDerivation
       if (lGetValueById(xKeyId, aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
       {
         M_KTALOG__ERR("lGetValueById Failed");
-        break;
+        goto end;
       }
 
       M_KTALOG__INFO("l1 key in key derivation for activation request:");
@@ -771,7 +762,7 @@ K_SAL_API TKStatus salRotKeyDerivation
       if (cryptoStatus != ATCA_SUCCESS)
       {
         M_KTALOG__ERR("atcab_nonce_load()  failed with ret=0x%08X", cryptoStatus);
-        break;
+        goto end;
       }
 
       (void)memset(aKeyBuff, 0x00, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
@@ -781,7 +772,7 @@ K_SAL_API TKStatus salRotKeyDerivation
       if (cryptoStatus != ATCA_SUCCESS)
       {
         M_KTALOG__ERR("atcab_sha_hmac() failed with ret=0x%08X", cryptoStatus);
-        break;
+        goto end;
       }
 
       M_KTALOG__INFO("Derived L2 key for activation request:");
@@ -791,8 +782,9 @@ K_SAL_API TKStatus salRotKeyDerivation
                         aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
       {
         M_KTALOG__ERR("lSetValueById Failed");
-        break;
+        goto end;
       }
+      status = E_K_STATUS_OK;
     }
     else if (xKeyId == C_K_KTA__L1_FIELD_KEY_ID)
     {
@@ -802,7 +794,7 @@ K_SAL_API TKStatus salRotKeyDerivation
       if (cryptoStatus != ATCA_SUCCESS)
       {
         M_KTALOG__ERR("atcab_sha_hmac() failed with ret=0x%08X", cryptoStatus);
-        break;
+        goto end;
       }
 
       M_KTALOG__INFO("Derived l2 key for registration request:");
@@ -811,19 +803,19 @@ K_SAL_API TKStatus salRotKeyDerivation
       if (lSetValueById(xDerivedKeyId, aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
       {
         M_KTALOG__ERR("lSetValueById Failed");
-        break;
+        goto end;
       }
+      status = E_K_STATUS_OK;
     }
     else
     {
       /* Added for Misra */
       M_KTALOG__ERR("Invalid Id");
+      status = E_K_STATUS_PARAMETER;
     }
-
-    status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -832,6 +824,10 @@ K_SAL_API TKStatus salRotKeyDerivation
  * @brief implement salCryptoHmac
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salCryptoHmac
 (
   uint32_t        xKeyId,
@@ -847,24 +843,20 @@ K_SAL_API TKStatus salCryptoHmac
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (C_K_KTA__VOLATILE_2_ID != xKeyId) ||
+  if ((C_K_KTA__VOLATILE_2_ID != xKeyId) ||
       (0u == xInputDataLen) ||
       (NULL == xpInputData) ||
-      (NULL == xpMac)
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      (NULL == xpMac))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     if (lGetValueById(xKeyId, aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
     {
       M_KTALOG__ERR("lGetValueById Failed");
-      break;
+      goto end;
     }
 
     M_KTALOG__INFO("L2 key for HMAC");
@@ -879,7 +871,7 @@ K_SAL_API TKStatus salCryptoHmac
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_nonce_load() with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     cryptoStatus = atcab_sha_hmac(xpInputData, xInputDataLen,
@@ -888,16 +880,16 @@ K_SAL_API TKStatus salCryptoHmac
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_sha_hmac() with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     (void)memcpy(xpMac, aMac, C_K_KTA__HMAC_MAX_SIZE);
     M_KTALOG__HEX("MAC:", xpMac, C_K_KTA__HMAC_MAX_SIZE);
 
     status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -906,6 +898,10 @@ K_SAL_API TKStatus salCryptoHmac
  * @brief implement salCryptoHmacVerify
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salCryptoHmacVerify
 (
   uint32_t          xKeyId,
@@ -921,24 +917,20 @@ K_SAL_API TKStatus salCryptoHmacVerify
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (C_K_KTA__VOLATILE_2_ID != xKeyId) ||
+  if ((C_K_KTA__VOLATILE_2_ID != xKeyId) ||
       (0u == xInputDataLen) ||
       (NULL == xpInputData) ||
-      (NULL == xpMac)
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      (NULL == xpMac))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     if (lGetValueById(xKeyId, aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
     {
       M_KTALOG__ERR("lGetValueById Failed");
-      break;
+      goto end;
     }
 
     M_KTALOG__INFO("L2 key for HMAC verification");
@@ -952,7 +944,7 @@ K_SAL_API TKStatus salCryptoHmacVerify
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_nonce_load() with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     M_KTALOG__INFO("Input data for hmac verify ");
@@ -964,7 +956,7 @@ K_SAL_API TKStatus salCryptoHmacVerify
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_sha_hmac() with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     M_KTALOG__HEX("Mac:", aMac, C_K_KTA__HMAC_MAX_SIZE);
@@ -977,10 +969,9 @@ K_SAL_API TKStatus salCryptoHmacVerify
     {
       M_KTALOG__ERR("MAC not OK");
     }
-
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -989,6 +980,10 @@ K_SAL_API TKStatus salCryptoHmacVerify
  * @brief implement salCryptoAesEnc
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salCryptoAesEnc
 (
   uint32_t        xKeyId,
@@ -1007,26 +1002,22 @@ K_SAL_API TKStatus salCryptoAesEnc
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (C_K_KTA__VOLATILE_3_ID != xKeyId) ||
+  if ((C_K_KTA__VOLATILE_3_ID != xKeyId) ||
       (0u == xInputDataLen) ||
       (NULL == xpInputData) ||
       (NULL == xpOutputData) ||
-      (NULL == xpOutputDataLen)
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      (NULL == xpOutputDataLen))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     if (lGetValueById(xKeyId,
                       aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
     {
       M_KTALOG__ERR("lGetValueById Failed");
-      break;
+      goto end;
     }
 
     M_KTALOG__HEX("L2 key for HMAC verification:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
@@ -1037,7 +1028,7 @@ K_SAL_API TKStatus salCryptoAesEnc
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_nonce_load() with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     cryptoStatus = atcab_aes_cbc_init(&ctx, ATCA_TEMPKEY_KEYID, 0, aIV);
@@ -1045,7 +1036,7 @@ K_SAL_API TKStatus salCryptoAesEnc
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_aes_cbc_init() with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     /* Encrypt blocks */
@@ -1065,12 +1056,11 @@ K_SAL_API TKStatus salCryptoAesEnc
     if (cryptoStatus == ATCA_SUCCESS)
     {
       status = E_K_STATUS_OK;
-      *xpOutputDataLen = (dataBlock++) * ATCA_AES128_BLOCK_SIZE;
+      *xpOutputDataLen = dataBlock * ATCA_AES128_BLOCK_SIZE;
     }
-
-    break;
   }
 
+end:
   M_KTALOG__HEX("Output Data:", xpOutputData, *xpOutputDataLen);
 
   M_KTALOG__END("End, status : %d", status);
@@ -1157,7 +1147,7 @@ K_SAL_API TKStatus salCryptoAesDec
 
     if (cryptoStatus == ATCA_SUCCESS)
     {
-      *xpOutputDataLen = (dataBlock++) * ATCA_AES128_BLOCK_SIZE;
+      *xpOutputDataLen = dataBlock * ATCA_AES128_BLOCK_SIZE;
       M_KTALOG__HEX("Output Data:", xpOutputData, *xpOutputDataLen);
       status = E_K_STATUS_OK;
     }
@@ -1173,6 +1163,10 @@ K_SAL_API TKStatus salCryptoAesDec
  * @brief implement salCryptoGetRandom
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salCryptoGetRandom
 (
   uint8_t* xpRandomData,
@@ -1188,20 +1182,16 @@ K_SAL_API TKStatus salCryptoGetRandom
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (NULL == pRandomData) ||
+  if ((NULL == pRandomData) ||
       (NULL == xpRandomDataLen) ||
       (0u == *xpRandomDataLen) ||
-      (C_K_KTA__RANDOM_MAX_SIZE < *xpRandomDataLen)
-    )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+      (C_K_KTA__RANDOM_MAX_SIZE < *xpRandomDataLen))
+  {
+    M_KTALOG__ERR("Invalid parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     tmpRandomLen = *xpRandomDataLen;
     loopCount = *xpRandomDataLen / sizeof(aTmpRandom);
 
@@ -1212,7 +1202,7 @@ K_SAL_API TKStatus salCryptoGetRandom
       if (randomStatus != ATCA_SUCCESS)
       {
         M_KTALOG__ERR("atcab_random() with ret=0x%08X", randomStatus);
-        break;
+        goto end;
       }
 
       pRandomData = &pRandomData[sizeof(aTmpRandom)];
@@ -1223,7 +1213,7 @@ K_SAL_API TKStatus salCryptoGetRandom
     if (randomStatus != ATCA_SUCCESS)
     {
       *xpRandomDataLen = 0;
-      break;
+      goto end;
     }
 
     if (tmpRandomLen > 0u)
@@ -1234,17 +1224,17 @@ K_SAL_API TKStatus salCryptoGetRandom
       {
         M_KTALOG__ERR("atcab_random() with ret=0x%08X", randomStatus);
         *xpRandomDataLen = 0;
-        break;
+        goto end;
       }
 
       (void)memcpy(pRandomData, aTmpRandom, tmpRandomLen);
-      tmpRandomLen = 0;
+      // tmpRandomLen = 0;
     }
 
     status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }

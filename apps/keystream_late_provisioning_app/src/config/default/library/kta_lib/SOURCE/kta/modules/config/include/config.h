@@ -111,18 +111,30 @@ typedef struct
 /** @brief keySTREAM Trusted Agent life cycle state. */
 typedef enum
 {
+  /**
+   * No keySTREAM Trusted Agent call has been made yet.
+   */
   E_LIFE_CYCLE_STATE_INIT           = 0,
-  /* No keySTREAM Trusted Agent call has been made yet. */
+  /**
+   * The keySTREAM Trusted Agent sealing is done.
+   */
   E_LIFE_CYCLE_STATE_SEALED         = 1,
-  /* The keySTREAM Trusted Agent sealing is done. */
+  /**
+   * The  keySTREAM Trusted Agent activation is done.
+   */
   E_LIFE_CYCLE_STATE_ACTIVATED      = 2,
-  /* The  keySTREAM Trusted Agent activation is done. */
+  /**
+   * The keySTREAM Trusted Agent provisioning is done.
+   */
   E_LIFE_CYCLE_STATE_PROVISIONED    = 3,
-  /* The keySTREAM Trusted Agent provisioning is done. */
+  /**
+   * Connection request.
+   */
   E_LIFE_CYCLE_STATE_CON_REQ        = 4,
-  /* Connection request. */
+  /**
+   * Invalid state.
+   */
   E_LIFE_CYCLE_STATE_INVALID        = 0xFF
-                                      /* Invalid state. */
 } TKtaLifeCycleState;
 
 /* --------------------------------------------------------------------------------------------- */
@@ -301,6 +313,10 @@ TKStatus ktaSetRotKeySetId
 (
   uint8_t xRotKeySetId
 );
+
+#ifdef TEST_COVERAGE
+void ktaResetConfig(void);
+#endif
 
 #ifdef __cplusplus
 }

@@ -82,23 +82,30 @@ extern "C" {
 /** @brief Maximal size of keySTREAM Trusted Agent version, in bytes. */
 #define C_KTA__VERSION_MAX_SIZE                  (16u)
 
+/** @brief Maximal size of connection request data, in bytes. */
+#define C_K__CONN_REQ_MAX_SIZE                   (4u)
+
 /** @brief keySTREAM command status. */
 typedef enum
 {
+  /**
+   * Initial command state.
+   */
   E_K_KTA_KS_STATUS_NONE = -1,
-  /* Initial command state. */
-  E_K_KTA_KS_STATUS_NO_OPERATION,
   /**
    * Communication to keySTREAM is done and the device is in provisioned state,
    * the device has received no operation command in response, noting to be done.
    */
+  E_K_KTA_KS_STATUS_NO_OPERATION,
+  /**
+   * Device received renewal command.
+   */
   E_K_KTA_KS_STATUS_RENEW,
-  /* Device received renewal command. */
-  E_K_KTA_KS_STATUS_REFURBISH,
   /**
    * Device received refurbish command,
    * all the provsioning related data must be wiped off from the device.
    */
+  E_K_KTA_KS_STATUS_REFURBISH,
 } TKktaKeyStreamStatus;
 
 /* --------------------------------------------------------------------------------------------- */
@@ -129,7 +136,7 @@ TKStatus ktaInitialize
  * @pre
  *   The function ktaInitialize() has been called.
  *
- * @param[in] xpLSegSeed
+ * @param[in] xpL1SegSeed
  *   L1 segmentation seed value.
  *   Exact value is C_K__L1_SEGMENTATION_SEED_SIZE bytes
  *   Should be provided by the caller.
@@ -411,7 +418,7 @@ TKStatus ktaSignHash
  * @pre
  *   The function ktaExchangeMessage() is called and device is in provisioned state.
  *
- * @param[in,out] xpktaKSCmdStatus
+ * @param[in,out] xpKtaKSCmdStatus
  *   [in] Buffer to carry command status.
  *   [out] Actual command status.
  *   Should not be NULL.

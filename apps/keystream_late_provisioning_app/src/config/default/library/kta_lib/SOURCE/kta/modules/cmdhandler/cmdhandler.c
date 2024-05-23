@@ -148,18 +148,30 @@ typedef struct
 /** @brief  Different commands for field tag. */
 typedef enum
 {
+  /**
+   * Object type field mask
+   */
   E_K_CMD_FIELD_OBJECT_TYPE = 0x01,
-  /* Object type field mask */
+  /**
+   * Object id field mask
+   */
   E_K_CMD_FIELD_OBJECT_ID = 0x02,
-  /* Object id field mask */
+  /**
+   * Data Attribute field mask
+   */
   E_K_CMD_FIELD_DATA_ATTRIBUTES = 0x04,
-  /* Data Attribute field mask */
+  /**
+   * Data field mask
+   */
   E_K_CMD_FIELD_DATA = 0x08,
-  /* Data field mask */
+  /**
+   * Association info field mask
+   */
   E_K_CMD_FIELD_ASSOCIATION_INFO = 0x10,
-  /* Association info field mask */
+  /**
+   * Object owner field mask
+   */
   E_K_CMD_FIELD_OBJECT_OWNER = 0x20
-                               /* Object owner field mask */
 } TKcmdFieldTag;
 
 #endif
@@ -249,7 +261,8 @@ static TKStatus lKtaGenerateKeyPair
   TKIcppProtocolMessage* xpData,
   uint8_t*               xpOutData,
   size_t*                xpDataSize,
-  uint8_t*               xpPlatformStatus
+  uint8_t*               xpPlatformStatus,
+  uint8_t                xCommandCount
 );
 
 /**
@@ -424,6 +437,10 @@ static TKStatus lProcessCmdPrepareResponse
  * @brief implement ktaCmdProcess
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaCmdProcess
 (
   TKIcppProtocolMessage* xpRecvdProtoMessage,
@@ -444,29 +461,25 @@ TKStatus ktaCmdProcess
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  // REQ RQ_M-KTA-STRT-FN-0300(1) : Input Parameters Check.
+  if ((NULL == xpRecvdProtoMessage) || (NULL == xpMessageToSend) || (NULL == xpMessageToSendSize)
+      || (0u == *xpMessageToSendSize))
   {
-    // REQ RQ_M-KTA-STRT-FN-0300(1) : Input Parameters Check.
-    if ((NULL == xpRecvdProtoMessage) || (NULL == xpMessageToSend) || (NULL == xpMessageToSendSize)
-        || (0u == *xpMessageToSendSize))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     /* keySTREAM should give activation response based on L2 key. */
     if (E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED != xpRecvdProtoMessage->cryptoVersion)
     {
       M_KTALOG__ERR("Invalid crypto version received from the server, cryptoVersion = [%d]",
                     xpRecvdProtoMessage->cryptoVersion);
-      break;
+      goto end;
     }
 
-    /**
-     * Fill the message type with "E_K_ICCP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
-     * registration notification message type (client -> server).
-     */
+    /* Fill the message type with "E_K_ICCP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
+       registration notification message type (client -> server). */
     // REQ RQ_M-KTA-OBJM-FN-0100_03(1) : message type
     // REQ RQ_M-KTA-TRDP-FN-0110_03(1) : Third Party Response message type
     sendProtoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
@@ -508,7 +521,7 @@ TKStatus ktaCmdProcess
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
     status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
@@ -520,12 +533,11 @@ TKStatus ktaCmdProcess
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", status);
-      break;
+      goto end;
     }
-
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -596,7 +608,7 @@ static TKStatus lKtaCmdCheckFieldTag
     }
     break;
 
-    case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT:
+    case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
     {
       mandatorymask = xFieldTagMask & C_K_CMD_DELETEKEYOBJ_FIELDS_MANDATORY;
       optionalmask = xFieldTagMask & C_K_CMD_DELETEKEYOBJ_FIELDS_OPTIONAL;
@@ -657,11 +669,11 @@ static TKStatus lKtaCmdValidateAndGetPayload
            xpRecvMsg->commands[commandsLoop].commandTag)  &&
           (E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT !=
            xpRecvMsg->commands[commandsLoop].commandTag)  &&
-          (E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT !=
+          (E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT !=
            xpRecvMsg->commands[commandsLoop].commandTag))
       {
         M_KTALOG__ERR("Invalid command Tag %d", xpRecvMsg->commands[commandsLoop].commandTag);
-        isErrorOccured = 1;
+        isErrorOccured = 1u;
         break;
       }
 
@@ -670,7 +682,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
       if (0u == pFieldList->fieldsCount)
       {
         M_KTALOG__ERR("Invalid fieldsCount : %d", pFieldList->fieldsCount);
-        isErrorOccured = 1;
+        isErrorOccured = 1u;
         break;
       }
 
@@ -686,7 +698,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid obj length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -700,12 +712,12 @@ static TKStatus lKtaCmdValidateAndGetPayload
           // REQ RQ_M-KTA-OBJM-FN-0570_02(1) : Object Id
           // REQ RQ_M-KTA-OBJM-FN-0770_02(1) : Object Id
           // REQ RQ_M-KTA-OBJM-FN-0970_01(2) : Key Id
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_ID:
+          case E_K_ICPP_PARSER_FLD_TAG_CMD_OBJECT_ID:
           {
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid Identifier length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
             xpCmdRespPayload->objectId = (pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
@@ -724,7 +736,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid data attributes length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -736,12 +748,12 @@ static TKStatus lKtaCmdValidateAndGetPayload
 
           // REQ RQ_M-KTA-OBJM-FN-0270_04(1) : Data
           // REQ RQ_M-KTA-OBJM-FN-0770_04(1) : Data
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA:
+          case E_K_ICPP_PARSER_FLD_TAG_CMD_DATA:
           {
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -757,7 +769,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -794,12 +806,12 @@ static TKStatus lKtaCmdValidateAndGetPayload
           // REQ RQ_M-KTA-OBJM-FN-0070_03(1) : Object Owner
           // REQ RQ_M-KTA-OBJM-FN-0270_05(1) : Object Owner
           // REQ RQ_M-KTA-OBJM-FN-0570_03(1) : Object Owner
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_OWNER:
+          case E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER:
           {
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid Object Owner length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -814,7 +826,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
           default:
           {
             M_KTALOG__ERR("Unknown Field Tag %d", pFieldList->fields[fieldsLoop].fieldTag);
-            isErrorOccured = 1;
+            isErrorOccured = 1u;
           }
           break;
         } /* switch. */
@@ -828,7 +840,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
         break;
       }
 
-      if (!isErrorOccured)
+      if (isErrorOccured == 0)
       {
         status = E_K_STATUS_OK;
         break;
@@ -889,7 +901,8 @@ static TKStatus lKtaGenerateKeyPair
   TKIcppProtocolMessage* xpData,
   uint8_t*               xpOutData,
   size_t*                xpDataSize,
-  uint8_t*               xpPlatformStatus
+  uint8_t*               xpPlatformStatus,
+  uint8_t                xCommandCount
 )
 {
   TKStatus status = E_K_STATUS_ERROR;
@@ -900,7 +913,7 @@ static TKStatus lKtaGenerateKeyPair
     M_KTALOG__DEBUG("Processing GenerateKeyPair specific data...");
 
     // REQ RQ_M-KTA-OBJM-FN-0070(1) : Check generate key pair data
-    if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, 0))
+    if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, xCommandCount))
     {
       /* Original error status lost here on purpose of code size optimization. */
       M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
@@ -1090,20 +1103,18 @@ static TKStatus lProcessCmdPrepareResponse
   size_t commandCount = 0;
   size_t dataSize     = 0;
 
-  for (;;)
-  {
-    if ((NULL == xpRecvdProtoMessage) || (NULL == xpSendProtoMessage) ||
-        (NULL == xpCmdResponse) || (0u == xCmdItemSize)
+  if ((NULL == xpRecvdProtoMessage) || (NULL == xpSendProtoMessage) ||
+      (NULL == xpCmdResponse) || (0u == xCmdItemSize)
 #ifdef OBJECT_MANAGEMENT_FEATURE
-        || (NULL == xpPlatformStatus))
+      || (NULL == xpPlatformStatus))
 #else
       )
 #endif
-    {
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+  {
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     xpCmdResponse[0] = 0;
     xpSendProtoMessage->commandsCount = xpRecvdProtoMessage->commandsCount;
     for (commandCount = 0; commandCount < xpRecvdProtoMessage->commandsCount; commandCount++)
@@ -1154,8 +1165,8 @@ static TKStatus lProcessCmdPrepareResponse
           dataSize = xCmdItemSize;
           // REQ RQ_M-KTA-OBJM-FN-0010(1) : Verify Generate Key Pair Signature
           status = lKtaGenerateKeyPair(
-                     xpRecvdProtoMessage,
-                     xpCmdResponse, &dataSize, xpPlatformStatus);
+                     xpRecvdProtoMessage, xpCmdResponse,
+                     &dataSize, xpPlatformStatus, commandCount);
           /**
            * Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR"
            * to indicate that this command is to generate the key pair.
@@ -1247,18 +1258,18 @@ static TKStatus lProcessCmdPrepareResponse
         break;
 
         // REQ RQ_M-KTA-OBJM-FN-1000(2) : Delete Key Object ICPP Message
-        case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT:
+        case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
         {
           // REQ RQ_M-KTA-OBJM-FN-0910(2) : Verify Delete Key Object Signature
           status = lKtaDeleteKeyObject(xpRecvdProtoMessage, xpPlatformStatus, commandCount);
 
           /**
-           * Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT"
+           * Set the command tag with "E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT"
            * to indicate that this command is to delete the key object from device.
            */
           // REQ RQ_M-KTA-OBJM-FN-0990(2) : Build Delete Key Object response
           xpSendProtoMessage->commands[commandCount].commandTag =
-            E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT;
+            E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT;
           xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 1;
           xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldTag =
             E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
@@ -1307,8 +1318,6 @@ static TKStatus lProcessCmdPrepareResponse
           break;
       }
     }
-
-    break;
   }
 
   return status;

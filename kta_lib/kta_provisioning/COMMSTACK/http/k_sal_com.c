@@ -75,6 +75,11 @@
 
 #ifdef DEBUG
 /** @brief Enable sal com logs. */
+/** 
+ * Suppression: misra-c2012-17.7 and misra-c2012-21.6
+ * Using printf for logging.
+ * Not checking the return status of printf, since not required.
+ **/
 #define M_INTL_SAL_COM_DEBUG(__PRINT__)  do { \
                                               printf("\tCOM %d>", __LINE__); \
                                               printf __PRINT__; \

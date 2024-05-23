@@ -60,6 +60,7 @@ extern "C" {
 #include <stdlib.h>
 
 #ifndef K_SAL_API
+/** @brief K Sal Api. */
 #define K_SAL_API
 #endif /* K_SAL_API */
 
@@ -67,25 +68,38 @@ extern "C" {
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
 
-/** @brief Sal object types. */
+/** @brief Sal object type data. */
 #define C_SAL_OBJECT__TYPE_DATA                           (0u)
+/** @brief Sal object type key. */
 #define C_SAL_OBJECT__TYPE_KEY                            (1u)
+/** @brief Sal object type certificate. */
 #define C_SAL_OBJECT__TYPE_CERTIFICATE                    (2u)
+/** @brief Sal object type sealed data. */
 #define C_SAL_OBJECT__TYPE_SEALED_DATA                    (3u)
 
 /** @brief Tags used in the command fields. */
 enum
 {
+  /**
+   * Object type data.
+   */
   E_K_SAL_OBJECT_TYPE_DATA,
-  /* Object type data. */
+  /**
+   * Object type rfu.
+   */
   E_K_SAL_OBJECT_TYPE_RFU_V2,
-  /* Object type rfu. */
+  /**
+   * Object type cert.
+   */
   E_K_SAL_OBJECT_TYPE_CERTFICATE,
-  /* Object type cert. */
+  /**
+   * Object type sealed data.
+   */
   E_K_SAL_OBJECT_TYPE_SEALED_DATA,
-  /* Object type sealed data. */
+  /**
+   * Object type max num.
+   */
   E_K_SAL_OBJECT_TYPE_MAX_NUM
-  /* Object type max num. */
 };
 typedef uint32_t TKSalObjectType;
 
