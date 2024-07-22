@@ -85,6 +85,9 @@ extern "C" {
 /** @brief Maximal size of connection request data, in bytes. */
 #define C_K__CONN_REQ_MAX_SIZE                   (4u)
 
+/** @brief keySTREAM Trusted Agent version Storage length. */
+#define C_K__VERSION_STORAGE_LENGTH              (2u)
+
 /** @brief keySTREAM command status. */
 typedef enum
 {

@@ -52,18 +52,21 @@ extern "C" {
 /* CONSTANTS, TYPES, ENUM                                                                        */
 /* --------------------------------------------------------------------------------------------- */
 /** @brief Convert int to string. */
-#define M_K_VERSION__INT_TO_STR(x_val) #x_val
+#define M_K_VERSION_INT_TO_STR(x_val) #x_val
 
 /** @brief Convert version to string. */
-#define M_K_VERSION__STR(x_major, x_minor, x_patch) \
-  M_K_VERSION__INT_TO_STR(x_major)"."M_K_VERSION__INT_TO_STR(x_minor)"." \
-  M_K_VERSION__INT_TO_STR(x_patch) \
+#define M_K_VERSION_STR(x_major, x_minor, x_patch) \
+  M_K_VERSION_INT_TO_STR(x_major)"."M_K_VERSION_INT_TO_STR(x_minor)"." \
+  M_K_VERSION_INT_TO_STR(x_patch) \
   C_K_VERSION__HOT_FIX
 
 /** @brief Get software version as string. */
-#define M_K_VERSION__GET_STR() \
-  M_K_VERSION__STR(C_K_VERSION__MAJOR, C_K_VERSION__MINOR, C_K_VERSION__PATCH)
+#define M_K_VERSION_GET_STR() \
+  M_K_VERSION_STR(C_K_KTA__VERSION_MAJOR, C_K_KTA__VERSION_MINOR, C_K_KTA__VERSION_PATCH)
 
+#define C_K_KTA__ENCODED_VERSION {((C_K_KTA__VERSION_MAJOR << 4) | C_K_KTA__VERSION_MINOR), C_K_KTA__VERSION_PATCH}
+
+#define C_K_KTA__VERSION_STRING_BUFFER_SIZE (16u)
 /* --------------------------------------------------------------------------------------------- */
 /* VARIABLES                                                                                     */
 /* --------------------------------------------------------------------------------------------- */
@@ -78,6 +81,15 @@ extern "C" {
 uint8_t* ktaGetVersion
 (
   void
+);
+
+/**
+ * @brief
+ *   Get the keySTREAM Trusted Agent software decoded version as string.
+ */
+const char* ktaGetDecodedVersionStr
+(
+  const uint8_t version[]
 );
 
 #ifdef __cplusplus

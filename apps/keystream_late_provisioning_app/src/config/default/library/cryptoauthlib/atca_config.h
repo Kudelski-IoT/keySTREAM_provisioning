@@ -11,8 +11,8 @@
 
 
 /** Include Device Support Options */
-#define ATCA_KTA_SUPPORT
 #define ATCA_ATECC608_SUPPORT
+#define ATCA_KTA_SUPPORT
 
 /** Provide Maximum packet size for the command to be sent and received */
 #ifndef MAX_PACKET_SIZE

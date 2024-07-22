@@ -43,6 +43,7 @@
 /* -------------------------------------------------------------------------- */
 #include "atca_basic.h"
 #include "slotConfig.h"
+#include "config.h"
 #include "KTALog.h"
 
 #include <stdio.h>
@@ -81,6 +82,9 @@
 /** @brief keySTREAM Trusted Agent version length. */
 #define C_SAL_KTA_VERSION_LENGTH                    (16u)
 
+/** @brief keySTREAM Trusted Agent version Storage length. */
+#define C_SAL_KTA_VERSION_STORAGE_LENGTH            (2u)
+
 /** @brief Device serial no. */
 #define C_SAL_DEVICE_SERIAL_NO                      \
   {0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55}
@@ -116,6 +120,12 @@
   ((C_SAL_L1_KEY_MATERIAL_DATA_ID_SAL_LENGTH) + \
    ((C_SAL_MCHP_MAX_DATA_SIZE) - \
     ((C_SAL_L1_KEY_MATERIAL_DATA_ID_SAL_LENGTH) % (C_SAL_MCHP_MAX_DATA_SIZE))))
+
+/** @brief L1 key material ID MCHP storage length. */
+#define C_SAL_KTA_VERSION_STORAGE_LENGTH_MCHP_STORAGE_LENGTH \
+  ((C_SAL_KTA_VERSION_STORAGE_LENGTH) + \
+   ((C_SAL_MCHP_MAX_DATA_SIZE) - \
+    ((C_SAL_KTA_VERSION_STORAGE_LENGTH) % (C_SAL_MCHP_MAX_DATA_SIZE))))
 
 
 /** @brief Life cycle data id length. */
@@ -180,38 +190,44 @@ static TKSalSrecord gaSalStorageRecord[] =
   },
   /* LifeCycle State. */
   {
-    C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID, C_KTA__LIFE_CYCLE_STATE_STORAGE_SLOT,
-    C_KTA__LIFE_CYCLE_STATE_STORAGE_BLOCK, C_KTA__LIFE_CYCLE_STATE_STORAGE_OFFSET,
+    C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID, C_KTA__STORAGE_SLOT_LIFE_CYCLE_STATE,
+    C_KTA__STORAGE_BLOCK_LIFE_CYCLE_STATE, C_KTA__STORAGE_OFFSET_LIFE_CYCLE_STATE,
     C_SAL_LIFE_CYCLE_STATE_STORAGE_ID_LENGTH, C_SAL_LIFE_CYCLE_STATE_STORAGE_ID_LENGTH
   },
   /* L1 Key Material. */
   {
-    C_K_KTA__L1_KEY_MATERIAL_DATA_ID, C_KTA__L1_KEY_MATERIAL_DATA_STORAGE_SLOT,
-    C_KTA__L1_KEY_MATERIAL_DATA_STORAGE_BLOCK, C_KTA__L1_KEY_MATERIAL_DATA_STORAGE_OFFSET,
+    C_K_KTA__L1_KEY_MATERIAL_DATA_ID, C_KTA__L1_KEY_DATA_STORAGE_SLOT,
+    C_KTA__L1_KEY_DATA_STORAGE_BLOCK, C_KTA__L1_KEY_DATA_STORAGE_OFFSET,
     C_SAL_L1_KEY_MATERIAL_DATA_ID_ACTUAL_LENGTH, C_SAL_L1_KEY_MATERIAL_DATA_ID_MCHP_STORAGE_LENGTH
   },
   /* Device Ceritficate. */
   {
-    C_K_KTA__DEVICE_CERTIFICATE_ID, C_KTA__DEVICE_CERTIFICATE_STORAGE_SLOT,
-    C_KTA__DEVICE_CERTIFICATE_STORAGE_BLOCK, C_KTA__DEVICE_CERTIFICATE_STORAGE_OFFSET,
+    C_K_KTA__DEVICE_CERTIFICATE_ID, C_KTA__DEVICE_CERT_STORAGE_SLOT,
+    C_KTA__DEVICE_CERT_STORAGE_BLOCK, C_KTA__DEVICE_CERTIFICATE_STORAGE_OFFSET,
     C_SAL_DEVICE_CERTIFICATE_ID_LENGTH, C_SAL_DEVICE_CERTIFICATE_ID_LENGTH
   },
   /* Signer Ceritficate. */
   {
-    C_K_KTA__SIGNER_CERTIFICATE_ID, C_KTA__SIGNER_CERTIFICATE_STORAGE_SLOT,
-    C_KTA__SIGNER_CERTIFICATE_STORAGE_BLOCK, C_KTA__SIGNER_CERTIFICATE_STORAGE_OFFSET,
+    C_K_KTA__SIGNER_CERTIFICATE_ID, C_KTA__SIGNER_CERT_STORAGE_SLOT,
+    C_KTA__SIGNER_CERT_STORAGE_BLOCK, C_KTA__SIGNER_CERTIFICATE_STORAGE_OFFSET,
     C_SAL_SIGNER_CERTIFICATE_ID_LENGTH, C_SAL_SIGNER_CERTIFICATE_ID_LENGTH
   },
   /* Siner ID. */
   {
     C_SAL_SIGNER_ID_SLOT_ID, C_KTA__SIGNER_ID_STORAGE_SLOT,
-    C_KTA__SIGNER_ID_STORAGE_BLOCK, C_KTA__LIFE_CYCLE_STATE_STORAGE_OFFSET,
+    C_KTA__SIGNER_ID_STORAGE_BLOCK, C_KTA__STORAGE_OFFSET_LIFE_CYCLE_STATE,
     C_SAL_SIGNER_ID_STORAGE_ID_LENGTH, C_SAL_SIGNER_ID_STORAGE_ID_LENGTH
+  },
+  /* KTA Version. */
+  {
+    C_K_KTA__VERSION_SLOT_ID, C_KTA__VERSION_STORAGE_SLOT,
+    C_KTA__VERSION_STORAGE_BLOCK, C_KTA__VERSION_STORAGE_OFFSET,
+    C_SAL_KTA_VERSION_STORAGE_LENGTH, C_SAL_KTA_VERSION_STORAGE_LENGTH_MCHP_STORAGE_LENGTH
   },
   /* Singer Public Key. */
   {
-    C_K_KTA__SIGNER_PUB_KEY_ID, C_KTA__SIGNER_PUBLIC_KEY_STORAGE_SLOT,
-    C_KTA__SIGNER_PUBLIC_KEY_STORAGE_BLOCK, C_KTA__SIGNER_PUBLIC_KEY_STORAGE_OFFSET,
+    C_K_KTA__SIGNER_PUB_KEY_ID, C_KTA__SIGNER_PUB_KEY_STORAGE_SLOT,
+    C_KTA__SIGNER_PUB_KEY_STORAGE_BLOCK, C_KTA__SIGNER_PUBLIC_KEY_STORAGE_OFFSET,
     C_KTA__SIGNER_PUBLIC_KEY_LENGTH, C_KTA__SIGNER_PUBLIC_KEY_LENGTH
   },
   /* Sealed Data. */
@@ -232,9 +248,7 @@ typedef enum
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
-#if LOG_KTA_ENABLE
 static const char* gpModuleName = "SALSTORAGE";
-#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -291,6 +305,10 @@ static TKStatus lSearchIndex
  * @brief  implement salStorageSetAndLockValue
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salStorageSetAndLockValue
 (
   uint32_t        xStorageDataId,
@@ -303,20 +321,18 @@ K_SAL_API TKStatus salStorageSetAndLockValue
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((NULL == xpData) || (0U == xDataLen))
   {
-    if ((NULL == xpData) || (0U == xDataLen))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("bad parameter", status);
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("bad parameter", status);
+  }
+  else
+  {
     if (E_K_STATUS_OK != lSearchIndex(xStorageDataId, &loopIndex))
     {
       status = E_K_STATUS_PARAMETER;
       M_KTALOG__ERR("search index", status);
-      break;
+      goto end;
     }
 
     status = salStorageSetValue(xStorageDataId, xpData, xDataLen);
@@ -325,13 +341,11 @@ K_SAL_API TKStatus salStorageSetAndLockValue
     {
       M_KTALOG__ERR("set value ", status);
       status = E_K_STATUS_ERROR;
-      break;
+      goto end;
     }
-
-    status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End status : %d", status);
   return status;
 }
@@ -340,6 +354,10 @@ K_SAL_API TKStatus salStorageSetAndLockValue
  * @brief  implement salStorageSetValue
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salStorageSetValue
 (
   uint32_t        xStorageDataId,
@@ -353,38 +371,53 @@ K_SAL_API TKStatus salStorageSetValue
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (NULL == xpData) ||
+  if ((NULL == xpData) ||
       (0U == xDataLen))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("bad parameter", status);
-      break;
-    }
-
+  {
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("bad parameter", status);
+  }
+  else
+  {
     M_KTALOG__INFO("Set search index for", xStorageDataId);
 
     if (E_K_STATUS_OK != lSearchIndex(xStorageDataId, &loopIndex))
     {
       status = E_K_STATUS_PARAMETER;
       M_KTALOG__ERR("search Index ", status);
-      break;
+      goto end;
     }
 
     if (gaSalStorageRecord[loopIndex].length != xDataLen)
     {
       status = E_K_STATUS_PARAMETER;
       M_KTALOG__ERR("unexpected length", status);
-      break;
+      goto end;
     }
 
     if (C_K_KTA__L1_KEY_MATERIAL_DATA_ID == xStorageDataId)
     {
-      (void)memcpy(aTmpbuf,
+      status = lstorageOperation(loopIndex, E_READ, aTmpbuf);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("storage operation ", status);
+        status = E_K_STATUS_ERROR;
+        goto end;
+      }
+      (void)memcpy(&aTmpbuf[0],
                    &xpData[C_SAL_KEY_SET_ID_OFFSET],
                    C_SAL_L1_KEY_MATERIAL_DATA_ID_SAL_LENGTH);
+    }
+    else if (C_K_KTA__VERSION_SLOT_ID == xStorageDataId)
+    {
+      status = lstorageOperation(loopIndex, E_READ, aTmpbuf);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("storage operation ", status);
+        status = E_K_STATUS_ERROR;
+        goto end;
+      }
+      (void)memcpy(&aTmpbuf[1], xpData, xDataLen);
     }
     else if (C_K_KTA__SEALED_DATA_STORAGE_ID == xStorageDataId)
     {
@@ -403,13 +436,11 @@ K_SAL_API TKStatus salStorageSetValue
     {
       M_KTALOG__ERR("storage operation ", status);
       status = E_K_STATUS_ERROR;
-      break;
+      goto end;
     }
-
-    status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End status : %d", status);
   return status;
 }
@@ -418,6 +449,10 @@ K_SAL_API TKStatus salStorageSetValue
  * @brief  implement salStorageGetValue
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salStorageGetValue
 (
   uint32_t  xStorageDataId,
@@ -438,33 +473,29 @@ K_SAL_API TKStatus salStorageGetValue
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (NULL == xpData) ||
+  if ((NULL == xpData) ||
       (NULL == xpDataLen) ||
-      (0 == *xpDataLen)
-    )
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("bad parameter ", status);
-      break;
-    }
-
+      (0u == *xpDataLen))
+  {
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("bad parameter ", status);
+  }
+  else
+  {
     M_KTALOG__INFO("Get search index for", xStorageDataId);
 
     if (E_K_STATUS_OK != lSearchIndex(xStorageDataId, &loopIndex))
     {
       status = E_K_STATUS_PARAMETER;
       M_KTALOG__ERR("search index ", status);
-      break;
+      goto end;
     }
 
     if (gaSalStorageRecord[loopIndex].length > *xpDataLen)
     {
       status = E_K_STATUS_PARAMETER;
       M_KTALOG__ERR("unexpected length", status);
-      break;
+      goto end;
     }
 
     status = lstorageOperation(loopIndex, E_READ, aTmpbuf);
@@ -473,7 +504,7 @@ K_SAL_API TKStatus salStorageGetValue
     {
       status = E_K_STATUS_PARAMETER;
       M_KTALOG__ERR("storage Operation ", status);
-      break;
+      goto end;
     }
 
     if (C_K_KTA__L1_KEY_MATERIAL_DATA_ID == xStorageDataId)
@@ -484,6 +515,12 @@ K_SAL_API TKStatus salStorageGetValue
                    C_SAL_L1_KEY_MATERIAL_DATA_ID_SAL_LENGTH);
       *xpDataLen = ((size_t)C_SAL_L1_SEG_SEED_LENGTH +
                     (size_t)C_SAL_L1_KEY_MATERIAL_DATA_ID_SAL_LENGTH);
+    }
+    else if (C_K_KTA__VERSION_SLOT_ID == xStorageDataId)
+    {
+      (void)memcpy(xpData,
+                   &aTmpbuf[C_SAL_KTA_VERSION_STORAGE_LENGTH - 1],
+                   C_SAL_KTA_VERSION_STORAGE_LENGTH);
     }
     else if (C_K_KTA__SEALED_DATA_STORAGE_ID == xStorageDataId)
     {
@@ -507,7 +544,7 @@ K_SAL_API TKStatus salStorageGetValue
 
       (void)memcpy(&xpData[len], &aTmpbuf[0], C_SAL_SEALED_DATA_STORAGE_ID_SAL_LENGTH);
       len += C_SAL_SEALED_DATA_STORAGE_ID_SAL_LENGTH;
-      xpData[len] = strnlen((char *)aTmpbuf, C_SAL_SEALED_DATA_STORAGE_ID_SAL_LENGTH);
+      xpData[len] = (uint8_t)strnlen((char *)aTmpbuf, C_SAL_SEALED_DATA_STORAGE_ID_SAL_LENGTH);
       len += 1U;
 
       (void)memcpy(&xpData[len], aDeviceSerialNo, C_SAL_DEVICE_SERIAL_NO_LENGTH);
@@ -521,11 +558,9 @@ K_SAL_API TKStatus salStorageGetValue
       (void)memcpy(xpData, aTmpbuf, gaSalStorageRecord[loopIndex].length);
       *xpDataLen = gaSalStorageRecord[loopIndex].length;
     }
-
-    status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End status : %d", status);
   return status;
 }
@@ -550,15 +585,13 @@ static TKStatus lSearchIndex
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if (NULL == xpLoopcount)
   {
-    if (NULL == xpLoopcount)
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("bad parameter", status);
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("bad parameter", status);
+  }
+  else
+  {
     noOfItems = sizeof(gaSalStorageRecord) / sizeof(gaSalStorageRecord[0]);
 
     for (; loopCount < noOfItems; loopCount++)
@@ -570,8 +603,6 @@ static TKStatus lSearchIndex
         break;
       }
     }
-
-    break;
   }
 
   M_KTALOG__END("End");
@@ -592,83 +623,77 @@ static TKStatus lstorageOperation
   TKStatus     status = E_K_STATUS_ERROR;
   ATCA_STATUS  storageStatus = ATCA_STATUS_UNKNOWN;
   ATCADevice   device = NULL;
-  int          iteration = 0;
-  int          block = 0;
-  int          offset = 0;
+  uint32_t     iteration = 0;
+  uint8_t      block = 0;
+  uint8_t      offset = 0;
   uint32_t     count = 0;
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((xLoopIndex >= sizeof(gaSalStorageRecord) / sizeof(gaSalStorageRecord[0])) ||
+      ((xOpt != E_READ) && (xOpt != E_WRITE)) ||
+      (NULL == xpBuff))
   {
-    if ((xLoopIndex >= sizeof(gaSalStorageRecord) / sizeof(gaSalStorageRecord[0])) ||
-        ((xOpt != E_READ) && (xOpt != E_WRITE)) ||
-        (NULL == xpBuff))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("bad parameter", status);
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("bad parameter", status);
+  }
+  else
+  {
     M_KTALOG__HEX("", xpBuff, gaSalStorageRecord[xLoopIndex].storageLength);
     iteration = gaSalStorageRecord[xLoopIndex].storageLength / C_SAL_MCHP_MAX_DATA_SIZE;
     block = gaSalStorageRecord[xLoopIndex].block;
     offset = gaSalStorageRecord[xLoopIndex].offset;
     device = atcab_get_device();
 
-    if (NULL == device)
+    if (NULL != device)
     {
-      break;
-    }
+      for (uint32_t i = 0 ; i < iteration; i++)
+      {
+        if (E_READ == xOpt)
+        {
+          storageStatus = calib_read_zone(device,
+                                          ATCA_ZONE_DATA,
+                                          gaSalStorageRecord[xLoopIndex].slot,
+                                          block,
+                                          offset,
+                                          &xpBuff[count],
+                                          C_SAL_MCHP_MAX_DATA_SIZE);
+        }
+        else
+        {
+          storageStatus = calib_write_zone(device,
+                                          ATCA_ZONE_DATA,
+                                          gaSalStorageRecord[xLoopIndex].slot,
+                                          block,
+                                          offset,
+                                          &xpBuff[count],
+                                          C_SAL_MCHP_MAX_DATA_SIZE);
+        }
 
-    for (int i = 0 ; i < iteration; i++)
-    {
-      if (E_READ == xOpt)
-      {
-        storageStatus = calib_read_zone(device,
-                                        ATCA_ZONE_DATA,
-                                        gaSalStorageRecord[xLoopIndex].slot,
-                                        block,
-                                        offset,
-                                        &xpBuff[count],
-                                        C_SAL_MCHP_MAX_DATA_SIZE);
-      }
-      else
-      {
-        storageStatus = calib_write_zone(device,
-                                         ATCA_ZONE_DATA,
-                                         gaSalStorageRecord[xLoopIndex].slot,
-                                         block,
-                                         offset,
-                                         &xpBuff[count],
-                                         C_SAL_MCHP_MAX_DATA_SIZE);
-      }
+        if (ATCA_SUCCESS != storageStatus)
+        {
+          M_KTALOG__ERR("Storage operation", storageStatus);
+          break;
+        }
 
-      if (ATCA_SUCCESS != storageStatus)
-      {
-        M_KTALOG__ERR("Storage operation", storageStatus);
-        break;
-      }
+        if (offset >= C_SAL_MCHP_MAX_OFFSET_IN_BLOCK)
+        {
+          block++;
+          offset = 0;
+        }
+        else
+        {
+          offset++;
+        }
 
-      if (offset >= C_SAL_MCHP_MAX_OFFSET_IN_BLOCK)
-      {
-        block++;
-        offset = 0;
+        count += C_SAL_MCHP_MAX_DATA_SIZE;
       }
-      else
-      {
-        offset++;
-      }
-
-      count += C_SAL_MCHP_MAX_DATA_SIZE;
     }
 
     if (ATCA_SUCCESS == storageStatus)
     {
       status = E_K_STATUS_OK;
     }
-
-    break;
   }
 
   M_KTALOG__END("End");

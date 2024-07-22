@@ -114,9 +114,7 @@
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
-#if LOG_KTA_ENABLE
 static const char* gpModuleName = "SALOBJECT";
-#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -134,6 +132,10 @@ static const char* gpModuleName = "SALOBJECT";
  * @brief   implement salObjectKeyGen
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salObjectKeyGen
 (
   uint32_t        xKeyId,
@@ -160,42 +162,38 @@ K_SAL_API TKStatus salObjectKeyGen
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    if (
-      (NULL == xpPublicKey)   ||
+  if ((NULL == xpPublicKey)   ||
       ((NULL == xpPublicKeyLen)  ||
-       (C_K__ICPP_CMD_RESPONSE_SIZE_VENDOR_SPECIFIC != *xpPublicKeyLen))
-    )
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter");
-      break;
-    }
-
+      (C_K__ICPP_CMD_RESPONSE_SIZE_VENDOR_SPECIFIC != *xpPublicKeyLen)))
+  {
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter");
+  }
+  else
+  {
     (void)memset(aNumIn, 0x00, C_SAL_OBJ_RANDOM_NUM_IN_SIZE);
     cryptoStatus = atcab_nonce_rand(aNumIn, aRandOut);
 
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_nonce_rand() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
-    cryptoStatus = atcab_genkey(xKeyId, aPublicKey);
+    cryptoStatus = atcab_genkey((uint16_t)xKeyId, aPublicKey);
 
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_genkey() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
-    cryptoStatus = atcab_genkey_base(GENKEY_MODE_DIGEST, xKeyId, NULL, NULL);
+    cryptoStatus = atcab_genkey_base(GENKEY_MODE_DIGEST, (uint16_t)xKeyId, NULL, NULL);
 
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_genkey_base() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     cryptoStatus = atcab_sign_internal(slotSign, false, false, aSignature);
@@ -203,7 +201,7 @@ K_SAL_API TKStatus salObjectKeyGen
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_sign_internal() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
     (void)memcpy(xpPublicKey, aPublicKey, C_SAL_OBJ_64_BYTE_KEY_SIZE);
@@ -221,18 +219,18 @@ K_SAL_API TKStatus salObjectKeyGen
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcah_nonce() failed with ret=0x%08X", cryptoStatus);
-      break;
+      goto end;
     }
 
-    (void)memcpy(&xpPublicKey[C_SAL_OBJ_64_BYTE_KEY_SIZE * 2], nonceParams.temp_key->value,
+    (void)memcpy(&xpPublicKey[C_SAL_OBJ_64_BYTE_KEY_SIZE * 2u], nonceParams.temp_key->value,
                  C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
 
     *xpPublicKeyLen = sizeof(aPublicKey) + sizeof(aSignature) + C_SAL_CRYPTO_KEY_SIZE_32_BYTE;
 
     status = E_K_STATUS_OK;
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
 
   return status;
@@ -242,6 +240,10 @@ K_SAL_API TKStatus salObjectKeyGen
  * @brief   implement salObjectSet
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salObjectSet
 (
   uint32_t        xObjectType,
@@ -261,30 +263,27 @@ K_SAL_API TKStatus salObjectSet
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((xObjectType > C_SAL_OBJECT__TYPE_SEALED_DATA) ||
+      ((xObjectId != C_KTA__DEVICE_CERT_STORAGE_SLOT) &&
+       (xObjectId != C_KTA__SIGNER_CERT_STORAGE_SLOT)) ||
+      (xpData == NULL) ||
+      (xDataLen == 0U) ||
+      (xpPlatformStatus == NULL))
   {
-    if ((xObjectType > C_SAL_OBJECT__TYPE_SEALED_DATA) ||
-        ((xObjectId != C_KTA__DEVICE_CERTIFICATE_STORAGE_SLOT) &&
-         (xObjectId != C_KTA__SIGNER_CERTIFICATE_STORAGE_SLOT)) ||
-        (xpData == NULL) ||
-        (xDataLen == 0U) ||
-        (xpPlatformStatus == NULL)
-       )
-    {
-      M_KTALOG__ERR("Invalid parameter");
-      break;
-    }
-
+    M_KTALOG__ERR("Invalid parameter");
+  }
+  else
+  {
     if (xObjectType == C_SAL_OBJECT__TYPE_CERTIFICATE)
     {
-      if (C_KTA__DEVICE_CERTIFICATE_STORAGE_SLOT == xObjectId)
+      if (C_KTA__DEVICE_CERT_STORAGE_SLOT == xObjectId)
       {
         M_KTALOG__INFO("Device cert len, %d", xDataLen);
         cryptoStatus = atcacert_write_cert(&g_cert_def_3_device,
                                            xpData,
                                            xDataLen);
       }
-      else if (C_KTA__SIGNER_CERTIFICATE_STORAGE_SLOT == xObjectId)
+      else if (C_KTA__SIGNER_CERT_STORAGE_SLOT == xObjectId)
       {
         M_KTALOG__INFO("Signer cert len, %d", xDataLen);
         cryptoStatus = atcacert_write_cert(&g_cert_def_1_signer,
@@ -294,29 +293,28 @@ K_SAL_API TKStatus salObjectSet
       else
       {
         M_KTALOG__ERR("Invalid Object Id");
-        break;
+        goto end;
       }
 
       if (cryptoStatus != ATCACERT_E_SUCCESS)
       {
         M_KTALOG__ERR("Write cert failed with error, 0x%02x", cryptoStatus);
-        break;
+        goto end;
       }
 
       status = E_K_STATUS_OK;
-      break;
     }
     else
     {
       status = E_K_STATUS_OK;
-      break;
     }
-
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
 
-  *xpPlatformStatus = cryptoStatus;
+  //*xpPlatformStatus = cryptoStatus;
+  (void)memcpy((void *)xpPlatformStatus, (const void *)&cryptoStatus, sizeof(cryptoStatus));
   return status;
 }
 
@@ -324,11 +322,15 @@ K_SAL_API TKStatus salObjectSet
  * @brief   implement salObjectDelete
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 K_SAL_API TKStatus salObjectDelete
 (
-  uint32_t  xObjectType,
-  uint32_t  xObjectId,
-  uint8_t*  xpPlatformStatus
+  TKSalObjectType xObjectType,
+  uint32_t        xObjectId,
+  uint8_t*        xpPlatformStatus
 )
 {
   TKStatus     status = E_K_STATUS_ERROR;
@@ -344,14 +346,12 @@ K_SAL_API TKStatus salObjectDelete
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((xObjectType > C_SAL_OBJECT__TYPE_SEALED_DATA) || (NULL == xpPlatformStatus))
   {
-    if ((xObjectType > C_SAL_OBJECT__TYPE_SEALED_DATA) || (NULL == xpPlatformStatus))
-    {
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     M_KTALOG__INFO("xObjectType[%x] xObjectId[%x]", xObjectType, xObjectId);
 
     if (xObjectType == C_SAL_OBJECT__TYPE_KEY)
@@ -365,7 +365,7 @@ K_SAL_API TKStatus salObjectDelete
         if (cryptoStatus != ATCA_SUCCESS)
         {
           M_KTALOG__ERR("atcab_genkey failed, 0x%2x", status);
-          break;
+          goto end;
         }
       }
       /* keySTREAM Trusted Agent onboarding key - L1 field key. */
@@ -379,7 +379,7 @@ K_SAL_API TKStatus salObjectDelete
         if (cryptoStatus != ATCA_SUCCESS)
         {
           M_KTALOG__ERR("atcab_nonce_load()  failed with ret=0x%08X", cryptoStatus);
-          break;
+          goto end;
         }
 
         /* HKDF Expand. */
@@ -394,7 +394,7 @@ K_SAL_API TKStatus salObjectDelete
         if (cryptoStatus != ATCA_SUCCESS)
         {
           M_KTALOG__ERR("atcab_kdf() for expand failed with ret=0x%08X", cryptoStatus);
-          break;
+          goto end;
         }
       }
       else
@@ -408,7 +408,7 @@ K_SAL_API TKStatus salObjectDelete
 
       switch (xObjectId)
       {
-        case C_KTA__DEVICE_CERTIFICATE_STORAGE_SLOT:
+        case C_KTA__DEVICE_CERT_STORAGE_SLOT:
         {
           M_KTALOG__INFO("Reset Device Certificate");
           status = salStorageSetValue(C_K_KTA__DEVICE_CERTIFICATE_ID,
@@ -423,7 +423,7 @@ K_SAL_API TKStatus salObjectDelete
         }
         break;
 
-        case C_KTA__SIGNER_PUBLIC_KEY_STORAGE_SLOT:
+        case C_KTA__SIGNER_PUB_KEY_STORAGE_SLOT:
         {
           M_KTALOG__INFO("Reset Signer public key");
           status = salStorageSetValue(C_K_KTA__SIGNER_PUB_KEY_ID,
@@ -438,7 +438,7 @@ K_SAL_API TKStatus salObjectDelete
         }
         break;
 
-        case C_KTA__SIGNER_CERTIFICATE_STORAGE_SLOT:
+        case C_KTA__SIGNER_CERT_STORAGE_SLOT:
         {
           M_KTALOG__INFO("Reset Signer Certificate");
           status = salStorageSetValue(C_K_KTA__SIGNER_CERTIFICATE_ID,
@@ -498,20 +498,20 @@ K_SAL_API TKStatus salObjectDelete
 
       if (status != E_K_STATUS_OK)
       {
-        break;
+        goto end;
       }
     }
     else
     {
       M_KTALOG__ERR("Invalid object type, 0x%2x", xObjectType);
-      break;
+      goto end;
     }
-
     status = E_K_STATUS_OK;
-    break;
   }
 
-  *xpPlatformStatus = cryptoStatus;
+end:
+  // *xpPlatformStatus = cryptoStatus;
+  (void)memcpy((void *)xpPlatformStatus, (const void *)&cryptoStatus, 4);
 
   M_KTALOG__END("End, status : %d", status);
   return status;
@@ -539,7 +539,7 @@ K_SAL_API TKStatus  salObjectKeyDelete
 K_SAL_API TKStatus salObjectSetWithAssociation
 (
   uint32_t                  xObjectType,
-  uint32_t                  xObjectWithAssId,
+  uint32_t                  xObjectWithAssociationId,
   const uint8_t*            xpDataAttributes,
   size_t                    xDataAttributesLen,
   const uint8_t*            xpData,
@@ -549,7 +549,7 @@ K_SAL_API TKStatus salObjectSetWithAssociation
 )
 {
   M_UNUSED(xObjectType);
-  M_UNUSED(xObjectWithAssId);
+  M_UNUSED(xObjectWithAssociationId);
   M_UNUSED(xpDataAttributes);
   M_UNUSED(xDataAttributesLen);
   M_UNUSED(xpData);

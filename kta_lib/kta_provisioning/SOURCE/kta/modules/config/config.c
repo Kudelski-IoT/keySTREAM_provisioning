@@ -57,9 +57,7 @@
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
 /* Module name used for logging. */
-#if LOG_KTA_ENABLE
 static const char* gpModuleName = "KTACONFIG";
-#endif
 
 /* Static variable to hold configuration info. */
 static TKtaDeviceInfoConfig gKtaDeviceInfoConfig = {0};
@@ -97,6 +95,10 @@ static TKStatus lReadDeviceAndContextInfo
  * @brief implement ktaSetDeviceInfoConfig
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaSetDeviceInfoConfig
 (
   const uint8_t* xpDeviceProfilePublicUid,
@@ -113,22 +115,20 @@ TKStatus ktaSetDeviceInfoConfig
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  // REQ RQ_M-KTA-STRT-CF-0100(1) : Device Profile Public UID Size
+  // REQ RQ_M-KTA-STRT-CF-0110(1) : Device Serial Number Size
+  if ((NULL == xpDeviceProfilePublicUid) ||
+      (C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE < xDeviceProfilePublicUidSize) ||
+      (0u == xDeviceProfilePublicUidSize) ||
+      (NULL == xpDeviceSerialNum) ||
+      (0u == xDeviceSerialNumSize) ||
+      (C_K__DEVICE_SERIAL_NUM_MAX_SIZE < xDeviceSerialNumSize))
   {
-    // REQ RQ_M-KTA-STRT-CF-0100(1) : Device Profile Public UID Size
-    // REQ RQ_M-KTA-STRT-CF-0110(1) : Device Serial Number Size
-    if ((NULL == xpDeviceProfilePublicUid) ||
-        (C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE < xDeviceProfilePublicUidSize) ||
-        (0u == xDeviceProfilePublicUidSize) ||
-        (NULL == xpDeviceSerialNum) ||
-        (0u == xDeviceSerialNumSize) ||
-        (C_K__DEVICE_SERIAL_NUM_MAX_SIZE < xDeviceSerialNumSize))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     if (xState == E_LIFE_CYCLE_STATE_INIT)
     {
       M_KTALOG__DEBUG("Device is in init state, keeping KTA info into NVM...");
@@ -158,12 +158,12 @@ TKStatus ktaSetDeviceInfoConfig
       // REQ RQ_M-KTA-ACTV-FN-0005_06(1) : Device Profile Public UID
       (void)memcpy(&(aKtaInfo[ktaInfoLen]), xpDeviceProfilePublicUid, xDeviceProfilePublicUidSize);
       ktaInfoLen += C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE;
-      aKtaInfo[ktaInfoLen] = xDeviceProfilePublicUidSize;
+      aKtaInfo[ktaInfoLen] = (uint8_t)xDeviceProfilePublicUidSize;
       ktaInfoLen += (uint8_t)1;
 
       (void)memcpy(&(aKtaInfo[ktaInfoLen]), xpDeviceSerialNum, xDeviceSerialNumSize);
       ktaInfoLen += C_K__DEVICE_SERIAL_NUM_MAX_SIZE;
-      aKtaInfo[ktaInfoLen] = xDeviceSerialNumSize;
+      aKtaInfo[ktaInfoLen] = (uint8_t)xDeviceSerialNumSize;
       ktaInfoLen += (uint8_t)1;
 
       status = salStorageSetAndLockValue(C_K_KTA__SEALED_DATA_STORAGE_ID, aKtaInfo, ktaInfoLen);
@@ -171,18 +171,18 @@ TKStatus ktaSetDeviceInfoConfig
       if (status != E_K_STATUS_OK)
       {
         M_KTALOG__ERR("salStorageSetAndLockValue failed[%d]", status);
-        break;
+        goto end;
       }
 
       (void)memcpy(gKtaDeviceInfoConfig.deviceProfilePubUID[0],
                    xpDeviceProfilePublicUid,
                    xDeviceProfilePublicUidSize);
-      gKtaDeviceInfoConfig.deviceProfilePubUIDLength[0] = xDeviceProfilePublicUidSize;
+      gKtaDeviceInfoConfig.deviceProfilePubUIDLength[0] = (uint8_t)xDeviceProfilePublicUidSize;
 
       (void)memcpy(gKtaDeviceInfoConfig.deviceSerailNo,
                    xpDeviceSerialNum,
                    xDeviceSerialNumSize);
-      gKtaDeviceInfoConfig.deviceSerailNoLength = xDeviceSerialNumSize;
+      gKtaDeviceInfoConfig.deviceSerailNoLength = (uint8_t)xDeviceSerialNumSize;
     }
     else if (xState > E_LIFE_CYCLE_STATE_INIT)
     {
@@ -209,17 +209,16 @@ TKStatus ktaSetDeviceInfoConfig
                     xpDeviceProfilePublicUid,
                     xDeviceProfilePublicUidSize);
 
-        gKtaDeviceInfoConfig.deviceProfilePubUIDLength[1] = xDeviceProfilePublicUidSize;
+        gKtaDeviceInfoConfig.deviceProfilePubUIDLength[1] = (uint8_t)xDeviceProfilePublicUidSize;
       }
     }
     else
     {
       M_KTALOG__ERR("Invalid state[%d]", xState);
     }
-
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -237,15 +236,13 @@ TKStatus ktaGetDeviceInfoConfig
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if (NULL == xpDeviceInfoConfig)
   {
-    if (NULL == xpDeviceInfoConfig)
-    {
-      M_KTALOG__ERR("Invalid parameter passed");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+    M_KTALOG__ERR("Invalid parameter passed");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     /* Fill device specific info. */
     (void)memcpy(xpDeviceInfoConfig->deviceProfilePubUID[0],
                  gKtaDeviceInfoConfig.deviceProfilePubUID[0],
@@ -253,7 +250,7 @@ TKStatus ktaGetDeviceInfoConfig
     xpDeviceInfoConfig->deviceProfilePubUIDLength[0] =
         gKtaDeviceInfoConfig.deviceProfilePubUIDLength[0];
 
-    if (gKtaDeviceInfoConfig.deviceProfilePubUIDLength[1] != 0)
+    if (gKtaDeviceInfoConfig.deviceProfilePubUIDLength[1] != 0u)
     {
       (void)memcpy(xpDeviceInfoConfig->deviceProfilePubUID[1],
                    gKtaDeviceInfoConfig.deviceProfilePubUID[1],
@@ -267,7 +264,6 @@ TKStatus ktaGetDeviceInfoConfig
                  gKtaDeviceInfoConfig.deviceSerailNoLength);
     xpDeviceInfoConfig->deviceSerailNoLength = gKtaDeviceInfoConfig.deviceSerailNoLength;
     status = E_K_STATUS_OK;
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -294,59 +290,53 @@ TKStatus ktaSetContextInfoConfig
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  /* Public function arguments validity checked by the calling function. */
+
+  if (xState == E_LIFE_CYCLE_STATE_INIT)
   {
-    /* Public function arguments validity checked by the calling function. */
+    M_KTALOG__DEBUG("Setting kta context configuration data to the platform");
+    (void)memset(gKtaContextInfoConfig.ktaContextProfileUid,
+                  0x00,
+                  C_K__CONTEXT_PROFILE_UID_MAX_SIZE);
+    (void)memcpy(gKtaContextInfoConfig.ktaContextProfileUid, xpKtaContextProfileUid,
+                  xKtaContextProfileUidLen);
+    gKtaContextInfoConfig.ktaContextProfileUidLength = (uint8_t)xKtaContextProfileUidLen;
 
-    if (xState == E_LIFE_CYCLE_STATE_INIT)
+    (void)memset(gKtaContextInfoConfig.ktaContexSerialNumber,
+                  0x00,
+                  C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE);
+    (void)memcpy(gKtaContextInfoConfig.ktaContexSerialNumber, xpKtaContexSerialNumber,
+                  xKtaContexSerialNumberLen);
+    gKtaContextInfoConfig.ktaContexSerialNumberLength = (uint8_t)xKtaContexSerialNumberLen;
+
+    (void)memset(gKtaContextInfoConfig.ktaContextVersion,
+                  0x00,
+                  C_K__CONTEXT_VERSION_MAX_SIZE);
+    (void)memcpy(gKtaContextInfoConfig.ktaContextVersion,
+                  xpKtaContextVersion,
+                  xKtaContextVersionLen);
+    gKtaContextInfoConfig.ktaContextVersionLength = (uint8_t)xKtaContextVersionLen;
+
+    /* Loading kta version. */
+    (void)memset(gKtaContextInfoConfig.ktaVersion, 0, C_KTA__VERSION_MAX_SIZE);
+    (void)memcpy(gKtaContextInfoConfig.ktaVersion,
+                  ktaGetVersion(),
+                  strnlen((char*)ktaGetVersion(), C_KTA__VERSION_MAX_SIZE));
+
+    (void)memcpy(gKtaContextInfoConfig.l1SegSeed, xpL1SegSeed, C_K__L1_SEGMENTATION_SEED_SIZE);
+    gKtaContextInfoConfig.rotKeySetId = 0;
+    status = E_K_STATUS_OK;
+  }
+  else
+  {
+    status = lReadDeviceAndContextInfo(xState);
+    /* memcpy done independtly of returned status as caller of ktaSetContextInfoConfig
+    handles the error scenario. */
+    if (xState == E_LIFE_CYCLE_STATE_SEALED)
     {
-      M_KTALOG__DEBUG("Setting kta context configuration data to the platform");
-      (void)memset(gKtaContextInfoConfig.ktaContextProfileUid,
-                   0x00,
-                   C_K__CONTEXT_PROFILE_UID_MAX_SIZE);
-      (void)memcpy(gKtaContextInfoConfig.ktaContextProfileUid, xpKtaContextProfileUid,
-                   xKtaContextProfileUidLen);
-      gKtaContextInfoConfig.ktaContextProfileUidLength = xKtaContextProfileUidLen;
-
-      (void)memset(gKtaContextInfoConfig.ktaContexSerialNumber,
-                   0x00,
-                   C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE);
-      (void)memcpy(gKtaContextInfoConfig.ktaContexSerialNumber, xpKtaContexSerialNumber,
-                   xKtaContexSerialNumberLen);
-      gKtaContextInfoConfig.ktaContexSerialNumberLength = xKtaContexSerialNumberLen;
-
-      (void)memset(gKtaContextInfoConfig.ktaContextVersion,
-                   0x00,
-                   C_K__CONTEXT_VERSION_MAX_SIZE);
-      (void)memcpy(gKtaContextInfoConfig.ktaContextVersion,
-                   xpKtaContextVersion,
-                   xKtaContextVersionLen);
-      gKtaContextInfoConfig.ktaContextVersionLength = xKtaContextVersionLen;
-
-      /* Loading kta version. */
-      (void)memset(gKtaContextInfoConfig.ktaVersion, 0, C_KTA__VERSION_MAX_SIZE);
-      (void)memcpy(gKtaContextInfoConfig.ktaVersion,
-                   ktaGetVersion(),
-                   strnlen((char*)ktaGetVersion(), C_KTA__VERSION_MAX_SIZE));
-
-      (void)memcpy(gKtaContextInfoConfig.l1SegSeed, xpL1SegSeed, C_K__L1_SEGMENTATION_SEED_SIZE);
-      gKtaContextInfoConfig.rotKeySetId = 0;
-      status = E_K_STATUS_OK;
-      break;
+      (void)memcpy(gKtaContextInfoConfig.l1SegSeed,
+                    xpL1SegSeed, C_K__L1_SEGMENTATION_SEED_SIZE);
     }
-    else
-    {
-      status = lReadDeviceAndContextInfo(xState);
-      /* memcpy done independtly of returned status as caller of ktaSetContextInfoConfig
-      handles the error scenario. */
-      if (xState == E_LIFE_CYCLE_STATE_SEALED)
-      {
-        (void)memcpy(gKtaContextInfoConfig.l1SegSeed,
-                      xpL1SegSeed, C_K__L1_SEGMENTATION_SEED_SIZE);
-      }
-    }
-
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -366,15 +356,13 @@ TKStatus ktaGetContextInfoConfig
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if (NULL == xpContextInfoConfig)
   {
-    if (NULL == xpContextInfoConfig)
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     /* Fill context specific platform data. */
     M_KTALOG__DEBUG("Getting kta context specific data");
     (void)memcpy(xpContextInfoConfig->l1SegSeed,
@@ -400,7 +388,6 @@ TKStatus ktaGetContextInfoConfig
     xpContextInfoConfig->rotKeySetId = gKtaContextInfoConfig.rotKeySetId;
 
     status = E_K_STATUS_OK;
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -420,18 +407,15 @@ TKStatus ktaGetL1SegSeed
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if (NULL == xpL1SegSeed)
   {
-    if (NULL == xpL1SegSeed)
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     (void)memcpy(xpL1SegSeed, gKtaContextInfoConfig.l1SegSeed, C_K__L1_SEGMENTATION_SEED_SIZE);
     status = E_K_STATUS_OK;
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -451,18 +435,15 @@ TKStatus ktaGetRotKeySetId
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if (NULL == xpRotKeySetId)
   {
-    if (NULL == xpRotKeySetId)
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     *xpRotKeySetId = gKtaContextInfoConfig.rotKeySetId;
     status = E_K_STATUS_OK;
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -482,18 +463,15 @@ TKStatus ktaSetRotKeySetId
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((uint8_t)0x00 == xRotKeySetId)
   {
-    if ((uint8_t)0x00 == xRotKeySetId)
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     gKtaContextInfoConfig.rotKeySetId = xRotKeySetId;
     status = E_K_STATUS_OK;
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -515,6 +493,10 @@ void ktaResetConfig(void)
  * @implements lReadDeviceAndContextInfo
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lReadDeviceAndContextInfo
 (
   const TKtaLifeCycleState xState
@@ -525,85 +507,81 @@ static TKStatus lReadDeviceAndContextInfo
   size_t   ktaInfoLen = C_K_KTA__SEALED_INFORMATION_MAX_SIZE;
   size_t   keyMaterialLen = C_KEY_CONFIG__MATERIAL_MAX_SIZE;
 
-  for (;;)
+  if ((xState >= E_LIFE_CYCLE_STATE_SEALED) && (xState <= E_LIFE_CYCLE_STATE_PROVISIONED))
   {
-    if ((xState >= E_LIFE_CYCLE_STATE_SEALED) && (xState <= E_LIFE_CYCLE_STATE_PROVISIONED))
+    status = salStorageGetValue(C_K_KTA__SEALED_DATA_STORAGE_ID, aKtaInfo, &ktaInfoLen);
+
+    if ((E_K_STATUS_OK != status) || (0u == ktaInfoLen))
     {
-      status = salStorageGetValue(C_K_KTA__SEALED_DATA_STORAGE_ID, aKtaInfo, &ktaInfoLen);
-
-      if ((E_K_STATUS_OK != status) || (0u == ktaInfoLen))
-      {
-        M_KTALOG__ERR("SAL API failed while reading sealed data");
-        break;
-      }
-
-      ktaInfoLen = 0;
-      (void)memcpy(gKtaContextInfoConfig.ktaContextProfileUid,
-                   &aKtaInfo[ktaInfoLen],
-                   C_K__CONTEXT_PROFILE_UID_MAX_SIZE);
-      ktaInfoLen += C_K__CONTEXT_PROFILE_UID_MAX_SIZE;
-      gKtaContextInfoConfig.ktaContextProfileUidLength = aKtaInfo[ktaInfoLen];
-      ktaInfoLen++;
-
-      (void)memcpy(gKtaContextInfoConfig.ktaContexSerialNumber,
-                   &(aKtaInfo[ktaInfoLen]),
-                   C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE);
-      ktaInfoLen += C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE;
-      gKtaContextInfoConfig.ktaContexSerialNumberLength = aKtaInfo[ktaInfoLen];
-      ktaInfoLen++;
-
-      (void)memcpy(gKtaContextInfoConfig.ktaContextVersion,
-                   &(aKtaInfo[ktaInfoLen]),
-                   C_K__CONTEXT_VERSION_MAX_SIZE);
-      ktaInfoLen += C_K__CONTEXT_VERSION_MAX_SIZE;
-      gKtaContextInfoConfig.ktaContextVersionLength = aKtaInfo[ktaInfoLen];
-      ktaInfoLen++;
-
-      /* KTA version should not be read from NVM. */
-      // REQ RQ_M-KTA-REGT-CF-0070(1) : KTA Version
-      (void)memset(gKtaContextInfoConfig.ktaVersion, 0, C_KTA__VERSION_MAX_SIZE);
-      (void)memcpy(gKtaContextInfoConfig.ktaVersion,
-                   ktaGetVersion(),
-                   strnlen((char*)ktaGetVersion(), C_KTA__VERSION_MAX_SIZE));
-      ktaInfoLen += C_KTA__VERSION_MAX_SIZE;
-
-      (void)memcpy(gKtaDeviceInfoConfig.deviceProfilePubUID[0],
-                   &aKtaInfo[ktaInfoLen],
-                   C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE);
-      ktaInfoLen += C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE;
-      gKtaDeviceInfoConfig.deviceProfilePubUIDLength[0] = aKtaInfo[ktaInfoLen];
-      ktaInfoLen++;
-
-      (void)memcpy(gKtaDeviceInfoConfig.deviceSerailNo,
-                   &aKtaInfo[ktaInfoLen],
-                   C_K__DEVICE_SERIAL_NUM_MAX_SIZE);
-      ktaInfoLen += C_K__DEVICE_SERIAL_NUM_MAX_SIZE;
-      gKtaDeviceInfoConfig.deviceSerailNoLength = aKtaInfo[ktaInfoLen];
+      M_KTALOG__ERR("SAL API failed while reading sealed data");
+      goto end;
     }
 
-    if ((xState == E_LIFE_CYCLE_STATE_ACTIVATED) ||
-        (xState == E_LIFE_CYCLE_STATE_PROVISIONED) ||
-        (xState == E_LIFE_CYCLE_STATE_CON_REQ))
-    {
-      uint8_t aL1KeyMaterial[C_KEY_CONFIG__MATERIAL_MAX_SIZE] = {0x00};
+    ktaInfoLen = 0;
+    (void)memcpy(gKtaContextInfoConfig.ktaContextProfileUid,
+                  &aKtaInfo[ktaInfoLen],
+                  C_K__CONTEXT_PROFILE_UID_MAX_SIZE);
+    ktaInfoLen += C_K__CONTEXT_PROFILE_UID_MAX_SIZE;
+    gKtaContextInfoConfig.ktaContextProfileUidLength = aKtaInfo[ktaInfoLen];
+    ktaInfoLen++;
 
-      status = salStorageGetValue(C_K_KTA__L1_KEY_MATERIAL_DATA_ID,
-                                  aL1KeyMaterial,
-                                  &keyMaterialLen);
+    (void)memcpy(gKtaContextInfoConfig.ktaContexSerialNumber,
+                  &(aKtaInfo[ktaInfoLen]),
+                  C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE);
+    ktaInfoLen += C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE;
+    gKtaContextInfoConfig.ktaContexSerialNumberLength = aKtaInfo[ktaInfoLen];
+    ktaInfoLen++;
 
-      if ((E_K_STATUS_OK != status) || (0u == keyMaterialLen))
-      {
-        M_KTALOG__ERR("SAL API failed while reading L1 key material");
-        break;
-      }
+    (void)memcpy(gKtaContextInfoConfig.ktaContextVersion,
+                  &(aKtaInfo[ktaInfoLen]),
+                  C_K__CONTEXT_VERSION_MAX_SIZE);
+    ktaInfoLen += C_K__CONTEXT_VERSION_MAX_SIZE;
+    gKtaContextInfoConfig.ktaContextVersionLength = aKtaInfo[ktaInfoLen];
+    ktaInfoLen++;
 
-      (void)memcpy(gKtaContextInfoConfig.l1SegSeed, aL1KeyMaterial, C_K__L1_SEGMENTATION_SEED_SIZE);
-      gKtaContextInfoConfig.rotKeySetId = aL1KeyMaterial[C_K__L1_SEGMENTATION_SEED_SIZE];
-    }
+    /* KTA version should not be read from NVM. */
+    // REQ RQ_M-KTA-REGT-CF-0070(1) : KTA Version
+    (void)memset(gKtaContextInfoConfig.ktaVersion, 0, C_KTA__VERSION_MAX_SIZE);
+    (void)memcpy(gKtaContextInfoConfig.ktaVersion,
+                  ktaGetVersion(),
+                  strnlen((char*)ktaGetVersion(), C_KTA__VERSION_MAX_SIZE));
+    ktaInfoLen += C_KTA__VERSION_MAX_SIZE;
 
-    break;
+    (void)memcpy(gKtaDeviceInfoConfig.deviceProfilePubUID[0],
+                  &aKtaInfo[ktaInfoLen],
+                  C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE);
+    ktaInfoLen += C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE;
+    gKtaDeviceInfoConfig.deviceProfilePubUIDLength[0] = aKtaInfo[ktaInfoLen];
+    ktaInfoLen++;
+
+    (void)memcpy(gKtaDeviceInfoConfig.deviceSerailNo,
+                  &aKtaInfo[ktaInfoLen],
+                  C_K__DEVICE_SERIAL_NUM_MAX_SIZE);
+    ktaInfoLen += C_K__DEVICE_SERIAL_NUM_MAX_SIZE;
+    gKtaDeviceInfoConfig.deviceSerailNoLength = aKtaInfo[ktaInfoLen];
   }
 
+  if ((xState == E_LIFE_CYCLE_STATE_ACTIVATED) ||
+      (xState == E_LIFE_CYCLE_STATE_PROVISIONED) ||
+      (xState == E_LIFE_CYCLE_STATE_CON_REQ))
+  {
+    uint8_t aL1KeyMaterial[C_KEY_CONFIG__MATERIAL_MAX_SIZE] = {0x00};
+
+    status = salStorageGetValue(C_K_KTA__L1_KEY_MATERIAL_DATA_ID,
+                                aL1KeyMaterial,
+                                &keyMaterialLen);
+
+    if ((E_K_STATUS_OK != status) || (0u == keyMaterialLen))
+    {
+      M_KTALOG__ERR("SAL API failed while reading L1 key material");
+      goto end;
+    }
+
+    (void)memcpy(gKtaContextInfoConfig.l1SegSeed, aL1KeyMaterial, C_K__L1_SEGMENTATION_SEED_SIZE);
+    gKtaContextInfoConfig.rotKeySetId = aL1KeyMaterial[C_K__L1_SEGMENTATION_SEED_SIZE];
+  }
+
+end:
   return status;
 }
 

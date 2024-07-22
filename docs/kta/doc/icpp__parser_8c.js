@@ -2,7 +2,7 @@ var icpp__parser_8c =
 [
     [ "C_K_ICPP_PARSER_HMACSHA256_SIZE", "icpp__parser_8c.html#a7a2f7a932a7502a7f8b74e0cef0ceb41", null ],
     [ "C_K_ICPP_PARSER_PROTOCOL_VERSION", "icpp__parser_8c.html#a51fdbd61bb497a1500f5f8352ce25697", null ],
-    [ "C_K_ICPP_PARSER_PROTOCOL_VERSION_BIT_MASK", "icpp__parser_8c.html#a1f9d254dae4625a99d325cd96a1dc3aa", null ],
+    [ "C_K_ICPP_PARSER_PROT_VERSION_BIT_MASK", "icpp__parser_8c.html#a16b3b79601dce7c3e6894dd457adb043", null ],
     [ "C_K_ICPP_PARSER_RESERVED", "icpp__parser_8c.html#ab0ba1f72f89fc07fd0c570dd53c71e44", null ],
     [ "C_K_ICPP_PARSER_CRYPTO_VERSION_BIT_MASK", "icpp__parser_8c.html#a13f2f87d06657444e0673c43b34520a3", null ],
     [ "C_K_ICPP_PARSER_ENC_MODE_BIT_MASK", "icpp__parser_8c.html#af54081433235fcdb732e2bde0fc9b573", null ],

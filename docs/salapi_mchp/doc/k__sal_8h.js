@@ -12,6 +12,7 @@ var k__sal_8h =
     [ "C_K_KTA__DEVICE_CERTIFICATE_ID", "group__g__sal__api.html#ga2b2496245ea4b9d9523dab012ac169ce", null ],
     [ "C_K_KTA__SIGNER_CERTIFICATE_ID", "group__g__sal__api.html#ga9377b77a84ffea3d7fc317944ebde394", null ],
     [ "C_K_KTA__SIGNER_PUB_KEY_ID", "group__g__sal__api.html#ga7a130e78400cf1c3f6f2ed7309281372", null ],
+    [ "C_K_KTA__VERSION_SLOT_ID", "group__g__sal__api.html#ga22153bb3c95475d69a309d697ebb34d5", null ],
     [ "C_K_KTA__HKDF_ACT_MODE", "group__g__sal__api.html#ga9cbcb95dc7498df4d274bbf2eae65cdf", null ],
     [ "C_K_KTA__HKDF_GEN_MODE", "group__g__sal__api.html#gad3281679cde4780613e81d006c1d0392", null ],
     [ "C_K_KTA__CHIPSET_UID_MAX_SIZE", "group__g__sal__api.html#gaba95d7c9b0d8ea6447cb91ac85cd4d25", null ],

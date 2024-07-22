@@ -91,6 +91,8 @@ extern "C" {
 #define C_K_KTA__SIGNER_CERTIFICATE_ID        (0x4005u)
 /** @brief Signer public key. */
 #define C_K_KTA__SIGNER_PUB_KEY_ID            (0x4006u)
+/** @brief KTA Version ID*/
+#define C_K_KTA__VERSION_SLOT_ID              (0x4007u)
 
 /**
  * @brief HKDF Extract Mode.
