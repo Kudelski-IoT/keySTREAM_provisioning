@@ -75,6 +75,11 @@ extern "C" {
 #define C_KTA_APP__DEVICE_PUBLIC_UID        ("mchp_dev")
 
 /** @brief Application log */
+/** 
+ * Suppression: misra-c2012-17.7 and misra-c2012-21.6
+ * Using printf for logging.
+ * Not checking the return status of printf, since not required.
+ **/
 #define C_KTA_APP__LOG                      printf
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */

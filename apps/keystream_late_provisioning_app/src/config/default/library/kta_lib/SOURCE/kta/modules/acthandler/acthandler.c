@@ -49,6 +49,8 @@
 #include "cryptoConfig.h"
 #include "KTALog.h"
 
+
+
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
 /* -------------------------------------------------------------------------- */
@@ -57,7 +59,7 @@
                                  + C_K_CRYPTO__AES_BLOCK_SIZE)
 
 /** @brief Expose shared secret to host. */
-#define C_EXPOSE_SHARED_SECRET_TO_HOST (0x80000000)
+#define C_EXPOSE_SHARED_SECRET_TO_HOST (0x80000000u)
 
 /** @brief To check field availability. */
 #define M_ACT_RESP_IS_FIELD_AVAILABLE(x_field) (((x_field).len) > 0u)
@@ -98,10 +100,8 @@ typedef struct
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
-#if LOG_KTA_ENABLE
 /* Module name used for logging */
 static const char* gpModuleName = "KTAACTHANDLER";
-#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -238,7 +238,7 @@ static TKStatus lPrepareActivationRequest
 (
   TKactreqPayload*       xpActPayload,
   uint8_t                (*xppEncMsg)[C_DEV_PROF_PAD_MAX_LEN],
-  size_t*                xpEncMsgLen,
+  const size_t*         xpEncMsgLen,
   TKIcppProtocolMessage* xpProtoMessage
 );
 
@@ -297,20 +297,16 @@ TKStatus ktaActDeriveL2Keys
 )
 {
   const uint8_t aFldL2EncDec[C_KTA__FIELD_L2_ENC_INPUT_DATA_SIZE] = C_KTA__FIELD_L2_ENC_INPUT_DATA;
-  const uint8_t aFldL2Auth[C_KTA__FIELD_L2_AUTH_INPUT_DATA_SIZE] = C_KTA__FIELD_L2_AUTH_INPUT_DATA;
+  const uint8_t aFldL2Auth[C_KTA__FIELD_L2_AUTH_IN_DATA_SIZE] = C_KTA__FIELD_L2_AUTH_INPUT_DATA;
   TKStatus      status = E_K_STATUS_ERROR;
 
   M_KTALOG__START("Start");
 
-  for (;;)
-  {
-    status =  lActDeriveL2Keys(C_K_KTA__L1_FIELD_KEY_ID,
-                               aFldL2EncDec,
-                               C_KTA__FIELD_L2_ENC_INPUT_DATA_SIZE,
-                               aFldL2Auth,
-                               C_KTA__FIELD_L2_AUTH_INPUT_DATA_SIZE);
-    break;
-  }
+  status =  lActDeriveL2Keys(C_K_KTA__L1_FIELD_KEY_ID,
+                              aFldL2EncDec,
+                              C_KTA__FIELD_L2_ENC_INPUT_DATA_SIZE,
+                              aFldL2Auth,
+                              C_KTA__FIELD_L2_AUTH_IN_DATA_SIZE);
 
   M_KTALOG__END("End, status : %d", status);
   return status;
@@ -320,6 +316,10 @@ TKStatus ktaActDeriveL2Keys
  * @brief implement ktaActBuildActivationRequest
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaActBuildActivationRequest
 (
   uint8_t* xpMessageToSend,
@@ -340,31 +340,28 @@ TKStatus ktaActBuildActivationRequest
   TKStatus status                                = E_K_STATUS_ERROR;
   TKParserStatus parserStatus                    = E_K_ICPP_PARSER_STATUS_ERROR;
   TKtaDeviceInfoConfig deviceInfoConfig          = {0};
-  uint8_t aRotSolID[C_KTA__ROT_SOL_ID_SIZE]      = C_KTA__ROT_SOL_ID;
+  const uint8_t aRotSolID[C_KTA__ROT_SOL_ID_SIZE] = C_KTA__ROT_SOL_ID;
   size_t rotPublicUidLen                         = C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES;
-  uint8_t devProfile                             = 0;
   uint8_t maxDevProfiles                         = C_K__MAX_DEVICE_PROFILES;
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((NULL == xpMessageToSend) ||
+      (NULL == xpMessageToSendSize) ||
+      ((C_K__ICPP_MSG_MAX_SIZE > *xpMessageToSendSize) ||
+        (0u == *xpMessageToSendSize)))
   {
-    if ((NULL == xpMessageToSend) ||
-        (NULL == xpMessageToSendSize) ||
-        ((C_K__ICPP_MSG_MAX_SIZE > *xpMessageToSendSize) ||
-         (0 == *xpMessageToSendSize)))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed, status = [%d]", status);
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed, status = [%d]", status);
+  }
+  else
+  {
     status = lFetchActivationReqData(&actPayload);
 
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Fetching of activation request data failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
     /* Generate key pair and provide public key in return. */
@@ -374,7 +371,7 @@ TKStatus ktaActBuildActivationRequest
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("SAL API while generation key pair failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
     // REQ RQ_M-KTA-ACTV-FN-0015(1) : Generate L1 Key
@@ -383,7 +380,7 @@ TKStatus ktaActBuildActivationRequest
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Derivation of L1 Keys failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
     // REQ RQ_M-KTA-ACTV-FN-0025(1) : Generate L2 Auth Key
@@ -393,7 +390,7 @@ TKStatus ktaActBuildActivationRequest
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Derivation of L2 Keys failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
     /* Fetch device profile pub uid. */
@@ -402,16 +399,16 @@ TKStatus ktaActBuildActivationRequest
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Fetching device profile public UID failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
    /* If mutable device profile UID not available. */
-    if (deviceInfoConfig.deviceProfilePubUIDLength[1] == 0)
+    if (deviceInfoConfig.deviceProfilePubUIDLength[1] == 0u)
     {
       aEncMsgLen[1] = 0;
       maxDevProfiles = 1;
     }
-    for (devProfile = 0; devProfile < maxDevProfiles; devProfile++)
+    for (uint8_t devProfile = 0; devProfile < maxDevProfiles; devProfile++)
     {
       // REQ RQ_M-KTA-ACTV-FN-0035(1) : Pad activation request device public profile uid.
       // REQ RQ_M-KTA-ACTV-FN-0030(1) : Data padding for encryption
@@ -422,34 +419,40 @@ TKStatus ktaActBuildActivationRequest
 
       if (E_K_STATUS_OK != status)
       {
-        M_KTALOG__ERR("Padding failed, status = [%d]", status);
+        M_KTALOG__ERR("Padding failed with status = [%d]", status);
         break;
       }
-
-      // REQ RQ_M-KTA-ACTV-FN-0040(1) : Encrypt the padded activation request device public
-      /* profile uid. */
-      status = ktacipherEncrypt(aPaddedMsg, paddedMsgLen, aEncMsg[devProfile],
-                                &aEncMsgLen[devProfile]);
-
-      if (E_K_STATUS_OK != status)
+      else
       {
-        M_KTALOG__ERR("Encryption failed, status = [%d]", status);
-        break;
+        // REQ RQ_M-KTA-ACTV-FN-0040(1) : Encrypt the padded activation request device public
+        /* profile uid. */
+        status = ktacipherEncrypt(aPaddedMsg, paddedMsgLen, aEncMsg[devProfile],
+                                  &aEncMsgLen[devProfile]);
+
+        if (E_K_STATUS_OK != status)
+        {
+          M_KTALOG__ERR("Encryption failed with status = [%d]", status);
+          break;
+        }
+
+        /* Reusing the same buffer for next device profile. */
+        memset(aPaddedMsg, 0, sizeof(aPaddedMsg));
+        paddedMsgLen = C_DEV_PROF_PAD_MAX_LEN;
       }
-
-      /* Reusing the same buffer for next device profile. */
-      memset(aPaddedMsg, 0, sizeof(aPaddedMsg));
-      paddedMsgLen = C_DEV_PROF_PAD_MAX_LEN;
     }
-
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR("Device profile padding/encryption failed, status = [%d]", status);
+      goto end;
+    }
     /* Fill the crypto version to use (for activation request dos based encryption is used). */
     // REQ RQ_M-KTA-ACTV-FN-0020_01(1) : Activation crypto version
     protoMessage.cryptoVersion  = E_K_ICPP_PARSER_CRYPTO_TYPE_DOS_BASED;
     /* Fill the mode of encryption (for activation request partial encryption is used). */
     // REQ RQ_M-KTA-ACTV-FN-0020_02(1) : Activation partial encryption mode
     protoMessage.encMode  = E_K_ICPP_PARSER_PARTIAL_ENC_MODE;
-    /** Fill the message type with "E_K_ICCP_PARSER_MESSAGE_TYPE_NOTIFICATION" to indicate it is
-     *  registration notification message type (client -> server). */
+    /* Fill the message type with "E_K_ICCP_PARSER_MESSAGE_TYPE_NOTIFICATION" to indicate it is
+       registration notification message type (client -> server). */
     // REQ RQ_M-KTA-ACTV-FN-0020_03(1) : Activation message type
     protoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_NOTIFICATION;
     /* Fill the random transaction ID. */
@@ -460,7 +463,7 @@ TKStatus ktaActBuildActivationRequest
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("salCryptoGetRandom failed to get transaction ID, status = [%d]", status);
-      break;
+      goto end;
     }
 
     /* Setting rotKeySetId to default value 0. */
@@ -474,7 +477,7 @@ TKStatus ktaActBuildActivationRequest
     if ((E_K_STATUS_OK != status) && (0u == rotPublicUidLen))
     {
       M_KTALOG__ERR("SAL API failed while reading rotPublicUID, status = [%d]", status);
-      break;
+      goto end;
     }
 
     if (memcmp(protoMessage.rotPublicUID, aRotSolID, C_KTA__ROT_SOL_ID_SIZE) != 0)
@@ -489,7 +492,7 @@ TKStatus ktaActBuildActivationRequest
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Prepare actRequest got failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
     // REQ RQ_M-KTA-ICPP-FN-0100(1) : Serialize the message
@@ -501,7 +504,7 @@ TKStatus ktaActBuildActivationRequest
     {
       M_KTALOG__ERR("Serialization of message failed, parserStatus = [%d]", parserStatus);
       status = E_K_STATUS_ERROR;
-      break;
+      goto end;
     }
 
     // REQ RQ_M-KTA-ACTV-FN-0050(1) : Sign the ICPP format raw buffer
@@ -510,15 +513,15 @@ TKStatus ktaActBuildActivationRequest
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Signing of message failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
     (void)memcpy(xpMessageToSend, aSerializeBuffer, serializeBufferLen);
     (void)memcpy(&(xpMessageToSend[serializeBufferLen]), aComputedMac, C_KTA_ACT__HMACSHA256_SIZE);
     *xpMessageToSendSize =  serializeBufferLen + C_KTA_ACT__HMACSHA256_SIZE;
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -527,6 +530,10 @@ TKStatus ktaActBuildActivationRequest
  * @brief implement ktaActResponseBuildL1Keys
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaActResponseBuildL1Keys
 (
   TKIcppProtocolMessage* xpRecvMsg
@@ -538,29 +545,27 @@ TKStatus ktaActResponseBuildL1Keys
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if (NULL == xpRecvMsg)
   {
-    if (NULL == xpRecvMsg)
-    {
-      M_KTALOG__ERR("Invalid Parameter");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+    M_KTALOG__ERR("Invalid Parameter");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     (void)memset(&resPayload, 0, sizeof(TKactRespPayload));
 
     // REQ RQ_M-KTA-ACTV-FN-0080(1) : Check activation response data
     if (E_K_STATUS_OK != lActRespValidateAndGetPayload(xpRecvMsg, &resPayload))
     {
-      M_KTALOG__ERR("Getting Rot Public UID / KeyStream Ephemeral Public key(ks_e_pk) failed");
-      break;
+      M_KTALOG__ERR("Getting Rot Public UID / keyStream Ephemeral Public key(ks_e_pk) failed");
+      goto end;
     }
 
     /* keySTREAM Ephemeral Public Key is Mandatory. */
     if (!M_ACT_RESP_IS_FIELD_AVAILABLE(resPayload.ksEphemeralPubKey))
     {
       M_KTALOG__ERR("ksEphemeralPubKey Not found or Invalid");
-      break;
+      goto end;
     }
 
     /* Rot public Uid is optional. */
@@ -572,7 +577,7 @@ TKStatus ktaActResponseBuildL1Keys
       if ((E_K_STATUS_OK != status) || (0u == rotPublicUidLen))
       {
         M_KTALOG__ERR("SAL API failed while reading rotPublicUID, status = [%d]", status);
-        break;
+        goto end;
       }
     }
 
@@ -582,12 +587,10 @@ TKStatus ktaActResponseBuildL1Keys
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Deriving L1 field key failed, status = [%d]", status);
-      break;
     }
-
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -610,27 +613,22 @@ static TKStatus lActDeriveL2Keys
 {
   TKStatus status   = E_K_STATUS_ERROR;
 
-  for (;;)
+  // REQ RQ_M-KTA-ACTV-FN-0115(1) : Generate L2 Encryption Key
+  status = salRotKeyDerivation(xKeyId, xpInDataEncDec, xInDataEncDecLen, C_K_KTA__VOLATILE_3_ID);
+
+  if (E_K_STATUS_OK != status)
   {
-    // REQ RQ_M-KTA-ACTV-FN-0115(1) : Generate L2 Encryption Key
-    status = salRotKeyDerivation(xKeyId, xpInDataEncDec, xInDataEncDecLen, C_K_KTA__VOLATILE_3_ID);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("SAL API failed while deriving L2 Encryption key, status = [%d]", status);
-      break;
-    }
-
+    M_KTALOG__ERR("SAL API failed while deriving L2 Encryption key, status = [%d]", status);
+  }
+  else
+  {
     // REQ RQ_M-KTA-ACTV-FN-0120(1) : Generate L2 Auth Key
     status = salRotKeyDerivation(xKeyId, xpInDataAuth, xInDataAuthLen, C_K_KTA__VOLATILE_2_ID);
 
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("SAL API failed while deriving L2 auth key, status = [%d]", status);
-      break;
     }
-
-    break;
   }
 
   return status;
@@ -645,8 +643,8 @@ static TKStatus lActReqDeriveL2Keys
   void
 )
 {
-  uint8_t aActL2EncInputData[C_KTA__ACT_L2_ENC_INPUT_DATA_SIZE] = C_KTA__ACT_L2_ENC_INPUT_DATA;
-  uint8_t aActL2AuthInputData[C_KTA__ACT_L2_AUTH_INPUT_DATA_SIZE] = C_KTA__ACT_L2_AUTH_INPUT_DATA;
+  const uint8_t aActL2EncInputData[C_KTA__ACT_L2_ENC_INPUT_DATA_SIZE] = C_KTA__ACT_L2_ENC_INPUT_DATA;
+  const uint8_t aActL2AuthInputData[C_KTA__ACT_L2_AUTH_INPUT_DATA_SIZE] = C_KTA__ACT_L2_AUTH_INPUT_DATA;
 
   return lActDeriveL2Keys(C_K_KTA__VOLATILE_2_ID,
                           aActL2EncInputData,
@@ -668,26 +666,21 @@ static TKStatus lActReqDeriveL1Key
   const uint8_t aKssDosPk[C_KTA__KS_S_DOS_PK_SIZE] = C_KTA__KS_S_DOS_PK;
   TKStatus      status = E_K_STATUS_ERROR;
 
-  for (;;)
+  status = salRotKeyAgreement(C_K_KTA__CHIP_SK_ID, aKssDosPk, C_K_KTA__VOLATILE_2_ID, NULL);
+
+  if (E_K_STATUS_OK != status)
   {
-    status = salRotKeyAgreement(C_K_KTA__CHIP_SK_ID, aKssDosPk, C_K_KTA__VOLATILE_2_ID, NULL);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("SAL API failed while computing shared secret key, status = [%d]", status);
-      break;
-    }
-
+    M_KTALOG__ERR("SAL API failed while computing shared secret key, status = [%d]", status);
+  }
+  else
+  {
     status = salRotHkdfExtractAndExpand(C_K_KTA__HKDF_ACT_MODE, NULL, xpRotEpk, aActKeyFixInfo,
                                         C_KTA__ACT_KEY_FIXED_INFO_SIZE);
 
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("SAL API failed while deriving HKDF HMAC-SHA256, status = [%d]", status);
-      break;
     }
-
-    break;
   }
 
   return status;
@@ -704,18 +697,16 @@ static TKStatus lFetchActivationReqData
 {
   TKStatus status = E_K_STATUS_ERROR;
 
-  for (;;)
+  // REQ RQ_M-KTA-ACTV-FN-0005_01(1) : Chip UID
+  xpActPayload->chipUidSize = C_K_KTA__CHIPSET_UID_MAX_SIZE;
+  status = salRotGetChipUID(xpActPayload->aChipUid, &xpActPayload->chipUidSize);
+
+  if (E_K_STATUS_OK != status)
   {
-    // REQ RQ_M-KTA-ACTV-FN-0005_01(1) : Chip UID
-    xpActPayload->chipUidSize = C_K_KTA__CHIPSET_UID_MAX_SIZE;
-    status = salRotGetChipUID(xpActPayload->aChipUid, &xpActPayload->chipUidSize);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("SAL API failed while reading chip UID, status = [%d]", status);
-      break;
-    }
-
+    M_KTALOG__ERR("SAL API failed while reading chip UID, status = [%d]", status);
+  }
+  else
+  {
     // REQ RQ_M-KTA-ACTV-CF-0010(1) : Certificate Buffer Size
     // REQ RQ_M-KTA-ACTV-FN-0005_03(1) : Signed Public Key
     // REQ RQ_M-KTA-ACTV-FN-0005_04(1) : X509 Certificate
@@ -733,7 +724,6 @@ static TKStatus lFetchActivationReqData
     xpActPayload->chipCertSize = 0;
 #endif
     status = E_K_STATUS_OK;
-    break;
   }
 
   return status;
@@ -761,7 +751,7 @@ static TKStatus lParseChipCert
     xpProtoMessage->commands[xCommandPos].data.fieldList.fields[++*xpFieldPos].fieldTag =
       xpActPayload->aChipCert[index];
     xpProtoMessage->commands[xCommandPos].data.fieldList.fields[*xpFieldPos].fieldLen =
-      (((xpActPayload->aChipCert[index + 1u]) << 8u) | xpActPayload->aChipCert[index + 2u]);
+      ((size_t)((xpActPayload->aChipCert[index + 1u]) << 8u) | xpActPayload->aChipCert[index + 2u]);
     length = xpProtoMessage->commands[xCommandPos].data.fieldList.fields[*xpFieldPos].fieldLen;
     index = index + 3u;
     xpProtoMessage->commands[xCommandPos].data.fieldList.fields[*xpFieldPos].fieldValue =
@@ -786,97 +776,93 @@ static TKStatus lPrepareActivationRequest
 (
   TKactreqPayload*       xpActPayload,
   uint8_t                (*xppEncMsg)[C_DEV_PROF_PAD_MAX_LEN],
-  size_t*                xpEncMsgLen,
+  const  size_t*         xpEncMsgLen,
   TKIcppProtocolMessage* xpProtoMessage
 )
 {
-  uint32_t currentPos = 0;
+  uint32_t currentPos = xpProtoMessage->commandsCount;
   uint32_t fieldPos = 0;
   TKStatus status = E_K_STATUS_ERROR;
 
-  for (;;)
+  xpProtoMessage->commandsCount = xpProtoMessage->commandsCount + 1u;
+  /** Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION" to indicated the
+      the command is for activation. */
+  xpProtoMessage->commands[currentPos].commandTag = E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION;
+
+  /**
+   * Note : xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount
+   *         should be less then C_K_ICPP_PARSER_MAX_FIELDS_COUNT.
+   */
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
+    E_K_ICPP_PARSER_FIELD_TAG_ROT_E_PK;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen =
+    C_K_KTA__PUBLIC_KEY_MAX_SIZE;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue =
+    xpActPayload->aRotEpk;
+
+  if (0u != xpActPayload->chipUidSize)
   {
-    currentPos = xpProtoMessage->commandsCount;
-    xpProtoMessage->commandsCount = xpProtoMessage->commandsCount + 1u;
-    /** Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION" to indicated the
-        the command is for activation. */
-    xpProtoMessage->commands[currentPos].commandTag = E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION;
-
-    /**
-     * Note : xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount
-     *         should be less then C_K_ICPP_PARSER_MAX_FIELDS_COUNT.
-     */
+    ++fieldPos;
     xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
-      E_K_ICPP_PARSER_FIELD_TAG_ROT_E_PK;
+      E_K_ICPP_PARSER_FIELD_TAG_CHIP_UID;
     xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen =
-      C_K_KTA__PUBLIC_KEY_MAX_SIZE;
+      xpActPayload->chipUidSize;
     xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue =
-      xpActPayload->aRotEpk;
+      xpActPayload->aChipUid;
+  }
 
-    if (0u != xpActPayload->chipUidSize)
-    {
-      ++fieldPos;
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
-        E_K_ICPP_PARSER_FIELD_TAG_CHIP_UID;
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen =
-        xpActPayload->chipUidSize;
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue =
-        xpActPayload->aChipUid;
-    }
-
-    if (0u != xpActPayload->chipCertSize)
-    {
+  if (0u != xpActPayload->chipCertSize)
+  {
 #ifdef PLATFORM_PROCESS_FEATURE
-      ++fieldPos;
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
-        E_K_ICPP_PARSER_FIELD_TAG_CHIP_CERT;
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen =
-        xpActPayload->chipCertSize;
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue =
-        xpActPayload->aChipCert;
+    ++fieldPos;
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
+      E_K_ICPP_PARSER_FLD_TAG_CHIP_CERT;
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen =
+      xpActPayload->chipCertSize;
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue =
+      xpActPayload->aChipCert;
 #endif
 #ifdef OBJECT_MANAGEMENT_FEATURE
-      /* Call tlv parser here and update fields. */
-      status = lParseChipCert(xpProtoMessage, currentPos, xpActPayload, &fieldPos);
+    /* Call tlv parser here and update fields. */
+    status = lParseChipCert(xpProtoMessage, currentPos, xpActPayload, &fieldPos);
 
-      if (status != E_K_STATUS_OK)
-      {
-        M_KTALOG__ERR("Parsing of certificate tlv failed");
-        break;
-      }
-
-#endif
+    if (status != E_K_STATUS_OK)
+    {
+      M_KTALOG__ERR("Parsing of certificate tlv failed");
+      goto end;
     }
 
+#endif
+  }
+
+  // REQ RQ_M-KTA-ACTV-FN-0045(1) :
+  /* Convert the encrypted data into ICPP format raw buffer. */
+  ++fieldPos;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
+    E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID;
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen = xpEncMsgLen[0];
+  xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue = xppEncMsg[0];
+
+  if (xpEncMsgLen[1] != 0)
+  {
     // REQ RQ_M-KTA-ACTV-FN-0045(1) :
     /* Convert the encrypted data into ICPP format raw buffer. */
     ++fieldPos;
     xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
-      E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen = xpEncMsgLen[0];
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue = xppEncMsg[0];
-
-    if (xpEncMsgLen[1] != 0)
-    {
-      // REQ RQ_M-KTA-ACTV-FN-0045(1) :
-      /* Convert the encrypted data into ICPP format raw buffer. */
-      ++fieldPos;
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
-          E_K_ICPP_PARSER_FIELD_TAG_MUTABLE_DEVPROFUID;
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen =
-          xpEncMsgLen[1];
-      xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue =
-          xppEncMsg[1];
-    }
-
-    /** Note : xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount.
-     * should be less then C_K_ICPP_PARSER_MAX_FIELDS_COUNT". */
-    ++fieldPos;
-    xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount = fieldPos;
-    status = E_K_STATUS_OK;
-    break;
+        E_K_ICPP_PARSER_FIELD_TAG_MUTABLE_DEVPROFUID;
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen =
+        xpEncMsgLen[1];
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue =
+        xppEncMsg[1];
   }
 
+  /** Note : xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount.
+   * should be less then C_K_ICPP_PARSER_MAX_FIELDS_COUNT". */
+  ++fieldPos;
+  xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount = fieldPos;
+  status = E_K_STATUS_OK;
+
+end:
   return status;
 }
 
@@ -894,23 +880,20 @@ static TKStatus lActRespValidateAndGetPayload
   uint32_t        isErrorOccured = 0;
   TKIcppFieldList* pFieldList = NULL;
 
-  for (;;)
+  if (0u == xpRecvMsg->commandsCount)
   {
-    if (0u == xpRecvMsg->commandsCount)
-    {
-      M_KTALOG__ERR("Command Count is 0");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+    M_KTALOG__ERR("Activation Response received message command Count is 0");
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     for (size_t commandsLoop = 0; (commandsLoop < xpRecvMsg->commandsCount) &&
          (isErrorOccured == 0u); commandsLoop++)
     {
       if (E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION !=
           xpRecvMsg->commands[commandsLoop].commandTag)
       {
-        M_KTALOG__ERR("Invalid command Tag %d", xpRecvMsg->commands[commandsLoop].commandTag);
-        isErrorOccured = 1;
+        M_KTALOG__ERR("Invalid command Tag 0x%02x", xpRecvMsg->commands[commandsLoop].commandTag);
         break;
       }
 
@@ -919,7 +902,6 @@ static TKStatus lActRespValidateAndGetPayload
       if (0u == pFieldList->fieldsCount)
       {
         M_KTALOG__ERR("Field Count is 0");
-        isErrorOccured = 1;
         break;
       }
 
@@ -932,7 +914,7 @@ static TKStatus lActRespValidateAndGetPayload
         )
         {
           M_KTALOG__ERR("Invalid Field Data");
-          isErrorOccured = 1;
+          isErrorOccured = 1u;
           break;
         }
 
@@ -944,7 +926,7 @@ static TKStatus lActRespValidateAndGetPayload
             {
               M_KTALOG__ERR("Invalid RotPubUid len[%u]",
                             (unsigned int)xpActRespPayload->rotPublicUid.len);
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -960,7 +942,7 @@ static TKStatus lActRespValidateAndGetPayload
             {
               M_KTALOG__ERR("Invalid ks_e_pk len[%u]",
                             (unsigned int)xpActRespPayload->ksEphemeralPubKey.len);
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -972,19 +954,17 @@ static TKStatus lActRespValidateAndGetPayload
           default:
           {
             M_KTALOG__ERR("Unknown Field Tag %d", pFieldList->fields[fieldsLoop].fieldTag);
-            isErrorOccured = 1;
+            isErrorOccured = 1u;
           }
           break;
         } /* switch */
       }
 
-      if (!isErrorOccured)
+      if (isErrorOccured == 0)
       {
         status = E_K_STATUS_OK;
       }
     }
-
-    break;
   }
 
   return status;
@@ -1005,21 +985,19 @@ static TKStatus lActRespDeriveL1Key
   uint8_t         aInfoHkdf[C_KTA__FIELD_KEY_FIXED_INFO_SIZE] = C_KTA__FIELD_KEY_FIXED_INFO;
   uint8_t         aSharedSecretES[2 * C_K_KTA__SHARED_SECRET_KEY_MAX_SIZE] = { 0 };
 
-  for (;;)
+  /* Storing shared Secret E. */
+  // REQ RQ_M-KTA-ACTV-FN-0090(1) : Generate Shared Secret E(**shs_e**)
+  status = salRotKeyAgreement(C_K_KTA__VOLATILE_ID,
+                              xpKsEpk,
+                              C_EXPOSE_SHARED_SECRET_TO_HOST,
+                              aSharedSecretES);
+
+  if (E_K_STATUS_OK != status)
   {
-    /* Storing shared Secret E. */
-    // REQ RQ_M-KTA-ACTV-FN-0090(1) : Generate Shared Secret E(**shs_e**)
-    status = salRotKeyAgreement(C_K_KTA__VOLATILE_ID,
-                                xpKsEpk,
-                                C_EXPOSE_SHARED_SECRET_TO_HOST,
-                                aSharedSecretES);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("SAL API failed while computing secret E, status = [%d]", status);
-      break;
-    }
-
+    M_KTALOG__ERR("SAL API failed while computing secret E, status = [%d]", status);
+  }
+  else
+  {
     /* Appending shared Secret S. */
     // REQ RQ_M-KTA-ACTV-FN-0095(1) : Generate Shared Secret S(**shs_s**)
     // REQ RQ_M-KTA-ACTV-FN-0100(1) : Generate Shared Secret ES(**shs_es**)
@@ -1031,32 +1009,33 @@ static TKStatus lActRespDeriveL1Key
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("SAL API failed while computing secret S, status = [%d]", status);
-      break;
     }
-
-    /* This function will update L1 segmentation seed. */
-    if (E_K_STATUS_OK != ktaGetL1SegSeed(&aInfoHkdf[C_KTA__FIELD_KEY_FIXED_INFO_L1SEGSEED_POS]))
+    else
     {
-      M_KTALOG__ERR("Getting L1 SegSeed failed, status = [%d]", status);
-      break;
+      /* This function will update L1 segmentation seed. */
+      status = ktaGetL1SegSeed(&aInfoHkdf[C_KTA__FIELD_KEY_FIXED_INFO_L1SEGSEED_POS]);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("Getting L1 SegSeed failed, status = [%d]", status);
+      }
+      else
+      {
+        /* Storing the L1 field key. */
+        // REQ RQ_M-KTA-ACTV-FN-0110(1) : Store L1 field key
+        status = salRotHkdfExtractAndExpand(C_K_KTA__HKDF_GEN_MODE,
+                                            aSharedSecretES,
+                                            aSalt,
+                                            aInfoHkdf,
+                                            C_KTA__FIELD_KEY_FIXED_INFO_SIZE);
+
+        if (E_K_STATUS_OK != status)
+        {
+          M_KTALOG__ERR("SAL API failed while storing L1 field key, status = [%d]", status);
+        }
+      }
     }
-
-    /* Storing the L1 field key. */
-    // REQ RQ_M-KTA-ACTV-FN-0110(1) : Store L1 field key
-    status = salRotHkdfExtractAndExpand(C_K_KTA__HKDF_GEN_MODE,
-                                        aSharedSecretES,
-                                        aSalt,
-                                        aInfoHkdf,
-                                        C_KTA__FIELD_KEY_FIXED_INFO_SIZE);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("SAL API failed while storing L1 field key, status = [%d]", status);
-      break;
-    }
-
-    break;
   }
+
   return status;
 }
 

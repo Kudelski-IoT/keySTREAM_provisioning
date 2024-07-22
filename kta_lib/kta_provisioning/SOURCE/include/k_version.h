@@ -53,13 +53,13 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 
 /** @brief Major Version. */
-#define C_K_VERSION__MAJOR     1
+#define C_K_KTA__VERSION_MAJOR     1
 
 /** @brief Minor Version. */
-#define C_K_VERSION__MINOR     2
+#define C_K_KTA__VERSION_MINOR     2
 
 /** @brief Patch Version. */
-#define C_K_VERSION__PATCH     6
+#define C_K_KTA__VERSION_PATCH     7
 
 /** @brief Hot fix after release. */
 #define C_K_VERSION__HOT_FIX   ""

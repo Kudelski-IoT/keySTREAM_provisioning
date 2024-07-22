@@ -105,15 +105,12 @@ def instantiateComponent(ktaComponent):
     Database.activateComponents(["stdio"])
     Database.activateComponents(["cryptoauthlib"])
 
-    ktaSymbol = ktaComponent.createBooleanSymbol("KTA_LOG_BOOL", None)
-    ktaSymbol.setLabel("Enable Log")
-    ktaSymbol.setVisible(True)
-    ktaSymbol.setDefaultValue(False)
-
-    ktaSymbol = ktaComponent.createIntegerSymbol("KTA_LOG_INT", None)
-    ktaSymbol.setVisible(False)
-    ktaSymbol.setDefaultValue(0)
-    ktaSymbol.setDependencies(ktaSetValue, ["KTA_LOG_BOOL"])
+    comboValues = ["E_KTALOG_LEVEL_DEBUG", "E_KTALOG_LEVEL_INFO", "E_KTALOG_LEVEL_WARN",
+                   "E_KTALOG_LEVEL_ENTRY_EXIT", "E_KTALOG_LEVEL_ERROR", "E_KTALOG_LEVEL_NONE"]
+    ktaLogDebugSymbol = ktaComponent.createComboSymbol("KTA_LOG_LEVEL", None, comboValues)
+    ktaLogDebugSymbol.setLabel("KTA DEBUG LOG LEVEL")
+    ktaLogDebugSymbol.setVisible(True)
+    ktaLogDebugSymbol.setDefaultValue("E_KTALOG_LEVEL_NONE")
 
     ktaSymbol = ktaComponent.createStringSymbol("KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID", None)
     ktaSymbol.setLabel("Enter Fleet Profile Public UID")

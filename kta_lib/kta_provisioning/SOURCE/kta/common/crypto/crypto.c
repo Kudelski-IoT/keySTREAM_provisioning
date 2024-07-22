@@ -54,9 +54,7 @@
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
-#if LOG_KTA_ENABLE
 static const char* gpModuleName = "KTACRYPTO";
-#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -85,22 +83,23 @@ TKStatus ktacipherEncrypt
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((NULL == xpClearMsg) || (0u == xClearMsgLen) || (NULL == xpEncryptedMsg) ||
+      (NULL == xpEncryptedMsgLen) || (0u == *xpEncryptedMsgLen))
   {
-    if ((NULL == xpClearMsg) || (0u == xClearMsgLen) || (NULL == xpEncryptedMsg) ||
-        (NULL == xpEncryptedMsgLen) || (0u == *xpEncryptedMsgLen))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     status = salCryptoAesEnc(C_K_KTA__VOLATILE_3_ID,
                              xpClearMsg,
                              xClearMsgLen,
                              xpEncryptedMsg,
                              xpEncryptedMsgLen);
-    break;
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR("AES Encryption failed with status : %d", status);
+    }
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -122,17 +121,14 @@ TKStatus ktacipherSignMsg
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((NULL == xpMsgToSign) || (0u == xMsgToSignLen) || (NULL == xpComputedMac))
   {
-    if ((NULL == xpMsgToSign) || (0u == xMsgToSignLen) || (NULL == xpComputedMac))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     status  = salCryptoHmac(C_K_KTA__VOLATILE_2_ID, xpMsgToSign, xMsgToSignLen, xpComputedMac);
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -156,37 +152,35 @@ TKStatus ktacipherAddPadding
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((NULL == xpData) || (0u == xDataLength) || (NULL ==  xpPaddedData) ||
+      (NULL ==  xpPaddedDataLength) || (0u == *xpPaddedDataLength))
   {
-    if ((NULL == xpData) || (0u == xDataLength) || (NULL ==  xpPaddedData) ||
-        (NULL ==  xpPaddedDataLength) || (0u == *xpPaddedDataLength))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     /* Number of bytes to be appended. */
     paddingBytesAmount = C_K_CRYPTO__AES_BLOCK_SIZE  - (xDataLength % C_K_CRYPTO__AES_BLOCK_SIZE);
 
     if ((xDataLength + paddingBytesAmount) > *xpPaddedDataLength)
     {
-      M_KTALOG__ERR("(xDataLength + paddingBytesAmount) > *xpPaddedDataLength");
-      break;
+      M_KTALOG__ERR("Bytes to be padded [%d] is more than the padding length [%d]", (xDataLength + paddingBytesAmount), *xpPaddedDataLength);
     }
-
-    /* Copying the original data for further padding. */
-    (void)memmove(xpPaddedData, xpData, xDataLength);
-    /* Adding start of padding byte. */
-    xpPaddedData[xDataLength] = C_K_CRYPTO__PAD_START_BYTE;
-    for (size_t index = 1; index < paddingBytesAmount; index++)
+    else
     {
-      xpPaddedData[xDataLength + index] = 0x00;
-    }
+      /* Copying the original data for further padding. */
+      (void)memmove(xpPaddedData, xpData, xDataLength);
+      /* Adding start of padding byte. */
+      xpPaddedData[xDataLength] = C_K_CRYPTO__PAD_START_BYTE;
+      for (size_t index = 1; index < paddingBytesAmount; index++)
+      {
+        xpPaddedData[xDataLength + index] = 0x00;
+      }
 
-    *xpPaddedDataLength = xDataLength + paddingBytesAmount;
-    status = E_K_STATUS_OK;
-    break;
+      *xpPaddedDataLength = xDataLength + paddingBytesAmount;
+      status = E_K_STATUS_OK;
+    }
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -209,22 +203,19 @@ TKStatus ktacipherDecrypt
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((NULL == xpEncryptedMsg) || (0u == xEncryptedMsgLen) || (NULL == xpClearMsg) ||
+      (NULL == xpClearMsgLen) || (0u == *xpClearMsgLen))
   {
-    if ((NULL == xpEncryptedMsg) || (0u == xEncryptedMsgLen) || (NULL == xpClearMsg) ||
-        (NULL == xpClearMsgLen) || (0u == *xpClearMsgLen))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     status = salCryptoAesDec(C_K_KTA__VOLATILE_3_ID,
                              xpEncryptedMsg,
                              xEncryptedMsgLen,
                              xpClearMsg,
                              xpClearMsgLen);
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -246,20 +237,17 @@ TKStatus ktacipherVerifySignedMsg
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((NULL == xpMsgToVerify) || (0u == xMsgToVerifyLen) || (NULL == xpMacToVerify))
   {
-    if ((NULL == xpMsgToVerify) || (0u == xMsgToVerifyLen) || (NULL == xpMacToVerify))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     status  = salCryptoHmacVerify(C_K_KTA__VOLATILE_2_ID,
                                   xpMsgToVerify,
                                   xMsgToVerifyLen,
                                   xpMacToVerify);
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -282,17 +270,16 @@ TKStatus ktacipherRemovePadding
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if ((NULL == xpData) || (NULL ==  xpDataLength) ||
+      (0u == *xpDataLength) || (C_K_CRYPTO__AES_BLOCK_SIZE > *xpDataLength))
   {
-    if ((NULL == xpData) || (NULL ==  xpDataLength) ||
-        (0 == *xpDataLength) || (C_K_CRYPTO__AES_BLOCK_SIZE > *xpDataLength))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
-    for (len = *xpDataLength - 1; loop < C_K_CRYPTO__AES_BLOCK_SIZE; loop++)
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
+    len = *xpDataLength - 1u;
+    for (loop = 0; loop < C_K_CRYPTO__AES_BLOCK_SIZE; loop++)
     {
       /* Skipping the bytes from end of the buffer until we hit the C_K_CRYPTO__PAD_START_BYTE. */
       if (C_K_CRYPTO__PAD_START_BYTE == xpData[len])
@@ -314,8 +301,6 @@ TKStatus ktacipherRemovePadding
 
       len--;
     }
-
-    break;
   }
   /* Check for xpDataLength is a multiple of C_K_CRYPTO__AES_BLOCK_SIZE
    is already taken care during the Decryption process. */

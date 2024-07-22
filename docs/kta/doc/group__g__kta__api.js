@@ -8,6 +8,7 @@ var group__g__kta__api =
     [ "C_K__CONTEXT_VERSION_MAX_SIZE", "group__g__kta__api.html#gac76c5edeed2326a3878133e2c83eb9d0", null ],
     [ "C_KTA__VERSION_MAX_SIZE", "group__g__kta__api.html#gad65b1fa39e42237da6ac382c3136bdca", null ],
     [ "C_K__CONN_REQ_MAX_SIZE", "group__g__kta__api.html#gaf1f6e8c29b1daa6e4083b6dbcecfb4a5", null ],
+    [ "C_K__VERSION_STORAGE_LENGTH", "group__g__kta__api.html#gad0a999d36fd0127890a4873749af779b", null ],
     [ "TKStatus", "group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25", [
       [ "E_K_STATUS_OK", "group__g__kta__api.html#gga5fb1b599f29f45874740e356a97d7d25a563b78c7ef0eabb741679cf1980c731f", null ],
       [ "E_K_STATUS_PARAMETER", "group__g__kta__api.html#gga5fb1b599f29f45874740e356a97d7d25a606fe53ef3f4bab8c82d1602ff6bdff4", null ],

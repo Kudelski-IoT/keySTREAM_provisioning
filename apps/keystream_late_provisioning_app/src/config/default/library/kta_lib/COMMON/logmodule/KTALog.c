@@ -49,7 +49,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
-#if LOG_KTA_ENABLE
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
 /* -------------------------------------------------------------------------- */
@@ -81,18 +80,18 @@ typedef struct {
 
 /* Module level configs for each module. */
 static moduleLevelConfig gaLogConfigs[] = {
-  {"KTAMGR", E_KTALOG_LEVEL_ERROR},
-  {"KTACONFIG", E_KTALOG_LEVEL_ERROR},
-  {"KTAGENERAL", E_KTALOG_LEVEL_ERROR},
-  {"KTACMDHANDLER", E_KTALOG_LEVEL_ERROR},
-  {"KTAREGHANDLER", E_KTALOG_LEVEL_ERROR},
-  {"KTAACTHANDLER", E_KTALOG_LEVEL_ERROR},
-  {"KTACRYPTO", E_KTALOG_LEVEL_ERROR},
-  {"KTAICPPPARSER", E_KTALOG_LEVEL_ERROR},
-  {"SALSTORAGE", E_KTALOG_LEVEL_ERROR},
-  {"SALCRYPTO", E_KTALOG_LEVEL_ERROR},
-  {"SALOBJECT", E_KTALOG_LEVEL_ERROR},
-  {"SALTHIRDPARTY", E_KTALOG_LEVEL_ERROR}
+  {"KTAMGR", LOG_KTA_ENABLE},
+  {"KTACONFIG", LOG_KTA_ENABLE},
+  {"KTAGENERAL", LOG_KTA_ENABLE},
+  {"KTACMDHANDLER", LOG_KTA_ENABLE},
+  {"KTAREGHANDLER", LOG_KTA_ENABLE},
+  {"KTAACTHANDLER", LOG_KTA_ENABLE},
+  {"KTACRYPTO", LOG_KTA_ENABLE},
+  {"KTAICPPPARSER", LOG_KTA_ENABLE},
+  {"SALSTORAGE", LOG_KTA_ENABLE},
+  {"SALCRYPTO", LOG_KTA_ENABLE},
+  {"SALOBJECT", LOG_KTA_ENABLE},
+  {"SALTHIRDPARTY", LOG_KTA_ENABLE}
 };
 
 /** @brief Log event info structure. */
@@ -110,6 +109,7 @@ typedef void (*log_LogFn)(logEvent *ev);
 
 /* Log levels */
 static const char *gapLevelStrings[] = {
+                                      "NONE",
                                       "DEBUG",
                                       "INFO",
                                       "WARNING",
@@ -132,7 +132,7 @@ static const char *gapLevelStrings[] = {
  */
 static void logPrepare
 (
-  logEvent *ev
+  logEvent *xpEv
 );
 
 /**
@@ -146,31 +146,7 @@ static void logPrepare
  */
 static void initEvent
 (
-  logEvent *ev
-);
-
-/**
- * @brief
- *   Enables locking on the log API to prevent data corruption from parallel calls.
- *
- *   This function is responsible for enabling a lock mechanism on the log API to ensure that
- *   data corruption does not occur when multiple calls are made in parallel.
- */
-static void lock
-(
-  void
-);
-
-/**
- * @brief
- *   Makes the log API available for use.
- *
- *   This function is responsible for enabling the log API after it has been locked or disabled.
- *   Once called, the log API becomes accessible for use.
- */
-static void unlock
-(
-  void
+  logEvent *xpEvent
 );
 
 /* -------------------------------------------------------------------------- */
@@ -196,7 +172,7 @@ void ktaLog_Fct
   ...
 )
 {
-  if (xLevel < 0u || xLevel > 4u) {
+  if (xLevel < 0 || xLevel > 5) {
     return;
   }
   logEvent ev = {
@@ -211,7 +187,7 @@ void ktaLog_Fct
   };
   int moduleLogLevel = E_KTALOG_LEVEL_DEBUG;
 
-  for (int i = 0; i < sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0]); i++)
+  for (int i = 0; i < (int32_t)(sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
   {
     if (strncmp(gaLogConfigs[i].aModuleName, xpModuleName,
         strlen(gaLogConfigs[i].aModuleName)) == 0)
@@ -222,12 +198,10 @@ void ktaLog_Fct
   }
   if (xLevel >= moduleLogLevel)
   {
-    lock();
     initEvent(&ev);
     va_start(ev.ap, xpFmt);
     logPrepare(&ev);
     va_end(ev.ap);
-    unlock();
   }
 }
 
@@ -247,12 +221,12 @@ void ktaLog_PrintBuffer
   int             xSize
 )
 {
-  int  Index = 0;
+  int Index = 0;
   char aValue[C_MAX_VALUE_SIZE] = {0};
   char aBuffer[C_MAX_BUFFER_SIZE] = {0};
   int moduleLogLevel = E_KTALOG_LEVEL_ERROR;
 
-  for (int i = 0; i < sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0]); i++)
+  for (int i = 0; i < (int32_t)(sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
   {
     if (strncmp(gaLogConfigs[i].aModuleName, xaModuleName,
         strlen(gaLogConfigs[i].aModuleName)) == 0)
@@ -271,13 +245,13 @@ void ktaLog_PrintBuffer
     {
       snprintf(aValue, C_MAX_VALUE_SIZE, "%02X ", xpBuffer[Index]);
       salPrint(aValue);
-      if ((Index % C_LOG_COL_SIZE) == (C_LOG_COL_SIZE - 1))
+      if ((Index % (int32_t)C_LOG_COL_SIZE) == (C_LOG_COL_SIZE - 1u))
       {
         /* Line full. */
         salPrint("\r\n");
       }
     }
-    if ((xSize % C_LOG_COL_SIZE) != 0)
+    if ((xSize % (int32_t)C_LOG_COL_SIZE) != 0)
     {
       /* Last line not full. */
       salPrint("\r\n");
@@ -326,30 +300,12 @@ static void initEvent
   logEvent *xpEvent
 )
 {
-  if (!xpEvent->pTime) {
+  if (xpEvent->pTime == NULL) {
     time_t startTime = time(NULL);
 
     xpEvent->pTime = localtime(&startTime);
   }
 }
-
-/**
- * @implements lock
- *
- */
-static void lock(void)
-{
-}
-
-/**
- * @implements unlock
- *
- */
-static void unlock(void)
-{
-}
-
-#endif /* LOG_KTA_ENABLE */
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

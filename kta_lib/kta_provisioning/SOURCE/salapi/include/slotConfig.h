@@ -124,14 +124,16 @@
  * |  RFU 352             |          |
  * +---------------------+----------+
  */
-
+/* MISRA Rule 5.4 first 31 characters of macro should not be same.
+ * Other files follow the same.
+*/
 /** @brief Life Cycle State - 4 bytes. */
 /** @brief Life Cycle State - storage slot. */
-#define C_KTA__LIFE_CYCLE_STATE_STORAGE_SLOT       (0x08u)
+#define C_KTA__STORAGE_SLOT_LIFE_CYCLE_STATE       (0x08u)
 /** @brief Life Cycle State - storage block. */
-#define C_KTA__LIFE_CYCLE_STATE_STORAGE_BLOCK      (C_KTA__SLOT_BLOCK_0)
+#define C_KTA__STORAGE_BLOCK_LIFE_CYCLE_STATE      (C_KTA__SLOT_BLOCK_0)
 /** @brief Life Cycle State - storage offset. */
-#define C_KTA__LIFE_CYCLE_STATE_STORAGE_OFFSET     (C_KTA__BLOCK_OFFSET_0)
+#define C_KTA__STORAGE_OFFSET_LIFE_CYCLE_STATE     (C_KTA__BLOCK_OFFSET_0)
 
 /** @brief Rot Public UID storage slot - 8 bytes. */
 #define C_KTA__ROT_PUBLIC_UID_STORAGE_SLOT         (0x08u)
@@ -146,11 +148,18 @@
  * So it has only KeySetId|Padding(1|3) byte.
  */
 /** @brief L1 Key Material data storage slot. */
-#define C_KTA__L1_KEY_MATERIAL_DATA_STORAGE_SLOT   (0x08u)
+#define C_KTA__L1_KEY_DATA_STORAGE_SLOT            (0x08u)
 /** @brief L1 Key Material data storage block. */
-#define C_KTA__L1_KEY_MATERIAL_DATA_STORAGE_BLOCK  (C_KTA__SLOT_BLOCK_0)
+#define C_KTA__L1_KEY_DATA_STORAGE_BLOCK           (C_KTA__SLOT_BLOCK_0)
 /** @brief L1 Key Material data storage offset. */
-#define C_KTA__L1_KEY_MATERIAL_DATA_STORAGE_OFFSET (C_KTA__BLOCK_OFFSET_3)
+#define C_KTA__L1_KEY_DATA_STORAGE_OFFSET          (C_KTA__BLOCK_OFFSET_3)
+
+/** @brief KTA Version storage slot. */
+#define C_KTA__VERSION_STORAGE_SLOT                (0x08u)
+/** @brief KTA Version storage block. */
+#define C_KTA__VERSION_STORAGE_BLOCK               (C_KTA__SLOT_BLOCK_0)
+/** @brief KTA Version storage offset. */
+#define C_KTA__VERSION_STORAGE_OFFSET              (C_KTA__BLOCK_OFFSET_3)
 
 /** @brief Signer Id - 4 bytes. */
 /** @brief Signer Id - storage slot. */
@@ -170,17 +179,17 @@
 
 /** @brief Device Certificate. */
 /** @brief Device Certificate storage slot. */
-#define C_KTA__DEVICE_CERTIFICATE_STORAGE_SLOT     (0x0Au)
+#define C_KTA__DEVICE_CERT_STORAGE_SLOT            (0x0Au)
 /** @brief Device Certificate storage block */
-#define C_KTA__DEVICE_CERTIFICATE_STORAGE_BLOCK    (C_KTA__SLOT_BLOCK_0)
+#define C_KTA__DEVICE_CERT_STORAGE_BLOCK           (C_KTA__SLOT_BLOCK_0)
 /** @brief Device Certificate storage offset */
 #define C_KTA__DEVICE_CERTIFICATE_STORAGE_OFFSET   (C_KTA__BLOCK_OFFSET_0)
 
 /** @brief Singer public key. */
 /** @brief Singer public key storage slot. */
-#define C_KTA__SIGNER_PUBLIC_KEY_STORAGE_SLOT      (0x0Bu)
+#define C_KTA__SIGNER_PUB_KEY_STORAGE_SLOT         (0x0Bu)
 /** @brief Singer public key storage block. */
-#define C_KTA__SIGNER_PUBLIC_KEY_STORAGE_BLOCK     (C_KTA__SLOT_BLOCK_0)
+#define C_KTA__SIGNER_PUB_KEY_STORAGE_BLOCK        (C_KTA__SLOT_BLOCK_0)
 /** @brief Singer public key storage offset. */
 #define C_KTA__SIGNER_PUBLIC_KEY_STORAGE_OFFSET    (C_KTA__BLOCK_OFFSET_0)
 /** @brief Singer public key length. */
@@ -188,9 +197,9 @@
 
 /** @brief Singer Certificate. */
 /** @brief Singer Certificate storage slot. */
-#define C_KTA__SIGNER_CERTIFICATE_STORAGE_SLOT     (0x0Cu)
+#define C_KTA__SIGNER_CERT_STORAGE_SLOT            (0x0Cu)
 /** @brief Singer Certificate storage block. */
-#define C_KTA__SIGNER_CERTIFICATE_STORAGE_BLOCK    (C_KTA__SLOT_BLOCK_0)
+#define C_KTA__SIGNER_CERT_STORAGE_BLOCK           (C_KTA__SLOT_BLOCK_0)
 /** @brief Singer Certificate storage offset. */
 #define C_KTA__SIGNER_CERTIFICATE_STORAGE_OFFSET   (C_KTA__BLOCK_OFFSET_0)
 

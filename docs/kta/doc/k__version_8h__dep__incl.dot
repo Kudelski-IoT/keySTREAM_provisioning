@@ -9,5 +9,7 @@ digraph "k_version.h"
   Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node3 [label="version.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$version_8c.html",tooltip="keySTREAM Trusted Agent - Version module."];
   Node2 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node4 [label="config.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$config_8c.html",tooltip="keySTREAM Trusted Agent - Device configuration module."];
+  Node4 [label="ktamgr.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$ktamgr_8c.html",tooltip="keySTREAM Trusted Agent manager."];
+  Node2 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="config.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$config_8c.html",tooltip="keySTREAM Trusted Agent - Device configuration module."];
 }

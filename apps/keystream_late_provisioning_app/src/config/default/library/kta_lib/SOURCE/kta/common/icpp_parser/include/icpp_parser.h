@@ -85,165 +85,269 @@ extern "C" {
 #define C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES            (8u)
 
 /** @brief ICPP command tag with length 1byte and field start. */
-#define C_K_ICPP_PARSER__1BYTE_CMD_TAG_WITH_FILED_RANGE_START    (0X40u)
+#define C_K_ICPP__1BYTE_START_WITH_FILED_RANGE_CMD_TAG    (0X40u)
 
 /** @brief ICPP command tag with length 1byte and field end. */
-#define C_K_ICPP_PARSER__1BYTE_CMD_TAG_WITH_FILED_RANGE_END      (0X6Fu)
+#define C_K_ICPP__1BYTE_END_WITH_FILED_RANGE_CMD_TAG      (0X6Fu)
 
 /** @brief ICPP command tag with length 1byte and without field start. */
-#define C_K_ICPP_PARSER__1BYTE_CMD_TAG_WITHOUT_FILED_RANGE_START (0X70u)
+#define C_K_ICPP__1BYTE_START_WITHOUT_FILED_RANGE_CMD_TAG (0X70u)
 
 /** @brief ICPP command tag with length 1byte and without field end. */
-#define C_K_ICPP_PARSER__1BYTE_CMD_TAG_WITHOUT_FILED_RANGE_END   (0X7Fu)
+#define C_K_ICPP__1BYTE_END_WITHOUT_FILED_RANGE_CMD_TAG   (0X7Fu)
 
 /** @brief ICPP command tag with length 2byte and with field start. */
-#define C_K_ICPP_PARSER__2BYTE_CMD_TAG_WITH_FILED_RANGE_START    (0X80u)
+#define C_K_ICPP__2BYTE_START_WITH_FILED_RANGE_CMD_TAG    (0X80u)
 
 /** @brief ICPP command tag with length 2byte and with field end. */
-#define C_K_ICPP_PARSER__2BYTE_CMD_TAG_WITH_FILED_RANGE_END      (0XAFu)
+#define C_K_ICPP__2BYTE_END_WITH_FILED_RANGE_CMD_TAG      (0XAFu)
 
 /** @brief ICPP command tag with length 2byte and with field start. */
-#define C_K_ICPP_PARSER__2BYTE_CMD_TAG_WITHOUT_FILED_RANGE_START (0XB0u)
+#define C_K_ICPP__2BYTE_START_WITHOUT_FILED_RANGE_CMD_TAG (0XB0u)
 
 /** @brief ICPP command tag with length 2byte and with field start. */
-#define C_K_ICPP_PARSER__2BYTE_CMD_TAG_WITHOUT_FILED_RANGE_END   (0XBFu)
+#define C_K_ICPP__2BYTE_END_WITHOUT_FILED_RANGE_CMD_TAG   (0XBFu)
 
 
 /** @brief ICPP command tag has fields. */
 #define M_K_ICPP_PARSER__COMMAND_TAG_HAS_FIELDS(x_cmdTag)   \
-  (((x_cmdTag >= C_K_ICPP_PARSER__1BYTE_CMD_TAG_WITH_FILED_RANGE_START) && \
-    (x_cmdTag <= C_K_ICPP_PARSER__1BYTE_CMD_TAG_WITH_FILED_RANGE_END)) || \
-   ((x_cmdTag >= C_K_ICPP_PARSER__2BYTE_CMD_TAG_WITH_FILED_RANGE_START) && \
-    (x_cmdTag <= C_K_ICPP_PARSER__2BYTE_CMD_TAG_WITH_FILED_RANGE_END)))
+  ((((uint32_t)(x_cmdTag) >= C_K_ICPP__1BYTE_START_WITH_FILED_RANGE_CMD_TAG) && \
+    ((uint32_t)(x_cmdTag) <= C_K_ICPP__1BYTE_END_WITH_FILED_RANGE_CMD_TAG)) || \
+   (((uint32_t)(x_cmdTag) >= C_K_ICPP__2BYTE_START_WITH_FILED_RANGE_CMD_TAG) && \
+    ((uint32_t)(x_cmdTag) <= C_K_ICPP__2BYTE_END_WITH_FILED_RANGE_CMD_TAG)))
 
 /** @brief Supported status. */
 typedef enum
 {
-  E_K_ICPP_PARSER_STATUS_OK = 0x00,
-  /* Status OK, everything is fine. */
+  /**
+   * Status OK, everything is fine.
+   */
+  E_K_ICPP_PARSER_STATUS_OK = 0x00u,
+  /**
+   * Bad parameter.
+   */
   E_K_ICPP_PARSER_STATUS_PARAMETER,
-  /* Bad parameter. */
+  /**
+   * Undefined error.
+   */
   E_K_ICPP_PARSER_STATUS_ERROR,
-  /* Undefined error. */
+  /**
+   * No operation if header length 0.
+   */
   E_K_ICPP_PARSER_STATUS_NO_OPERATION,
-  /* No operation if header length 0. */
+  /**
+   * Command processing error from server.
+   */
   E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR,
-  /* Command processing error from server. */
+  /**
+   * Number of status values.
+   */
   E_K_ICPP_PARSER_NUM_STATUS
-  /* Number of status values. */
 } TKParserStatus;
 
 /** @brief Supported message types. */
 typedef enum
 {
-  E_K_ICPP_PARSER_MESSAGE_TYPE_COMMAND = 0x00,
-  /* Command message. */
+  /**
+   * Command message.
+   */
+  E_K_ICPP_PARSER_MESSAGE_TYPE_COMMAND = 0x00u,
+  /**
+   * Reponse message.
+   */
   E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE,
-  /* Reponse message. */
+  /**
+   * Notification message.
+   */
   E_K_ICPP_PARSER_MESSAGE_TYPE_NOTIFICATION,
-  /* Notification message. */
-  E_K_ICPP_PARSER_MESSAGE_TYPE_RESERVED,
-  /* Number of supported messages. */
+  /**
+   * Message type reserved.
+   */
+  E_K_ICPP_PARSER_MSG_TYPE_RESERVED,
 } TKIcppMessageType;
 
 
 /** @brief Crypto key types used in operations. */
 typedef enum
 {
-  E_K_ICPP_PARSER_CRYPTO_TYPE_FULL_CLEAR = 0x00,
-  /* No encryption is done. */
-  E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED   = 0x02,
-  /* L2 key based encryption is done. */
-  E_K_ICPP_PARSER_CRYPTO_TYPE_DOS_BASED  = 0x03,
-  /* Dos key based encryption is done. */
+  /**
+   * No encryption is done.
+   */
+  E_K_ICPP_PARSER_CRYPTO_TYPE_FULL_CLEAR = 0x00u,
+  /**
+   * L2 key based encryption is done.
+   */
+  E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED   = 0x02u,
+  /**
+   * Dos key based encryption is done.
+   */
+  E_K_ICPP_PARSER_CRYPTO_TYPE_DOS_BASED  = 0x03u,
 } TKIcppCryptoVersionType;
 
 /** @brief Encryption modes. */
 typedef enum
 {
-  E_K_ICPP_PARSER_FULL_ENC_MODE = 0x00,
-  /* Full data is encrypted. */
+  /**
+   * Full data is encrypted.
+   */
+  E_K_ICPP_PARSER_FULL_ENC_MODE = 0x00u,
+  /**
+   * Partial data is encrypted.
+   */
   E_K_ICPP_PARSER_PARTIAL_ENC_MODE,
-  /* Partial data is encrypted. */
 } TKIcppEncModeType;
 
 /** @brief Supported command tags. */
 typedef enum
 {
-  E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION            = 0x83,
-  /* Activation info tag. */
-  E_K_ICPP_PARSER_COMMAND_TAG_REGISTERATION_INFO    = 0x87,
-  /* Registeration info tag. */
-  E_K_ICPP_PARSER_COMMAND_TAG_THIRD_PARTY           = 0xB0,
-  /* Third party tag - without fieds. */
-  E_K_ICPP_PARSER_COMMAND_TAG_PROCESSING_STATUS     = 0x70,
-  /* Processing status tag. */
-  E_K_ICPP_PARSER_COMMAND_TAG_CMD_PROCESSING_ERROR  = 0x71,
-  /* Generate key pair tag. */
-  E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR     = 0x90,
-  /* Set object command tag. */
-  E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT            = 0x91,
-  /* Set object with association command tag. */
-  E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION  = 0x92,
-  /* Delete object command tag. */
-  E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT         = 0x50,
-  /* Delete key object command tag. */
-  E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT     = 0x51,
+  /**
+   * Activation info tag.
+   */
+  E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION            = 0x83u,
+  /**
+   * Registeration info tag.
+   */
+  E_K_ICPP_PARSER_COMMAND_TAG_REGISTERATION_INFO    = 0x87u,
+  /**
+   * Third party tag - without fieds.
+   */
+  E_K_ICPP_PARSER_COMMAND_TAG_THIRD_PARTY           = 0xB0u,
+  /**
+   * Processing status tag.
+   */
+  E_K_ICPP_PARSER_COMMAND_TAG_PROCESSING_STATUS     = 0x70u,
+  /**
+   * Command processing error tag.
+   */
+  E_K_ICPP_PARSER_COMMAND_TAG_CMD_PROCESSING_ERROR  = 0x71u,
+  /**
+   * Generate key pair tag.
+   */
+  E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR     = 0x90u,
+  /**
+   * Set object command tag.
+   */
+  E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT            = 0x91u,
+  /**
+   * Set object with association command tag.
+   */
+  E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION  = 0x92u,
+  /**
+   * Delete object command tag.
+   */
+  E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT         = 0x50u,
+  /**
+   * Delete key object command tag.
+   */
+  E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT         = 0x51u,
 } TKIcppCommandTag;
 
 /** @brief Supported Field Tags. */
 typedef enum
 {
-  E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID            = 0x85,
-  /* Immutable device profile uid tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_MUTABLE_DEVPROFUID    = 0x86,
-  /* Mutable device profile uid tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_ROT_SOL_ID            = 0x9B,
-  /* Rot Sol ID tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_CHIP_UID              = 0xAB,
-  /* Chip uid tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_ROT_PUBLIC_UID        = 0xD1,
-  /* Rot Public uid tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_CHIP_CERT             = 0xF3,
-  /* Chip certificate tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_ROT_E_PK              = 0xF4,
-  /* Rot e_pk tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_SIGNED_PUB_KEY        = 0xF6,
-  /* Signed public key tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_CHIP_ATTEST_CERT      = 0xF9,
-  /* Chip attestation certificate tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT           = 0x92,
-  /* Act seq_cnt tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_KTA_CAPABILITY        = 0xAC,
-  /* keySTREAM Trusted Agent Capability tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID       = 0x8D,
-  /* keySTREAM Trusted Agent context profile uid tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_SERIAL_NO     = 0x8A,
-  /* keySTREAM Trusted Agent context serial number tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_VER           = 0x8C,
-  /* keySTREAM Trusted Agent context version tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_KTA_VER               = 0x89,
-  /* keySTREAM Trusted Agent version tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO         = 0x82,
-  /* Device serial number tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK               = 0xF5,
-  /* keySTREAM Ephemeral Public Key tag. */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE       = 0xB3,
-  /* ObjectType field in command from keySTREAM. */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_ID         = 0xB0,
-  /* Identifier field in command from keySTREAM. */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA_ATTRIBUTES   = 0xB1,
-  /* Data attributes field in command from keySTREAM. */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA              = 0xF8,
-  /* Data field in command from keySTREAM. */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO  = 0xB4,
-  /* Association info field in command from keySTREAM. */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_OWNER      = 0xB2,
-  /* Object Owner optional field in command from keySTREAM. */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS = 0xBF,
-  /* Command processing status field tag in command from keySTREAM. */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_PUBLIC_KEY        = 0xF7,
-  /* Public key field tag in command from keySTREAM. */
+  /**
+   * Immutable device profile uid tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID            = 0x85u,
+  /**
+   * Mutable device profile uid tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_MUTABLE_DEVPROFUID    = 0x86u,
+  /**
+   * Rot Sol ID tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_SOL_ID            = 0x9Bu,
+  /**
+   * Chip uid tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CHIP_UID              = 0xABu,
+  /**
+   * Rot Public uid tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_PUBLIC_UID        = 0xD1u,
+  /**
+   * Chip certificate tag.
+   */
+  E_K_ICPP_PARSER_FLD_TAG_CHIP_CERT               = 0xF3u,
+  /**
+   * Rot e_pk tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_E_PK              = 0xF4u,
+  /**
+   * Signed public key tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_SIGNED_PUB_KEY        = 0xF6u,
+  /**
+   * Chip attestation certificate tag.
+   */
+  E_K_ICPP_PARSER_FLD_TAG_CHIP_ATTEST_CERT        = 0xF9u,
+  /**
+   * Act seq_cnt tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT           = 0x92u,
+  /**
+   * keySTREAM Trusted Agent Capability tag.
+   */
+  E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY          = 0xACu,
+  /**
+   * keySTREAM Trusted Agent context profile uid tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID       = 0x8Du,
+  /**
+   * keySTREAM Trusted Agent context serial number tag.
+   */
+  E_K_ICPP_PARSER_FLD_TAG_KTA_CTX_SERIAL_NO       = 0x8Au,
+  /**
+   * keySTREAM Trusted Agent context version tag.
+   */
+  E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER               = 0x8Cu,
+  /**
+   * keySTREAM Trusted Agent version tag.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_KTA_VER               = 0x89u,
+  /**
+   * Device serial number tag.
+   */
+  /* MISRA Rule 5.4 flags the following macro's name as ambiguous from the one */
+  E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO         = 0x82u,
+  /**
+   * keySTREAM Ephemeral Public Key tag.
+   */
+  /* MISRA Rule 5.4 flags the following macro's name as ambiguous from the one */
+  E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK               = 0xF5u,
+  /**
+   * ObjectType field in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE       = 0xB3u,
+  /**
+   * Identifier field in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FLD_TAG_CMD_OBJECT_ID           = 0xB0u,
+  /**
+   * Data attributes field in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA_ATTRIBUTES   = 0xB1u,
+  /**
+   * Data field in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FLD_TAG_CMD_DATA                = 0xF8u,
+  /**
+   * Association info field in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO  = 0xB4u,
+  /**
+   * Object Owner optional field in command from keySTREAM.
+   */
+  /* MISRA Rule 5.4 flags the following macro's name as ambiguous from the one */
+  E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER          = 0xB2u,
+  /**
+   * Command processing status field tag in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS = 0xBFu,
+  /**
+   * Public key field tag in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY          = 0xF7u,
 } TKIcppFieldTag;
 
 /** @brief ICPP field structure. */
@@ -290,9 +394,9 @@ typedef struct
 /** @brief ICPP Message Structure. */
 typedef struct
 {
-  uint8_t          cryptoVersion;
+  uint8_t           cryptoVersion;
   /* Crypto version. */
-  uint8_t          encMode;
+  uint8_t           encMode;
   /* Encryption mode. */
   TKIcppMessageType msgType;
   /* ICPP Message type. */

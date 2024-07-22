@@ -185,7 +185,7 @@ TKStatus ktacipherVerifySignedMsg
  * @param[inout] xpPaddedData
  *   [in] Pointer to buffer to carry padded data.
  *   [out] Actual padded data.
- * @param[in,out] xPaddedDataLength
+ * @param[in,out] xpPaddedDataLength
  *   [in] Pointer to buffer to carry padded data length.
  *   [out] Actual padded data length.
  *
@@ -199,7 +199,7 @@ TKStatus ktacipherAddPadding
   const uint8_t* xpData,
   const size_t   xDataLength,
   uint8_t*       xpPaddedData,
-  size_t*        xPaddedDataLength
+  size_t*        xpPaddedDataLength
 );
 
 /**
@@ -209,7 +209,7 @@ TKStatus ktacipherAddPadding
  * @param[in, out] xpData
  *   [in] Buffer with padded data.
  *   [out] Buffer without padded data.
- * @param[in,out] xDataLength
+ * @param[in,out] xpDataLength
  *   [in] Padded data length.
  *   [out] Actual Non padded data length.
  *
@@ -221,7 +221,7 @@ TKStatus ktacipherAddPadding
 TKStatus ktacipherRemovePadding
 (
   const uint8_t* xpData,
-  size_t*        xDataLength
+  size_t*        xpDataLength
 );
 
 #ifdef __cplusplus

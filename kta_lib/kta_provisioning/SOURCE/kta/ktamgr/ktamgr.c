@@ -43,6 +43,7 @@
 #include "acthandler.h"
 #include "cmdhandler.h"
 #include "reghandler.h"
+#include "kta_version.h"
 #include "config.h"
 #include "k_crypto.h"
 #include "general.h"
@@ -113,15 +114,14 @@ static const uint8_t gaKtaLifeCycleNVMVData[C_KTA_CONFIG__LIFE_CYCLE_MAX_STATE]
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
-#if LOG_KTA_ENABLE
 /* Module name used for logging */
 static const char* gpModuleName = "KTAMGR";
-#endif
 
-static TKtaState gKtaState                   = E_KTA_STATE_INITIAL;
-static TKtaLifeCycleState gKtaLifeCycleState = E_LIFE_CYCLE_STATE_INIT;
-static uint8_t  gKtaIsPreActivated           = 0u;
-static TKktaKeyStreamStatus gCommandStatus   = E_K_KTA_KS_STATUS_NO_OPERATION;
+static TKtaState gKtaState                              = E_KTA_STATE_INITIAL;
+static TKtaLifeCycleState gKtaLifeCycleState            = E_LIFE_CYCLE_STATE_INIT;
+static uint8_t gaKtaVersion[C_K__VERSION_STORAGE_LENGTH] = {0};
+static uint8_t  gKtaIsPreActivated                      = 0u;
+static TKktaKeyStreamStatus gCommandStatus              = E_K_KTA_KS_STATUS_NONE;
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -299,16 +299,11 @@ TKStatus ktaInitialize
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  if (E_KTA_STATE_INITIAL == gKtaState)
   {
-    if (E_KTA_STATE_INITIAL == gKtaState)
-    {
-      gKtaState = E_KTA_STATE_INITIALIZED;
-      M_KTALOG__DEBUG("KTA initialization SUCCESS!!!");
-      status = E_K_STATUS_OK;
-    }
-
-    break;
+    gKtaState = E_KTA_STATE_INITIALIZED;
+    M_KTALOG__DEBUG("KTA initialization SUCCESS!!!");
+    status = E_K_STATUS_OK;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -319,6 +314,10 @@ TKStatus ktaInitialize
  * @brief implement ktaStartup
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaStartup
 (
   const uint8_t*  xpL1SegSeed,
@@ -333,28 +332,28 @@ TKStatus ktaStartup
   TKStatus status = E_K_STATUS_ERROR;
   // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
   size_t  lifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
+  size_t  ktaVersionLen = C_K__VERSION_STORAGE_LENGTH;
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  /* MISRA Rule 2.1 for loop increment is unreachable, loop will execute only once. Other codes follow the same. */
+  // REQ RQ_M-KTA-STRT-FN-0008(1) : Input Parameters Check
+  // REQ RQ_M-KTA-STRT-CF-0010(1) : Context Profile UID Size
+  // REQ RQ_M-KTA-STRT-CF-0020(1) : Context Serial Number Size
+  // REQ RQ_M-KTA-STRT-CF-0030(1) : Context Version Size
+  if ((NULL == xpL1SegSeed) || (NULL == xpKtaContextProfileUid) ||
+      (0U == xKtaContextProfileUidLen) ||
+      (NULL == xpKtaContexSerialNumber) || (0u == xKtaContexSerialNumberLen) ||
+      (NULL == xpKtaContextVersion) || (0u == xKtaContextVersionLen) ||
+      (C_K__CONTEXT_PROFILE_UID_MAX_SIZE < xKtaContextProfileUidLen) ||
+      (C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE < xKtaContexSerialNumberLen) ||
+      (C_K__CONTEXT_VERSION_MAX_SIZE < xKtaContextVersionLen))
   {
-    // REQ RQ_M-KTA-STRT-FN-0008(1) : Input Parameters Check
-    // REQ RQ_M-KTA-STRT-CF-0010(1) : Context Profile UID Size
-    // REQ RQ_M-KTA-STRT-CF-0020(1) : Context Serial Number Size
-    // REQ RQ_M-KTA-STRT-CF-0030(1) : Context Version Size
-    if ((NULL == xpL1SegSeed) || (NULL == xpKtaContextProfileUid) ||
-        (0U == xKtaContextProfileUidLen) ||
-        (NULL == xpKtaContexSerialNumber) || (0u == xKtaContexSerialNumberLen) ||
-        (NULL == xpKtaContextVersion) || (0u == xKtaContextVersionLen) ||
-        (C_K__CONTEXT_PROFILE_UID_MAX_SIZE < xKtaContextProfileUidLen) ||
-        (C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE < xKtaContexSerialNumberLen) ||
-        (C_K__CONTEXT_VERSION_MAX_SIZE < xKtaContextVersionLen))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     // REQ RQ_M-KTA-STRT-FN-0002(1) : Check KTA State
     if (E_KTA_STATE_INITIALIZED == gKtaState)
     {
@@ -362,25 +361,32 @@ TKStatus ktaStartup
       // REQ RQ_M-KTA-LCST-FN-0020(1) : Power off in INIT|INITIALIZED state
       // REQ RQ_M-KTA-LCST-FN-0025(1) : Power off in INIT|STARTED state
       status = lgetNVMLifeCycleState(&lifeCycleStateLen);
+      status = salStorageGetValue(C_K_KTA__VERSION_SLOT_ID, gaKtaVersion, &ktaVersionLen);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__DEBUG("Reading KTA Version failed with status:%d.\r\n", status);
+        goto end;
+      }
+      M_KTALOG__DEBUG("KTA Version in device is: %s\r\n", ktaGetDecodedVersionStr(gaKtaVersion));
 
       if ((E_K_STATUS_OK != status) || (0U == lifeCycleStateLen))
       {
         M_KTALOG__ERR("Reading life cycle state from NVM failed, status = [%d]", status);
-        break;
+        goto end;
       }
 
       M_KTALOG__DEBUG("Setting kta context configuration data to the platform");
       // REQ RQ_M-KTA-STRT-FN-0050(1) : Set Context Information
       // REQ RQ_M-KTA-STRT-FN-0060(1) : Set L1 Segmentaion Seed
       status = ktaSetContextInfoConfig(xpL1SegSeed, xpKtaContextProfileUid,
-                                       xKtaContextProfileUidLen, xpKtaContexSerialNumber,
-                                       xKtaContexSerialNumberLen, xpKtaContextVersion,
-                                       xKtaContextVersionLen, gKtaLifeCycleState);
+                                      xKtaContextProfileUidLen, xpKtaContexSerialNumber,
+                                      xKtaContexSerialNumberLen, xpKtaContextVersion,
+                                      xKtaContextVersionLen, gKtaLifeCycleState);
 
       if (E_K_STATUS_OK != status)
       {
         M_KTALOG__ERR("Setting kta context config data, status = [%d]", status);
-        break;
+        goto end;
       }
 
       // REQ RQ_M-KTA-LCST-FN-0050(1) : Power off in ACTIVATED|INITIALIZED state
@@ -395,7 +401,7 @@ TKStatus ktaStartup
         if (status != E_K_STATUS_OK)
         {
           M_KTALOG__ERR("Deriving L2 key got failed, status = [%d]", status);
-          break;
+          goto end;
         }
       }
 
@@ -403,10 +409,9 @@ TKStatus ktaStartup
       gKtaState = E_KTA_STATE_STARTED;
       M_KTALOG__DEBUG("KTA reached to STARTED state");
     }
-
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -415,6 +420,10 @@ TKStatus ktaStartup
  * @brief implement ktaSetDeviceInformation
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaSetDeviceInformation
 (
   const uint8_t*  xpDeviceProfilePublicUid,
@@ -425,25 +434,24 @@ TKStatus ktaSetDeviceInformation
 )
 {
   TKStatus status = E_K_STATUS_ERROR;
+  uint8_t  aKtaVersion[C_K__VERSION_STORAGE_LENGTH] = C_K_KTA__ENCODED_VERSION;
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  // REQ RQ_M-KTA-STRT-FN-0090(1) : Input Parameters Check
+  if ((NULL == xpDeviceProfilePublicUid) ||
+      (0u == xDeviceProfilePublicUidSize) ||
+      (C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE < xDeviceProfilePublicUidSize) ||
+      (NULL == xpDeviceSerialNum) ||
+      (0u == xDeviceSerialNumSize) ||
+      (C_K__DEVICE_SERIAL_NUM_MAX_SIZE < xDeviceSerialNumSize) ||
+      (NULL == xpConnectionRequest))
   {
-    // REQ RQ_M-KTA-STRT-FN-0090(1) : Input Parameters Check
-    if ((NULL == xpDeviceProfilePublicUid) ||
-        (0u == xDeviceProfilePublicUidSize) ||
-        (C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE < xDeviceProfilePublicUidSize) ||
-        (NULL == xpDeviceSerialNum) ||
-        (0u == xDeviceSerialNumSize) ||
-        (C_K__DEVICE_SERIAL_NUM_MAX_SIZE < xDeviceSerialNumSize) ||
-        (NULL == xpConnectionRequest))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     if (E_KTA_STATE_STARTED == gKtaState)
     {
       switch (gKtaLifeCycleState)
@@ -461,7 +469,7 @@ TKStatus ktaSetDeviceInformation
           if (E_K_STATUS_OK != status)
           {
             M_KTALOG__ERR("Setting Device info config data failed, status = [%d]", status);
-            break;
+            goto end;
           }
 
           M_KTALOG__DEBUG("Life cycle state reached to SEALED state, storing in persistent memory");
@@ -476,11 +484,11 @@ TKStatus ktaSetDeviceInformation
           if (E_K_STATUS_OK != status)
           {
             M_KTALOG__ERR("SAL API failed while storing life cycle state, status = [%d]", status);
-            break;
+            goto end;
           }
 
           gKtaLifeCycleState = E_LIFE_CYCLE_STATE_SEALED;
-          M_KTALOG__DEBUG("Setting life cycle state to SEALED state, gKtaLifeCycleState = [%d]",
+          M_KTALOG__INFO("Setting life cycle state to SEALED state, gKtaLifeCycleState = [%d]",
                           gKtaLifeCycleState);
           *xpConnectionRequest = 1;
           M_KTALOG__DEBUG("Connection Request set to TRUE");
@@ -511,7 +519,14 @@ TKStatus ktaSetDeviceInformation
         // REQ RQ_M-KTA-LCST-FN-0070(1) : Power off in PROVISIONED|STARTED state
         case E_LIFE_CYCLE_STATE_PROVISIONED:
         {
-          M_KTALOG__DEBUG("Connection Request1 set to FALSE");
+          if (memcmp(gaKtaVersion, aKtaVersion, C_K__VERSION_STORAGE_LENGTH) < 0)
+          {
+              M_KTALOG__DEBUG("Connection Request set to TRUE");
+              *xpConnectionRequest = 1;
+              status = E_K_STATUS_OK;
+              break;
+          }
+          M_KTALOG__DEBUG("Connection Request set to FALSE");
           *xpConnectionRequest = 0;
           status = E_K_STATUS_OK;
         }
@@ -533,17 +548,16 @@ TKStatus ktaSetDeviceInformation
         gKtaState = E_KTA_STATE_RUNNING;
         M_KTALOG__DEBUG("KTA reached to RUNNING state");
       }
-      break;
     }
     // REQ RQ_M-KTA-STRT-FN-0040(1) : Invalid KTA State
     // REQ RQ_M-KTA-STRT-FN-0120(1) : Invalid KTA State
     else
     {
       M_KTALOG__ERR("Device in a bad state, gKtaState = [%d]", gKtaState);
-      break;
     }
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -568,280 +582,280 @@ TKStatus ktaExchangeMessage
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  // REQ RQ_M-KTA-STRT-FN-0150(1) : Input Parameters Check
+  // REQ RQ_M-KTA-STRT-CF-0160(1) : ICPP Message Max Size
+  if (
+      (NULL == xpKs2ktaMsg)     ||
+      (NULL == xpKta2ksMsg)     ||
+      (NULL == xpKta2ksMsgLen) ||
+      (0u == *xpKta2ksMsgLen) ||
+      (C_K__ICPP_MSG_MAX_SIZE < xKs2ktaMsgLen)
+
+      )
   {
-    // REQ RQ_M-KTA-STRT-FN-0150(1) : Input Parameters Check
-    // REQ RQ_M-KTA-STRT-CF-0160(1) : ICPP Message Max Size
-    if (
-        (NULL == xpKs2ktaMsg)     ||
-        (NULL == xpKta2ksMsg)     ||
-        (NULL == xpKta2ksMsgLen) ||
-        (0u == *xpKta2ksMsgLen) ||
-        (C_K__ICPP_MSG_MAX_SIZE < xKs2ktaMsgLen)
-
-       )
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     // REQ RQ_M-KTA-STRT-FN-0170(1) : Invalid KTA State
     if (E_KTA_STATE_RUNNING != gKtaState)
     {
       M_KTALOG__ERR("Invalid KTA State");
-      break;
     }
-
-    switch (gKtaLifeCycleState)
+    else
     {
-      // REQ RQ_M-KTA-LCST-FN-0030(1) : Power off in SEALED|RUNNING state
-      case E_LIFE_CYCLE_STATE_SEALED:
-        if (xKs2ktaMsgLen == 0u)
-        {
-          M_KTALOG__DEBUG("Preparing the activation request...");
-          // REQ RQ_M-KTA-ACTV-FN-0005(1) :
-          // Build Activation Request
-          // REQ RQ_M-KTA-STRT-FN-0200(1) : Prepare the activation msg
-          status = ktaActBuildActivationRequest(xpKta2ksMsg, xpKta2ksMsgLen);
-
-          if (E_K_STATUS_OK != status)
+      switch (gKtaLifeCycleState)
+      {
+        // REQ RQ_M-KTA-LCST-FN-0030(1) : Power off in SEALED|RUNNING state
+        case E_LIFE_CYCLE_STATE_SEALED:
+          if (xKs2ktaMsgLen == 0u)
           {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Preparing the activation request got failed, status = [%d]",
-                          status);
-            break;
-          }
+            M_KTALOG__DEBUG("Preparing the activation request...");
+            // REQ RQ_M-KTA-ACTV-FN-0005(1) :
+            // Build Activation Request
+            // REQ RQ_M-KTA-STRT-FN-0200(1) : Prepare the activation msg
+            status = ktaActBuildActivationRequest(xpKta2ksMsg, xpKta2ksMsgLen);
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("Preparing the activation request got failed, status = [%d]",
+                            status);
+              break;
+            }
+            M_KTALOG__INFO("Sending Activation Request");
           break;
-        }
-
-        M_KTALOG__DEBUG("Validating the msg received from the server...");
-        status = lCheckKs2KtaMessage(xpKs2ktaMsg, xKs2ktaMsgLen,
-                                     xpKta2ksMsg, xpKta2ksMsgLen,
-                                     aClearMsg, sizeof(aClearMsg),
-                                     &recvdProtoMessage, &parserStatus);
-
-        if ((status != E_K_STATUS_OK) || (parserStatus != E_K_ICPP_PARSER_STATUS_OK))
-        {
-          M_KTALOG__ERR("Msg validation received from the server got failed,");
-          M_KTALOG__ERR("status = [%d], parserStatus = [%d]", status, parserStatus);
-          break;
-        }
-
-        if (gKtaIsPreActivated != (uint8_t)0)
-        {
-          uint8_t aL1KeyMaterial[C_KEY_CONFIG__MATERIAL_MAX_SIZE] = {0};
-
-          M_KTALOG__DEBUG("KTA in PreActivated state, generating aL1KeyMaterial");
-          status = ktaGetL1SegSeed(aL1KeyMaterial);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Getting L1 SegSeed got failed, status = [%d]", status);
-            break;
           }
 
-          aL1KeyMaterial[C_K__L1_SEGMENTATION_SEED_SIZE] = recvdProtoMessage.rotKeySetId;
-          status = ktaSetRotKeySetId(recvdProtoMessage.rotKeySetId);
+          M_KTALOG__DEBUG("Validating the msg received from the server...");
+          status = lCheckKs2KtaMessage(xpKs2ktaMsg, xKs2ktaMsgLen,
+                                        xpKta2ksMsg, xpKta2ksMsgLen,
+                                        aClearMsg, sizeof(aClearMsg),
+                                        &recvdProtoMessage, &parserStatus);
 
-          if (E_K_STATUS_OK != status)
+          if ((status != E_K_STATUS_OK) || (parserStatus != E_K_ICPP_PARSER_STATUS_OK))
           {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("ktaSetRotKeySetId failed, status = [%d]", status);
-            break;
-          }
-
-          M_KTALOG__DEBUG("Storing the received aL1KeyMaterial into persistent memory");
-          status = salStorageSetValue(C_K_KTA__L1_KEY_MATERIAL_DATA_ID,
-                                      aL1KeyMaterial, C_KEY_CONFIG__MATERIAL_MAX_SIZE);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("SAL API failed while storing the L1 key material, status = [%d]",
-                          status);
-            break;
-          }
-
-          M_KTALOG__DEBUG("Life cycle state reached to ACTIVATED state, "
-                          "storing in persist memory");
-          // REQ RQ_M-KTA-STRT-FN-0240(1) : Change LifeCycleState to Activated
-          // after receiving the thirdParty Or Object Managment Commands
-
-          // REQ RQ_M-KTA-LCST-FN-0050(1) : Power off in ACTIVATED|INITIALIZED state
-          // REQ RQ_M-KTA-LCST-FN-0055(1) : Power off in ACTIVATED|STARTED state
-          // REQ RQ_M-KTA-LCST-FN-0045(1) : Power off in ACTIVATED|RUNNING state
-          status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                      gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_ACTIVATED],
-                                      C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("SAL API failed while storing the life cycle state, status = [%d]",
-                          status);
-            break;
-          }
-
-          gKtaLifeCycleState = E_LIFE_CYCLE_STATE_ACTIVATED;
-          gKtaIsPreActivated = 0u;
-          M_KTALOG__DEBUG("Processing 3rd party commands...");
-          // REQ RQ_M-KTA-STRT-FN-0290(1) :
-          /** Process the received commands.
-           */
-          // REQ RQ_M-KTA-OBJM-FN-0800(1) : Set Object With Association ICPP Message
-          status = ktaCmdProcess(&recvdProtoMessage,
-                                 xpKta2ksMsg,
-                                 xpKta2ksMsgLen);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Processing of 3rd party command got failed, status = [%d]",
-                          status);
-            break;
-          }
-
-          break;
-        }
-        else
-        {
-          M_KTALOG__DEBUG("Deriving L1 field key...");
-          // REQ RQ_M-KTA-STRT-FN-0210(1) : Process the activation response msg
-          status = ktaActResponseBuildL1Keys(&recvdProtoMessage);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Deriving L1 field key failed, status = [%d]", status);
-            break;
-          }
-
-          M_KTALOG__DEBUG("BuildL1Keys success, deriving L2 Keys...");
-          status = ktaActDeriveL2Keys();
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Deriving L2 key got failed, status = [%d]", status);
-            break;
-          }
-
-          M_KTALOG__DEBUG("Building registration request...");
-          // REQ RQ_M-KTA-REGT-FN-0011(1) : Build Registeration Info Request
-          // REQ RQ_M-KTA-STRT-FN-0220(1) :
-          /* Prepare Reg Info msg after processing activation response msg. */
-          status = ktaregBuildRegistrationRequest(&recvdProtoMessage,
-                                                  xpKta2ksMsg,
-                                                  xpKta2ksMsgLen);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Building registration request got failed, status = [%d]", status);
-            break;
-          }
-
-          gKtaIsPreActivated = 1u;
-        }
-
-        break;
-
-      case E_LIFE_CYCLE_STATE_ACTIVATED:
-      case E_LIFE_CYCLE_STATE_PROVISIONED:
-      case E_LIFE_CYCLE_STATE_CON_REQ:
-        if (xKs2ktaMsgLen == 0U)
-        {
-          M_KTALOG__DEBUG("Preparing NoOp notification request...");
-          // REQ RQ_M-KTA-NOOP-FN-0050(1) : Build NoOP message Message
-          // REQ RQ_M-KTA-RENW-FN-0010(1) : NoOP Message
-          // REQ RQ_M-KTA-RFSH-FN-0010(1) : NoOP Message from KTA
-          // REQ RQ_M-KTA-STRT-FN-0280(1) : Prepare NoOP Message
-          status = lPrepareNoOpNotificationRequest(xpKta2ksMsg, xpKta2ksMsgLen);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Preparation of NoOp notification request got failed, status = [%d]",
-                          status);
-          }
-
-          break;
-        }
-
-        if (E_LIFE_CYCLE_STATE_PROVISIONED == gKtaLifeCycleState)
-        {
-          /* Setting the state to connection request. */
-          M_KTALOG__DEBUG("Life cycle state reached to CON_REQ state, "
-                          "storing in persistent memory");
-          status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                      gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_CON_REQ],
-                                      C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-          if (E_K_STATUS_OK != status)
-          {
-            M_KTALOG__ERR("SAL API failed while storing life cycle state, status = [%d]", status);
-            *xpKta2ksMsgLen = 0;
-            break;
-          }
-
-          gKtaLifeCycleState = E_LIFE_CYCLE_STATE_CON_REQ;
-        }
-
-        M_KTALOG__DEBUG("Validating the msg received from the server...");
-        status = lCheckKs2KtaMessage(xpKs2ktaMsg, xKs2ktaMsgLen,
-                                     xpKta2ksMsg, xpKta2ksMsgLen,
-                                     aClearMsg, sizeof(aClearMsg),
-                                     &recvdProtoMessage, &parserStatus);
-
-        if ((status != E_K_STATUS_OK) || (parserStatus != E_K_ICPP_PARSER_STATUS_OK))
-        {
-          (*xpKta2ksMsgLen) = 0;
-
-          if (parserStatus != E_K_ICPP_PARSER_STATUS_NO_OPERATION)
-          {
-            M_KTALOG__ERR("Validation of the msg received from the server failed,");
+            M_KTALOG__ERR("Msg validation received from the server got failed,");
             M_KTALOG__ERR("status = [%d], parserStatus = [%d]", status, parserStatus);
+            break;
+          }
+
+          if (gKtaIsPreActivated != (uint8_t)0)
+          {
+            uint8_t aL1KeyMaterial[C_KEY_CONFIG__MATERIAL_MAX_SIZE] = {0};
+
+            M_KTALOG__DEBUG("KTA in PreActivated state, generating aL1KeyMaterial");
+            status = ktaGetL1SegSeed(aL1KeyMaterial);
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("Getting L1 SegSeed got failed, status = [%d]", status);
+              break;
+            }
+
+            aL1KeyMaterial[C_K__L1_SEGMENTATION_SEED_SIZE] = recvdProtoMessage.rotKeySetId;
+            status = ktaSetRotKeySetId(recvdProtoMessage.rotKeySetId);
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("ktaSetRotKeySetId failed, status = [%d]", status);
+              break;
+            }
+
+            M_KTALOG__DEBUG("Storing the received aL1KeyMaterial into persistent memory");
+            status = salStorageSetValue(C_K_KTA__L1_KEY_MATERIAL_DATA_ID,
+                                        aL1KeyMaterial, C_KEY_CONFIG__MATERIAL_MAX_SIZE);
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("SAL API failed while storing the L1 key material, status = [%d]",
+                            status);
+              break;
+            }
+
+            M_KTALOG__DEBUG("Life cycle state reached to ACTIVATED state, "
+                            "storing in persist memory");
+            // REQ RQ_M-KTA-STRT-FN-0240(1) : Change LifeCycleState to Activated
+            // after receiving the thirdParty Or Object Managment Commands
+
+            // REQ RQ_M-KTA-LCST-FN-0050(1) : Power off in ACTIVATED|INITIALIZED state
+            // REQ RQ_M-KTA-LCST-FN-0055(1) : Power off in ACTIVATED|STARTED state
+            // REQ RQ_M-KTA-LCST-FN-0045(1) : Power off in ACTIVATED|RUNNING state
+            status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                        gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_ACTIVATED],
+                                        C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("SAL API failed while storing the life cycle state, status = [%d]",
+                            status);
+              break;
+            }
+
+            gKtaLifeCycleState = E_LIFE_CYCLE_STATE_ACTIVATED;
+            M_KTALOG__INFO("Setting KTA Lifecycle state to Activated, state = [%d]", gKtaLifeCycleState);
+            gKtaIsPreActivated = 0u;
+            M_KTALOG__DEBUG("Processing 3rd party commands...");
+            // REQ RQ_M-KTA-STRT-FN-0290(1) :
+            /** Process the received commands.
+             */
+            // REQ RQ_M-KTA-OBJM-FN-0800(1) : Set Object With Association ICPP Message
+            status = ktaCmdProcess(&recvdProtoMessage,
+                                    xpKta2ksMsg,
+                                    xpKta2ksMsgLen);
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("Processing of 3rd party command got failed, status = [%d]",
+                            status);
+              break;
+            }
+
+            break;
+          }
+          else
+          {
+            M_KTALOG__DEBUG("Deriving L1 field key...");
+            // REQ RQ_M-KTA-STRT-FN-0210(1) : Process the activation response msg
+            status = ktaActResponseBuildL1Keys(&recvdProtoMessage);
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("Deriving L1 field key failed, status = [%d]", status);
+              break;
+            }
+
+            M_KTALOG__DEBUG("BuildL1Keys success, deriving L2 Keys...");
+            status = ktaActDeriveL2Keys();
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("Deriving L2 key got failed, status = [%d]", status);
+              break;
+            }
+
+            M_KTALOG__DEBUG("Building registration request...");
+            // REQ RQ_M-KTA-REGT-FN-0011(1) : Build Registeration Info Request
+            // REQ RQ_M-KTA-STRT-FN-0220(1) :
+            /* Prepare Reg Info msg after processing activation response msg. */
+            status = ktaregBuildRegistrationRequest(&recvdProtoMessage,
+                                                    xpKta2ksMsg,
+                                                    xpKta2ksMsgLen);
+
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("Building registration request got failed, status = [%d]", status);
+              break;
+            }
+            M_KTALOG__INFO("Sending Registration Request");
+
+            gKtaIsPreActivated = 1u;
           }
 
           break;
-        }
 
-        M_KTALOG__DEBUG("Reading rotKeySetId from NVM...");
-        // REQ RQ_M-KTA-STRT-FN-0230(1) : Update rot key set Id
-        // REQ RQ_M-KTA-STRT-FN-0250(1) : Update the rot key set id in the after
-        // deserialize the received message.
-        status = ktaGetRotKeySetId(&recvdProtoMessage.rotKeySetId);
+        case E_LIFE_CYCLE_STATE_ACTIVATED:
+        case E_LIFE_CYCLE_STATE_PROVISIONED:
+        case E_LIFE_CYCLE_STATE_CON_REQ:
+          if (xKs2ktaMsgLen == 0U)
+          {
+            M_KTALOG__DEBUG("Preparing NoOp notification request...");
+            // REQ RQ_M-KTA-NOOP-FN-0050(1) : Build NoOP message Message
+            // REQ RQ_M-KTA-RENW-FN-0010(1) : NoOP Message
+            // REQ RQ_M-KTA-RFSH-FN-0010(1) : NoOP Message from KTA
+            // REQ RQ_M-KTA-STRT-FN-0280(1) : Prepare NoOP Message
+            status = lPrepareNoOpNotificationRequest(xpKta2ksMsg, xpKta2ksMsgLen);
 
-        if (E_K_STATUS_OK != status)
-        {
-          *xpKta2ksMsgLen = 0;
-          M_KTALOG__ERR("Reading of rotKeySetId from NVM got failed, status = [%d]",
-                        status);
+            if (E_K_STATUS_OK != status)
+            {
+              *xpKta2ksMsgLen = 0;
+              M_KTALOG__ERR("Preparation of NoOp notification request got failed, status = [%d]",
+                            status);
+            }
+
+            break;
+          }
+
+          if (E_LIFE_CYCLE_STATE_PROVISIONED == gKtaLifeCycleState)
+          {
+            /* Setting the state to connection request. */
+            M_KTALOG__DEBUG("Life cycle state reached to CON_REQ state, "
+                            "storing in persistent memory");
+            status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                        gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_CON_REQ],
+                                        C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+            if (E_K_STATUS_OK != status)
+            {
+              M_KTALOG__ERR("SAL API failed while storing life cycle state, status = [%d]", status);
+              *xpKta2ksMsgLen = 0;
+              break;
+            }
+
+            gKtaLifeCycleState = E_LIFE_CYCLE_STATE_CON_REQ;
+          }
+
+          M_KTALOG__DEBUG("Validating the msg received from the server...");
+          status = lCheckKs2KtaMessage(xpKs2ktaMsg, xKs2ktaMsgLen,
+                                        xpKta2ksMsg, xpKta2ksMsgLen,
+                                        aClearMsg, sizeof(aClearMsg),
+                                        &recvdProtoMessage, &parserStatus);
+
+          if ((status != E_K_STATUS_OK) || (parserStatus != E_K_ICPP_PARSER_STATUS_OK))
+          {
+            (*xpKta2ksMsgLen) = 0;
+
+            if (parserStatus != E_K_ICPP_PARSER_STATUS_NO_OPERATION)
+            {
+              M_KTALOG__ERR("Validation of the msg received from the server failed,");
+              M_KTALOG__ERR("status = [%d], parserStatus = [%d]", status, parserStatus);
+            }
+
+            break;
+          }
+
+          M_KTALOG__DEBUG("Reading rotKeySetId from NVM...");
+          // REQ RQ_M-KTA-STRT-FN-0230(1) : Update rot key set Id
+          // REQ RQ_M-KTA-STRT-FN-0250(1) : Update the rot key set id in the after
+          // deserialize the received message.
+          status = ktaGetRotKeySetId(&recvdProtoMessage.rotKeySetId);
+
+          if (E_K_STATUS_OK != status)
+          {
+            *xpKta2ksMsgLen = 0;
+            M_KTALOG__ERR("Reading of rotKeySetId from NVM got failed, status = [%d]",
+                          status);
+            break;
+          }
+
+          M_KTALOG__DEBUG("Processing 3rd party command...");
+          // REQ RQ_M-KTA-STRT-FN-0260(1) : Process the ThirdParty/Object Commands.
+          status = ktaCmdProcess(&recvdProtoMessage, xpKta2ksMsg, xpKta2ksMsgLen);
+
+          if (E_K_STATUS_OK != status)
+          {
+            *xpKta2ksMsgLen = 0;
+            M_KTALOG__ERR("Processing of 3rd party command failed, status = [%d]", status);
+            break;
+          }
+
           break;
-        }
 
-        M_KTALOG__DEBUG("Processing 3rd party command...");
-        // REQ RQ_M-KTA-STRT-FN-0260(1) : Process the ThirdParty/Object Commands.
-        status = ktaCmdProcess(&recvdProtoMessage, xpKta2ksMsg, xpKta2ksMsgLen);
-
-        if (E_K_STATUS_OK != status)
-        {
+        default:
           *xpKta2ksMsgLen = 0;
-          M_KTALOG__ERR("Processing of 3rd party command failed, status = [%d]", status);
+          M_KTALOG__ERR("Invalid life cycle state, [%d]", gKtaLifeCycleState);
           break;
-        }
-
-        break;
-
-      default:
-        *xpKta2ksMsgLen = 0;
-        M_KTALOG__ERR("Invalid life cycle state, [%d]", gKtaLifeCycleState);
-        break;
+      }
     }
-
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -863,95 +877,92 @@ TKStatus ktaGetObjectWithAssociation
 )
 {
   uint8_t                 aPsaStatus[4] = {0};
-  TKSalObjAssociationInfo associationInfoOut;
+  TKSalObjAssociationInfo associationInfoOut = {0};
   TKStatus                status = E_K_STATUS_ERROR;
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  // REQ RQ_M-KTA-STRT-FN-0400(1) : Input Parameters Check
+  if ((0u == xObjWithAssociationId) ||
+      (NULL == xpAssociatedKeyId)      ||
+      (NULL == xpAssociatedObjId)      ||
+      (NULL == xpOutData)              ||
+      (NULL == xpOutDataLen)           ||
+      (0u == *xpOutDataLen))
   {
-    // REQ RQ_M-KTA-STRT-FN-0400(1) : Input Parameters Check
-    if ((0 == xObjWithAssociationId) ||
-        (NULL == xpAssociatedKeyId)      ||
-        (NULL == xpAssociatedObjId)      ||
-        (NULL == xpOutData)              ||
-        (NULL == xpOutDataLen)           ||
-        (0 == *xpOutDataLen))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+    goto end;
+  }
 
-    // REQ RQ_M-KTA-STRT-FN-0420(1) : Get Object with Association
-    status = salObjectGetWithAssociation(xObjWithAssociationId,
-                                         xpOutData,
-                                         xpOutDataLen,
-                                         &associationInfoOut,
-                                         (uint8_t*)aPsaStatus);
+  // REQ RQ_M-KTA-STRT-FN-0420(1) : Get Object with Association
+  status = salObjectGetWithAssociation(xObjWithAssociationId,
+                                        xpOutData,
+                                        xpOutDataLen,
+                                        &associationInfoOut,
+                                        (uint8_t*)aPsaStatus);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("salObjectGetWithAssociation failed[%d]", status);
+    status = E_K_STATUS_ERROR;
+    goto end;
+  }
+
+  /* Destroy the deprecated Key with specified ID from the storage.*/
+  if (associationInfoOut.associatedKeyIdDeprecated != 0u)
+  {
+    // REQ RQ_M-KTA-STRT-FN-0410(1) : Delete Key/Certificate
+    status = salObjectKeyDelete(associationInfoOut.associatedKeyIdDeprecated,
+                                (uint8_t*)aPsaStatus);
 
     if (E_K_STATUS_OK != status)
     {
-      M_KTALOG__ERR("salObjectGetWithAssociation failed[%d]", status);
+      M_KTALOG__ERR("salObjectDelete failed[%d]", status);
       status = E_K_STATUS_ERROR;
-      break;
+      goto end;
     }
 
-    /* Destroy the deprecated Key with specified ID from the storage.*/
-    if (associationInfoOut.associatedKeyIdDeprecated)
+    associationInfoOut.associatedKeyIdDeprecated = 0;
+    status = salObjectSetWithAssociation(C_SAL_OBJECT__TYPE_KEY,
+                                          xObjWithAssociationId,
+                                          aPsaStatus,
+                                          0,
+                                          xpOutData,
+                                          *xpOutDataLen,
+                                          &associationInfoOut,
+                                          aPsaStatus);
+
+    if (E_K_STATUS_OK != status)
     {
-      // REQ RQ_M-KTA-STRT-FN-0410(1) : Delete Key/Certificate
-      status = salObjectKeyDelete(associationInfoOut.associatedKeyIdDeprecated,
-                                  (uint8_t*)aPsaStatus);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR("salObjectDelete failed[%d]", status);
-        status = E_K_STATUS_ERROR;
-        break;
-      }
-
-      associationInfoOut.associatedKeyIdDeprecated = 0;
-      status = salObjectSetWithAssociation(C_SAL_OBJECT__TYPE_KEY,
-                                           xObjWithAssociationId,
-                                           aPsaStatus,
-                                           0,
-                                           xpOutData,
-                                           *xpOutDataLen,
-                                           &associationInfoOut,
-                                           aPsaStatus);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR("salObjectDelete failed[%d]", status);
-        status = E_K_STATUS_ERROR;
-        break;
-      }
+      M_KTALOG__ERR("salObjectDelete failed[%d]", status);
+      status = E_K_STATUS_ERROR;
+      goto end;
     }
-
-    /* Destroy the deprecated object with specified ID from the storage.*/
-    if (associationInfoOut.associatedObjectIdDeprecated)
-    {
-      // REQ RQ_M-KTA-STRT-FN-0410(1) : Delete Key/Certificate
-      status = salObjectDelete(C_SAL_OBJECT__TYPE_CERTIFICATE,
-                               associationInfoOut.associatedObjectIdDeprecated,
-                               (uint8_t*)aPsaStatus);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR(" salObjectDelete failed[%d]", status);
-        status = E_K_STATUS_ERROR;
-        break;
-      }
-    }
-
-    /* Provide the active Object and Key IDs back to the application */
-    *xpAssociatedKeyId = associationInfoOut.associatedKeyId;
-    *xpAssociatedObjId = associationInfoOut.associatedObjectId;
-    status = E_K_STATUS_OK;
-    break;
   }
 
+  /* Destroy the deprecated object with specified ID from the storage.*/
+  if (associationInfoOut.associatedObjectIdDeprecated != 0u)
+  {
+    // REQ RQ_M-KTA-STRT-FN-0410(1) : Delete Key/Certificate
+    status = salObjectDelete(C_SAL_OBJECT__TYPE_CERTIFICATE,
+                              associationInfoOut.associatedObjectIdDeprecated,
+                              (uint8_t*)aPsaStatus);
+
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR(" salObjectDelete failed[%d]", status);
+      status = E_K_STATUS_ERROR;
+      goto end;
+    }
+  }
+
+  /* Provide the active Object and Key IDs back to the application */
+  *xpAssociatedKeyId = associationInfoOut.associatedKeyId;
+  *xpAssociatedObjId = associationInfoOut.associatedObjectId;
+  status = E_K_STATUS_OK;
+
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -973,37 +984,34 @@ TKStatus ktaGetAssociatedObject
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  // REQ RQ_M-KTA-STRT-FN-0300(1) : Input Parameters Check
+  if ((0UL == xObjWithAssociationId) ||
+      (NULL == xpOutData)              ||
+      (NULL == xpOutDataLen)           ||
+      (0UL == *xpOutDataLen))
   {
-    // REQ RQ_M-KTA-STRT-FN-0300(1) : Input Parameters Check
-    if ((0 == xObjWithAssociationId) ||
-        (NULL == xpOutData)              ||
-        (NULL == xpOutDataLen)           ||
-        (0 == *xpOutDataLen))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("[ktaGetAssociatedObject]Invalid parameter passed");
-      break;
-    }
-
-    // REQ RQ_M-KTA-STRT-FN-0310(1) : Get Associated Object
-    status = salObjectGet(objType,
-                          xObjWithAssociationId,
-                          xpOutData,
-                          xpOutDataLen,
-                          (uint8_t*)aPsaStatus);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("[ktaGetAssociatedObject] failed[%d]", status);
-      status = E_K_STATUS_ERROR;
-      break;
-    }
-
-    status = E_K_STATUS_OK;
-    break;
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("[ktaGetAssociatedObject]Invalid parameter passed");
+    goto end;
   }
 
+  // REQ RQ_M-KTA-STRT-FN-0310(1) : Get Associated Object
+  status = salObjectGet(objType,
+                        xObjWithAssociationId,
+                        xpOutData,
+                        xpOutDataLen,
+                        (uint8_t*)aPsaStatus);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("[ktaGetAssociatedObject] failed[%d]", status);
+    status = E_K_STATUS_ERROR;
+    goto end;
+  }
+
+  status = E_K_STATUS_OK;
+
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -1026,39 +1034,36 @@ TKStatus ktaSignHash
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  // REQ RQ_M-KTA-STRT-FN-0600(1) : Input Parameters Check
+  if (
+    (NULL == xpHash) ||
+    (NULL == xpSignedHashOutBuff) ||
+    (NULL == xpActualSignedHashOutLen) ||
+    (0u == xHashLen) ||
+    (0u == xSignedHashOutBuffLen) ||
+    (32u < xHashLen) ||
+    (64u < xSignedHashOutBuffLen)
+  )
   {
-    // REQ RQ_M-KTA-STRT-FN-0600(1) : Input Parameters Check
-    if (
-      (NULL == xpHash) ||
-      (NULL == xpSignedHashOutBuff) ||
-      (NULL == xpActualSignedHashOutLen) ||
-      (0u == xHashLen) ||
-      (0u == xSignedHashOutBuffLen) ||
-      (32u < xHashLen) ||
-      (64u < xSignedHashOutBuffLen)
-    )
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("[ktaSignHash]Invalid parameter passed");
-      break;
-    }
-
-    // REQ RQ_M-KTA-STRT-FN-0610(1) : Sign hash data
-    status = salSignHash(xKeyId, xpHash, xHashLen,
-                         xpSignedHashOutBuff, xSignedHashOutBuffLen,
-                         xpActualSignedHashOutLen);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("ktaSignHash failed[%d]", status);
-      break;
-    }
-
-    status = E_K_STATUS_OK;
-    break;
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("[ktaSignHash]Invalid parameter passed");
+    goto end;
   }
 
+  // REQ RQ_M-KTA-STRT-FN-0610(1) : Sign hash data
+  status = salSignHash(xKeyId, xpHash, xHashLen,
+                        xpSignedHashOutBuff, xSignedHashOutBuffLen,
+                        xpActualSignedHashOutLen);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("ktaSignHash failed[%d]", status);
+    goto end;
+  }
+
+  status = E_K_STATUS_OK;
+
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -1078,16 +1083,14 @@ TKStatus ktaKeyStreamStatus
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  //REQ RQ_M-KTA-STRT-FN-0500(1) : Input Parameters Check
+  if (xpKtaKSCmdStatus == NULL)
   {
-    //REQ RQ_M-KTA-STRT-FN-0500(1) : Input Parameters Check
-    if (xpKtaKSCmdStatus == NULL)
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("[ktaKeyStreamStatus]Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("[ktaKeyStreamStatus]Invalid parameter passed");
+  }
+  else
+  {
     cmdStatus = gCommandStatus;
     // REQ RQ_M-KTA-STRT-FN-0510(1) : Get Key Stream Status
     *xpKtaKSCmdStatus = cmdStatus;
@@ -1098,7 +1101,6 @@ TKStatus ktaKeyStreamStatus
     }
 
     status = E_K_STATUS_OK;
-    break;
   }
 
   M_KTALOG__END("End, status : %d", status);
@@ -1125,6 +1127,10 @@ void ktaReset
  * @implements lgetNVMLifeCycleState
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lgetNVMLifeCycleState
 (
   size_t*  xpLifeCycleStateLen
@@ -1134,64 +1140,60 @@ static TKStatus lgetNVMLifeCycleState
   uint8_t   stateIndex = 0;
   uint8_t   aLifeCycleState[C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE] = {0x00, 0x00, 0x00, 0x00};
 
-  for (;;)
+  status = salStorageGetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                              aLifeCycleState, xpLifeCycleStateLen);
+
+  if ((E_K_STATUS_OK != status) || (0u == *xpLifeCycleStateLen))
   {
-    status = salStorageGetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                aLifeCycleState, xpLifeCycleStateLen);
+    M_KTALOG__WARN("Reading life cycle state failed!!, status = [%d]", status);
+    status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                aLifeCycleState,
+                                C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
 
-    if ((E_K_STATUS_OK != status) || (0 == xpLifeCycleStateLen))
+    if (E_K_STATUS_OK != status)
     {
-      M_KTALOG__WARN("Reading life cycle state failed!!, status = [%d]", status);
-      status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                  aLifeCycleState,
-                                  C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR("Writing life cycle state failed, status = [%d]", status);
-        break;
-      }
-
-      // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
-      *xpLifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
+      M_KTALOG__ERR("Writing life cycle state failed, status = [%d]", status);
+      goto end;
     }
 
-    for (; stateIndex < C_KTA_CONFIG__LIFE_CYCLE_MAX_STATE; stateIndex++)
-    {
-      if (0 == memcmp(gaKtaLifeCycleNVMVData[stateIndex],
-                      aLifeCycleState, C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE))
-      {
-        gKtaLifeCycleState = stateIndex;
-        break;
-      }
-    }
-
-    if (stateIndex >= (C_KTA_CONFIG__LIFE_CYCLE_MAX_STATE - 1))
-    {
-      M_KTALOG__WARN("Wrong life cycle state found in storage!! Setting to Init state");
-      (void)memset(aLifeCycleState, 0, C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-      status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                  aLifeCycleState,
-                                  C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR(
-          "SAL API failed while writing life cycle state in storage!!, status = [%d]",
-          status);
-        break;
-      }
-
-      gKtaLifeCycleState = 0;
-    }
-    else
-    {
-      gKtaLifeCycleState = stateIndex;
-    }
-
-    break;
+    // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
+    *xpLifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
   }
 
+  for (; stateIndex < C_KTA_CONFIG__LIFE_CYCLE_MAX_STATE; stateIndex++)
+  {
+    if (0 == memcmp(gaKtaLifeCycleNVMVData[stateIndex],
+                    aLifeCycleState, C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE))
+    {
+      gKtaLifeCycleState = (TKtaLifeCycleState)stateIndex;
+      break;
+    }
+  }
+
+  if (stateIndex >= (C_KTA_CONFIG__LIFE_CYCLE_MAX_STATE - 1U))
+  {
+    M_KTALOG__WARN("Wrong life cycle state found in storage!! Setting to Init state");
+    (void)memset(aLifeCycleState, 0, C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+    status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                aLifeCycleState,
+                                C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR(
+        "SAL API failed while writing life cycle state in storage!!, status = [%d]",
+        status);
+      goto end;
+    }
+
+    gKtaLifeCycleState = E_LIFE_CYCLE_STATE_INIT;
+  }
+  else
+  {
+    gKtaLifeCycleState = (TKtaLifeCycleState)stateIndex;
+  }
+
+end:
   return status;
 }
 
@@ -1210,37 +1212,34 @@ static TKStatus lPrepareProcessingStatus
   uint32_t currentPos = 0;
   TKStatus status     = E_K_STATUS_ERROR;
 
-  for (;;)
+  /**
+   * Only 1 command is available for this message type,
+   * for handling single command to calculate commands count.
+   */
+  xpSendProtoMessage->commandsCount = xpSendProtoMessage->commandsCount + 1u;
+  currentPos = xpSendProtoMessage->commandsCount - 1u;
+  /**
+   * Set the command tag with "E_K_ICCP_PARSER_COMMAND_TAG_PROCESSING_STATUS" to indicate
+   * the command is for processing status.
+   */
+  xpSendProtoMessage->commands[currentPos].commandTag =
+    E_K_ICPP_PARSER_COMMAND_TAG_PROCESSING_STATUS;
+
+  switch (xParserSatus)
   {
-    /**
-     * Only 1 command is available for this message type,
-     * for handling single command to calculate commands count.
-     */
-    xpSendProtoMessage->commandsCount = xpSendProtoMessage->commandsCount + 1;
-    currentPos = xpSendProtoMessage->commandsCount - 1;
-    /**
-     * Set the command tag with "E_K_ICCP_PARSER_COMMAND_TAG_PROCESSING_STATUS" to indicate
-     * the command is for processing status.
-     */
-    xpSendProtoMessage->commands[currentPos].commandTag =
-      E_K_ICPP_PARSER_COMMAND_TAG_PROCESSING_STATUS;
-
-    switch (xParserSatus)
+    case E_K_ICPP_PARSER_STATUS_ERROR:
     {
-      case E_K_ICPP_PARSER_STATUS_ERROR:
-      {
-        xpSendProtoMessage->commands[currentPos].data.cmdInfo.cmdLen = xErrorCodeSize;
-        xpSendProtoMessage->commands[currentPos].data.cmdInfo.cmdValue = xpErrorCode;
-      }
-      break;
-
-      default:
-        break;
+      xpSendProtoMessage->commands[currentPos].data.cmdInfo.cmdLen = xErrorCodeSize;
+      xpSendProtoMessage->commands[currentPos].data.cmdInfo.cmdValue = xpErrorCode;
     }
+    break;
 
-    status = E_K_STATUS_OK;
+    default:
+    M_KTALOG__ERR("Invalid xParserSatus, [%d]", xParserSatus);
     break;
   }
+
+  status = E_K_STATUS_OK;
 
   return status;
 }
@@ -1249,6 +1248,10 @@ static TKStatus lPrepareProcessingStatus
  * @implements lBuildProcessingStatusRespMsg
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lBuildProcessingStatusRespMsg
 (
   const uint8_t*  xpReceivedMsg,
@@ -1262,47 +1265,44 @@ static TKStatus lBuildProcessingStatusRespMsg
   TKStatus              status = E_K_STATUS_ERROR;
   uint8_t               aErrorCode[C_PROCESSING_ERROR_CODE_SIZE] = {0};
 
-  for (;;)
+  aErrorCode[1] = (uint8_t)(xErrorCode & (uint32_t)0xFF);
+
+  if (E_K_ICPP_PARSER_STATUS_OK != ktaIcppParserDeserializeHeader(xpReceivedMsg,
+      xReceivedMsgSize,
+      &sendProtoMessage))
   {
-    aErrorCode[1] = (uint8_t)(xErrorCode & (uint32_t)0xFF);
-
-    if (E_K_ICPP_PARSER_STATUS_OK != ktaIcppParserDeserializeHeader(xpReceivedMsg,
-        xReceivedMsgSize,
-        &sendProtoMessage))
-    {
-      M_KTALOG__ERR("ICCP parser de-serialization of header failed");
-      break;
-    }
-
-    /**
-     * Fill the messgae type with "E_K_ICCP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
-     * registration notification message type (client -> server).
-     */
-    sendProtoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
-
-    /* In case of parser error prepare data for processing command. */
-    // REQ RQ_M-KTA-OBJM-FN-0261(1) : Check Command Processing Error
-    // REQ RQ_M-KTA-OBJM-FN-0561(1) : Check Command Processing Error
-    // REQ RQ_M-KTA-OBJM-FN-0761(1) : Check Command Processing Error
-    // REQ RQ_M-KTA-OBJM-FN-0961(2) : Check Command Processing Error
-    status = lPrepareProcessingStatus(&sendProtoMessage,
-                                      E_K_ICPP_PARSER_STATUS_ERROR,
-                                      aErrorCode,
-                                      sizeof(aErrorCode));
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("Prepare processing status message failed, status = [%d]", status);
-      break;
-    }
-
-    status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
-                                  C_GEN__ENCRYPT | C_GEN__SIGNING), &sendProtoMessage,
-                                 xpMessageToSend,
-                                 xpMessageToSendSize);
-    break;
+    M_KTALOG__ERR("ICCP parser de-serialization of header failed");
+    goto end;
   }
 
+  /**
+   * Fill the messgae type with "E_K_ICCP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
+   * registration notification message type (client -> server).
+   */
+  sendProtoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
+
+  /* In case of parser error prepare data for processing command. */
+  // REQ RQ_M-KTA-OBJM-FN-0261(1) : Check Command Processing Error
+  // REQ RQ_M-KTA-OBJM-FN-0561(1) : Check Command Processing Error
+  // REQ RQ_M-KTA-OBJM-FN-0761(1) : Check Command Processing Error
+  // REQ RQ_M-KTA-OBJM-FN-0961(2) : Check Command Processing Error
+  status = lPrepareProcessingStatus(&sendProtoMessage,
+                                    E_K_ICPP_PARSER_STATUS_ERROR,
+                                    aErrorCode,
+                                    (uint8_t)sizeof(aErrorCode));
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Prepare processing status message failed, status = [%d]", status);
+    goto end;
+  }
+
+  status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
+                                C_GEN__ENCRYPT | C_GEN__SIGNING), &sendProtoMessage,
+                                xpMessageToSend,
+                                xpMessageToSendSize);
+
+end:
   return status;
 }
 
@@ -1310,6 +1310,10 @@ static TKStatus lBuildProcessingStatusRespMsg
  * @implements lPrepareNoOpNotificationRequest
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lPrepareNoOpNotificationRequest
 (
   uint8_t*  xpMessageToSend,
@@ -1325,87 +1329,83 @@ static TKStatus lPrepareNoOpNotificationRequest
   TKParserStatus        parserStatus = E_K_ICPP_PARSER_STATUS_ERROR;
   uint8_t               aComputedMac[C_KTA_ACT__HMACSHA256_SIZE] = {0};
 
-  for (;;)
+  /**
+   * Fill the messgae type with "E_K_ICPP_PARSER_MESSAGE_TYPE_NOTIFICATION" to indicate it is
+   * device start scenario  (client -> server).
+   */
+  // REQ RQ_M-KTA-NOOP-FN-0050_03(1) : message type
+  sendProtoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_NOTIFICATION;
+  /* Retrive rot key set ID from NVM. */
+  // REQ RQ_M-KTA-NOOP-FN-0050_05(1) : rot key set id
+  status = ktaGetRotKeySetId(&(sendProtoMessage.rotKeySetId));
+
+  if (E_K_STATUS_OK != status)
   {
-    /**
-     * Fill the messgae type with "E_K_ICPP_PARSER_MESSAGE_TYPE_NOTIFICATION" to indicate it is
-     * device start scenario  (client -> server).
-     */
-    // REQ RQ_M-KTA-NOOP-FN-0050_03(1) : message type
-    sendProtoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_NOTIFICATION;
-    /* Retrive rot key set ID from NVM. */
-    // REQ RQ_M-KTA-NOOP-FN-0050_05(1) : rot key set id
-    status = ktaGetRotKeySetId(&(sendProtoMessage.rotKeySetId));
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("Retrieval of rot key set ID from NVM failed, status = [%d]", status);
-      break;
-    }
-
-    /* Fill the crypto version to use (for activation request dos based encryption is used). */
-    // REQ RQ_M-KTA-NOOP-FN-0050_01(1) : crypto version
-    sendProtoMessage.cryptoVersion  = E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED;
-    /* Fill the mode of encryption (for no ops full encryption is used). */
-    // REQ RQ_M-KTA-NOOP-FN-0050_02(1) : partial encryption mode
-    sendProtoMessage.encMode  = E_K_ICPP_PARSER_FULL_ENC_MODE;
-    /* Fill the random transaction ID. */
-    // REQ RQ_M-KTA-NOOP-FN-0050_04(1) : transaction id
-    status = salCryptoGetRandom(sendProtoMessage.transactionId,
-                                &transactionIDLen);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("SAL API while reading the transaction ID failed, status = [%d]", status);
-      break;
-    }
-
-    // REQ RQ_M-KTA-NOOP-FN-0050_06(1) : rot public uid
-    status = salStorageGetValue(C_K_KTA__ROT_PUBLIC_UID_STORAGE_ID,
-                                sendProtoMessage.rotPublicUID,
-                                &rotPublicUidLen);
-
-    if ((E_K_STATUS_OK != status) && (0u == rotPublicUidLen))
-    {
-      M_KTALOG__ERR("rotPubUID reading failed, status = [%d], rotPubUidLen = [%d]",
-                    status, rotPublicUidLen);
-      (void)memset(sendProtoMessage.rotPublicUID,
-                   0x00,
-                   C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES);
-    }
-
-    sendProtoMessage.commandsCount = 0;
-
-    M_KTALOG__DEBUG("ICCP parser serializing the message...");
-    // REQ RQ_M-KTA-NOOP-FN-0060(1) : Serialize NoOP Message
-    parserStatus = ktaIcppParserSerializeMessage(&sendProtoMessage,
-                                                 aSerializeBuffer,
-                                                 &aSerializeBufferLen);
-
-    if (E_K_ICPP_PARSER_STATUS_OK != parserStatus)
-    {
-      status = E_K_STATUS_ERROR;
-      M_KTALOG__ERR("Serialization of message failed, parserStatus = [%d]", parserStatus);
-      break;
-    }
-
-    M_KTALOG__DEBUG("KTA cipher signing the message...");
-    // REQ RQ_M-KTA-NOOP-FN-0070(1) : Sign the encrypted NoOP response message
-    status = ktacipherSignMsg(aSerializeBuffer, aSerializeBufferLen, aComputedMac);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("KTA cipher signing of message failed, status = [%d]", status);
-      break;
-    }
-
-    (void)memcpy(xpMessageToSend, aSerializeBuffer, aSerializeBufferLen);
-    (void)memcpy(&xpMessageToSend[aSerializeBufferLen], aComputedMac, C_KTA_ACT__HMACSHA256_SIZE);
-    *xpMessageToSendSize =  aSerializeBufferLen + C_KTA_ACT__HMACSHA256_SIZE;
-
-    break;
+    M_KTALOG__ERR("Retrieval of rot key set ID from NVM failed, status = [%d]", status);
+    goto end;
   }
 
+  /* Fill the crypto version to use (for activation request dos based encryption is used). */
+  // REQ RQ_M-KTA-NOOP-FN-0050_01(1) : crypto version
+  sendProtoMessage.cryptoVersion  = E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED;
+  /* Fill the mode of encryption (for no ops full encryption is used). */
+  // REQ RQ_M-KTA-NOOP-FN-0050_02(1) : partial encryption mode
+  sendProtoMessage.encMode  = E_K_ICPP_PARSER_FULL_ENC_MODE;
+  /* Fill the random transaction ID. */
+  // REQ RQ_M-KTA-NOOP-FN-0050_04(1) : transaction id
+  status = salCryptoGetRandom(sendProtoMessage.transactionId,
+                              &transactionIDLen);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("SAL API while reading the transaction ID failed, status = [%d]", status);
+    goto end;
+  }
+
+  // REQ RQ_M-KTA-NOOP-FN-0050_06(1) : rot public uid
+  status = salStorageGetValue(C_K_KTA__ROT_PUBLIC_UID_STORAGE_ID,
+                              sendProtoMessage.rotPublicUID,
+                              &rotPublicUidLen);
+
+  if ((E_K_STATUS_OK != status) && (0u == rotPublicUidLen))
+  {
+    M_KTALOG__ERR("rotPubUID reading failed, status = [%d], rotPubUidLen = [%d]",
+                  status, rotPublicUidLen);
+    (void)memset(sendProtoMessage.rotPublicUID,
+                  0x00,
+                  C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES);
+  }
+
+  sendProtoMessage.commandsCount = 0;
+
+  M_KTALOG__DEBUG("ICCP parser serializing the message...");
+  // REQ RQ_M-KTA-NOOP-FN-0060(1) : Serialize NoOP Message
+  parserStatus = ktaIcppParserSerializeMessage(&sendProtoMessage,
+                                                aSerializeBuffer,
+                                                &aSerializeBufferLen);
+
+  if (E_K_ICPP_PARSER_STATUS_OK != parserStatus)
+  {
+    status = E_K_STATUS_ERROR;
+    M_KTALOG__ERR("Serialization of message failed, parserStatus = [%d]", parserStatus);
+    goto end;
+  }
+
+  M_KTALOG__DEBUG("KTA cipher signing the message...");
+  // REQ RQ_M-KTA-NOOP-FN-0070(1) : Sign the encrypted NoOP response message
+  status = ktacipherSignMsg(aSerializeBuffer, aSerializeBufferLen, aComputedMac);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("KTA cipher signing of message failed, status = [%d]", status);
+    goto end;
+  }
+
+  (void)memcpy(xpMessageToSend, aSerializeBuffer, aSerializeBufferLen);
+  (void)memcpy(&xpMessageToSend[aSerializeBufferLen], aComputedMac, C_KTA_ACT__HMACSHA256_SIZE);
+  *xpMessageToSendSize =  aSerializeBufferLen + C_KTA_ACT__HMACSHA256_SIZE;
+
+end:
   return status;
 }
 
@@ -1413,6 +1413,10 @@ static TKStatus lPrepareNoOpNotificationRequest
  * @implements lCheckKs2KtaMessage
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lCheckKs2KtaMessage
 (
   const uint8_t*          xpKs2ktaMsg,
@@ -1430,217 +1434,232 @@ static TKStatus lCheckKs2KtaMessage
   uint32_t  macOffset = 0;
   size_t    lenWithoutMACandPadding = 0;
   size_t    clearMsgLength = xClearMsgLen;
+  uint8_t   aKtaVersion[C_K__VERSION_STORAGE_LENGTH] = C_K_KTA__ENCODED_VERSION;
 
-  for (;;)
+  macOffset = xKs2ktaMsgLen - C_K_KTA__HMAC_MAX_SIZE;
+  /* Verify the signature. */
+  M_KTALOG__DEBUG("KTA cipher signature validation...");
+  // REQ RQ_M-KTA-ACTV-FN-0055(1) : Verify Activation Response Signature
+  status = ktacipherVerifySignedMsg(xpKs2ktaMsg,
+                                    macOffset,
+                                    &xpKs2ktaMsg[macOffset]);
+
+  if (E_K_STATUS_OK != status)
   {
-    macOffset = xKs2ktaMsgLen - C_K_KTA__HMAC_MAX_SIZE;
-    /* Verify the signature. */
-    M_KTALOG__DEBUG("KTA cipher signature validation...");
-    // REQ RQ_M-KTA-ACTV-FN-0055(1) : Verify Activation Response Signature
-    status = ktacipherVerifySignedMsg(xpKs2ktaMsg,
-                                      macOffset,
-                                      &xpKs2ktaMsg[macOffset]);
+    M_KTALOG__ERR("KTA cipher signature validation failed, status = [%d]", status);
+    goto end;
+  }
+  (void)memcpy(aKs2ktaMsgUpdatedHeaderLenBuffer, xpKs2ktaMsg, C_K_ICPP_PARSER__HEADER_SIZE);
+
+  /* We have no operation command(command with payload as 0). */
+  if (C_K_ICPP_PARSER__HEADER_SIZE < macOffset)
+  {
+    /* Decrypt the message. */
+    // REQ RQ_M-KTA-ACTV-FN-0060(1) : Decrypt the Activation Response data.
+    // REQ RQ_M-KTA-OBJM-FN-0020(1) : Decrypt the Generate Key Pair data
+    // REQ RQ_M-KTA-OBJM-FN-0220(1) : Decrypt the Set Object data
+    // REQ RQ_M-KTA-OBJM-FN-0520(1) : Decrypt the Delete Object data
+    // REQ RQ_M-KTA-OBJM-FN-0720(1) : Decrypt the Set Object With Association data
+    // REQ RQ_M-KTA-OBJM-FN-0920(2) : Decrypt the Delete Key Object data
+    // REQ RQ_M-KTA-TRDP-FN-0020(1) : Decrypt the Third party data
+    clearMsgLength = clearMsgLength - C_K_ICPP_PARSER__HEADER_SIZE;
+    status = ktacipherDecrypt(&xpKs2ktaMsg[C_K_ICPP_PARSER__HEADER_SIZE],
+                              macOffset - C_K_ICPP_PARSER__HEADER_SIZE,
+                              &xpClearMsg[C_K_ICPP_PARSER__HEADER_SIZE],
+                              &clearMsgLength);
+    clearMsgLength = clearMsgLength + C_K_ICPP_PARSER__HEADER_SIZE;
 
     if (E_K_STATUS_OK != status)
     {
-      M_KTALOG__ERR("KTA cipher signature validation failed, status = [%d]", status);
-      break;
+      // REQ RQ_M-KTA-NOOP-FN-0020(1) :
+      /* Prepare error in case of decryption. */
+      // REQ RQ_M-KTA-OBJM-FN-0040(1) :
+      /* Prepare error in case of decryption or remove padding error. */
+      // REQ RQ_M-KTA-OBJM-FN-0240(1) :
+      /* Prepare error in case of decryption or remove padding error. */
+      // REQ RQ_M-KTA-OBJM-FN-0540(1) :
+      /* Prepare error in case of decryption or remove padding error. */
+      // REQ RQ_M-KTA-OBJM-FN-0740(1) :
+      /* Prepare error in case of decryption or remove padding error. */
+      // REQ RQ_M-KTA-OBJM-FN-0940(2) :
+      /* Prepare error in case of decryption or remove padding error. */
+      // REQ RQ_M-KTA-TRDP-FN-0040(1) :
+      /* Prepare error in case of decryption or remove padding error. */
+      status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
+                                              xKs2ktaMsgLen,
+                                              C_MSG_AUTH_DEC_ERROR,
+                                              xpKta2ksMsg,
+                                              xpKta2ksMsgLen);
+      M_KTALOG__ERR("Processing status RespMsg failed, status = [%d]", status);
+      goto end;
     }
-    (void)memcpy(aKs2ktaMsgUpdatedHeaderLenBuffer, xpKs2ktaMsg, C_K_ICPP_PARSER__HEADER_SIZE);
 
-    /* We have no operation command(command with payload as 0). */
-    if (C_K_ICPP_PARSER__HEADER_SIZE < macOffset)
+    /* Remove the padding. */
+    // REQ RQ_M-KTA-ACTV-FN-0061(1) : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0030(1) : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0230(1) : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0530(1) : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0730(1) : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0930(2) : Remove data padding
+    // REQ RQ_M-KTA-TRDP-FN-0030(1) : Remove data padding
+    status = ktacipherRemovePadding(xpClearMsg, &clearMsgLength);
+
+    if (E_K_STATUS_OK != status)
     {
-      /* Decrypt the message. */
-      // REQ RQ_M-KTA-ACTV-FN-0060(1) : Decrypt the Activation Response data.
-      // REQ RQ_M-KTA-OBJM-FN-0020(1) : Decrypt the Generate Key Pair data
-      // REQ RQ_M-KTA-OBJM-FN-0220(1) : Decrypt the Set Object data
-      // REQ RQ_M-KTA-OBJM-FN-0520(1) : Decrypt the Delete Object data
-      // REQ RQ_M-KTA-OBJM-FN-0720(1) : Decrypt the Set Object With Association data
-      // REQ RQ_M-KTA-OBJM-FN-0920(2) : Decrypt the Delete Key Object data
-      // REQ RQ_M-KTA-TRDP-FN-0020(1) : Decrypt the Third party data
-      clearMsgLength = clearMsgLength - C_K_ICPP_PARSER__HEADER_SIZE;
-      status = ktacipherDecrypt(&xpKs2ktaMsg[C_K_ICPP_PARSER__HEADER_SIZE],
-                                macOffset - C_K_ICPP_PARSER__HEADER_SIZE,
-                                &xpClearMsg[C_K_ICPP_PARSER__HEADER_SIZE],
-                                &clearMsgLength);
-      clearMsgLength = clearMsgLength + C_K_ICPP_PARSER__HEADER_SIZE;
+      // REQ RQ_M-KTA-ACTV-FN-0065(1) : Prepare error in case of decryption or remove padding
+      // error.
+      // REQ RQ_M-KTA-OBJM-FN-0040(1) : Prepare error in case of decryption or remove padding
+      // error.
+      // REQ RQ_M-KTA-OBJM-FN-0240(1) : Prepare error in case of decryption or remove padding
+      // error.
+      // REQ RQ_M-KTA-OBJM-FN-0540(1) : Prepare error in case of decryption or remove padding
+      // error.
+      // REQ RQ_M-KTA-OBJM-FN-0740(1) : Prepare error in case of decryption or remove padding
+      // error.
+      // REQ RQ_M-KTA-TRDP-FN-0040(1) : Prepare error in case of decryption or remove padding
+      // error.
+      status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
+                                              xKs2ktaMsgLen,
+                                              C_MSG_AUTH_DEC_ERROR,
+                                              xpKta2ksMsg,
+                                              xpKta2ksMsgLen);
+      M_KTALOG__ERR("Processing status RespMsg failed, status = [%d]", status);
+      goto end;
+    }
 
-      if (E_K_STATUS_OK != status)
+    lenWithoutMACandPadding = xKs2ktaMsgLen - clearMsgLength;
+    (void)ktaIcppParserUpdateHeaderLength(aKs2ktaMsgUpdatedHeaderLenBuffer, lenWithoutMACandPadding);
+    (void)memcpy(xpClearMsg, aKs2ktaMsgUpdatedHeaderLenBuffer, C_K_ICPP_PARSER__HEADER_SIZE);
+  }
+  else
+  {
+    lenWithoutMACandPadding = C_K_KTA__HMAC_MAX_SIZE;
+    (void)ktaIcppParserUpdateHeaderLength(aKs2ktaMsgUpdatedHeaderLenBuffer, lenWithoutMACandPadding);
+    (void)memcpy(xpClearMsg, aKs2ktaMsgUpdatedHeaderLenBuffer, xKs2ktaMsgLen);
+    clearMsgLength = macOffset;
+  }
+
+  /* Send the info to deserialize message. */
+  // REQ RQ_M-KTA-ACTV-FN-0070(1) : Deserialize the decrypted activation response data.
+  // REQ RQ_M-KTA-ICPP-FN-0180(1) : Deserialize the message
+  // REQ RQ_M-KTA-OBJM-FN-0050(1) :
+  /* Deserialize the decrypted generate key pair data. */
+  // REQ RQ_M-KTA-OBJM-FN-0250(1) :
+  /* Deserialize the decrypted set object data. */
+  // REQ RQ_M-KTA-OBJM-FN-0550(1) :
+  /* Deserialize the decrypted delete object data. */
+  // REQ RQ_M-KTA-OBJM-FN-0750(1) :
+  /* Deserialize the decrypted set object with association data. */
+  // REQ RQ_M-KTA-OBJM-FN-0950(2) :
+  /* Deserialize the decrypted key object data */
+  // REQ RQ_M-KTA-TRDP-FN-0050(1) :
+  /* Deserialize the decrypted Third party data. */
+  *xpParserStatus = ktaIcppParserDeserializeMessage(xpClearMsg,
+                                                    clearMsgLength,
+                                                    xpRecvdProtoMessage);
+
+  switch (*xpParserStatus)
+  {
+    // REQ RQ_M-KTA-STRT-FN-0270(1) : Process the NoOP Message received after
+    // ThirdParty/Object Commands.
+    case E_K_ICPP_PARSER_STATUS_NO_OPERATION:
+    {
+      // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
+      size_t  lifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
+
+      if (xpRecvdProtoMessage->cryptoVersion != (unsigned int)E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED)
       {
-        // REQ RQ_M-KTA-NOOP-FN-0020(1) :
-        /* Prepare error in case of decryption. */
-        // REQ RQ_M-KTA-OBJM-FN-0040(1) :
-        /* Prepare error in case of decryption or remove padding error. */
-        // REQ RQ_M-KTA-OBJM-FN-0240(1) :
-        /* Prepare error in case of decryption or remove padding error. */
-        // REQ RQ_M-KTA-OBJM-FN-0540(1) :
-        /* Prepare error in case of decryption or remove padding error. */
-        // REQ RQ_M-KTA-OBJM-FN-0740(1) :
-        /* Prepare error in case of decryption or remove padding error. */
-        // REQ RQ_M-KTA-OBJM-FN-0940(2) :
-        /* Prepare error in case of decryption or remove padding error. */
-        // REQ RQ_M-KTA-TRDP-FN-0040(1) :
-        /* Prepare error in case of decryption or remove padding error. */
-        status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
-                                               xKs2ktaMsgLen,
-                                               C_MSG_AUTH_DEC_ERROR,
-                                               xpKta2ksMsg,
-                                               xpKta2ksMsgLen);
-        M_KTALOG__ERR("Processing status RespMsg failed, status = [%d]", status);
+        M_KTALOG__ERR("Invalid Cryto Version [%d]", xpRecvdProtoMessage->cryptoVersion);
+        status = E_K_STATUS_ERROR;
         break;
       }
 
-      /* Remove the padding. */
-      // REQ RQ_M-KTA-ACTV-FN-0061(1) : Remove data padding
-      // REQ RQ_M-KTA-OBJM-FN-0030(1) : Remove data padding
-      // REQ RQ_M-KTA-OBJM-FN-0230(1) : Remove data padding
-      // REQ RQ_M-KTA-OBJM-FN-0530(1) : Remove data padding
-      // REQ RQ_M-KTA-OBJM-FN-0730(1) : Remove data padding
-      // REQ RQ_M-KTA-OBJM-FN-0930(2) : Remove data padding
-      // REQ RQ_M-KTA-TRDP-FN-0030(1) : Remove data padding
-      status = ktacipherRemovePadding(xpClearMsg, &clearMsgLength);
+      M_KTALOG__DEBUG("Received NoOp, reading life cycle state from NVM...");
+      status = lgetNVMLifeCycleState(&lifeCycleStateLen);
 
-      if (E_K_STATUS_OK != status)
+      if ((E_K_STATUS_OK != status) || (0U == lifeCycleStateLen))
       {
-        // REQ RQ_M-KTA-ACTV-FN-0065(1) : Prepare error in case of decryption or remove padding
-        // error.
-        // REQ RQ_M-KTA-OBJM-FN-0040(1) : Prepare error in case of decryption or remove padding
-        // error.
-        // REQ RQ_M-KTA-OBJM-FN-0240(1) : Prepare error in case of decryption or remove padding
-        // error.
-        // REQ RQ_M-KTA-OBJM-FN-0540(1) : Prepare error in case of decryption or remove padding
-        // error.
-        // REQ RQ_M-KTA-OBJM-FN-0740(1) : Prepare error in case of decryption or remove padding
-        // error.
-        // REQ RQ_M-KTA-TRDP-FN-0040(1) : Prepare error in case of decryption or remove padding
-        // error.
-        status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
-                                               xKs2ktaMsgLen,
-                                               C_MSG_AUTH_DEC_ERROR,
-                                               xpKta2ksMsg,
-                                               xpKta2ksMsgLen);
-        M_KTALOG__ERR("Processing status RespMsg failed, status = [%d]", status);
+        M_KTALOG__ERR("Reading life cycle status from NVM failed, status = [%d]", status);
         break;
       }
 
-      lenWithoutMACandPadding = xKs2ktaMsgLen - clearMsgLength;
-      ktaIcppParserUpdateHeaderLength(aKs2ktaMsgUpdatedHeaderLenBuffer, lenWithoutMACandPadding);
-      (void)memcpy(xpClearMsg, aKs2ktaMsgUpdatedHeaderLenBuffer, C_K_ICPP_PARSER__HEADER_SIZE);
-    }
-    else
-    {
-      lenWithoutMACandPadding = C_K_KTA__HMAC_MAX_SIZE;
-      ktaIcppParserUpdateHeaderLength(aKs2ktaMsgUpdatedHeaderLenBuffer, lenWithoutMACandPadding);
-      (void)memcpy(xpClearMsg, aKs2ktaMsgUpdatedHeaderLenBuffer, xKs2ktaMsgLen);
-      clearMsgLength = macOffset;
-    }
-
-    /* Send the info to deserialize message. */
-    // REQ RQ_M-KTA-ACTV-FN-0070(1) : Deserialize the decrypted activation response data.
-    // REQ RQ_M-KTA-ICPP-FN-0180(1) : Deserialize the message
-    // REQ RQ_M-KTA-OBJM-FN-0050(1) :
-    /* Deserialize the decrypted generate key pair data. */
-    // REQ RQ_M-KTA-OBJM-FN-0250(1) :
-    /* Deserialize the decrypted set object data. */
-    // REQ RQ_M-KTA-OBJM-FN-0550(1) :
-    /* Deserialize the decrypted delete object data. */
-    // REQ RQ_M-KTA-OBJM-FN-0750(1) :
-    /* Deserialize the decrypted set object with association data. */
-    // REQ RQ_M-KTA-OBJM-FN-0950(2) :
-    /* Deserialize the decrypted key object data */
-    // REQ RQ_M-KTA-TRDP-FN-0050(1) :
-    /* Deserialize the decrypted Third party data. */
-    *xpParserStatus = ktaIcppParserDeserializeMessage(xpClearMsg,
-                                                      clearMsgLength,
-                                                      xpRecvdProtoMessage);
-
-    switch (*xpParserStatus)
-    {
-      // REQ RQ_M-KTA-STRT-FN-0270(1) : Process the NoOP Message received after
-      // ThirdParty/Object Commands.
-      case E_K_ICPP_PARSER_STATUS_NO_OPERATION:
+      if (E_LIFE_CYCLE_STATE_INIT == gKtaLifeCycleState)
       {
-        // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
-        size_t  lifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
+        M_KTALOG__ERR("Device received refurbish command");
+        gCommandStatus = E_K_KTA_KS_STATUS_REFURBISH;
+        /* Reset the globals to inital value after refurbish. */
+        gKtaState = E_KTA_STATE_INITIAL;
+        gKtaIsPreActivated = 0;
+        M_KTALOG__DEBUG("Life cycle state reached to SEALED state, "
+                        "storing in persistent memory");
+        status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                    gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_SEALED],
+                                    C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
 
-        if (xpRecvdProtoMessage->cryptoVersion != E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED)
+        if (E_K_STATUS_OK != status)
         {
-          M_KTALOG__ERR("Invalid Cryto Version [%d]", xpRecvdProtoMessage->cryptoVersion);
-          status = E_K_STATUS_ERROR;
+          M_KTALOG__ERR("Storing life cycle state failed, status = [%d]", status);
+          *xpKta2ksMsgLen = 0;
           break;
         }
 
-        M_KTALOG__DEBUG("Received NoOp, reading life cycle state from NVM...");
-        status = lgetNVMLifeCycleState(&lifeCycleStateLen);
+        gKtaLifeCycleState = E_LIFE_CYCLE_STATE_SEALED;
+        M_KTALOG__INFO("Setting KTA Lifecycle state to SEALED, state = [%d]", gKtaLifeCycleState);
+      }
+      else if (E_LIFE_CYCLE_STATE_CON_REQ == gKtaLifeCycleState)
+      {
+        /* Setting the state to connection request. */
+        M_KTALOG__DEBUG("Life cycle state reached to PROVISIONED state, "
+                        "storing in persistent memory");
+        // REQ RQ_M-KTA-LCST-FN-0035(1) : Power off in SEALED|INITIALIZED state
+        // REQ RQ_M-KTA-LCST-FN-0040(1) : Power off in SEALED|STARTED state
+        // REQ RQ_M-KTA-LCST-FN-0030(1) : Power off in SEALED|RUNNING state
+        // REQ RQ_M-KTA-LCST-FN-0075(1) : Power off in CON_REQ|RUNNING state
+        status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                    gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_PROVISIONED],
+                                    C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
 
-        if ((E_K_STATUS_OK != status) || (0U == lifeCycleStateLen))
+        if (E_K_STATUS_OK != status)
         {
-          M_KTALOG__ERR("Reading life cycle status from NVM failed, status = [%d]", status);
+          M_KTALOG__ERR("Storing life cycle state failed, status = [%d]", status);
+          *xpKta2ksMsgLen = 0;
           break;
         }
 
-        if (E_LIFE_CYCLE_STATE_INIT == gKtaLifeCycleState)
+        gKtaLifeCycleState = E_LIFE_CYCLE_STATE_PROVISIONED;
+        M_KTALOG__INFO("Setting KTA Lifecycle state to PROVISIONED, state = [%d]", gKtaLifeCycleState);
+      }
+
+      /* Break the chain no communication is needed. */
+      else if (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_ACTIVATED)
+      {
+        M_KTALOG__DEBUG("Life cycle state reached to PROVISIONED state, "
+                        "storing in persist memory");
+        // REQ RQ_M-KTA-LCST-FN-0065(1) : Power off in PROVISIONED|INITIALIZED state
+        // REQ RQ_M-KTA-LCST-FN-0070(1) : Power off in PROVISIONED|STARTED state
+        // REQ RQ_M-KTA-LCST-FN-0060(1) : Power off in PROVISIONED|RUNNING state
+        status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                    gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_PROVISIONED],
+                                    C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+        if (E_K_STATUS_OK != status)
         {
-          M_KTALOG__ERR("Device received refurbish command");
-          gCommandStatus = E_K_KTA_KS_STATUS_REFURBISH;
-          /* Reset the globals to inital value after refurbish. */
-          gKtaState = E_KTA_STATE_INITIAL;
-          gKtaIsPreActivated = 0;
-          M_KTALOG__DEBUG("Life cycle state reached to SEALED state, "
-                          "storing in persistent memory");
-          status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                      gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_SEALED],
-                                      C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-          if (E_K_STATUS_OK != status)
-          {
-            M_KTALOG__ERR("Storing life cycle state failed, status = [%d]", status);
-            *xpKta2ksMsgLen = 0;
-            break;
-          }
-
-          gKtaLifeCycleState = E_LIFE_CYCLE_STATE_SEALED;
-        }
-        else if (E_LIFE_CYCLE_STATE_CON_REQ == gKtaLifeCycleState)
-        {
-          /* Setting the state to connection request. */
-          M_KTALOG__DEBUG("Life cycle state reached to PROVISIONED state, "
-                          "storing in persistent memory");
-          // REQ RQ_M-KTA-LCST-FN-0035(1) : Power off in SEALED|INITIALIZED state
-          // REQ RQ_M-KTA-LCST-FN-0040(1) : Power off in SEALED|STARTED state
-          // REQ RQ_M-KTA-LCST-FN-0030(1) : Power off in SEALED|RUNNING state
-          // REQ RQ_M-KTA-LCST-FN-0075(1) : Power off in CON_REQ|RUNNING state
-          status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                      gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_PROVISIONED],
-                                      C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-          if (E_K_STATUS_OK != status)
-          {
-            M_KTALOG__ERR("Storing life cycle state failed, status = [%d]", status);
-            *xpKta2ksMsgLen = 0;
-            break;
-          }
-
-          gKtaLifeCycleState = E_LIFE_CYCLE_STATE_PROVISIONED;
+          M_KTALOG__ERR("Setting life cycle state failed, status = [%d]", status);
+          break;
         }
 
-        /* Break the chain no communication is needed. */
-        else if (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_ACTIVATED)
-        {
-          M_KTALOG__DEBUG("Life cycle state reached to PROVISIONED state, "
-                          "storing in persist memory");
-          // REQ RQ_M-KTA-LCST-FN-0065(1) : Power off in PROVISIONED|INITIALIZED state
-          // REQ RQ_M-KTA-LCST-FN-0070(1) : Power off in PROVISIONED|STARTED state
-          // REQ RQ_M-KTA-LCST-FN-0060(1) : Power off in PROVISIONED|RUNNING state
-          status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                      gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_PROVISIONED],
-                                      C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-          if (E_K_STATUS_OK != status)
+          if (memcmp(gaKtaVersion, aKtaVersion, C_K__VERSION_STORAGE_LENGTH) < 0)
           {
-            M_KTALOG__ERR("Setting life cycle state failed, status = [%d]", status);
-            break;
+              status = salStorageSetValue(C_K_KTA__VERSION_SLOT_ID,
+                                          aKtaVersion,
+                                          C_K__VERSION_STORAGE_LENGTH);
+              if (E_K_STATUS_OK != status)
+              {
+                M_KTALOG__ERR("Storing KTA Version Failed, status = [%d]", status);
+                break;
+              }
+              M_KTALOG__DEBUG("KTA Version [%s] Stored Successfully in device.\r\n",
+                              ktaGetDecodedVersionStr(aKtaVersion));
           }
 
           gKtaLifeCycleState = E_LIFE_CYCLE_STATE_PROVISIONED;
@@ -1652,65 +1671,63 @@ static TKStatus lCheckKs2KtaMessage
           /* Do nothing. */
         }
 
-        status = E_K_STATUS_OK;
-      }
-      break;
-
-      case E_K_ICPP_PARSER_STATUS_ERROR:
-      {
-        M_KTALOG__ERR("ICPP Parse Error");
-        // REQ RQ_M-KTA-ACTV-FN-0075(1) :
-        /* Error in Deserialization. */
-        // REQ RQ_M-KTA-OBJM-FN-0060(1) :
-        /* Error in Deserialization. */
-        // REQ RQ_M-KTA-OBJM-FN-0260(1) :
-        /* Error in Deserialization. */
-        // REQ RQ_M-KTA-OBJM-FN-0560(1) :
-        /* Error in Deserialization. */
-        // REQ RQ_M-KTA-OBJM-FN-0760(1) :
-        /* Error in Deserialization. */
-        // REQ RQ_M-KTA-OBJM-FN-0960(2) :
-        /* Error in Deserialization */
-        // REQ RQ_M-KTA-TRDP-FN-0060(1) :
-        /* Error in Deserialization. */
-        status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
-                                               xKs2ktaMsgLen,
-                                               C_MSG_FORMAT_ERROR,
-                                               xpKta2ksMsg,
-                                               xpKta2ksMsgLen);
-      }
-      break;
-
-      case E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR:
-      {
-        M_KTALOG__ERR("Received E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR from the parser");
-        status = E_K_STATUS_ERROR;
-      }
-      break;
-
-      case E_K_ICPP_PARSER_STATUS_OK:
-      {
-        M_KTALOG__DEBUG("Received E_K_ICPP_PARSER_STATUS_OK");
-
-        if (E_LIFE_CYCLE_STATE_CON_REQ == gKtaLifeCycleState)
-        {
-          gCommandStatus = E_K_KTA_KS_STATUS_RENEW;
-        }
-
-        status = E_K_STATUS_OK;
-      }
-      break;
-
-      default:
-      {
-        M_KTALOG__ERR("Received invalid status from the parser[%d]", *xpParserStatus);
-      }
-      break;
+      status = E_K_STATUS_OK;
     }
+    break;
 
+    case E_K_ICPP_PARSER_STATUS_ERROR:
+    {
+      M_KTALOG__ERR("ICPP Parse Error");
+      // REQ RQ_M-KTA-ACTV-FN-0075(1) :
+      /* Error in Deserialization. */
+      // REQ RQ_M-KTA-OBJM-FN-0060(1) :
+      /* Error in Deserialization. */
+      // REQ RQ_M-KTA-OBJM-FN-0260(1) :
+      /* Error in Deserialization. */
+      // REQ RQ_M-KTA-OBJM-FN-0560(1) :
+      /* Error in Deserialization. */
+      // REQ RQ_M-KTA-OBJM-FN-0760(1) :
+      /* Error in Deserialization. */
+      // REQ RQ_M-KTA-OBJM-FN-0960(2) :
+      /* Error in Deserialization */
+      // REQ RQ_M-KTA-TRDP-FN-0060(1) :
+      /* Error in Deserialization. */
+      status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
+                                              xKs2ktaMsgLen,
+                                              C_MSG_FORMAT_ERROR,
+                                              xpKta2ksMsg,
+                                              xpKta2ksMsgLen);
+    }
+    break;
+
+    case E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR:
+    {
+      M_KTALOG__ERR("Received E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR from the parser");
+      status = E_K_STATUS_ERROR;
+    }
+    break;
+
+    case E_K_ICPP_PARSER_STATUS_OK:
+    {
+      M_KTALOG__DEBUG("Received E_K_ICPP_PARSER_STATUS_OK");
+
+      if (E_LIFE_CYCLE_STATE_CON_REQ == gKtaLifeCycleState)
+      {
+        gCommandStatus = E_K_KTA_KS_STATUS_RENEW;
+      }
+
+      status = E_K_STATUS_OK;
+    }
+    break;
+
+    default:
+    {
+      M_KTALOG__ERR("Received invalid status from the parser[%d]", *xpParserStatus);
+    }
     break;
   }
 
+end:
   return status;
 }
 

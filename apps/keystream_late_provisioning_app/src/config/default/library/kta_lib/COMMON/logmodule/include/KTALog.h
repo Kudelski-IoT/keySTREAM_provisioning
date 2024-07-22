@@ -54,9 +54,11 @@ extern "C" {
 /** @brief Set an argument/return value as unused */
 #define M_UNUSED(xArg)            (void)(xArg)
 
-#define LOG_KTA_ENABLE 1
+#if !defined(LOG_KTA_ENABLE)
+/** @brief keySTREAM Trusted Agent log level. */
+#define LOG_KTA_ENABLE E_KTALOG_LEVEL_NONE
+#endif
 
-#if LOG_KTA_ENABLE
 /** @brief keySTREAM Trusted Agent log level start. */
 #define M_KTALOG__START(...)          \
     ktaLog_Fct(E_KTALOG_LEVEL_ENTRY_EXIT, gpModuleName, __FILE__, __func__, __LINE__, __VA_ARGS__)
@@ -79,29 +81,13 @@ extern "C" {
 #define M_KTALOG__HEX(format, x_buffer, size)  \
     ktaLog_PrintBuffer(E_KTALOG_LEVEL_DEBUG, gpModuleName, __FILE__, \
                    __func__, __LINE__, format, x_buffer, size)
-#else
-/** @brief keySTREAM Trusted Agent log level start. */
-#define M_KTALOG__START(...)
-/** @brief keySTREAM Trusted Agent log level end. */
-#define M_KTALOG__END(...)
-/** @brief keySTREAM Trusted Agent log level error. */
-#define M_KTALOG__ERR(...)
-/** @brief keySTREAM Trusted Agent log level warning. */
-#define M_KTALOG__WARN(...)
-/** @brief keySTREAM Trusted Agent log level info. */
-#define M_KTALOG__INFO(...)
-/** @brief keySTREAM Trusted Agent log level debug. */
-#define M_KTALOG__DEBUG(...)
-/** @brief keySTREAM Trusted Agent log in hex format. */
-#define M_KTALOG__HEX(format, x_buffer, size)
-#endif
 
 /* --------------------------------------------------------------------------------------------- */
 /* VARIABLES                                                                                     */
 /* --------------------------------------------------------------------------------------------- */
 /** @brief Supported log levels enum. */
 enum {
-  E_KTALOG_LEVEL_DEBUG,
+  E_KTALOG_LEVEL_DEBUG = 1,
   /* Debug level prints */
   E_KTALOG_LEVEL_INFO,
   /* Info level prints */
@@ -109,14 +95,15 @@ enum {
   /* Warning level prints */
   E_KTALOG_LEVEL_ENTRY_EXIT,
   /* Entry/Exit level prints */
-  E_KTALOG_LEVEL_ERROR
+  E_KTALOG_LEVEL_ERROR,
   /* Error level prints */
+  E_KTALOG_LEVEL_NONE
+  /* No log prints */
 };
 
 /* --------------------------------------------------------------------------------------------- */
 /* FUNCTIONS                                                                                     */
 /* --------------------------------------------------------------------------------------------- */
-#if LOG_KTA_ENABLE
 /**
  * @brief
  *   Log API called every time a log event is generated.
@@ -185,7 +172,6 @@ void ktaLog_PrintBuffer
   const uint8_t*  xpBuffer,
   int             xSize
 );
-#endif
 
 #ifdef __cplusplus
 }

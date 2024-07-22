@@ -9,7 +9,7 @@ package:
   dependencies:
     - name: "cryptoauthlib"
       type: "package"
-      version: "v3.7.4"
+      version: "v3.7.5"
     - name: "csp"
       type: "package"
       version: "v3.18.2"

@@ -72,6 +72,11 @@
  * @param[in] xpBuffer
  *   Address of buffer containing input data
  */
+/** 
+ * Suppression: misra-c2012-17.7 and misra-c2012-21.6
+ * Using printf for logging.
+ * Not checking the return status of printf, since not required.
+ **/
 void salPrint
 (
   char* xpBuffer

@@ -41,6 +41,7 @@
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
 #include <stdint.h>
+#include <stdio.h>
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
@@ -71,8 +72,22 @@ uint8_t* ktaGetVersion
   void
 )
 {
-  static uint8_t* pKtaVersion = (uint8_t*)M_K_VERSION__GET_STR();
+  static uint8_t* pKtaVersion = (uint8_t*)M_K_VERSION_GET_STR();
   return pKtaVersion;
+}
+
+/**
+ * @brief implement ktaGetDecodedVersionStr
+ *
+ */
+const char* ktaGetDecodedVersionStr(const uint8_t version[])
+{
+  static char version_string[C_K_KTA__VERSION_STRING_BUFFER_SIZE];
+
+  snprintf(version_string, C_K_KTA__VERSION_STRING_BUFFER_SIZE, "%d.%d.%d",
+          (version[0] >> 4) & 0x0F, version[0] & 0x0F, version[1]);
+
+  return version_string;
 }
 
 /* -------------------------------------------------------------------------- */

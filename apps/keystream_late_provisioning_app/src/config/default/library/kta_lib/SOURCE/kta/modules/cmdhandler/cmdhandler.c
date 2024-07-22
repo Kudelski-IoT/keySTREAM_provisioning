@@ -83,33 +83,33 @@
 
 /** @brief Optional generate key pair fields. */
 #define C_K_CMD_GENKEYPAIR_FIELDS_OPTIONAL \
-  (E_K_CMD_FIELD_OBJECT_ID | E_K_CMD_FIELD_DATA_ATTRIBUTES \
-   | E_K_CMD_FIELD_OBJECT_OWNER)
+  ((E_K_CMD_FIELD_OBJECT_ID | E_K_CMD_FIELD_DATA_ATTRIBUTES \
+   | E_K_CMD_FIELD_OBJECT_OWNER))
 
 /** @brief Mandatory set object fields. */
 #define C_K_CMD_SETOBJ_FIELDS_MANDATORY \
-  (E_K_CMD_FIELD_OBJECT_TYPE | E_K_CMD_FIELD_OBJECT_ID \
-   | E_K_CMD_FIELD_DATA)
+  ((E_K_CMD_FIELD_OBJECT_TYPE | E_K_CMD_FIELD_OBJECT_ID \
+   | E_K_CMD_FIELD_DATA))
 
 /** @brief Optional set object fields. */
 #define C_K_CMD_SETOBJ_FIELDS_OPTIONAL \
-  (E_K_CMD_FIELD_OBJECT_TYPE | E_K_CMD_FIELD_OBJECT_ID \
+  ((E_K_CMD_FIELD_OBJECT_TYPE | E_K_CMD_FIELD_OBJECT_ID \
    | E_K_CMD_FIELD_DATA | E_K_CMD_FIELD_DATA_ATTRIBUTES \
-   | E_K_CMD_FIELD_OBJECT_OWNER)
+   | E_K_CMD_FIELD_OBJECT_OWNER))
 
 /** @brief Mandatory set object association fields. */
 #define C_K_CMD_SETOBJASSOCIATION_FIELDS_MANDATORY \
-  (E_K_CMD_FIELD_OBJECT_TYPE | E_K_CMD_FIELD_OBJECT_ID \
-   | E_K_CMD_FIELD_DATA | E_K_CMD_FIELD_ASSOCIATION_INFO)
+  ((E_K_CMD_FIELD_OBJECT_TYPE | E_K_CMD_FIELD_OBJECT_ID \
+   | E_K_CMD_FIELD_DATA | E_K_CMD_FIELD_ASSOCIATION_INFO))
 
 /** @brief Mandatory delete object fields. */
 #define C_K_CMD_DELETEOBJ_FIELDS_MANDATORY \
-  (E_K_CMD_FIELD_OBJECT_ID | E_K_CMD_FIELD_OBJECT_TYPE)
+  ((E_K_CMD_FIELD_OBJECT_ID | E_K_CMD_FIELD_OBJECT_TYPE))
 
 /** @brief Optional delete object fields. */
 #define C_K_CMD_DELETEOBJ_FIELDS_OPTIONAL \
-  (E_K_CMD_FIELD_OBJECT_ID | E_K_CMD_FIELD_OBJECT_TYPE \
-   | E_K_CMD_FIELD_OBJECT_OWNER)
+  ((E_K_CMD_FIELD_OBJECT_ID | E_K_CMD_FIELD_OBJECT_TYPE \
+   | E_K_CMD_FIELD_OBJECT_OWNER))
 
 /** @brief Mandatory delete key object fields. */
 #define C_K_CMD_DELETEKEYOBJ_FIELDS_MANDATORY \
@@ -117,7 +117,7 @@
 
 /** @brief Optional delete key object fields. */
 #define C_K_CMD_DELETEKEYOBJ_FIELDS_OPTIONAL \
-  (E_K_CMD_FIELD_OBJECT_ID | E_K_CMD_FIELD_OBJECT_TYPE)
+  ((E_K_CMD_FIELD_OBJECT_ID | E_K_CMD_FIELD_OBJECT_TYPE))
 
 /** @brief  Command response fields structure. */
 typedef struct
@@ -148,18 +148,30 @@ typedef struct
 /** @brief  Different commands for field tag. */
 typedef enum
 {
-  E_K_CMD_FIELD_OBJECT_TYPE = 0x01,
-  /* Object type field mask */
-  E_K_CMD_FIELD_OBJECT_ID = 0x02,
-  /* Object id field mask */
-  E_K_CMD_FIELD_DATA_ATTRIBUTES = 0x04,
-  /* Data Attribute field mask */
-  E_K_CMD_FIELD_DATA = 0x08,
-  /* Data field mask */
-  E_K_CMD_FIELD_ASSOCIATION_INFO = 0x10,
-  /* Association info field mask */
-  E_K_CMD_FIELD_OBJECT_OWNER = 0x20
-                               /* Object owner field mask */
+  /**
+   * Object type field mask
+   */
+  E_K_CMD_FIELD_OBJECT_TYPE = 0x01u,
+  /**
+   * Object id field mask
+   */
+  E_K_CMD_FIELD_OBJECT_ID = 0x02u,
+  /**
+   * Data Attribute field mask
+   */
+  E_K_CMD_FIELD_DATA_ATTRIBUTES = 0x04u,
+  /**
+   * Data field mask
+   */
+  E_K_CMD_FIELD_DATA = 0x08u,
+  /**
+   * Association info field mask
+   */
+  E_K_CMD_FIELD_ASSOCIATION_INFO = 0x10u,
+  /**
+   * Object owner field mask
+   */
+  E_K_CMD_FIELD_OBJECT_OWNER = 0x20u
 } TKcmdFieldTag;
 
 #endif
@@ -167,9 +179,7 @@ typedef enum
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
-#if LOG_KTA_ENABLE
 static const char* gpModuleName = "KTACMDHANDLER";
-#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -249,7 +259,8 @@ static TKStatus lKtaGenerateKeyPair
   TKIcppProtocolMessage* xpData,
   uint8_t*               xpOutData,
   size_t*                xpDataSize,
-  uint8_t*               xpPlatformStatus
+  uint8_t*               xpPlatformStatus,
+  uint8_t                xCommandCount
 );
 
 /**
@@ -424,6 +435,10 @@ static TKStatus lProcessCmdPrepareResponse
  * @brief implement ktaCmdProcess
  *
  */
+/**
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaCmdProcess
 (
   TKIcppProtocolMessage* xpRecvdProtoMessage,
@@ -444,29 +459,25 @@ TKStatus ktaCmdProcess
 
   M_KTALOG__START("Start");
 
-  for (;;)
+  // REQ RQ_M-KTA-STRT-FN-0300(1) : Input Parameters Check.
+  if ((NULL == xpRecvdProtoMessage) || (NULL == xpMessageToSend) || (NULL == xpMessageToSendSize)
+      || (0u == *xpMessageToSendSize))
   {
-    // REQ RQ_M-KTA-STRT-FN-0300(1) : Input Parameters Check.
-    if ((NULL == xpRecvdProtoMessage) || (NULL == xpMessageToSend) || (NULL == xpMessageToSendSize)
-        || (0u == *xpMessageToSendSize))
-    {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("Invalid parameter passed");
-      break;
-    }
-
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter passed");
+  }
+  else
+  {
     /* keySTREAM should give activation response based on L2 key. */
-    if (E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED != xpRecvdProtoMessage->cryptoVersion)
+    if ((uint8_t)E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED != xpRecvdProtoMessage->cryptoVersion)
     {
       M_KTALOG__ERR("Invalid crypto version received from the server, cryptoVersion = [%d]",
                     xpRecvdProtoMessage->cryptoVersion);
-      break;
+      goto end;
     }
 
-    /**
-     * Fill the message type with "E_K_ICCP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
-     * registration notification message type (client -> server).
-     */
+    /* Fill the message type with "E_K_ICCP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
+       registration notification message type (client -> server). */
     // REQ RQ_M-KTA-OBJM-FN-0100_03(1) : message type
     // REQ RQ_M-KTA-TRDP-FN-0110_03(1) : Third Party Response message type
     sendProtoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
@@ -508,7 +519,7 @@ TKStatus ktaCmdProcess
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
-      break;
+      goto end;
     }
 
     status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
@@ -520,12 +531,11 @@ TKStatus ktaCmdProcess
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", status);
-      break;
+      goto end;
     }
-
-    break;
   }
 
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -596,7 +606,7 @@ static TKStatus lKtaCmdCheckFieldTag
     }
     break;
 
-    case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT:
+    case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
     {
       mandatorymask = xFieldTagMask & C_K_CMD_DELETEKEYOBJ_FIELDS_MANDATORY;
       optionalmask = xFieldTagMask & C_K_CMD_DELETEKEYOBJ_FIELDS_OPTIONAL;
@@ -657,11 +667,11 @@ static TKStatus lKtaCmdValidateAndGetPayload
            xpRecvMsg->commands[commandsLoop].commandTag)  &&
           (E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT !=
            xpRecvMsg->commands[commandsLoop].commandTag)  &&
-          (E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT !=
+          (E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT !=
            xpRecvMsg->commands[commandsLoop].commandTag))
       {
         M_KTALOG__ERR("Invalid command Tag %d", xpRecvMsg->commands[commandsLoop].commandTag);
-        isErrorOccured = 1;
+        isErrorOccured = 1u;
         break;
       }
 
@@ -670,7 +680,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
       if (0u == pFieldList->fieldsCount)
       {
         M_KTALOG__ERR("Invalid fieldsCount : %d", pFieldList->fieldsCount);
-        isErrorOccured = 1;
+        isErrorOccured = 1u;
         break;
       }
 
@@ -686,7 +696,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid obj length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -700,18 +710,18 @@ static TKStatus lKtaCmdValidateAndGetPayload
           // REQ RQ_M-KTA-OBJM-FN-0570_02(1) : Object Id
           // REQ RQ_M-KTA-OBJM-FN-0770_02(1) : Object Id
           // REQ RQ_M-KTA-OBJM-FN-0970_01(2) : Key Id
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_ID:
+          case E_K_ICPP_PARSER_FLD_TAG_CMD_OBJECT_ID:
           {
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid Identifier length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
-            xpCmdRespPayload->objectId = (pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
-                                          (pFieldList->fields[fieldsLoop].fieldValue[1] << 16) |
-                                          (pFieldList->fields[fieldsLoop].fieldValue[2] << 8) |
-                                          pFieldList->fields[fieldsLoop].fieldValue[3];
+            xpCmdRespPayload->objectId = ((uint32_t)pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
+                                          ((uint32_t)pFieldList->fields[fieldsLoop].fieldValue[1] << 16) |
+                                          ((uint32_t)pFieldList->fields[fieldsLoop].fieldValue[2] << 8) |
+                                          (uint32_t)pFieldList->fields[fieldsLoop].fieldValue[3];
             fieldTagMask |= E_K_CMD_FIELD_OBJECT_ID;
           }
           break;
@@ -724,7 +734,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid data attributes length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -736,12 +746,12 @@ static TKStatus lKtaCmdValidateAndGetPayload
 
           // REQ RQ_M-KTA-OBJM-FN-0270_04(1) : Data
           // REQ RQ_M-KTA-OBJM-FN-0770_04(1) : Data
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA:
+          case E_K_ICPP_PARSER_FLD_TAG_CMD_DATA:
           {
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
@@ -757,32 +767,32 @@ static TKStatus lKtaCmdValidateAndGetPayload
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
             if (NULL != pFieldList->fields[fieldsLoop].fieldValue)
             {
               xpCmdRespPayload->associationInfo.associatedKeyId =
-                (pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
+                (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
                 (pFieldList->fields[fieldsLoop].fieldValue[1] << 16) |
                 (pFieldList->fields[fieldsLoop].fieldValue[2] << 8) |
-                pFieldList->fields[fieldsLoop].fieldValue[3];
+                pFieldList->fields[fieldsLoop].fieldValue[3]);
               xpCmdRespPayload->associationInfo.associatedKeyIdDeprecated =
-                (pFieldList->fields[fieldsLoop].fieldValue[4] << 24) |
+                (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[4] << 24) |
                 (pFieldList->fields[fieldsLoop].fieldValue[5] << 16) |
                 (pFieldList->fields[fieldsLoop].fieldValue[6] << 8) |
-                pFieldList->fields[fieldsLoop].fieldValue[7];
+                pFieldList->fields[fieldsLoop].fieldValue[7]);
               xpCmdRespPayload->associationInfo.associatedObjectId =
-                (pFieldList->fields[fieldsLoop].fieldValue[8] << 24) |
+                (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[8] << 24) |
                 (pFieldList->fields[fieldsLoop].fieldValue[9] << 16) |
                 (pFieldList->fields[fieldsLoop].fieldValue[10] << 8) |
-                pFieldList->fields[fieldsLoop].fieldValue[11];
+                pFieldList->fields[fieldsLoop].fieldValue[11]);
               xpCmdRespPayload->associationInfo.associatedObjectIdDeprecated =
-                (pFieldList->fields[fieldsLoop].fieldValue[12] << 24) |
+                (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[12] << 24) |
                 (pFieldList->fields[fieldsLoop].fieldValue[13] << 16) |
                 (pFieldList->fields[fieldsLoop].fieldValue[14] << 8) |
-                pFieldList->fields[fieldsLoop].fieldValue[15];
+                pFieldList->fields[fieldsLoop].fieldValue[15]);
               xpCmdRespPayload->associationInfo.associatedObjectType =
                 pFieldList->fields[fieldsLoop].fieldValue[16];
             }
@@ -794,19 +804,19 @@ static TKStatus lKtaCmdValidateAndGetPayload
           // REQ RQ_M-KTA-OBJM-FN-0070_03(1) : Object Owner
           // REQ RQ_M-KTA-OBJM-FN-0270_05(1) : Object Owner
           // REQ RQ_M-KTA-OBJM-FN-0570_03(1) : Object Owner
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_OWNER:
+          case E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER:
           {
             if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
             {
               M_KTALOG__ERR("Invalid Object Owner length");
-              isErrorOccured = 1;
+              isErrorOccured = 1u;
               break;
             }
 
-            xpCmdRespPayload->objectOwner = (pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
+            xpCmdRespPayload->objectOwner = (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
                                             (pFieldList->fields[fieldsLoop].fieldValue[1] << 16) |
                                             (pFieldList->fields[fieldsLoop].fieldValue[2] << 8) |
-                                            pFieldList->fields[fieldsLoop].fieldValue[3];
+                                            pFieldList->fields[fieldsLoop].fieldValue[3]);
             fieldTagMask |= E_K_CMD_FIELD_OBJECT_OWNER;
           }
           break;
@@ -814,7 +824,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
           default:
           {
             M_KTALOG__ERR("Unknown Field Tag %d", pFieldList->fields[fieldsLoop].fieldTag);
-            isErrorOccured = 1;
+            isErrorOccured = 1u;
           }
           break;
         } /* switch. */
@@ -828,7 +838,7 @@ static TKStatus lKtaCmdValidateAndGetPayload
         break;
       }
 
-      if (!isErrorOccured)
+      if (isErrorOccured == 0u)
       {
         status = E_K_STATUS_OK;
         break;
@@ -889,35 +899,33 @@ static TKStatus lKtaGenerateKeyPair
   TKIcppProtocolMessage* xpData,
   uint8_t*               xpOutData,
   size_t*                xpDataSize,
-  uint8_t*               xpPlatformStatus
+  uint8_t*               xpPlatformStatus,
+  uint8_t                xCommandCount
 )
 {
   TKStatus status = E_K_STATUS_ERROR;
   TKcmdRespPayload resPayload = { 0 };
 
-  for (;;)
+  M_KTALOG__DEBUG("Processing GenerateKeyPair specific data...");
+
+  // REQ RQ_M-KTA-OBJM-FN-0070(1) : Check generate key pair data
+  if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, xCommandCount))
   {
-    M_KTALOG__DEBUG("Processing GenerateKeyPair specific data...");
-
-    // REQ RQ_M-KTA-OBJM-FN-0070(1) : Check generate key pair data
-    if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, 0))
-    {
-      /* Original error status lost here on purpose of code size optimization. */
-      M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
-      break;
-    }
-
-    M_KTALOG__DEBUG("resPayload.objectId %d", resPayload.objectId);
-    M_KTALOG__DEBUG("resPayload.dataAttribtes.len %d", resPayload.dataAttribtes.len);
-
-    status = salObjectKeyGen(resPayload.objectId,
-                             resPayload.dataAttribtes.pValue,
-                             resPayload.dataAttribtes.len,
-                             xpOutData, xpDataSize,
-                             (uint8_t*)xpPlatformStatus);
-    break;
+    /* Original error status lost here on purpose of code size optimization. */
+    M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
+    goto end;
   }
 
+  M_KTALOG__DEBUG("resPayload.objectId %d", resPayload.objectId);
+  M_KTALOG__DEBUG("resPayload.dataAttribtes.len %d", resPayload.dataAttribtes.len);
+
+  status = salObjectKeyGen(resPayload.objectId,
+                            resPayload.dataAttribtes.pValue,
+                            resPayload.dataAttribtes.len,
+                            xpOutData, xpDataSize,
+                            (uint8_t*)xpPlatformStatus);
+
+end:
   return status;
 }
 
@@ -934,30 +942,27 @@ static TKStatus lKtaSetObject
   TKStatus status = E_K_STATUS_ERROR;
   TKcmdRespPayload   resPayload = { 0 };
 
-  for (;;)
+  M_KTALOG__DEBUG("Processing SetObject specific data...");
+
+  // REQ RQ_M-KTA-OBJM-FN-0270(1) : Check set object data
+  if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, 0))
   {
-    M_KTALOG__DEBUG("Processing SetObject specific data...");
-
-    // REQ RQ_M-KTA-OBJM-FN-0270(1) : Check set object data
-    if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, 0))
-    {
-      /* Original error status lost here on purpose of code size optimization. */
-      M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
-      break;
-    }
-
-    // REQ RQ_M-KTA-RENW-MCHP-FN-0020(1) : Update Device Certificate
-    // REQ RQ_M-KTA-RENW-SLAB-FN-0020(1) : Update Device Certificate
-    status = salObjectSet(resPayload.objectType,
-                          resPayload.objectId,
-                          resPayload.dataAttribtes.pValue,
-                          resPayload.dataAttribtes.len,
-                          resPayload.data.pValue,
-                          resPayload.data.len,
-                          xpPlatformStatus);
-    break;
+    /* Original error status lost here on purpose of code size optimization. */
+    M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
+    goto end;
   }
 
+  // REQ RQ_M-KTA-RENW-MCHP-FN-0020(1) : Update Device Certificate
+  // REQ RQ_M-KTA-RENW-SLAB-FN-0020(1) : Update Device Certificate
+  status = salObjectSet(resPayload.objectType,
+                        resPayload.objectId,
+                        resPayload.dataAttribtes.pValue,
+                        resPayload.dataAttribtes.len,
+                        resPayload.data.pValue,
+                        resPayload.data.len,
+                        xpPlatformStatus);
+
+end:
   return status;
 }
 
@@ -974,29 +979,26 @@ static TKStatus lKtaSetObjWithAssociation
   TKStatus status = E_K_STATUS_ERROR;
   TKcmdRespPayload  resPayload = { 0 };
 
-  for (;;)
+  M_KTALOG__DEBUG("Processing SetObjectWithAssociation specific data...");
+
+  // REQ RQ_M-KTA-OBJM-FN-0770(1) : Check set object with association data
+  if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, 0))
   {
-    M_KTALOG__DEBUG("Processing SetObjectWithAssociation specific data...");
-
-    // REQ RQ_M-KTA-OBJM-FN-0770(1) : Check set object with association data
-    if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, 0))
-    {
-      /* Original error status lost here on purpose of code size optimization. */
-      M_KTALOG__ERR("Getting field identifier, association info and object owner failed");
-      break;
-    }
-
-    status = salObjectSetWithAssociation(resPayload.objectType,
-                                         resPayload.objectId,
-                                         resPayload.dataAttribtes.pValue,
-                                         resPayload.dataAttribtes.len,
-                                         resPayload.data.pValue,
-                                         resPayload.data.len,
-                                         &(resPayload.associationInfo),
-                                         xpPlatformStatus);
-    break;
+    /* Original error status lost here on purpose of code size optimization. */
+    M_KTALOG__ERR("Getting field identifier, association info and object owner failed");
+    goto end;
   }
 
+  status = salObjectSetWithAssociation(resPayload.objectType,
+                                        resPayload.objectId,
+                                        resPayload.dataAttribtes.pValue,
+                                        resPayload.dataAttribtes.len,
+                                        resPayload.data.pValue,
+                                        resPayload.data.len,
+                                        &(resPayload.associationInfo),
+                                        xpPlatformStatus);
+
+end:
   return status;
 }
 
@@ -1014,24 +1016,21 @@ static TKStatus lKtaDeleteObject
   TKStatus status = E_K_STATUS_ERROR;
   TKcmdRespPayload resPayload = { 0 };
 
-  for (;;)
+  M_KTALOG__DEBUG("Processing DeleteObject specific data...");
+
+  // REQ RQ_M-KTA-OBJM-FN-0570(1) : Check delete object data
+  if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, xCmdCount))
   {
-    M_KTALOG__DEBUG("Processing DeleteObject specific data...");
-
-    // REQ RQ_M-KTA-OBJM-FN-0570(1) : Check delete object data
-    if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, xCmdCount))
-    {
-      /* Original error status lost here on purpose of code size optimization. */
-      M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
-      break;
-    }
-
-    // REQ RQ_M-KTA-RFSH-FN-0020(1) : Delete Keys/Certificates/Persistant Data
-    // REQ RQ_M-KTA-STRT-FN-0410(1) : Delete Key/Certificate
-    status = salObjectDelete(resPayload.objectType, resPayload.objectId, xpPlatformStatus);
-    break;
+    /* Original error status lost here on purpose of code size optimization. */
+    M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
+    goto end;
   }
 
+  // REQ RQ_M-KTA-RFSH-FN-0020(1) : Delete Keys/Certificates/Persistant Data
+  // REQ RQ_M-KTA-STRT-FN-0410(1) : Delete Key/Certificate
+  status = salObjectDelete(resPayload.objectType, resPayload.objectId, xpPlatformStatus);
+
+end:
   return status;
 }
 
@@ -1049,23 +1048,20 @@ static TKStatus lKtaDeleteKeyObject
   TKStatus status = E_K_STATUS_ERROR;
   TKcmdRespPayload resPayload = { 0 };
 
-  for (;;)
+  M_KTALOG__DEBUG("Processing DeleteKeyObject specific data...");
+
+  // REQ RQ_M-KTA-OBJM-FN-0970(2) : Check delete key object data
+  if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, xCmdCount))
   {
-    M_KTALOG__DEBUG("Processing DeleteKeyObject specific data...");
-
-    // REQ RQ_M-KTA-OBJM-FN-0970(2) : Check delete key object data
-    if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, xCmdCount))
-    {
-      /* Original error status lost here on purpose of code size optimization. */
-      M_KTALOG__ERR("Getting the proper object ID got failed");
-      break;
-    }
-
-    status = salObjectKeyDelete(resPayload.objectId,
-                                xpPlatformStatus);
-    break;
+    /* Original error status lost here on purpose of code size optimization. */
+    M_KTALOG__ERR("Getting the proper object ID got failed");
+    goto end;
   }
 
+  status = salObjectKeyDelete(resPayload.objectId,
+                                xpPlatformStatus);
+
+end:
   return status;
 }
 
@@ -1090,20 +1086,18 @@ static TKStatus lProcessCmdPrepareResponse
   size_t commandCount = 0;
   size_t dataSize     = 0;
 
-  for (;;)
-  {
-    if ((NULL == xpRecvdProtoMessage) || (NULL == xpSendProtoMessage) ||
-        (NULL == xpCmdResponse) || (0u == xCmdItemSize)
+  if ((NULL == xpRecvdProtoMessage) || (NULL == xpSendProtoMessage) ||
+      (NULL == xpCmdResponse) || (0u == xCmdItemSize)
 #ifdef OBJECT_MANAGEMENT_FEATURE
-        || (NULL == xpPlatformStatus))
+      || (NULL == xpPlatformStatus))
 #else
       )
 #endif
-    {
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
+  {
+    status = E_K_STATUS_PARAMETER;
+  }
+  else
+  {
     xpCmdResponse[0] = 0;
     xpSendProtoMessage->commandsCount = xpRecvdProtoMessage->commandsCount;
     for (commandCount = 0; commandCount < xpRecvdProtoMessage->commandsCount; commandCount++)
@@ -1154,8 +1148,8 @@ static TKStatus lProcessCmdPrepareResponse
           dataSize = xCmdItemSize;
           // REQ RQ_M-KTA-OBJM-FN-0010(1) : Verify Generate Key Pair Signature
           status = lKtaGenerateKeyPair(
-                     xpRecvdProtoMessage,
-                     xpCmdResponse, &dataSize, xpPlatformStatus);
+                     xpRecvdProtoMessage, xpCmdResponse,
+                     &dataSize, xpPlatformStatus, (uint8_t)commandCount);
           /**
            * Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR"
            * to indicate that this command is to generate the key pair.
@@ -1176,7 +1170,7 @@ static TKStatus lProcessCmdPrepareResponse
           // REQ RQ_M-KTA-OBJM-FN-0090_02(1) : Public Key
           // REQ RQ_M-KTA-OBJM-FN-0090_03(1) : Signed public key
           xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldTag =
-            C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC;
+            (TKIcppFieldTag)C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC;
 
           if (E_K_STATUS_OK == status)
           {
@@ -1187,8 +1181,9 @@ static TKStatus lProcessCmdPrepareResponse
           }
           else
           {
+            M_KTALOG__ERR("Generate Key Pair command failed with status : [%d], setting field data to 0", status);
             xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldLen = 0;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldValue = 0;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldValue = NULL;
           }
         }
         break;
@@ -1215,6 +1210,10 @@ static TKStatus lProcessCmdPrepareResponse
           {
             xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
             (uint8_t*)xpPlatformStatus;
+          }
+          else
+          {
+            M_KTALOG__ERR("Set object command failed with status = [%d]", status);
           }
         }
         break;
@@ -1243,22 +1242,26 @@ static TKStatus lProcessCmdPrepareResponse
             xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
             (uint8_t*)xpPlatformStatus;
           }
+          else
+          {
+            M_KTALOG__ERR("Delete object command failed with status = [%d]", status);
+          }
         }
         break;
 
         // REQ RQ_M-KTA-OBJM-FN-1000(2) : Delete Key Object ICPP Message
-        case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT:
+        case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
         {
           // REQ RQ_M-KTA-OBJM-FN-0910(2) : Verify Delete Key Object Signature
           status = lKtaDeleteKeyObject(xpRecvdProtoMessage, xpPlatformStatus, commandCount);
 
           /**
-           * Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT"
+           * Set the command tag with "E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT"
            * to indicate that this command is to delete the key object from device.
            */
           // REQ RQ_M-KTA-OBJM-FN-0990(2) : Build Delete Key Object response
           xpSendProtoMessage->commands[commandCount].commandTag =
-            E_K_ICPP_PARSER_COMMAND_TAG_DELETE_KEY_OBJECT;
+            E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT;
           xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 1;
           xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldTag =
             E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
@@ -1269,6 +1272,10 @@ static TKStatus lProcessCmdPrepareResponse
           {
             xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
             (uint8_t*)xpPlatformStatus;
+          }
+          else
+          {
+            M_KTALOG__ERR("Delete key object command failed with status = [%d]", status);
           }
         }
         break;
@@ -1297,6 +1304,10 @@ static TKStatus lProcessCmdPrepareResponse
             xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
             (uint8_t*)xpPlatformStatus;
           }
+          else
+          {
+            M_KTALOG__ERR("Set object with association command failed with status = [%d]", status);
+          }
         }
         break;
 #endif /* OBJECT_MANAGEMENT_FEATURE */
@@ -1307,8 +1318,6 @@ static TKStatus lProcessCmdPrepareResponse
           break;
       }
     }
-
-    break;
   }
 
   return status;
