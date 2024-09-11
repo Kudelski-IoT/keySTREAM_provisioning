@@ -315,7 +315,8 @@ TKStatus ktaInitialize
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 TKStatus ktaStartup
@@ -421,7 +422,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 TKStatus ktaSetDeviceInformation
@@ -1128,7 +1130,8 @@ void ktaReset
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static TKStatus lgetNVMLifeCycleState
@@ -1249,7 +1252,8 @@ static TKStatus lPrepareProcessingStatus
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static TKStatus lBuildProcessingStatusRespMsg
@@ -1311,7 +1315,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static TKStatus lPrepareNoOpNotificationRequest
@@ -1414,7 +1419,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static TKStatus lCheckKs2KtaMessage

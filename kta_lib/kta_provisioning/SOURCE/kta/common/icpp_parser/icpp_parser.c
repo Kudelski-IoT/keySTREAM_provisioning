@@ -468,7 +468,8 @@ TKParserStatus ktaIcppParserSerializeMessage
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 TKParserStatus ktaIcppParserDeserializeMessage
@@ -566,7 +567,7 @@ TKParserStatus ktaIcppParserUpdateHeaderLength
 
   M_KTALOG__START("Start");
 
-  if ((NULL == xpReceivedMessage) || !(xLength < 0x10000u))
+  if ((NULL == xpReceivedMessage) || (!(xLength < 0x10000u)))
   {
     status = E_K_ICPP_PARSER_STATUS_PARAMETER;
     M_KTALOG__ERR("Invalid parameter");
@@ -606,7 +607,7 @@ TKParserStatus ktaIcppParserSetHeaderLength
 
   M_KTALOG__START("Start");
 
-  if ((NULL == xpReceivedMessage) || !(xLength < 0x10000u))
+  if ((NULL == xpReceivedMessage) || (!(xLength < 0x10000u)))
   {
     status = E_K_ICPP_PARSER_STATUS_PARAMETER;
     M_KTALOG__ERR("Invalid parameter");
@@ -870,7 +871,8 @@ static TKParserStatus lIcppParserDeserializeFields
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static TKParserStatus lIcppParserDeserializeCommands
@@ -981,7 +983,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static TKParserStatus lIcppParserSerializeFields
@@ -1071,7 +1074,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static TKParserStatus lIcppParserSerializeCommands
@@ -1202,7 +1206,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static TKParserStatus lIcppParserDeserializeHeader
@@ -1269,8 +1274,6 @@ static TKParserStatus lIcppParserDeserializeHeader
     headerLength = (uint32_t)((xpReceivedMessage[curPosition] <<
                     C_K_ICPP_PARSER_NO_OF_BITS_IN_BYTE) |
                     xpReceivedMessage[curPosition + 1u]);
-
-    // curPosition += C_K_ICPP_PARSER_LENGTH_SIZE_IN_HEADER;
 
     /* Comparing the length with the length in the received data. */
     if ((xReceivedMessageSize - C_K_ICPP_PARSER__HEADER_SIZE) != headerLength)
