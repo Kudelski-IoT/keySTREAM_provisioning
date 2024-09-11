@@ -322,7 +322,8 @@ TCommIfStatus httpTerm(void)
  *
  **/
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static char* pStrToken
@@ -336,6 +337,7 @@ static char* pStrToken
   char *pSt;
   char *pEd;
   int len = 0;
+  ptrdiff_t diff;
   /* L-trim. */
   pPtr = xpSrc;
 
@@ -377,7 +379,8 @@ static char* pStrToken
     pPtr++;
   }
 
-  len = (int)(pEd - pSt + 1);
+  diff = pEd - pSt;
+  len = (int)(diff + 1);
   if ((xSize > 0) && (len >= xSize))
   {
     len = xSize - 1;
@@ -421,7 +424,8 @@ static int lstrncasecmp
  *
  **/
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static int httpHeader
@@ -513,7 +517,8 @@ end:
  *
  **/
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static int httpParse
@@ -525,6 +530,8 @@ static int httpParse
   char *pPtr2;
   long len;
   int  retVal = -1;
+  ptrdiff_t offset = 0;
+  size_t ptrOffset;
 
   if (xpHttpInfo->recvLen == 0U)
   {
@@ -569,7 +576,8 @@ static int httpParse
 
             if (xpHttpInfo->response.chunked == C_HTTP__TRUE)
             {
-              len = (unsigned long)(xpHttpInfo->recvLen - (size_t)(pPtr1 - (char *)xpHttpInfo->pRecvBuf));
+              offset = pPtr1 - (char *)xpHttpInfo->pRecvBuf;
+              len = (unsigned long)((size_t)xpHttpInfo->recvLen - (size_t)offset);
               if (len > 0)
               {
                 pPtr2 = strstr(pPtr1, "\r\n");
@@ -619,7 +627,8 @@ static int httpParse
         }
         else
         {
-          len = (unsigned long)(xpHttpInfo->recvLen - (size_t)(pPtr1 - (char *)xpHttpInfo->pRecvBuf));
+          offset = pPtr1 - (char *)xpHttpInfo->pRecvBuf;
+          len = (unsigned long)((size_t)xpHttpInfo->recvLen - (size_t)offset);
           if (len  > 0)
           {
             /* Keep the partial header data. */
@@ -640,7 +649,8 @@ static int httpParse
 
         if ((xpHttpInfo->response.chunked == C_HTTP__TRUE) && (xpHttpInfo->length == -1))
         {
-          len = (unsigned long)(xpHttpInfo->recvLen - (size_t)(pPtr1 - (char*)xpHttpInfo->pRecvBuf));
+          offset = pPtr1 - (char *)xpHttpInfo->pRecvBuf;
+          len = (unsigned long)((size_t)xpHttpInfo->recvLen - (size_t)offset);
           if (len > 0)
           {
             pPtr2 = strstr(pPtr1, "\r\n");
@@ -686,7 +696,8 @@ static int httpParse
         {
             if (xpHttpInfo->length > 0)
             {
-              len = (unsigned long)(xpHttpInfo->recvLen - (size_t)(pPtr1 - (char*)xpHttpInfo->pRecvBuf));
+              offset = pPtr1 - (char *)xpHttpInfo->pRecvBuf;
+              len = (unsigned long)((size_t)xpHttpInfo->recvLen - (size_t)offset);
 
               if (len > xpHttpInfo->length)
               {
@@ -709,7 +720,8 @@ static int httpParse
                   }
                 }
 
-                pPtr1 += (size_t)xpHttpInfo->length;
+                ptrOffset = xpHttpInfo->length;
+                pPtr1 = &pPtr1[ptrOffset];
                 len -= xpHttpInfo->length;
 
                 if ((xpHttpInfo->response.chunked == C_HTTP__TRUE) && (len >= 2))
@@ -788,7 +800,8 @@ end:
  *
  **/
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 static int httpPost

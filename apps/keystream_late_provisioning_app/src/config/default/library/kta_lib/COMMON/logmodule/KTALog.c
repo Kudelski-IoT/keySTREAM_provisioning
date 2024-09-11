@@ -68,6 +68,12 @@
 /** @brief Maximum value size. */
 #define C_MAX_VALUE_SIZE (4u)
 
+/** @brief Maximum Modules for log */
+#define C_MAX_MODULES (12u)
+
+/** @brief MAximum Log Levels */
+#define C_MAX_LOG_LEVELS (6u)
+
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
@@ -79,7 +85,7 @@ typedef struct {
 } moduleLevelConfig;
 
 /* Module level configs for each module. */
-static moduleLevelConfig gaLogConfigs[] = {
+static moduleLevelConfig gaLogConfigs[C_MAX_MODULES] = {
   {"KTAMGR", LOG_KTA_ENABLE},
   {"KTACONFIG", LOG_KTA_ENABLE},
   {"KTAGENERAL", LOG_KTA_ENABLE},
@@ -108,7 +114,7 @@ typedef struct {
 typedef void (*log_LogFn)(logEvent *ev);
 
 /* Log levels */
-static const char *gapLevelStrings[] = {
+static const char *gapLevelStrings[C_MAX_LOG_LEVELS] = {
                                       "NONE",
                                       "DEBUG",
                                       "INFO",
@@ -172,8 +178,8 @@ void ktaLog_Fct
   ...
 )
 {
-  if (xLevel < 0 || xLevel > 5) {
-    return;
+  if ((xLevel < 0) || (xLevel > 5)) {
+    goto end;
   }
   logEvent ev = {
     .pFmt   = xpFmt,
@@ -187,7 +193,7 @@ void ktaLog_Fct
   };
   int moduleLogLevel = E_KTALOG_LEVEL_DEBUG;
 
-  for (int i = 0; i < (int32_t)(sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
+  for (int i = 0; i < (sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
   {
     if (strncmp(gaLogConfigs[i].aModuleName, xpModuleName,
         strlen(gaLogConfigs[i].aModuleName)) == 0)
@@ -203,11 +209,17 @@ void ktaLog_Fct
     logPrepare(&ev);
     va_end(ev.ap);
   }
+end:
+  return;
 }
 
 /**
  * @brief implement ktaLog_PrintBuffer
  *
+ */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+ * Not using the return value of snprintf
  */
 void ktaLog_PrintBuffer
 (
@@ -221,12 +233,16 @@ void ktaLog_PrintBuffer
   int             xSize
 )
 {
+  M_UNUSED(xpFile);
+  M_UNUSED(xpFunc);
+  M_UNUSED(xLine);
+
   int Index = 0;
   char aValue[C_MAX_VALUE_SIZE] = {0};
   char aBuffer[C_MAX_BUFFER_SIZE] = {0};
   int moduleLogLevel = E_KTALOG_LEVEL_ERROR;
 
-  for (int i = 0; i < (int32_t)(sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
+  for (int i = 0; i < (sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
   {
     if (strncmp(gaLogConfigs[i].aModuleName, xaModuleName,
         strlen(gaLogConfigs[i].aModuleName)) == 0)
@@ -267,6 +283,10 @@ void ktaLog_PrintBuffer
  * @implements logPrepare
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+ * Not using the return value of snprintf
+ */
 static void logPrepare
 (
   logEvent* xpEv
@@ -294,6 +314,10 @@ static void logPrepare
 /**
  * @implements initEvent
  *
+ */
+/**
+ * SUPPRESS: misra_c2012_rule_21.10_violation
+ * Use of time library for logging purpose.
  */
 static void initEvent
 (

@@ -893,7 +893,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Generic function to compute HMAC SHA256. The key is always located inside the secure platform and addressed by an identifier. The computed MAC is always exported to Host.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -952,7 +952,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Generic function to compute HMAC SHA256 and compare with the provided mac reference. The key is always located inside the secure platform and addressed by an identifier.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -1018,7 +1018,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Generic function to encrypt data based on AES-128 CBC. The key is always located inside the secure platform and addressed by an identifier.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -1128,7 +1128,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Get random value.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -1305,7 +1305,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Generates a key pair and persists private key in a platform and returns the public key.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -1385,7 +1385,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Sets a persistent object in the Platform.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -1574,7 +1574,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Deletes the persistent object from the Platform.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -1860,7 +1860,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Generates a key pair based on ECC NIST P256. The public key is always exported to Host. The private key is always written to C_K_KTA__VOLATILE_ID key identifier.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -1919,7 +1919,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Compute a shared secret based ECDH NIST P256. The private key is always located inside the secure platform and addressed by an identifier. The public key is always provided through a Host buffer. The computed shared secret is either exported to Host or kept inside the secure platform in key identifier(coherent with salRotHkdfExtractAndExpand () "secret" input).</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 <p>ECDH Key Agreement is the first phase of a common operation with HKDF Key Derivation initialize operation.</p>
 
 </div>
@@ -2044,7 +2044,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Derive a key based on HMAC SHA256 and truncate the derived key (128 most significant bits). The key is always located inside the secure platform and addressed by an identifier. The derived key is always kept inside secure platform and addressed by an identifier.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -2133,7 +2133,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Get chip UID. Chip Platform writes chip_uid which can have a chip specific format and length.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -2185,7 +2185,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>To store and lock the data based on ID.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -2237,7 +2237,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>To store the data based on ID.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -2289,7 +2289,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>To get the data based on ID.</p>
-<p>Suppression: misra-c2012-15.4 and misra-c2012-15.1 Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>

@@ -40,13 +40,16 @@
 /* -------------------------------------------------------------------------- */
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
-//#include "cloud_wifi_task.h"
-//#include "socket.h"
+#if 0
+#include "cloud_wifi_task.h"
+#include "socket.h"
+#endif
 #include "cryptoauthlib.h"
 
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
+#include "KTALog.h"
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
@@ -76,7 +79,8 @@
 #ifdef DEBUG
 /** @brief Enable sal com logs. */
 /** 
- * Suppression: misra-c2012-17.7 and misra-c2012-21.6
+ * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
+ * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
  * Using printf for logging.
  * Not checking the return status of printf, since not required.
  **/
@@ -222,6 +226,9 @@ K_SAL_API TKCommStatus salComInit
   void**    xppComInfo
 )
 {
+  M_UNUSED(xConnectTimeoutInMs);
+  M_UNUSED(xReadTimeoutInMs);
+  M_UNUSED(xppComInfo);
   return E_K_COMM_STATUS_OK;
 }
 
@@ -235,7 +242,10 @@ K_SAL_API TKCommStatus salComConnect
   const uint8_t* xpHost,
   const uint8_t* xpPort
 )
-{ 
+{
+  M_UNUSED(xpComInfo);
+  M_UNUSED(xpHost);
+  M_UNUSED(xpPort);
   return E_K_COMM_STATUS_OK;
 }
 
@@ -250,6 +260,9 @@ K_SAL_API TKCommStatus salComWrite
   size_t         xBufferLen
 )
 {
+  M_UNUSED(xpComInfo);
+  M_UNUSED(xpBuffer);
+  M_UNUSED(xBufferLen);
   return E_K_COMM_STATUS_OK;
 }
 
@@ -264,6 +277,9 @@ K_SAL_API TKCommStatus salComRead
   size_t*   xpBufferLen
 )
 {
+  M_UNUSED(xpComInfo);
+  M_UNUSED(xpBuffer);
+  M_UNUSED(xpBufferLen);
   return E_K_COMM_STATUS_OK;
 }
 
@@ -276,6 +292,7 @@ K_SAL_API TKCommStatus salComTerm
   void*  xpComInfo
 )
 {
+  M_UNUSED(xpComInfo);
   return E_K_COMM_STATUS_OK;
 }
 

@@ -261,7 +261,8 @@ K_SAL_API TKStatus salRotGetChipUID
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salRotGetChipCertificate
@@ -373,7 +374,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salRotKeyPairGeneration
@@ -425,7 +427,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salRotKeyAgreement
@@ -714,7 +717,8 @@ K_SAL_API TKStatus salRotHkdfExtractAndExpand
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salRotKeyDerivation
@@ -823,7 +827,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salCryptoHmac
@@ -897,7 +902,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salCryptoHmacVerify
@@ -979,7 +985,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salCryptoAesEnc
@@ -1162,7 +1169,8 @@ K_SAL_API TKStatus salCryptoAesDec
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salCryptoGetRandom

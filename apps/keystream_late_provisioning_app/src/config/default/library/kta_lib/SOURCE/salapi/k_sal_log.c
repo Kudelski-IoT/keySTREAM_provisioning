@@ -73,7 +73,8 @@
  *   Address of buffer containing input data
  */
 /** 
- * Suppression: misra-c2012-17.7 and misra-c2012-21.6
+ * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
+ * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
  * Using printf for logging.
  * Not checking the return status of printf, since not required.
  **/

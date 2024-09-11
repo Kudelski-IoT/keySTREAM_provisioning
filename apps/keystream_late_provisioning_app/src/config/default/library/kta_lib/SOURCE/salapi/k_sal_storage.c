@@ -306,7 +306,8 @@ static TKStatus lSearchIndex
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salStorageSetAndLockValue
@@ -355,7 +356,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salStorageSetValue
@@ -450,7 +452,8 @@ end:
  *
  */
 /**
- * Suppression: misra-c2012-15.4 and misra-c2012-15.1
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salStorageGetValue
