@@ -552,7 +552,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
-                  value="CLOUD_CONFIG_AWS;CLOUD_CONNECT_WITH_CUSTOM_CERTS;OBJECT_MANAGEMENT_FEATURE;DEVICE_PROVIDES_CHIP_CERT;NETWORK_STACK_AVAILABLE"/>
+                  value="OBJECT_MANAGEMENT_FEATURE;DEVICE_PROVIDES_CHIP_CERT;NETWORK_STACK_AVAILABLE"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="tentative-definitions" value="-fno-common"/>

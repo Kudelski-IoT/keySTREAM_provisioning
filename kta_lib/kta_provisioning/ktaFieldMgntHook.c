@@ -450,6 +450,9 @@ static TKStatus lPollKeyStream
     C_KTA_APP__LOG("[INFO] Sending [%d] bytes to KS\r\n", rot2ksMsgSize);
     lprintData(aRot2KsMsg, rot2ksMsgSize);
 
+/**********************************************************************************/
+/*                  Below code requires network stack integration                 */
+/**********************************************************************************/
 #ifdef NETWORK_STACK_AVAILABLE
     ks2rotMsgSize = C_K__ICPP_MSG_MAX_SIZE;
     commStatus = commMsgExchange(aRot2KsMsg, rot2ksMsgSize, pKs2RotMsg, &ks2rotMsgSize);

@@ -29,14 +29,6 @@ Documentation for this library can be found in following path within this reposi
  - Click on keySTREAM Trusted Agent Documentation.
  - From left Panel click on MPLAB® Harmony KTA_LIB Configurations and Application and follow the instructions.
 
-### Enabling preprocessor Macro's
- - The following preprocessor Macro's needs to be enabled in your build environment before you compile this project
-    - CLOUD_CONFIG_AWS
-    - CLOUD_CONNECT_WITH_CUSTOM_CERTS
-    - OBJECT_MANAGEMENT_FEATURE
-    - DEVICE_PROVIDES_CHIP_CERT
-    - NETWORK_STACK_AVAILABLE
-
 # Licensing
 License terms for using keySTREAM Trusted Agent library (KTA_LIB) are defined in the [license](./license.md) file of this repo. Please refer to this file for all definitive licensing information.
 
