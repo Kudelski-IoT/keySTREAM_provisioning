@@ -168,7 +168,14 @@ Integration Steps:</h1>
 <div class="image">
 <img src="generate.png" alt=""/>
 </div>
-   <p>20) Once code is generated it can be compiled and flashed into the device.</p>
+   <p>20) Once code is generated the following preprocessor Macro's needs to be enabled.</p><ul>
+      <li>CLOUD_CONFIG_AWS</li>
+      <li>CLOUD_CONNECT_WITH_CUSTOM_CERTS</li>
+      <li>OBJECT_MANAGEMENT_FEATURE</li>
+      <li>DEVICE_PROVIDES_CHIP_CERT</li>
+      <li>NETWORK_STACK_AVAILABLE</li>
+      </ul>
+   <p>21) Once all the above steps are complete the project can be compiled and flashed into the device.</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
 keySTREAM Trusted Agent Release Notes</h1>
 <p>see <a href="md_doxy_integration_release_notes.html"><code>Release Notes</code></a></p>
