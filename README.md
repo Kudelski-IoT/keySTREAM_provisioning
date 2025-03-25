@@ -7,10 +7,11 @@ Documentation for this library can be found in following path within this reposi
 # Building and using the Library
 ## Prerequisites
 ### Enable below preprocessor MACROS for KTA build
+  - Please use kta_lib/kta_provisioning/ktaFieldMgntHook.c from main repository.
   - OBJECT_MANAGEMENT_FEATURE - Used by KTA Lib for provisioning
   - DEVICE_PROVIDES_CHIP_CERT - Used by KTA Lib for provisioning
   - NETWORK_STACK_AVAILABLE - Used for communication with keySTREAM, disable this if network stack is not integrated.
-
+  
 ### Install the following tools.
    - [Microchip MPLAB X IDE](https://www.microchip.com/mplab/mplab-x-ide)
    - [Microchip MPLAB® Harmony](https://www.microchip.com/mplab/mplab-harmony)
