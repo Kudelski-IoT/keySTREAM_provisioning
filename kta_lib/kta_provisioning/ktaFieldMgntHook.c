@@ -35,7 +35,7 @@
  ******************************************************************************/
 /**
  * @brief   keySTREAM Trusted Agent - Hook for initialization and field management.
-*/
+ */
 
 #include "ktaFieldMgntHook.h"
 /* -------------------------------------------------------------------------- */
