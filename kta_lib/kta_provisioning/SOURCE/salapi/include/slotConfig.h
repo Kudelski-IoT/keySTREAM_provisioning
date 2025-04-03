@@ -57,8 +57,17 @@
  * @brief 32 byte block index within the zone.
  */
 #define C_KTA__SLOT_BLOCK_1            (0x01u)
+#define C_KTA__SLOT_BLOCK_2            (0x02u)
+#define C_KTA__SLOT_BLOCK_3            (0x03u)
 #define C_KTA__SLOT_BLOCK_4            (0x04u)
 #define C_KTA__SLOT_BLOCK_5            (0x05u)
+#define C_KTA__SLOT_BLOCK_6            (0x06u)
+#define C_KTA__SLOT_BLOCK_7            (0x07u)
+#define C_KTA__SLOT_BLOCK_8            (0x08u)
+#define C_KTA__SLOT_BLOCK_9            (0x09u)
+#define C_KTA__SLOT_BLOCK_10           (0x0Au)
+#define C_KTA__SLOT_BLOCK_11           (0x0Bu)
+#define C_KTA__SLOT_BLOCK_12           (0x0Cu)
 
 /** @brief 4 byte work index within the block. Ignored for 32 byte reads.*/
 #define C_KTA__BLOCK_OFFSET_0          (0x00u)
@@ -163,11 +172,47 @@
 
 /** @brief Signer Id - 4 bytes. */
 /** @brief Signer Id - storage slot. */
-#define C_KTA__SIGNER_ID_STORAGE_SLOT              (0x08u)
+#define C_KTA__SIGNER_ID_STORAGE_SLOT                          (0x08u)
 /** @brief Signer Id - storage block. */
-#define C_KTA__SIGNER_ID_STORAGE_BLOCK             (C_KTA__SLOT_BLOCK_1)
+#define C_KTA__SIGNER_ID_STORAGE_BLOCK                         (C_KTA__SLOT_BLOCK_1)
 /** @brief Signer Id - storage offset. */
-#define C_KTA__SIGNER_ID_STORAGE_OFFSET            (C_KTA__BLOCK_OFFSET_0)
+#define C_KTA__SIGNER_ID_STORAGE_OFFSET                        (C_KTA__BLOCK_OFFSET_0)
+
+
+/** @brief Customer Trust Anchor Metadata - 32 bytes.  */
+#define C_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_SLOT     (0x08u)
+#define C_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_BLOCK    (C_KTA__SLOT_BLOCK_9)
+#define C_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_OFFSET   (C_KTA__BLOCK_OFFSET_0)
+
+/** @brief Customer Sym Key Metadata - 32 bytes.  */
+#define C_KTA__CUSTOMER_SYM_KEY_METADATA_STORAGE_SLOT          (0x08u)
+#define C_KTA__CUSTOMER_SYM_KEY_METADATA_STORAGE_BLOCK         (C_KTA__SLOT_BLOCK_10)
+#define C_KTA__CUSTOMER_SYM_KEY_METADATA_STORAGE_OFFSET        (C_KTA__BLOCK_OFFSET_0)
+
+/** @brief Customer Data Metadata - 32 bytes.  */
+#define C_KTA__CUSTOMER_DATA_METADATA_STORAGE_SLOT             (0x08u)
+#define C_KTA__CUSTOMER_DATA_METADATA_STORAGE_BLOCK            (C_KTA__SLOT_BLOCK_11)
+#define C_KTA__CUSTOMER_DATA_METADATA_STORAGE_OFFSET           (C_KTA__BLOCK_OFFSET_0)
+
+/** @brief Customer Trust Anchor Object Uid - 16 bytes.  */
+#define C_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_STORAGE_SLOT   (0x08u)
+#define C_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_STORAGE_BLOCK  (C_KTA__SLOT_BLOCK_12)
+#define C_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_STORAGE_OFFSET (C_KTA__BLOCK_OFFSET_0)
+
+/** @brief Customer Sym Key Object Uid - 16 bytes */
+#define C_KTA_CUSTOMER_SYM_KEY_OBJECT_UID_STORAGE_SLOT         (0x08U)
+#define C_KTA_CUSTOMER_SYM_KEY_OBJECT_UID_STORAGE_BLOCK        (C_KTA__SLOT_BLOCK_12)
+#define C_KTA_CUSTOMER_SYM_KEY_OBJECT_UID_STORAGE_OFFSET       (C_KTA__BLOCK_OFFSET_4)
+
+/** @brief Customer Data - 64 bytes */
+#define C_KTA_CUSTOMER_DATA_STORAGE_SLOT                       (0x08U)
+#define C_KTA_CUSTOMER_DATA_STORAGE_BLOCK                      (C_KTA__SLOT_BLOCK_7)
+#define C_KTA_CUSTOMER_DATA_STORAGE_OFFSET                     (C_KTA__BLOCK_OFFSET_0)
+
+/** @brief Customer Data Object Uid - 16 bytes */
+#define C_KTA_CUSTOMER_DATA_OBJECT_UID_STORAGE_SLOT            (0x08U)
+#define C_KTA_CUSTOMER_DATA_OBJECT_UID_STORAGE_BLOCK           (C_KTA__SLOT_BLOCK_12)
+#define C_KTA_CUSTOMER_DATA_OBJECT_UID_STORAGE_OFFSET          (C_KTA__BLOCK_OFFSET_4)
 
 /** @brief Sealed Storage Data. */
 /** @brief Sealed Data Storage Slot */
@@ -212,6 +257,11 @@
 #define C_KTA__KDF_KEY_ID                          ((C_KTA__KDF_TARGET_SLOT << 8) | \
                                                     C_KTA__KDF_SOURCE_SLOT)
 
+/** @brief Customer Trust Anchor Data - 64 bytes */
+#define C_KTA_CUSTOMER_TRUST_ANCHOR_DATA_STORAGE_SLOT          (0x0EU)
+#define C_KTA_ENC_TEMPKEY_STORAGE_SLOT                         (0x09U)
+#define C_KTA_CUSTOMER_TRUST_ANCHOR_DATA_STORAGE_BLOCK         (C_KTA__SLOT_BLOCK_0)
+#define C_KTA_CUSTOMER_TRUST_ANCHOR_DATA_STORAGE_OFFSET        (C_KTA__BLOCK_OFFSET_0)
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */

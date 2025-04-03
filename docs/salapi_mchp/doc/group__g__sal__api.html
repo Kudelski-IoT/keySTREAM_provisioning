@@ -99,8 +99,20 @@ $(document).ready(function(){initNavTree('group__g__sal__api.html',''); initResi
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_s_fota_error.html">SFotaError</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the FOTA error information.  <a href="struct_s_fota_error.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_s_component.html">SComponent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the component information.  <a href="struct_s_component.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_s_target_component.html">STargetComponent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the target component information for FOTA.  <a href="struct_s_target_component.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_t_k_sal_obj_association_info.html">TKSalObjAssociationInfo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the associated Objects.  <a href="struct_t_k_sal_obj_association_info.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structobject__t.html">object_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the salObjectSet metadata.  <a href="structobject__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
@@ -144,6 +156,33 @@ Macros</h2></td></tr>
 <tr class="memitem:ga22153bb3c95475d69a309d697ebb34d5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga22153bb3c95475d69a309d697ebb34d5">C_K_KTA__VERSION_SLOT_ID</a>&#160;&#160;&#160;(0x4007u)</td></tr>
 <tr class="memdesc:ga22153bb3c95475d69a309d697ebb34d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">KTA Version ID.  <a href="group__g__sal__api.html#ga22153bb3c95475d69a309d697ebb34d5">More...</a><br /></td></tr>
 <tr class="separator:ga22153bb3c95475d69a309d697ebb34d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga18b6ad28433ac9bc77ba1fb1a57931cd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga18b6ad28433ac9bc77ba1fb1a57931cd">C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID</a>&#160;&#160;&#160;(0X4008u)</td></tr>
+<tr class="memdesc:ga18b6ad28433ac9bc77ba1fb1a57931cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Customer trust anchor metadata.  <a href="group__g__sal__api.html#ga18b6ad28433ac9bc77ba1fb1a57931cd">More...</a><br /></td></tr>
+<tr class="separator:ga18b6ad28433ac9bc77ba1fb1a57931cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac7ce133214568ef2038709e0bae7b1d0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gac7ce133214568ef2038709e0bae7b1d0">C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID</a>&#160;&#160;&#160;(0X4009u)</td></tr>
+<tr class="memdesc:gac7ce133214568ef2038709e0bae7b1d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">customer sym key metadata  <a href="group__g__sal__api.html#gac7ce133214568ef2038709e0bae7b1d0">More...</a><br /></td></tr>
+<tr class="separator:gac7ce133214568ef2038709e0bae7b1d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab3168e6ad9b09fe4e099d89843eecaed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gab3168e6ad9b09fe4e099d89843eecaed">C_K_KTA__CUSTOMER_DATA_METADATA_ID</a>&#160;&#160;&#160;(0X400Au)</td></tr>
+<tr class="memdesc:gab3168e6ad9b09fe4e099d89843eecaed"><td class="mdescLeft">&#160;</td><td class="mdescRight">customer data metadata  <a href="group__g__sal__api.html#gab3168e6ad9b09fe4e099d89843eecaed">More...</a><br /></td></tr>
+<tr class="separator:gab3168e6ad9b09fe4e099d89843eecaed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0610472502b07bd1919fc9d7575f597a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga0610472502b07bd1919fc9d7575f597a">C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID</a>&#160;&#160;&#160;(0X400Bu)</td></tr>
+<tr class="memdesc:ga0610472502b07bd1919fc9d7575f597a"><td class="mdescLeft">&#160;</td><td class="mdescRight">customer trust anchor object uid  <a href="group__g__sal__api.html#ga0610472502b07bd1919fc9d7575f597a">More...</a><br /></td></tr>
+<tr class="separator:ga0610472502b07bd1919fc9d7575f597a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga23c29fe107251d3918f466adb1be9c56"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga23c29fe107251d3918f466adb1be9c56">C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID</a>&#160;&#160;&#160;(0X400Cu)</td></tr>
+<tr class="memdesc:ga23c29fe107251d3918f466adb1be9c56"><td class="mdescLeft">&#160;</td><td class="mdescRight">customer sym key object uid  <a href="group__g__sal__api.html#ga23c29fe107251d3918f466adb1be9c56">More...</a><br /></td></tr>
+<tr class="separator:ga23c29fe107251d3918f466adb1be9c56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3a6c0df2d3879636d961a6f3d133a507"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga3a6c0df2d3879636d961a6f3d133a507">C_K_KTA__CUSTOMER_DATA_ID</a>&#160;&#160;&#160;(0X400Du)</td></tr>
+<tr class="memdesc:ga3a6c0df2d3879636d961a6f3d133a507"><td class="mdescLeft">&#160;</td><td class="mdescRight">customer data  <a href="group__g__sal__api.html#ga3a6c0df2d3879636d961a6f3d133a507">More...</a><br /></td></tr>
+<tr class="separator:ga3a6c0df2d3879636d961a6f3d133a507"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga293e0f573b26d1c58fc420c5de38e9a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga293e0f573b26d1c58fc420c5de38e9a9">C_K_KTA__CUSTOMER_DATA_OBJECT_UID_ID</a>&#160;&#160;&#160;(0X400Eu)</td></tr>
+<tr class="memdesc:ga293e0f573b26d1c58fc420c5de38e9a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">customer data object uid  <a href="group__g__sal__api.html#ga293e0f573b26d1c58fc420c5de38e9a9">More...</a><br /></td></tr>
+<tr class="separator:ga293e0f573b26d1c58fc420c5de38e9a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6b0b50d4de776da59841f5af4097ccf8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga6b0b50d4de776da59841f5af4097ccf8">C_K_KTA__CUSTOMER_TRUST_ANCHOR_DATA_ID</a>&#160;&#160;&#160;(0X400Fu)</td></tr>
+<tr class="memdesc:ga6b0b50d4de776da59841f5af4097ccf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">slot 14 clear data ID  <a href="group__g__sal__api.html#ga6b0b50d4de776da59841f5af4097ccf8">More...</a><br /></td></tr>
+<tr class="separator:ga6b0b50d4de776da59841f5af4097ccf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga82d71cd8e39173df8912ef4cf33646b1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga82d71cd8e39173df8912ef4cf33646b1">C_K_KTA__ENC_TEMPKEY_ID</a>&#160;&#160;&#160;(0X4010u)</td></tr>
+<tr class="memdesc:ga82d71cd8e39173df8912ef4cf33646b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">slot 14 clear data ID  <a href="group__g__sal__api.html#ga82d71cd8e39173df8912ef4cf33646b1">More...</a><br /></td></tr>
+<tr class="separator:ga82d71cd8e39173df8912ef4cf33646b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9cbcb95dc7498df4d274bbf2eae65cdf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga9cbcb95dc7498df4d274bbf2eae65cdf">C_K_KTA__HKDF_ACT_MODE</a>&#160;&#160;&#160;(0x0000u)</td></tr>
 <tr class="memdesc:ga9cbcb95dc7498df4d274bbf2eae65cdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">HKDF Extract Mode.  <a href="group__g__sal__api.html#ga9cbcb95dc7498df4d274bbf2eae65cdf">More...</a><br /></td></tr>
 <tr class="separator:ga9cbcb95dc7498df4d274bbf2eae65cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -186,6 +225,15 @@ Macros</h2></td></tr>
 <tr class="memitem:ga1a8e84430e52400313049a4910d394ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga1a8e84430e52400313049a4910d394ee">K_SAL_API</a></td></tr>
 <tr class="memdesc:ga1a8e84430e52400313049a4910d394ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">K Sal Api.  <a href="group__g__sal__api.html#ga1a8e84430e52400313049a4910d394ee">More...</a><br /></td></tr>
 <tr class="separator:ga1a8e84430e52400313049a4910d394ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabe416600519eb92b4a0bbc1ffe940787"><td class="memItemLeft" align="right" valign="top"><a id="gabe416600519eb92b4a0bbc1ffe940787"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>CURRENT_MAX_LENGTH</b>&#160;&#160;&#160;16</td></tr>
+<tr class="separator:gabe416600519eb92b4a0bbc1ffe940787"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf690fe114ff66fdd0eaaf7128c23876b"><td class="memItemLeft" align="right" valign="top"><a id="gaf690fe114ff66fdd0eaaf7128c23876b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMPONENTS_MAX</b>&#160;&#160;&#160;8</td></tr>
+<tr class="separator:gaf690fe114ff66fdd0eaaf7128c23876b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1a8e84430e52400313049a4910d394ee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga1a8e84430e52400313049a4910d394ee">K_SAL_API</a></td></tr>
+<tr class="memdesc:ga1a8e84430e52400313049a4910d394ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">K Sal Api.  <a href="group__g__sal__api.html#ga1a8e84430e52400313049a4910d394ee">More...</a><br /></td></tr>
+<tr class="separator:ga1a8e84430e52400313049a4910d394ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga66e0c167e5ca0fef754a8b26051cb9ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga66e0c167e5ca0fef754a8b26051cb9ed">C_SAL_OBJECT__TYPE_DATA</a>&#160;&#160;&#160;(0u)</td></tr>
 <tr class="memdesc:ga66e0c167e5ca0fef754a8b26051cb9ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sal object type data.  <a href="group__g__sal__api.html#ga66e0c167e5ca0fef754a8b26051cb9ed">More...</a><br /></td></tr>
 <tr class="separator:ga66e0c167e5ca0fef754a8b26051cb9ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,15 +246,37 @@ Macros</h2></td></tr>
 <tr class="memitem:ga51df808f5591cc83cb115c48393b15bf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga51df808f5591cc83cb115c48393b15bf">C_SAL_OBJECT__TYPE_SEALED_DATA</a>&#160;&#160;&#160;(3u)</td></tr>
 <tr class="memdesc:ga51df808f5591cc83cb115c48393b15bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sal object type sealed data.  <a href="group__g__sal__api.html#ga51df808f5591cc83cb115c48393b15bf">More...</a><br /></td></tr>
 <tr class="separator:ga51df808f5591cc83cb115c48393b15bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6a8a172acf389864d06da56056086510"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga6a8a172acf389864d06da56056086510">C_SAL_OBJECT__TYPE_TRUST_ANCHOR</a>&#160;&#160;&#160;(4u)</td></tr>
+<tr class="memdesc:ga6a8a172acf389864d06da56056086510"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sal object type Trust Anchor.  <a href="group__g__sal__api.html#ga6a8a172acf389864d06da56056086510">More...</a><br /></td></tr>
+<tr class="separator:ga6a8a172acf389864d06da56056086510"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:gab69ef11d35da2f6077ff3feb41bc3f07"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="struct_s_fota_error.html">SFotaError</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a></td></tr>
+<tr class="memdesc:gab69ef11d35da2f6077ff3feb41bc3f07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the FOTA error information.  <a href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">More...</a><br /></td></tr>
+<tr class="separator:gab69ef11d35da2f6077ff3feb41bc3f07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4e328bc29305bb0fae1531b25caee68e"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="struct_s_component.html">SComponent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a></td></tr>
+<tr class="memdesc:ga4e328bc29305bb0fae1531b25caee68e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the component information.  <a href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">More...</a><br /></td></tr>
+<tr class="separator:ga4e328bc29305bb0fae1531b25caee68e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga48001b855b48eb10b9ae30665b75274d"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="struct_s_target_component.html">STargetComponent</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga48001b855b48eb10b9ae30665b75274d">TTargetComponent</a></td></tr>
+<tr class="memdesc:ga48001b855b48eb10b9ae30665b75274d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the target component information for FOTA.  <a href="group__g__sal__api.html#ga48001b855b48eb10b9ae30665b75274d">More...</a><br /></td></tr>
+<tr class="separator:ga48001b855b48eb10b9ae30665b75274d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad4f691b1ad4c49d996a5fbb95056efa9"><td class="memItemLeft" align="right" valign="top"><a id="gad4f691b1ad4c49d996a5fbb95056efa9"></a>
 typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>TKSalObjectType</b></td></tr>
 <tr class="separator:gad4f691b1ad4c49d996a5fbb95056efa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:gab7c08b505f7fdec250581b7d307986fe"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a> { <br />
+&#160;&#160;<b>E_K_FOTA_SUCCESS</b> = 0u, 
+<br />
+&#160;&#160;<b>E_K_FOTA_IN_PROGRESS</b> = 1u, 
+<br />
+&#160;&#160;<b>E_K_FOTA_ERROR</b> = 2u
+<br />
+ }</td></tr>
+<tr class="memdesc:gab7c08b505f7fdec250581b7d307986fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumeration for the status of operations.  <a href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">More...</a><br /></td></tr>
+<tr class="separator:gab7c08b505f7fdec250581b7d307986fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga06fc87d81c62e9abb8790b6e5713c55b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
 &#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba3ca1ec8266b796c6713f042d114ee1c0">E_K_SAL_OBJECT_TYPE_DATA</a>, 
 <br />
@@ -215,6 +285,16 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba22ab38b812278768f7775abe4cef39c2">E_K_SAL_OBJECT_TYPE_CERTFICATE</a>, 
 <br />
 &#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba7b1f31fdb2c02cb76b96b6a698d70984">E_K_SAL_OBJECT_TYPE_SEALED_DATA</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55baed881ab53473520d5a8e88def475ff9b">E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14</a> = 14u, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba723881782e2f8fab0677869476ada0e3">E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5</a> = 5u, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55bac4eb51c234b51486c6b6094f2d2dbe84">E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8</a> = 8u, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba843ca31410d45fb3486213ab305b733f">E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0</a> = 0u, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55babb8d5fe5f219c3aa3f00639fc98c119a">E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1</a> = 1u, 
 <br />
 &#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba78429ff6e7c812796f926a79b4692f7c">E_K_SAL_OBJECT_TYPE_MAX_NUM</a>
 <br />
@@ -242,21 +322,30 @@ Functions</h2></td></tr>
 <tr class="memitem:ga29aa2382e87f2767c2465e9f5338d14d"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga29aa2382e87f2767c2465e9f5338d14d">salSignHash</a> (uint32_t xKeyId, uint8_t *xpMsgToHash, size_t xMsgToHashLen, uint8_t *xpSignedHashOutBuff, uint32_t xSignedHashOutBuffLen, size_t *xpActualSignedHashOutLen)</td></tr>
 <tr class="memdesc:ga29aa2382e87f2767c2465e9f5338d14d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic function to sign the hash data. The key is always located inside the secure platform and addressed by an identifier.  <a href="group__g__sal__api.html#ga29aa2382e87f2767c2465e9f5338d14d">More...</a><br /></td></tr>
 <tr class="separator:ga29aa2382e87f2767c2465e9f5338d14d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga45489a4dc46959c0d5c0060f06ac3a7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga45489a4dc46959c0d5c0060f06ac3a7f">salFotaInstall</a> (const uint8_t *xpfota_name, const size_t fota_name_len, const uint8_t *xpfota_metadata, const size_t fota_metadata_len, const <a class="el" href="group__g__sal__api.html#ga48001b855b48eb10b9ae30665b75274d">TTargetComponent</a> target_components[8], <a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a> *xpfota_error, <a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> components[8])</td></tr>
+<tr class="memdesc:ga45489a4dc46959c0d5c0060f06ac3a7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initiate FOTA installation.  <a href="group__g__sal__api.html#ga45489a4dc46959c0d5c0060f06ac3a7f">More...</a><br /></td></tr>
+<tr class="separator:ga45489a4dc46959c0d5c0060f06ac3a7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafd2aa649113b98e03c7955c4e6368584"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gafd2aa649113b98e03c7955c4e6368584">salFotaGetStatus</a> (const uint8_t *xpfota_name, size_t fota_name_len, <a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a> *xpfota_error, <a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> components[8])</td></tr>
+<tr class="memdesc:gafd2aa649113b98e03c7955c4e6368584"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the status of the FOTA campaign.  <a href="group__g__sal__api.html#gafd2aa649113b98e03c7955c4e6368584">More...</a><br /></td></tr>
+<tr class="separator:gafd2aa649113b98e03c7955c4e6368584"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga78af293ca07a8ef5915fa66e003bd125"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga78af293ca07a8ef5915fa66e003bd125">salDeviceGetInfo</a> (<a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> components[8])</td></tr>
+<tr class="memdesc:ga78af293ca07a8ef5915fa66e003bd125"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get device information.  <a href="group__g__sal__api.html#ga78af293ca07a8ef5915fa66e003bd125">More...</a><br /></td></tr>
+<tr class="separator:ga78af293ca07a8ef5915fa66e003bd125"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9f62339ddf6562d5f6aba9ab258f8c41"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga9f62339ddf6562d5f6aba9ab258f8c41">salPrint</a> (char *xpBuffer)</td></tr>
 <tr class="memdesc:ga9f62339ddf6562d5f6aba9ab258f8c41"><td class="mdescLeft">&#160;</td><td class="mdescRight">This api will have the data buffer as input and will print on console to provide logs. If required platform specific definition to be updated by the user.  <a href="group__g__sal__api.html#ga9f62339ddf6562d5f6aba9ab258f8c41">More...</a><br /></td></tr>
 <tr class="separator:ga9f62339ddf6562d5f6aba9ab258f8c41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5288664b6464112f83047da3d855c2e5"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga5288664b6464112f83047da3d855c2e5">salObjectKeyGen</a> (uint32_t xKeyId, const uint8_t *xpKeyAttributes, size_t xKeyAttributesLen, uint8_t *xpPublicKey, size_t *xpPublicKeyLen, uint8_t *xpPlatformStatus)</td></tr>
 <tr class="memdesc:ga5288664b6464112f83047da3d855c2e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a key pair and persists private key in a platform and returns the public key.  <a href="group__g__sal__api.html#ga5288664b6464112f83047da3d855c2e5">More...</a><br /></td></tr>
 <tr class="separator:ga5288664b6464112f83047da3d855c2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga14d666674f04ea096a2e19057d4d7c37"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga14d666674f04ea096a2e19057d4d7c37">salObjectSet</a> (TKSalObjectType xObjectType, uint32_t xObjectId, const uint8_t *xpDataAttributes, size_t xDataAttributesLen, const uint8_t *xpData, size_t xDataLen, uint8_t *xpPlatformStatus)</td></tr>
-<tr class="memdesc:ga14d666674f04ea096a2e19057d4d7c37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a persistent object in the Platform.  <a href="group__g__sal__api.html#ga14d666674f04ea096a2e19057d4d7c37">More...</a><br /></td></tr>
-<tr class="separator:ga14d666674f04ea096a2e19057d4d7c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabb221d8b1d53923abf687ff9f3c039fe"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gabb221d8b1d53923abf687ff9f3c039fe">salObjectSet</a> (TKSalObjectType xObjectType, uint32_t xIdentifier, const uint8_t *xpDataAttributes, size_t xDataAttributesLen, <a class="el" href="structobject__t.html">object_t</a> *xpObject, uint8_t *xpPlatformStatus)</td></tr>
+<tr class="memdesc:gabb221d8b1d53923abf687ff9f3c039fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a persistent object in the Platform.  <a href="group__g__sal__api.html#gabb221d8b1d53923abf687ff9f3c039fe">More...</a><br /></td></tr>
+<tr class="separator:gabb221d8b1d53923abf687ff9f3c039fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf4fcd3a3ecd834b472c10aa5e23fa71d"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gaf4fcd3a3ecd834b472c10aa5e23fa71d">salObjectKeySet</a> (uint32_t xKeyId, const uint8_t *xpDataAttributes, size_t xDataAttributesLen, const uint8_t *xpKey, size_t xKeyLen, uint8_t *xpPlatformStatus)</td></tr>
 <tr class="memdesc:gaf4fcd3a3ecd834b472c10aa5e23fa71d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function sets a persistent key object in the Platform.  <a href="group__g__sal__api.html#gaf4fcd3a3ecd834b472c10aa5e23fa71d">More...</a><br /></td></tr>
 <tr class="separator:gaf4fcd3a3ecd834b472c10aa5e23fa71d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga45c314c36159631342e69a26d7e56bba"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga45c314c36159631342e69a26d7e56bba">salObjectGet</a> (TKSalObjectType xObjectType, uint32_t xObjectId, uint8_t *xpData, size_t *xpDataLen, uint8_t *xpPlatformStatus)</td></tr>
-<tr class="memdesc:ga45c314c36159631342e69a26d7e56bba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the persistent object from the Platform.  <a href="group__g__sal__api.html#ga45c314c36159631342e69a26d7e56bba">More...</a><br /></td></tr>
-<tr class="separator:ga45c314c36159631342e69a26d7e56bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacdffcef6cdab7480c7fe7fdf4b3df54a"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gacdffcef6cdab7480c7fe7fdf4b3df54a">salObjectGet</a> (TKSalObjectType xObjectType, uint32_t xObjectId, <a class="el" href="structobject__t.html">object_t</a> *xpObject, uint8_t *xpPlatformStatus)</td></tr>
+<tr class="memdesc:gacdffcef6cdab7480c7fe7fdf4b3df54a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the persistent object from the Platform.  <a href="group__g__sal__api.html#gacdffcef6cdab7480c7fe7fdf4b3df54a">More...</a><br /></td></tr>
+<tr class="separator:gacdffcef6cdab7480c7fe7fdf4b3df54a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafbf5113b6d2f097646fec842047f1bb6"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gafbf5113b6d2f097646fec842047f1bb6">salObjectDelete</a> (TKSalObjectType xObjectType, uint32_t xObjectId, uint8_t *xpPlatformStatus)</td></tr>
 <tr class="memdesc:gafbf5113b6d2f097646fec842047f1bb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the persistent object from the Platform.  <a href="group__g__sal__api.html#gafbf5113b6d2f097646fec842047f1bb6">More...</a><br /></td></tr>
 <tr class="separator:gafbf5113b6d2f097646fec842047f1bb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -269,6 +358,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga71386afe546d8290de6b8f828f5e3855"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga71386afe546d8290de6b8f828f5e3855">salObjectGetWithAssociation</a> (uint32_t xObjectWithAssociationId, const uint8_t *xpData, size_t *xpDataLen, <a class="el" href="struct_t_k_sal_obj_association_info.html">TKSalObjAssociationInfo</a> *xpAssociationInfo, uint8_t *xpPlatformStatus)</td></tr>
 <tr class="memdesc:ga71386afe546d8290de6b8f828f5e3855"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get from the Platform a persistent object which includes association information.  <a href="group__g__sal__api.html#ga71386afe546d8290de6b8f828f5e3855">More...</a><br /></td></tr>
 <tr class="separator:ga71386afe546d8290de6b8f828f5e3855"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4aa183bbc9c1c400f8348755d27d46f1"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga4aa183bbc9c1c400f8348755d27d46f1">salGetChallenge</a> (uint8_t *xpChallengeKey, uint8_t *xpPlatformStatus)</td></tr>
+<tr class="memdesc:ga4aa183bbc9c1c400f8348755d27d46f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a tempKey from platform calculated using platform random.  <a href="group__g__sal__api.html#ga4aa183bbc9c1c400f8348755d27d46f1">More...</a><br /></td></tr>
+<tr class="separator:ga4aa183bbc9c1c400f8348755d27d46f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac11ba9fb8fe5c47cb72a43c46d5869cd"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gac11ba9fb8fe5c47cb72a43c46d5869cd">salPlatformProcess</a> (const uint8_t *xpInBlob, size_t xInBlobLen, uint8_t *xpOutBlob, size_t *xpOutBlobLen)</td></tr>
 <tr class="memdesc:gac11ba9fb8fe5c47cb72a43c46d5869cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process blob of data which is device platform specific. Can be 3rd Party specific data blob pre-formatted by Server.  <a href="group__g__sal__api.html#gac11ba9fb8fe5c47cb72a43c46d5869cd">More...</a><br /></td></tr>
 <tr class="separator:gac11ba9fb8fe5c47cb72a43c46d5869cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -519,6 +611,150 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga18b6ad28433ac9bc77ba1fb1a57931cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga18b6ad28433ac9bc77ba1fb1a57931cd">&#9670;&nbsp;</a></span>C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID&#160;&#160;&#160;(0X4008u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Customer trust anchor metadata. </p>
+
+</div>
+</div>
+<a id="gac7ce133214568ef2038709e0bae7b1d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac7ce133214568ef2038709e0bae7b1d0">&#9670;&nbsp;</a></span>C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID&#160;&#160;&#160;(0X4009u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>customer sym key metadata </p>
+
+</div>
+</div>
+<a id="gab3168e6ad9b09fe4e099d89843eecaed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab3168e6ad9b09fe4e099d89843eecaed">&#9670;&nbsp;</a></span>C_K_KTA__CUSTOMER_DATA_METADATA_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__CUSTOMER_DATA_METADATA_ID&#160;&#160;&#160;(0X400Au)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>customer data metadata </p>
+
+</div>
+</div>
+<a id="ga0610472502b07bd1919fc9d7575f597a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0610472502b07bd1919fc9d7575f597a">&#9670;&nbsp;</a></span>C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID&#160;&#160;&#160;(0X400Bu)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>customer trust anchor object uid </p>
+
+</div>
+</div>
+<a id="ga23c29fe107251d3918f466adb1be9c56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga23c29fe107251d3918f466adb1be9c56">&#9670;&nbsp;</a></span>C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID&#160;&#160;&#160;(0X400Cu)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>customer sym key object uid </p>
+
+</div>
+</div>
+<a id="ga3a6c0df2d3879636d961a6f3d133a507"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3a6c0df2d3879636d961a6f3d133a507">&#9670;&nbsp;</a></span>C_K_KTA__CUSTOMER_DATA_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__CUSTOMER_DATA_ID&#160;&#160;&#160;(0X400Du)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>customer data </p>
+
+</div>
+</div>
+<a id="ga293e0f573b26d1c58fc420c5de38e9a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga293e0f573b26d1c58fc420c5de38e9a9">&#9670;&nbsp;</a></span>C_K_KTA__CUSTOMER_DATA_OBJECT_UID_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__CUSTOMER_DATA_OBJECT_UID_ID&#160;&#160;&#160;(0X400Eu)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>customer data object uid </p>
+
+</div>
+</div>
+<a id="ga6b0b50d4de776da59841f5af4097ccf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6b0b50d4de776da59841f5af4097ccf8">&#9670;&nbsp;</a></span>C_K_KTA__CUSTOMER_TRUST_ANCHOR_DATA_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__CUSTOMER_TRUST_ANCHOR_DATA_ID&#160;&#160;&#160;(0X400Fu)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>slot 14 clear data ID </p>
+
+</div>
+</div>
+<a id="ga82d71cd8e39173df8912ef4cf33646b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga82d71cd8e39173df8912ef4cf33646b1">&#9670;&nbsp;</a></span>C_K_KTA__ENC_TEMPKEY_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_K_KTA__ENC_TEMPKEY_ID&#160;&#160;&#160;(0X4010u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>slot 14 clear data ID </p>
+
+</div>
+</div>
 <a id="ga9cbcb95dc7498df4d274bbf2eae65cdf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga9cbcb95dc7498df4d274bbf2eae65cdf">&#9670;&nbsp;</a></span>C_K_KTA__HKDF_ACT_MODE</h2>
 
@@ -729,7 +965,23 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ga1a8e84430e52400313049a4910d394ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1a8e84430e52400313049a4910d394ee">&#9670;&nbsp;</a></span>K_SAL_API</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1a8e84430e52400313049a4910d394ee">&#9670;&nbsp;</a></span>K_SAL_API <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define K_SAL_API</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>K Sal Api. </p>
+
+</div>
+</div>
+<a id="ga1a8e84430e52400313049a4910d394ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1a8e84430e52400313049a4910d394ee">&#9670;&nbsp;</a></span>K_SAL_API <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -808,7 +1060,88 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga6a8a172acf389864d06da56056086510"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6a8a172acf389864d06da56056086510">&#9670;&nbsp;</a></span>C_SAL_OBJECT__TYPE_TRUST_ANCHOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define C_SAL_OBJECT__TYPE_TRUST_ANCHOR&#160;&#160;&#160;(4u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sal object type Trust Anchor. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="gab69ef11d35da2f6077ff3feb41bc3f07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab69ef11d35da2f6077ff3feb41bc3f07">&#9670;&nbsp;</a></span>TFotaError</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="struct_s_fota_error.html">SFotaError</a> <a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Structure holds the FOTA error information. </p>
+
+</div>
+</div>
+<a id="ga4e328bc29305bb0fae1531b25caee68e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4e328bc29305bb0fae1531b25caee68e">&#9670;&nbsp;</a></span>TComponent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="struct_s_component.html">SComponent</a> <a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Structure holds the component information. </p>
+
+</div>
+</div>
+<a id="ga48001b855b48eb10b9ae30665b75274d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga48001b855b48eb10b9ae30665b75274d">&#9670;&nbsp;</a></span>TTargetComponent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="struct_s_target_component.html">STargetComponent</a> <a class="el" href="group__g__sal__api.html#ga48001b855b48eb10b9ae30665b75274d">TTargetComponent</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Structure holds the target component information for FOTA. </p>
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="gab7c08b505f7fdec250581b7d307986fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab7c08b505f7fdec250581b7d307986fe">&#9670;&nbsp;</a></span>TKFotaStatus</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enumeration for the status of operations. </p>
+
+</div>
+</div>
 <a id="ga06fc87d81c62e9abb8790b6e5713c55b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga06fc87d81c62e9abb8790b6e5713c55b">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
@@ -830,6 +1163,16 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="gga06fc87d81c62e9abb8790b6e5713c55ba22ab38b812278768f7775abe4cef39c2"></a>E_K_SAL_OBJECT_TYPE_CERTFICATE&#160;</td><td class="fielddoc"><p>Object type cert. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga06fc87d81c62e9abb8790b6e5713c55ba7b1f31fdb2c02cb76b96b6a698d70984"></a>E_K_SAL_OBJECT_TYPE_SEALED_DATA&#160;</td><td class="fielddoc"><p>Object type sealed data. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga06fc87d81c62e9abb8790b6e5713c55baed881ab53473520d5a8e88def475ff9b"></a>E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14&#160;</td><td class="fielddoc"><p>Object Type Managed Slot 14 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga06fc87d81c62e9abb8790b6e5713c55ba723881782e2f8fab0677869476ada0e3"></a>E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5&#160;</td><td class="fielddoc"><p>Object Type Managed Slot 5 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga06fc87d81c62e9abb8790b6e5713c55bac4eb51c234b51486c6b6094f2d2dbe84"></a>E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8&#160;</td><td class="fielddoc"><p>Object Type Managed Slot 8 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga06fc87d81c62e9abb8790b6e5713c55ba843ca31410d45fb3486213ab305b733f"></a>E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0&#160;</td><td class="fielddoc"><p>Object Type Managed Slot 14 block 0 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga06fc87d81c62e9abb8790b6e5713c55babb8d5fe5f219c3aa3f00639fc98c119a"></a>E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1&#160;</td><td class="fielddoc"><p>Object Type Managed Slot 14 block 1 </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga06fc87d81c62e9abb8790b6e5713c55ba78429ff6e7c812796f926a79b4692f7c"></a>E_K_SAL_OBJECT_TYPE_MAX_NUM&#160;</td><td class="fielddoc"><p>Object type max num. </p>
 </td></tr>
@@ -1202,6 +1545,158 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ga45489a4dc46959c0d5c0060f06ac3a7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga45489a4dc46959c0d5c0060f06ac3a7f">&#9670;&nbsp;</a></span>salFotaInstall()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a> salFotaInstall </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>xpfota_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>fota_name_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>xpfota_metadata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>fota_metadata_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__g__sal__api.html#ga48001b855b48eb10b9ae30665b75274d">TTargetComponent</a>&#160;</td>
+          <td class="paramname"><em>target_components</em>[8], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a> *&#160;</td>
+          <td class="paramname"><em>xpfota_error</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a>&#160;</td>
+          <td class="paramname"><em>components</em>[8]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initiate FOTA installation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">fota_name</td><td>Buffer containing the name of the FOTA campaign. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fota_name_len</td><td>Length of the 'fota_name' buffer (in Bytes). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fota_metadata</td><td>Buffer containing customer-specific metadata. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fota_metadata_len</td><td>Length of the 'fota_metadata' buffer (in Bytes). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">target_components</td><td>Array of target components to be installed. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">fota_error</td><td>Pointer to store errors related to the FOTA campaign. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">components</td><td>Array of currently installed components.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TKFotaStatus SUCCESS, IN_PROGRESS, or ERROR based on the operation. </dd></dl>
+
+</div>
+</div>
+<a id="gafd2aa649113b98e03c7955c4e6368584"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafd2aa649113b98e03c7955c4e6368584">&#9670;&nbsp;</a></span>salFotaGetStatus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a> salFotaGetStatus </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>xpfota_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>fota_name_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a> *&#160;</td>
+          <td class="paramname"><em>xpfota_error</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a>&#160;</td>
+          <td class="paramname"><em>components</em>[8]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the status of the FOTA campaign. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">fota_name</td><td>Name of the FOTA campaign. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">fota_name_len</td><td>Length of the 'fota_name' buffer (in Bytes). </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">fota_error</td><td>Pointer to store errors related to the FOTA campaign. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">components</td><td>Array of currently installed components.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TKFotaStatus Status of the operation. </dd></dl>
+
+</div>
+</div>
+<a id="ga78af293ca07a8ef5915fa66e003bd125"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga78af293ca07a8ef5915fa66e003bd125">&#9670;&nbsp;</a></span>salDeviceGetInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a> salDeviceGetInfo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a>&#160;</td>
+          <td class="paramname"><em>components</em>[8]</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get device information. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">components</td><td>Array of components.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TKFotaStatus Status of the operation. </dd></dl>
+
+</div>
+</div>
 <a id="ga9f62339ddf6562d5f6aba9ab258f8c41"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga9f62339ddf6562d5f6aba9ab258f8c41">&#9670;&nbsp;</a></span>salPrint()</h2>
 
@@ -1309,8 +1804,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga14d666674f04ea096a2e19057d4d7c37"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga14d666674f04ea096a2e19057d4d7c37">&#9670;&nbsp;</a></span>salObjectSet()</h2>
+<a id="gabb221d8b1d53923abf687ff9f3c039fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabb221d8b1d53923abf687ff9f3c039fe">&#9670;&nbsp;</a></span>salObjectSet()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1318,14 +1813,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">TKStatus salObjectSet </td>
           <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramtype">TKSalObjectType&#160;</td>
           <td class="paramname"><em>xObjectType</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>xObjectId</em>, </td>
+          <td class="paramname"><em>xIdentifier</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1342,14 +1837,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const uint8_t *&#160;</td>
-          <td class="paramname"><em>xpData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>xDataLen</em>, </td>
+          <td class="paramtype"><a class="el" href="structobject__t.html">object_t</a> *&#160;</td>
+          <td class="paramname"><em>xpObject</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1369,11 +1858,10 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">xObjectType</td><td>Type of the object. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">xObjectId</td><td>Persistent object identifier. Size is fixed to 32-bits. Should not be NULL. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">xpDataAttributes</td><td>Address of buffer containing the object data_attributes. Should not be NULL. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">xDataAttributesLen</td><td>Length of the buffer containing the object data_attributes. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">xpData</td><td>Address of buffer containing the object input data. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">xDataLen</td><td>Length of object input data buffer (in Bytes). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xIdentifier</td><td>Persistent object identifier. Size is fixed to 32-bits. Should not be NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xpAttributes</td><td>Address of buffer containing the object data_attributes. Should not be NULL. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xAttributesLen</td><td>Length of the buffer containing the object data_attributes. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xpObject</td><td>It is a custom datatype which holds data, customer_metadata and object_uid </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">xpPlatformStatus</td><td>Status with Platform format.</td></tr>
   </table>
   </dd>
@@ -1461,8 +1949,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga45c314c36159631342e69a26d7e56bba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga45c314c36159631342e69a26d7e56bba">&#9670;&nbsp;</a></span>salObjectGet()</h2>
+<a id="gacdffcef6cdab7480c7fe7fdf4b3df54a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacdffcef6cdab7480c7fe7fdf4b3df54a">&#9670;&nbsp;</a></span>salObjectGet()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1477,19 +1965,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>xObjectId</em>, </td>
+          <td class="paramname"><em>xIdentifier</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>xpData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t *&#160;</td>
-          <td class="paramname"><em>xpDataLen</em>, </td>
+          <td class="paramtype"><a class="el" href="structobject__t.html">object_t</a> *&#160;</td>
+          <td class="paramname"><em>xpObject</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1512,6 +1994,7 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">xObjectId</td><td>Persistent object identifier. Size is fixed to 32-bits. Should not be NULL. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">xpData</td><td>Address of buffer where the device platform will return the output data. Should not be NULL. </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">xpDataLen</td><td>Address of output buffer length (in Bytes). Caller set the maximum output buffer length expected. Then, the function set the actual length of the output buffer. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">xpObject</td><td>Object structure containing fields for managed slots Customer metadata, object_uid and data. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">xpPlatformStatus</td><td>Status with Platform format.</td></tr>
   </table>
   </dd>
@@ -1770,6 +2253,51 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Get from the Platform a persistent object which includes association information. </p>
+
+</div>
+</div>
+<a id="ga4aa183bbc9c1c400f8348755d27d46f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4aa183bbc9c1c400f8348755d27d46f1">&#9670;&nbsp;</a></span>salGetChallenge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TKStatus salGetChallenge </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>xpChallengeKey</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>xpPlatformStatus</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets a tempKey from platform calculated using platform random. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">tempKey</td><td>32 bytes Challenge or tempKey </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">xpPlatformStatus</td><td>Status with Platform format.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>E_K_STATUS_OK in case of success.</li>
+<li>E_K_STATUS_PARAMETER for wrong input parameter(s).</li>
+<li>E_K_STATUS_ERROR for other errors.</li>
+</ul>
+</dd></dl>
+<p>Gets a tempKey from platform calculated using platform random.</p>
+<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -2185,7 +2713,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>To store and lock the data based on ID.</p>
-<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: misra_c2012_rule_15.4_violation SUPPRESS: misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -2237,7 +2765,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>To store the data based on ID.</p>
-<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: misra_c2012_rule_15.4_violation SUPPRESS: misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>
@@ -2289,7 +2817,7 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>To get the data based on ID.</p>
-<p>SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
+<p>SUPPRESS: misra_c2012_rule_15.4_violation SUPPRESS: misra_c2012_rule_15.1_violation Using goto for breaking during the error and return cases. </p>
 
 </div>
 </div>

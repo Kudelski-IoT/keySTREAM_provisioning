@@ -11,8 +11,8 @@
 
 
 /** Include Device Support Options */
-#define ATCA_ATECC608_SUPPORT
 #define ATCA_KTA_SUPPORT
+#define ATCA_ATECC608_SUPPORT
 
 /** Provide Maximum packet size for the command to be sent and received */
 #ifndef MAX_PACKET_SIZE
@@ -141,10 +141,16 @@
 
 #define ATCAB_WRITE_ENC_EN               (ATCAB_WRITE_EN)
 
+/* Atcacert functionality required by the library  */
+
+#define ATCACERT_FULLSTOREDCERT_EN           (FEATURE_DISABLED)
+
+#define ATCACERT_COMPCERT_EN                 (FEATURE_ENABLED)
+
 /* Host side Cryptographic functionality required by the library  */
 
 /* Crypto Hardware AES Configurations */
-#define ATCAB_AES_EXTRAS_EN                (CALIB_AES_EN || TALIB_AES_EN)
+#define ATCAB_AES_EXTRAS_EN                (CALIB_AES_EN || TALIB_AES_EN || LIBRARY_USAGE_EN_CHECK)
 
 #define ATCAB_AES_CBC_ENCRYPT_EN       (ATCAB_AES_EXTRAS_EN)
 
@@ -166,6 +172,10 @@
 #define ATCAC_SHA1_EN                      (FEATURE_ENABLED)
 
 #define ATCAC_SHA256_EN                    (FEATURE_ENABLED)
+
+#define ATCAC_SHA384_EN                    (FEATURE_DISABLED)
+
+#define ATCAC_SHA512_EN                    (FEATURE_DISABLED)
 
 #define ATCAC_SHA256_HMAC_EN               (ATCAC_SHA256_EN)
 

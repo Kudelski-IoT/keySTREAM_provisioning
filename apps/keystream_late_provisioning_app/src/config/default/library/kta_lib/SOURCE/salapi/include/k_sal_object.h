@@ -76,6 +76,8 @@ extern "C" {
 #define C_SAL_OBJECT__TYPE_CERTIFICATE                    (2u)
 /** @brief Sal object type sealed data. */
 #define C_SAL_OBJECT__TYPE_SEALED_DATA                    (3u)
+/** @brief Sal object type Trust Anchor. */
+#define C_SAL_OBJECT__TYPE_TRUST_ANCHOR                   (4u)
 
 /** @brief Tags used in the command fields. */
 enum
@@ -97,10 +99,31 @@ enum
    */
   E_K_SAL_OBJECT_TYPE_SEALED_DATA,
   /**
+   * Object Type Managed Slot 14
+   */
+  E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 = 14u,
+    /**
+   * Object Type Managed Slot 5
+   */
+  E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5 = 5u,
+  /**
+   * Object Type Managed Slot 8
+   */
+  E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8 = 8u,
+  /**
+   * Object Type Managed Slot 14 block 0
+   */
+  E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0 = 0u,
+  /**
+   * Object Type Managed Slot 14 block 1
+   */
+  E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1 = 1u,
+  /**
    * Object type max num.
    */
   E_K_SAL_OBJECT_TYPE_MAX_NUM
 };
+
 typedef uint32_t TKSalObjectType;
 
 /** @brief Structure holds the associated Objects. */
@@ -117,6 +140,23 @@ typedef struct
   uint8_t  associatedObjectType;
   /* Either key/data. */
 } TKSalObjAssociationInfo;
+
+/** @brief Structure holds the salObjectSet metadata. */
+typedef struct
+{
+  uint8_t*  data;
+  /* Address of buffer containing the object input data. */
+  size_t    dataLen;
+  /* Length of object input data buffer (in Bytes). */
+  uint8_t*  customerMetadata;
+  /* Address of the buffer containing the object customer metadata. */
+  size_t    customerMetadataLen;
+  /* Length of the buffer containing the object customer metadata. */
+  uint8_t*  objectUid;
+  /* Address of the buffer containing the Object UID. */
+  size_t    objectUidLen;
+  /* Length of the buffer containing the Object UID. */
+}  object_t;
 
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
@@ -168,18 +208,17 @@ K_SAL_API TKStatus salObjectKeyGen
  *
  * @param[in] xObjectType
  *   Type of the object.
- * @param[in] xObjectId
+ * @param[in] xIdentifier
  *   Persistent object identifier.
  *   Size is fixed to 32-bits. Should not be NULL.
- * @param[in] xpDataAttributes
+ * @param[in] xpAttributes
  *   Address of buffer containing the object data_attributes.
  *   Should not be NULL.
- * @param[in] xDataAttributesLen
+ * @param[in] xAttributesLen
  *   Length of the buffer containing the object data_attributes.
- * @param[in] xpData
- *   Address of buffer containing the object input data.
- * @param[in] xDataLen
- *   Length of object input data buffer (in Bytes).
+ * @param[in] xpObject
+ *   It is a custom datatype which holds data, customer_metadata
+ *   and object_uid
  * @param[out] xpPlatformStatus
  *   Status with Platform format.
  *
@@ -190,13 +229,12 @@ K_SAL_API TKStatus salObjectKeyGen
  */
 K_SAL_API TKStatus salObjectSet
 (
-  TKSalObjectType  xObjectType,
-  uint32_t         xObjectId,
-  const uint8_t*   xpDataAttributes,
-  size_t           xDataAttributesLen,
-  const uint8_t*   xpData,
-  size_t           xDataLen,
-  uint8_t*         xpPlatformStatus
+  TKSalObjectType xObjectType,
+  uint32_t        xIdentifier,
+  const uint8_t*  xpDataAttributes,
+  size_t          xDataAttributesLen,
+  object_t*       xpObject,
+  uint8_t*        xpPlatformStatus
 );
 
 /**
@@ -249,6 +287,9 @@ K_SAL_API TKStatus salObjectKeySet
  *   Address of output buffer length (in Bytes). Caller set the
  *   maximum output buffer length expected.
  *   Then, the function set the actual length of the output buffer.
+ * @param[in,out] xpObject
+ *    Object structure containing fields for managed slots
+ *    Customer metadata, object_uid and data.
  * @param[out] xpPlatformStatus
  *   Status with Platform format.
  *
@@ -261,8 +302,7 @@ K_SAL_API TKStatus salObjectGet
 (
   TKSalObjectType  xObjectType,
   uint32_t         xObjectId,
-  uint8_t*         xpData,
-  size_t*          xpDataLen,
+  object_t*        xpObject,
   uint8_t*         xpPlatformStatus
 );
 
@@ -387,6 +427,26 @@ K_SAL_API TKStatus salObjectGetWithAssociation
   size_t*                   xpDataLen,
   TKSalObjAssociationInfo*  xpAssociationInfo,
   uint8_t*                  xpPlatformStatus
+);
+
+/**
+ * @brief
+ *    Gets a tempKey from platform calculated using platform random
+ *
+ * @param[out] tempKey
+ *   32 bytes Challenge or tempKey
+ * @param[out] xpPlatformStatus
+ *   Status with Platform format.
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_PARAMETER for wrong input parameter(s).
+ * - E_K_STATUS_ERROR for other errors.
+ */
+K_SAL_API TKStatus salGetChallenge
+(
+  uint8_t* xpChallengeKey,
+  uint8_t* xpPlatformStatus
 );
 
 /** @} g_sal_api */

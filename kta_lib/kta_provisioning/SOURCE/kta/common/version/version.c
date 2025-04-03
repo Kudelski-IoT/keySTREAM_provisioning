@@ -84,6 +84,10 @@ const char* ktaGetDecodedVersionStr(const uint8_t version[])
 {
   static char version_string[C_K_KTA__VERSION_STRING_BUFFER_SIZE];
 
+  /**
+   * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+   * Not using the return value of snprintf
+   */
   snprintf(version_string, C_K_KTA__VERSION_STRING_BUFFER_SIZE, "%d.%d.%d",
           (version[0] >> 4) & 0x0F, version[0] & 0x0F, version[1]);
 

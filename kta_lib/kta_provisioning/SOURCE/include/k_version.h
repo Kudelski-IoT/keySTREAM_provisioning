@@ -59,7 +59,7 @@ extern "C" {
 #define C_K_KTA__VERSION_MINOR     2
 
 /** @brief Patch Version. */
-#define C_K_KTA__VERSION_PATCH     7
+#define C_K_KTA__VERSION_PATCH     9
 
 /** @brief Hot fix after release. */
 #define C_K_VERSION__HOT_FIX   ""

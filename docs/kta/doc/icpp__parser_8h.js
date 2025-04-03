@@ -53,7 +53,8 @@ var icpp__parser_8h =
       [ "E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a930f03ea80f91e24572d54574740844b", null ],
       [ "E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3ab5ae55a3f592c89e4522ec0410435cdc", null ],
       [ "E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a03bb7661355b612da1a9386446f75cac", null ],
-      [ "E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a3d5c8a2b9847f9563bcb18fb8b7a387e", null ]
+      [ "E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a3d5c8a2b9847f9563bcb18fb8b7a387e", null ],
+      [ "E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a1bcc74531632b1a61026000b28784862", null ]
     ] ],
     [ "TKIcppFieldTag", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8", [
       [ "E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a6de4488a1a19df0d40adf1e6c9c2906f", null ],
@@ -74,12 +75,15 @@ var icpp__parser_8h =
       [ "E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ae9cb484ffb3e61d7385b09f6a0f6c69f", null ],
       [ "E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8aa9e8b17e6a5f14a91c713245bc57dd3d", null ],
       [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a53745a51c18022167aab8ab27d2186c5", null ],
-      [ "E_K_ICPP_PARSER_FLD_TAG_CMD_OBJECT_ID", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ae362fb65ab02bd4a93dd4750b8642573", null ],
-      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA_ATTRIBUTES", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8af12b5bf0a7f1dedb47856e1d896afb3e", null ],
+      [ "E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a6ed9a787b4b356d77388579145a88c42", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a1eae52940580a08ed7419fb7260ddb33", null ],
       [ "E_K_ICPP_PARSER_FLD_TAG_CMD_DATA", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad19c787f66a962e0e9d09e33ba18b592", null ],
       [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a9635ecb29a338ea39ddb8126a1972d64", null ],
       [ "E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a637990d15429515a8c2de9b480a8474f", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ac955cd0c941d0c6f06653387fc5fb9ca", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a9bc2e601e60e521944a901c1aafe7952", null ],
       [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a4ddd96990eb535bc7e11f5a2fc764124", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8af2b6a58af2e3880107a4b6172c768745", null ],
       [ "E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad79b9226354c593e5ecb3acbcab05bfa", null ]
     ] ],
     [ "ktaIcppParserSerializeMessage", "icpp__parser_8h.html#a9d58bc2f039e601482251eba2a3a6822", null ],
