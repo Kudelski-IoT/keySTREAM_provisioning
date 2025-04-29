@@ -1,9 +1,9 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -59,28 +59,28 @@
     0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11}
 
 /** @brief Device context profile UID length. */
-#define C_SAL_CONTEXT_PROFILE_UID_LENGTH            (32u)
+#define C_SAL_CONTEXT_PROFILE_UID_LENGTH                (32u)
 
 /** @brief Context serial no. */
 #define C_SAL_CONTEXT_SERIAL_NO                     \
   {0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22, 0x22}
 
 /** @brief Context serial no length. */
-#define C_SAL_CONTEXT_SERIAL_NO_LENGTH              (16u)
+#define C_SAL_CONTEXT_SERIAL_NO_LENGTH                  (16u)
 
 /** @brief Context version. */
 #define C_SAL_CONTEXT_VERSION                        \
   {0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33, 0x33}
 
 /** @brief Context version length. */
-#define C_SAL_CONTEXT_VERSION_LENGTH                (16u)
+#define C_SAL_CONTEXT_VERSION_LENGTH                    (16u)
 
 /** @brief keySTREAM Trusted Agent version. */
 #define C_SAL_KTA_VERSION                            \
   {0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x44}
 
 /** @brief keySTREAM Trusted Agent version length. */
-#define C_SAL_KTA_VERSION_LENGTH                    (16u)
+#define C_SAL_KTA_VERSION_LENGTH                        (16u)
 
 /** @brief keySTREAM Trusted Agent version Storage length. */
 #define C_SAL_KTA_VERSION_STORAGE_LENGTH            (2u)
@@ -90,30 +90,30 @@
   {0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55}
 
 /** @brief Device seial no lenght. */
-#define C_SAL_DEVICE_SERIAL_NO_LENGTH               (16u)
+#define C_SAL_DEVICE_SERIAL_NO_LENGTH                   (16u)
 
 /** @brief L1 seg seed. */
 #define C_SAL_L1_SEG_SEED                          \
   {0x9c, 0x52, 0xb8, 0x13, 0x9f, 0xe5, 0xa3, 0xa9, 0xcc, 0xd9, 0x26, 0xe8, 0x41, 0x0b, 0x7a, 0x58}
 
 /** @brief Max bytes can be written at a time to the storage. */
-#define C_SAL_MCHP_MAX_DATA_SIZE                    (4u)
+#define C_SAL_MCHP_MAX_DATA_SIZE                        (4u)
 
 /** @brief L1 seg seed length. */
-#define C_SAL_L1_SEG_SEED_LENGTH                    (16u)
+#define C_SAL_L1_SEG_SEED_LENGTH                        (16u)
 
 /** @brief Sealed data id length. */
-#define C_SAL_SEALED_DATA_STORAGE_ID_ACTUAL_LENGTH  (133u)
+#define C_SAL_SEALED_DATA_STORAGE_ID_ACTUAL_LENGTH      (133u)
 
 /** @brief Sealed data id length after truncating other data. */
-#define C_SAL_SEALED_DATA_STORAGE_ID_SAL_LENGTH     (32u)
+#define C_SAL_SEALED_DATA_STORAGE_ID_SAL_LENGTH         (32u)
 
 
 /** @brief L1 key material data id length. */
-#define C_SAL_L1_KEY_MATERIAL_DATA_ID_ACTUAL_LENGTH  (17u)
+#define C_SAL_L1_KEY_MATERIAL_DATA_ID_ACTUAL_LENGTH     (17u)
 
 /** @brief L1 key material data id length after truncating L1 seg seed. */
-#define C_SAL_L1_KEY_MATERIAL_DATA_ID_SAL_LENGTH     (1u)
+#define C_SAL_L1_KEY_MATERIAL_DATA_ID_SAL_LENGTH        (1u)
 
 /** @brief L1 key material ID MCHP storage length. */
 #define C_SAL_L1_KEY_MATERIAL_DATA_ID_MCHP_STORAGE_LENGTH \
@@ -129,37 +129,68 @@
 
 
 /** @brief Life cycle data id length. */
-#define C_SAL_LIFE_CYCLE_STATE_STORAGE_ID_LENGTH     (4u)
+#define C_SAL_LIFE_CYCLE_STATE_STORAGE_ID_LENGTH        (4u)
 
-/** @brief Rot public UID id length. */
-#define C_SAL_ROT_PUBLIC_UID_STORAGE_ID_LENGTH       (8u)
+/** @brief Rot public uid length. */
+#define C_SAL_ROT_PUBLIC_UID_STORAGE_ID_LENGTH          (8u)
+
+
+/** @brief Customer trust anchor metadata length */
+#define C_SAL_CUSTOMER_TRUST_ANCHOR_METADATA_LENGTH     (32u)
+
+/** @brief Customer sym key metadata length */
+#define C_SAL__CUSTOMER_SYM_KEY_METADATA_LENGTH         (32u)
+
+/** @brief Customer data metadata length */
+#define C_SAL__CUSTOMER_DATA_METADATA_LENGTH            (32u)
+
+/** @brief Customer trust anchor object uid length */
+#define C_SAL__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_LENGTH  (16u)
+
+/** @brief customer sym key object uid length */
+#define C_SAL_CUSTOMER_SYM_KEY_OBJECT_UID_LENGTH        (16u)
+
+/** @brief Customer data length */
+#define C_SAL_CUSTOMER_DATA_LENGTH                      (32u)
+
+/** @brief Customer data length */
+#define C_SAL_CUSTOMER_TRUST_ANCHOR_DATA_LENGTH         (64u)
+
+/** @brief Customer data object uid length */
+#define C_SAL_CUSTOMER_DATA_OBJECT_UID_LENGTH           (16u)
 
 /** @brief L1 field key id length. */
-#define C_SAL_L1_FIELD_KEY_ID_LENGTH                 (32u)
+#define C_SAL_L1_FIELD_KEY_ID_LENGTH                    (32u)
 
 /** @brief Device certificate length. */
-#define C_SAL_DEVICE_CERTIFICATE_ID_LENGTH           (72u)
+#define C_SAL_DEVICE_CERTIFICATE_ID_LENGTH              (72u)
 
 /** @brief Signer certificate length. */
-#define C_SAL_SIGNER_CERTIFICATE_ID_LENGTH           (72u)
+#define C_SAL_SIGNER_CERTIFICATE_ID_LENGTH              (72u)
 
 /** @brief Max offset in a block. */
-#define C_SAL_MCHP_MAX_OFFSET_IN_BLOCK               (7u)
+#define C_SAL_MCHP_MAX_OFFSET_IN_BLOCK                  (7u)
 
 /** @brief Index for key ID in key material Data. */
-#define C_SAL_KEY_SET_ID_OFFSET                      (16u)
+#define C_SAL_KEY_SET_ID_OFFSET                         (16u)
 
 /** @brief Index for Device profile UID in sealed info Data. */
-#define C_SAL_DEVICE_PROFILE_UID_OFFSET              (83u)
+#define C_SAL_DEVICE_PROFILE_UID_OFFSET                 (83u)
 
 /** @brief Max buffer to store at a time. */
-#define C_SAL_MAX_BUFFER_SIZE                        (72u)
+#define C_SAL_MAX_BUFFER_SIZE                           (72u)
 
 /** @brief Signer Id data id length. */
-#define C_SAL_SIGNER_ID_STORAGE_ID_LENGTH            (4u)
+#define C_SAL_SIGNER_ID_STORAGE_ID_LENGTH               (4u)
 
 /** @brief Signer Id slot ID. */
-#define C_SAL_SIGNER_ID_SLOT_ID                      (0x5000u)
+#define C_SAL_SIGNER_ID_SLOT_ID                         (0x5000u)
+
+/** @brief ENC KEY LEN */
+#define C_SAL_CRYPTO_KEY_SIZE_32_BYTE                   (32u)
+
+/** @brief Rot public uid length. */
+#define C_SAL_CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_ID_LENGTH          (32u)
 
 /** @brief Storage details. */
 typedef struct
@@ -212,7 +243,7 @@ static TKSalSrecord gaSalStorageRecord[] =
     C_KTA__SIGNER_CERT_STORAGE_BLOCK, C_KTA__SIGNER_CERTIFICATE_STORAGE_OFFSET,
     C_SAL_SIGNER_CERTIFICATE_ID_LENGTH, C_SAL_SIGNER_CERTIFICATE_ID_LENGTH
   },
-  /* Siner ID. */
+  /* Signer ID. */
   {
     C_SAL_SIGNER_ID_SLOT_ID, C_KTA__SIGNER_ID_STORAGE_SLOT,
     C_KTA__SIGNER_ID_STORAGE_BLOCK, C_KTA__STORAGE_OFFSET_LIFE_CYCLE_STATE,
@@ -235,6 +266,60 @@ static TKSalSrecord gaSalStorageRecord[] =
     C_K_KTA__SEALED_DATA_STORAGE_ID, C_KTA__SEALED_DATA_STORAGE_SLOT,
     C_KTA__SEALED_DATA_STORAGE_BLOCK, C_KTA__SEALED_DATA_STORAGE_OFFSET,
     C_SAL_SEALED_DATA_STORAGE_ID_ACTUAL_LENGTH, C_SAL_SEALED_DATA_STORAGE_ID_SAL_LENGTH
+  },
+  /* Customer trust anchor metadata */
+  {
+    C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID, C_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_SLOT,
+    C_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_BLOCK, C_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_OFFSET,
+    C_SAL_CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_ID_LENGTH, C_SAL_CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_ID_LENGTH
+  },
+  /* Customer sym key metadata */
+  {
+    C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID, C_KTA__CUSTOMER_SYM_KEY_METADATA_STORAGE_SLOT,
+    C_KTA__CUSTOMER_SYM_KEY_METADATA_STORAGE_BLOCK, C_KTA__CUSTOMER_SYM_KEY_METADATA_STORAGE_OFFSET,
+    C_SAL__CUSTOMER_SYM_KEY_METADATA_LENGTH, C_SAL__CUSTOMER_SYM_KEY_METADATA_LENGTH
+  },
+  /* Customer data metadata */
+  {
+    C_K_KTA__CUSTOMER_DATA_METADATA_ID, C_KTA__CUSTOMER_DATA_METADATA_STORAGE_SLOT,
+    C_KTA__CUSTOMER_DATA_METADATA_STORAGE_BLOCK, C_KTA__CUSTOMER_DATA_METADATA_STORAGE_OFFSET,
+    C_SAL__CUSTOMER_DATA_METADATA_LENGTH, C_SAL__CUSTOMER_DATA_METADATA_LENGTH
+  },
+  /* Customer trust anchor object uid */
+  {
+    C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID, C_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_STORAGE_SLOT,
+    C_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_STORAGE_BLOCK, C_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_STORAGE_OFFSET,
+    C_SAL__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_LENGTH, C_SAL__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_LENGTH
+  },
+  /* customer sym key object uid */
+  {
+    C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID, C_KTA_CUSTOMER_SYM_KEY_OBJECT_UID_STORAGE_SLOT,
+    C_KTA_CUSTOMER_SYM_KEY_OBJECT_UID_STORAGE_BLOCK, C_KTA_CUSTOMER_SYM_KEY_OBJECT_UID_STORAGE_OFFSET,
+    C_SAL_CUSTOMER_SYM_KEY_OBJECT_UID_LENGTH, C_SAL_CUSTOMER_SYM_KEY_OBJECT_UID_LENGTH
+  },
+  /* customer data */
+  {
+    C_K_KTA__CUSTOMER_DATA_ID, C_KTA_CUSTOMER_DATA_STORAGE_SLOT,
+    C_KTA_CUSTOMER_DATA_STORAGE_BLOCK, C_KTA_CUSTOMER_DATA_STORAGE_OFFSET,
+    C_SAL_CUSTOMER_DATA_LENGTH, C_SAL_CUSTOMER_DATA_LENGTH
+  },
+  /* customer data object uid */
+  {
+    C_K_KTA__CUSTOMER_DATA_OBJECT_UID_ID, C_KTA_CUSTOMER_DATA_OBJECT_UID_STORAGE_SLOT,
+    C_KTA_CUSTOMER_DATA_OBJECT_UID_STORAGE_BLOCK, C_KTA_CUSTOMER_DATA_OBJECT_UID_STORAGE_OFFSET,
+    C_SAL_CUSTOMER_DATA_OBJECT_UID_LENGTH, C_SAL_CUSTOMER_DATA_OBJECT_UID_LENGTH
+  },
+  /* Customer Trust Anchor slot 14 data */
+  {
+    C_K_KTA__CUSTOMER_TRUST_ANCHOR_DATA_ID, C_KTA_CUSTOMER_TRUST_ANCHOR_DATA_STORAGE_SLOT,
+    C_KTA_CUSTOMER_TRUST_ANCHOR_DATA_STORAGE_BLOCK, C_KTA_CUSTOMER_TRUST_ANCHOR_DATA_STORAGE_OFFSET,
+    C_SAL_CUSTOMER_TRUST_ANCHOR_DATA_LENGTH, C_SAL_CUSTOMER_TRUST_ANCHOR_DATA_LENGTH
+  },
+  /* Customer Trust Anchor slot 14 data */
+  {
+    C_K_KTA__ENC_TEMPKEY_ID, C_KTA_ENC_TEMPKEY_STORAGE_SLOT,
+    C_KTA_CUSTOMER_TRUST_ANCHOR_DATA_STORAGE_BLOCK, C_KTA_CUSTOMER_TRUST_ANCHOR_DATA_STORAGE_OFFSET,
+    C_SAL_CRYPTO_KEY_SIZE_32_BYTE, C_SAL_CRYPTO_KEY_SIZE_32_BYTE
   }
 };
 
@@ -306,8 +391,8 @@ static TKStatus lSearchIndex
  *
  */
 /**
- * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
- * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * SUPPRESS: misra_c2012_rule_15.4_violation
+ * SUPPRESS: misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salStorageSetAndLockValue
@@ -356,8 +441,8 @@ end:
  *
  */
 /**
- * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
- * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * SUPPRESS: misra_c2012_rule_15.4_violation
+ * SUPPRESS: misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salStorageSetValue
@@ -390,11 +475,18 @@ K_SAL_API TKStatus salStorageSetValue
       goto end;
     }
 
-    if (gaSalStorageRecord[loopIndex].length != xDataLen)
+    // Skip length check for specific storage IDs
+    if ((xStorageDataId != C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID) &&
+        (xStorageDataId != C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID) &&
+        (xStorageDataId != C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID) &&
+        (xStorageDataId != C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID))
     {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("unexpected length", status);
-      goto end;
+      if (gaSalStorageRecord[loopIndex].length != xDataLen)
+      {
+        status = E_K_STATUS_PARAMETER;
+        M_KTALOG__ERR("unexpected length", status);
+        goto end;
+      }
     }
 
     if (C_K_KTA__L1_KEY_MATERIAL_DATA_ID == xStorageDataId)
@@ -427,6 +519,50 @@ K_SAL_API TKStatus salStorageSetValue
                    &xpData[C_SAL_DEVICE_PROFILE_UID_OFFSET],
                    C_SAL_SEALED_DATA_STORAGE_ID_SAL_LENGTH);
     }
+    else if (C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID == xStorageDataId)
+    {
+      status = lstorageOperation(loopIndex, E_READ, aTmpbuf);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("storage operation ", status);
+        status = E_K_STATUS_ERROR;
+        goto end;
+      }
+      (void)memcpy(&aTmpbuf[0], xpData, xDataLen);
+    }
+    else if (C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID == xStorageDataId)
+    {
+      status = lstorageOperation(loopIndex, E_READ, aTmpbuf);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("storage operation ", status);
+        status = E_K_STATUS_ERROR;
+        goto end;
+      }
+      (void)memcpy(&aTmpbuf[0], xpData, xDataLen);
+    }
+    else if (C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID == xStorageDataId)
+    {
+      status = lstorageOperation(loopIndex, E_READ, aTmpbuf);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("storage operation ", status);
+        status = E_K_STATUS_ERROR;
+        goto end;
+      }
+      (void)memcpy(&aTmpbuf[0], xpData, xDataLen);
+    }
+    else if (C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID == xStorageDataId)
+    {
+      status = lstorageOperation(loopIndex, E_READ, aTmpbuf);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("storage operation ", status);
+        status = E_K_STATUS_ERROR;
+        goto end;
+      }
+      (void)memcpy(&aTmpbuf[0], xpData, xDataLen);
+    }
     else
     {
       (void)memcpy(aTmpbuf, xpData, xDataLen);
@@ -452,8 +588,8 @@ end:
  *
  */
 /**
- * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
- * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * SUPPRESS: misra_c2012_rule_15.4_violation
+ * SUPPRESS: misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
 K_SAL_API TKStatus salStorageGetValue
@@ -494,11 +630,18 @@ K_SAL_API TKStatus salStorageGetValue
       goto end;
     }
 
-    if (gaSalStorageRecord[loopIndex].length > *xpDataLen)
+    // Skip length check for specific storage IDs
+    if ((xStorageDataId != C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID) &&
+        (xStorageDataId != C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID) &&
+        (xStorageDataId != C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID) &&
+        (xStorageDataId != C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID))
     {
-      status = E_K_STATUS_PARAMETER;
-      M_KTALOG__ERR("unexpected length", status);
-      goto end;
+      if (gaSalStorageRecord[loopIndex].length > *xpDataLen)
+      {
+        status = E_K_STATUS_PARAMETER;
+        M_KTALOG__ERR("unexpected length", status);
+        goto end;
+      }
     }
 
     status = lstorageOperation(loopIndex, E_READ, aTmpbuf);
@@ -675,7 +818,7 @@ static TKStatus lstorageOperation
 
         if (ATCA_SUCCESS != storageStatus)
         {
-          M_KTALOG__ERR("Storage operation", storageStatus);
+          M_KTALOG__ERR("Storage operation %d", storageStatus);
           break;
         }
 

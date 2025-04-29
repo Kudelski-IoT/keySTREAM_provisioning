@@ -736,6 +736,11 @@ static TKStatus lFetchActivationReqData
  * @implements lParseChipCert
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lParseChipCert
 (
   TKIcppProtocolMessage* xpProtoMessage,
