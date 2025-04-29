@@ -275,6 +275,10 @@ TKStatus ktaGetDeviceInfoConfig
  * @brief implement ktaSetContextInfoConfig
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+ * return value of non-void function not used
+ */
 TKStatus ktaSetContextInfoConfig
 (
   const uint8_t* xpL1SegSeed,
