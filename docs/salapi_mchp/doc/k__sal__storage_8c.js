@@ -23,6 +23,14 @@ var k__sal__storage_8c =
     [ "C_SAL_KTA_VERSION_STORAGE_LENGTH_MCHP_STORAGE_LENGTH", "k__sal__storage_8c.html#a9edc0402bb72d37a1d149cbb74ec2369", null ],
     [ "C_SAL_LIFE_CYCLE_STATE_STORAGE_ID_LENGTH", "k__sal__storage_8c.html#ad66f0fa6b8985e35c563f9bfe3cac813", null ],
     [ "C_SAL_ROT_PUBLIC_UID_STORAGE_ID_LENGTH", "k__sal__storage_8c.html#a593f94c38d00ee02f7c21b12f387cf55", null ],
+    [ "C_SAL_CUSTOMER_TRUST_ANCHOR_METADATA_LENGTH", "k__sal__storage_8c.html#a693816ec5389fda5270aade30e238744", null ],
+    [ "C_SAL__CUSTOMER_SYM_KEY_METADATA_LENGTH", "k__sal__storage_8c.html#a355d31e06e6ab246a0f6fc105a9414b0", null ],
+    [ "C_SAL__CUSTOMER_DATA_METADATA_LENGTH", "k__sal__storage_8c.html#a6e82d3bf4391bab6fd00af630f163dfc", null ],
+    [ "C_SAL__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_LENGTH", "k__sal__storage_8c.html#acfa86a4d067f218554bd1713f16bd5fa", null ],
+    [ "C_SAL_CUSTOMER_SYM_KEY_OBJECT_UID_LENGTH", "k__sal__storage_8c.html#a8584caa083ac671b7f6cc3466e0f8857", null ],
+    [ "C_SAL_CUSTOMER_DATA_LENGTH", "k__sal__storage_8c.html#afc5acca702797dfff6e39fba53c48fe8", null ],
+    [ "C_SAL_CUSTOMER_TRUST_ANCHOR_DATA_LENGTH", "k__sal__storage_8c.html#adf902626ee9223a017be674d92e618a1", null ],
+    [ "C_SAL_CUSTOMER_DATA_OBJECT_UID_LENGTH", "k__sal__storage_8c.html#a23bd33e948313724bead5d6f23954c81", null ],
     [ "C_SAL_L1_FIELD_KEY_ID_LENGTH", "k__sal__storage_8c.html#aee198f9decc506e3af31c9d50a54fe1c", null ],
     [ "C_SAL_DEVICE_CERTIFICATE_ID_LENGTH", "k__sal__storage_8c.html#a837b17379e6ae40df25b4c0a7a4c814b", null ],
     [ "C_SAL_SIGNER_CERTIFICATE_ID_LENGTH", "k__sal__storage_8c.html#acf51bcf5bd5c23c280951364091d9532", null ],
@@ -32,6 +40,8 @@ var k__sal__storage_8c =
     [ "C_SAL_MAX_BUFFER_SIZE", "k__sal__storage_8c.html#a6d3ffc85f5ec09b66e4e5b3a877a39f0", null ],
     [ "C_SAL_SIGNER_ID_STORAGE_ID_LENGTH", "k__sal__storage_8c.html#aa47a64e1aa0c2664586decfb1e0576e4", null ],
     [ "C_SAL_SIGNER_ID_SLOT_ID", "k__sal__storage_8c.html#a103071d34570a812c7afa2df8d4d8754", null ],
+    [ "C_SAL_CRYPTO_KEY_SIZE_32_BYTE", "k__sal__storage_8c.html#ad5592ce87f761a0138c65605dfc21563", null ],
+    [ "C_SAL_CUSTOMER_TRUST_ANCHOR_METADATA_STORAGE_ID_LENGTH", "k__sal__storage_8c.html#aa4f833424ad25f690aa121f8852dc57b", null ],
     [ "TOperation", "k__sal__storage_8c.html#aa1eadd6ee4b6374f9d99dbc7137df6af", [
       [ "E_READ", "k__sal__storage_8c.html#aa1eadd6ee4b6374f9d99dbc7137df6afa709ccc7c35719235536104906d05b0c5", null ],
       [ "E_WRITE", "k__sal__storage_8c.html#aa1eadd6ee4b6374f9d99dbc7137df6afac9f7eb1c0b41932a386560cbd1be42ca", null ]

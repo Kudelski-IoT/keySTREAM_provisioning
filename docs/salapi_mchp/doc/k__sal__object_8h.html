@@ -118,6 +118,9 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_t_k_sal_obj_association_info.html">TKSalObjAssociationInfo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the associated Objects.  <a href="struct_t_k_sal_obj_association_info.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structobject__t.html">object_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Structure holds the salObjectSet metadata.  <a href="structobject__t.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
@@ -136,6 +139,9 @@ Macros</h2></td></tr>
 <tr class="memitem:ga51df808f5591cc83cb115c48393b15bf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga51df808f5591cc83cb115c48393b15bf">C_SAL_OBJECT__TYPE_SEALED_DATA</a>&#160;&#160;&#160;(3u)</td></tr>
 <tr class="memdesc:ga51df808f5591cc83cb115c48393b15bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sal object type sealed data.  <a href="group__g__sal__api.html#ga51df808f5591cc83cb115c48393b15bf">More...</a><br /></td></tr>
 <tr class="separator:ga51df808f5591cc83cb115c48393b15bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6a8a172acf389864d06da56056086510"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga6a8a172acf389864d06da56056086510">C_SAL_OBJECT__TYPE_TRUST_ANCHOR</a>&#160;&#160;&#160;(4u)</td></tr>
+<tr class="memdesc:ga6a8a172acf389864d06da56056086510"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sal object type Trust Anchor.  <a href="group__g__sal__api.html#ga6a8a172acf389864d06da56056086510">More...</a><br /></td></tr>
+<tr class="separator:ga6a8a172acf389864d06da56056086510"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -154,6 +160,16 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba7b1f31fdb2c02cb76b96b6a698d70984">E_K_SAL_OBJECT_TYPE_SEALED_DATA</a>, 
 <br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55baed881ab53473520d5a8e88def475ff9b">E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14</a> = 14u, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba723881782e2f8fab0677869476ada0e3">E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5</a> = 5u, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55bac4eb51c234b51486c6b6094f2d2dbe84">E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8</a> = 8u, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba843ca31410d45fb3486213ab305b733f">E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0</a> = 0u, 
+<br />
+&#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55babb8d5fe5f219c3aa3f00639fc98c119a">E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1</a> = 1u, 
+<br />
 &#160;&#160;<a class="el" href="group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba78429ff6e7c812796f926a79b4692f7c">E_K_SAL_OBJECT_TYPE_MAX_NUM</a>
 <br />
  }</td></tr>
@@ -165,15 +181,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga5288664b6464112f83047da3d855c2e5"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga5288664b6464112f83047da3d855c2e5">salObjectKeyGen</a> (uint32_t xKeyId, const uint8_t *xpKeyAttributes, size_t xKeyAttributesLen, uint8_t *xpPublicKey, size_t *xpPublicKeyLen, uint8_t *xpPlatformStatus)</td></tr>
 <tr class="memdesc:ga5288664b6464112f83047da3d855c2e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a key pair and persists private key in a platform and returns the public key.  <a href="group__g__sal__api.html#ga5288664b6464112f83047da3d855c2e5">More...</a><br /></td></tr>
 <tr class="separator:ga5288664b6464112f83047da3d855c2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga14d666674f04ea096a2e19057d4d7c37"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga14d666674f04ea096a2e19057d4d7c37">salObjectSet</a> (TKSalObjectType xObjectType, uint32_t xObjectId, const uint8_t *xpDataAttributes, size_t xDataAttributesLen, const uint8_t *xpData, size_t xDataLen, uint8_t *xpPlatformStatus)</td></tr>
-<tr class="memdesc:ga14d666674f04ea096a2e19057d4d7c37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a persistent object in the Platform.  <a href="group__g__sal__api.html#ga14d666674f04ea096a2e19057d4d7c37">More...</a><br /></td></tr>
-<tr class="separator:ga14d666674f04ea096a2e19057d4d7c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabb221d8b1d53923abf687ff9f3c039fe"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gabb221d8b1d53923abf687ff9f3c039fe">salObjectSet</a> (TKSalObjectType xObjectType, uint32_t xIdentifier, const uint8_t *xpDataAttributes, size_t xDataAttributesLen, <a class="el" href="structobject__t.html">object_t</a> *xpObject, uint8_t *xpPlatformStatus)</td></tr>
+<tr class="memdesc:gabb221d8b1d53923abf687ff9f3c039fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a persistent object in the Platform.  <a href="group__g__sal__api.html#gabb221d8b1d53923abf687ff9f3c039fe">More...</a><br /></td></tr>
+<tr class="separator:gabb221d8b1d53923abf687ff9f3c039fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf4fcd3a3ecd834b472c10aa5e23fa71d"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gaf4fcd3a3ecd834b472c10aa5e23fa71d">salObjectKeySet</a> (uint32_t xKeyId, const uint8_t *xpDataAttributes, size_t xDataAttributesLen, const uint8_t *xpKey, size_t xKeyLen, uint8_t *xpPlatformStatus)</td></tr>
 <tr class="memdesc:gaf4fcd3a3ecd834b472c10aa5e23fa71d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function sets a persistent key object in the Platform.  <a href="group__g__sal__api.html#gaf4fcd3a3ecd834b472c10aa5e23fa71d">More...</a><br /></td></tr>
 <tr class="separator:gaf4fcd3a3ecd834b472c10aa5e23fa71d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga45c314c36159631342e69a26d7e56bba"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga45c314c36159631342e69a26d7e56bba">salObjectGet</a> (TKSalObjectType xObjectType, uint32_t xObjectId, uint8_t *xpData, size_t *xpDataLen, uint8_t *xpPlatformStatus)</td></tr>
-<tr class="memdesc:ga45c314c36159631342e69a26d7e56bba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the persistent object from the Platform.  <a href="group__g__sal__api.html#ga45c314c36159631342e69a26d7e56bba">More...</a><br /></td></tr>
-<tr class="separator:ga45c314c36159631342e69a26d7e56bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacdffcef6cdab7480c7fe7fdf4b3df54a"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gacdffcef6cdab7480c7fe7fdf4b3df54a">salObjectGet</a> (TKSalObjectType xObjectType, uint32_t xObjectId, <a class="el" href="structobject__t.html">object_t</a> *xpObject, uint8_t *xpPlatformStatus)</td></tr>
+<tr class="memdesc:gacdffcef6cdab7480c7fe7fdf4b3df54a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the persistent object from the Platform.  <a href="group__g__sal__api.html#gacdffcef6cdab7480c7fe7fdf4b3df54a">More...</a><br /></td></tr>
+<tr class="separator:gacdffcef6cdab7480c7fe7fdf4b3df54a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafbf5113b6d2f097646fec842047f1bb6"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gafbf5113b6d2f097646fec842047f1bb6">salObjectDelete</a> (TKSalObjectType xObjectType, uint32_t xObjectId, uint8_t *xpPlatformStatus)</td></tr>
 <tr class="memdesc:gafbf5113b6d2f097646fec842047f1bb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the persistent object from the Platform.  <a href="group__g__sal__api.html#gafbf5113b6d2f097646fec842047f1bb6">More...</a><br /></td></tr>
 <tr class="separator:gafbf5113b6d2f097646fec842047f1bb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -186,6 +202,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga71386afe546d8290de6b8f828f5e3855"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga71386afe546d8290de6b8f828f5e3855">salObjectGetWithAssociation</a> (uint32_t xObjectWithAssociationId, const uint8_t *xpData, size_t *xpDataLen, <a class="el" href="struct_t_k_sal_obj_association_info.html">TKSalObjAssociationInfo</a> *xpAssociationInfo, uint8_t *xpPlatformStatus)</td></tr>
 <tr class="memdesc:ga71386afe546d8290de6b8f828f5e3855"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get from the Platform a persistent object which includes association information.  <a href="group__g__sal__api.html#ga71386afe546d8290de6b8f828f5e3855">More...</a><br /></td></tr>
 <tr class="separator:ga71386afe546d8290de6b8f828f5e3855"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4aa183bbc9c1c400f8348755d27d46f1"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga4aa183bbc9c1c400f8348755d27d46f1">salGetChallenge</a> (uint8_t *xpChallengeKey, uint8_t *xpPlatformStatus)</td></tr>
+<tr class="memdesc:ga4aa183bbc9c1c400f8348755d27d46f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a tempKey from platform calculated using platform random.  <a href="group__g__sal__api.html#ga4aa183bbc9c1c400f8348755d27d46f1">More...</a><br /></td></tr>
+<tr class="separator:ga4aa183bbc9c1c400f8348755d27d46f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for object operation. </p>

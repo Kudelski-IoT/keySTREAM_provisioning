@@ -114,7 +114,22 @@ typedef enum
 /* --------------------------------------------------------------------------------------------- */
 /* VARIABLES                                                                                     */
 /* --------------------------------------------------------------------------------------------- */
-
+/** @brief Structure holds all information to be exported to calling application */
+typedef struct
+{
+  uint8_t*  data;
+  /* Address of buffer containing the object input data. */
+  size_t    dataLen;
+  /* Length of object input data buffer (in Bytes). */
+  uint8_t*  customerMetadata;
+  /* Address of the buffer containing the object customer metadata. */
+  size_t    customerMetadataLen;
+  /* Length of the buffer containing the object customer metadata. */
+  uint8_t*  objectUid;
+  /* Address of the buffer containing the Object UID. */
+  size_t    objectUidLen;
+  /* Length of the buffer containing the Object UID. */
+}  TKktaDataObject;
 /* --------------------------------------------------------------------------------------------- */
 /* FUNCTIONS                                                                                     */
 /* --------------------------------------------------------------------------------------------- */
@@ -330,36 +345,28 @@ TKStatus ktaGetObjectWithAssociation
  *  This object has been provisioned and is managed by keySTREAM.
  *
  * @pre
- *   The function ktaGetObjectWithAssociation() is called and device is in provisioned state.
+ *   The function ktaGetObject() is called and device is in provisioned state.
  *
- * @param[in] xObjWithAssociationId
+ * @param[in] xIdentifier
  *   Should be a valid key identifier, It is the same key Identifier which application receives
- *   from the parameter "associatedObjId", in ktaGetObjectWithAssociation() API.
+ *   from the parameter "associatedObjId", in ktaGetObject() API.
  *   Object with Association identifier.
  *   Should be provided by the caller
- * @param[in,out] xpOutData
+ * @param[in,out] xpObject
  *   [in] Pointer to buffer to carry the device ceritficate (in Bytes).
  *   [out] Signer ceritifcate in der (e.g. x.509 signer certificate).
  *   Should not be NULL.
  *   Buffer must be provided by the caller.
- * @param[in,out] xpOutDataLen
- *   [in] Pointer to buffer to carry the length of the signer ceritficate (in Bytes).
- *   [out] Actual output length.
- *   The caller set the maximum length expected (typ. the buffer size).
- *   Then, keySTREAM Trusted Agent writes the actual length of the data written
- *   to the buffer.
- *   Should be provided by the caller.
  *
  * @return
  * - E_K_STATUS_OK in case of success.
  * - E_K_STATUS_PARAMETER for wrong input parameter.
  * - E_K_STATUS_ERROR for other errors.
  */
-TKStatus ktaGetAssociatedObject
+TKStatus ktaGetObject
 (
-  uint32_t  xObjWithAssociationId,
-  uint8_t*  xpOutData,
-  size_t*   xpOutDataLen
+  uint32_t          xIdentifier,
+  TKktaDataObject * xpObject
 );
 
 /**

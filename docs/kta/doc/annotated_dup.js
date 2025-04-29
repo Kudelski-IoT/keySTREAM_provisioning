@@ -8,6 +8,7 @@ var annotated_dup =
     [ "TKIcppField", "struct_t_k_icpp_field.html", "struct_t_k_icpp_field" ],
     [ "TKIcppFieldList", "struct_t_k_icpp_field_list.html", "struct_t_k_icpp_field_list" ],
     [ "TKIcppProtocolMessage", "struct_t_k_icpp_protocol_message.html", "struct_t_k_icpp_protocol_message" ],
+    [ "TKktaDataObject", "struct_t_kkta_data_object.html", "struct_t_kkta_data_object" ],
     [ "TKRegInfoPayload", "struct_t_k_reg_info_payload.html", "struct_t_k_reg_info_payload" ],
     [ "TKtaContextInfoConfig", "struct_t_kta_context_info_config.html", "struct_t_kta_context_info_config" ],
     [ "TKtaDeviceInfoConfig", "struct_t_kta_device_info_config.html", "struct_t_kta_device_info_config" ]
