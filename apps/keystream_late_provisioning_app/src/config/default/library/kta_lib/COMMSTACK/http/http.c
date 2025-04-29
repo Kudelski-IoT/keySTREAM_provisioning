@@ -198,6 +198,10 @@ static int httpPost
  * @brief  implement httpInit
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+ * Not using the return value of non-void functions
+ */
 TCommIfStatus httpInit
 (
   const TCommIfIpProtocol  xIpProtocol,
@@ -469,6 +473,10 @@ static int httpHeader
   }
   else if (lstrncasecmp(aT1, "set-cookie:", 11) == 0)
   {
+    /**
+     * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+     * Not using the return value of snprintf
+     */
     (void)snprintf(xpHttpInfo->response.cookie, C_HTTP__HEADER_FIELD_SIZE, "%s", aT2);
   }
   else if (lstrncasecmp(aT1, "location:", 9) == 0)
