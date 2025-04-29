@@ -240,6 +240,10 @@ typedef enum
    * Delete key object command tag.
    */
   E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT         = 0x51u,
+  /**
+   * Get Challenge object command tag.
+   */
+  E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE             = 0x52u
 } TKIcppCommandTag;
 
 /** @brief Supported Field Tags. */
@@ -308,12 +312,10 @@ typedef enum
   /**
    * Device serial number tag.
    */
-  /* MISRA Rule 5.4 flags the following macro's name as ambiguous from the one */
   E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO         = 0x82u,
   /**
    * keySTREAM Ephemeral Public Key tag.
    */
-  /* MISRA Rule 5.4 flags the following macro's name as ambiguous from the one */
   E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK               = 0xF5u,
   /**
    * ObjectType field in command from keySTREAM.
@@ -322,11 +324,11 @@ typedef enum
   /**
    * Identifier field in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FLD_TAG_CMD_OBJECT_ID           = 0xB0u,
+  E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER          = 0xB0u,
   /**
    * Data attributes field in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA_ATTRIBUTES   = 0xB1u,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES        = 0xB1u,
   /**
    * Data field in command from keySTREAM.
    */
@@ -338,12 +340,23 @@ typedef enum
   /**
    * Object Owner optional field in command from keySTREAM.
    */
-  /* MISRA Rule 5.4 flags the following macro's name as ambiguous from the one */
   E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER          = 0xB2u,
+  /**
+   * Data field in command from keySTREAM
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID        = 0xB5u,
+  /**
+   * Customer Metadata field in command from keySTREAM
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA = 0xB6u,
   /**
    * Command processing status field tag in command from keySTREAM.
    */
   E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS = 0xBFu,
+  /**
+   * Response Challenge field tag in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE             = 0xB7u,
   /**
    * Public key field tag in command from keySTREAM.
    */

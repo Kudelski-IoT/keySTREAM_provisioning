@@ -102,6 +102,22 @@
 
 /** @brief Signer Id slot ID. */
 #define C_SAL_SIGNER_ID_STORAGE_ID                    (0x5000u)
+
+/** @brief Slot ID Defines */
+#define C_SAL_SLOT_6_KEY_ID                           (0x06u)
+#define MAX_MANAGED_SLOT_DATA_SIZE                    (32u)
+#define MAX_MANAGED_SLOT_MAC_SIZE                     (32u)
+#define MANAGED_SLOT_14_MAX_DATA_SIZE                 (128u)
+#define MANAGED_SLOT_5_MAX_DATA_SIZE                  (64u)
+#define C_KTA_MANAGED_SLOT_8                          (8U)
+
+/** @brief Slot Identifier */
+#define SERVER_IDENTIFIER                             (0x0100000Eu)
+#define SLOT_IDENTIFIER                               (14u)
+
+/** @brief Zone for doing an Encrypt Write */
+#define C_SAL_ENCRYPT_WRITE_ZONE (ATCA_ZONE_DATA|ATCA_ZONE_READWRITE_32|ATCA_ZONE_ENCRYPTED)
+
 /******************************************************************************/
 /** \brief  Set an argument/return value as unused.
 *
@@ -115,11 +131,13 @@
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
 static const char* gpModuleName = "SALOBJECT";
+static atca_temp_key_t gTempKey;
+static bool globalEncWriteFlag = 0;
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
 /* -------------------------------------------------------------------------- */
-
+TKStatus lsalEncryptWrite(uint16_t xSlot, uint8_t* xpData, size_t xDataLen, uint8_t xblock);
 /* -------------------------------------------------------------------------- */
 /* PUBLIC VARIABLES                                                           */
 /* -------------------------------------------------------------------------- */
@@ -248,49 +266,133 @@ end:
  **/
 K_SAL_API TKStatus salObjectSet
 (
-  uint32_t        xObjectType,
-  uint32_t        xObjectId,
+  TKSalObjectType xObjectType,
+  uint32_t        xIdentifier,
   const uint8_t*  xpDataAttributes,
   size_t          xDataAttributesLen,
-  const uint8_t*  xpData,
-  size_t          xDataLen,
+  object_t*       xpObject,
   uint8_t*        xpPlatformStatus
 )
 {
   TKStatus     status = E_K_STATUS_ERROR;
   ATCA_STATUS  cryptoStatus = ATCA_STATUS_UNKNOWN;
 
+  // Convert KeySTREAM identifier to SLOT identifier
+  if (xIdentifier == SERVER_IDENTIFIER) {
+      xIdentifier = SLOT_IDENTIFIER;
+  }
+
   M_UNUSED(xpDataAttributes);
   M_UNUSED(xDataAttributesLen);
 
   M_KTALOG__START("Start");
 
-  if ((xObjectType > C_SAL_OBJECT__TYPE_SEALED_DATA) ||
-      ((xObjectId != C_KTA__DEVICE_CERT_STORAGE_SLOT) &&
-       (xObjectId != C_KTA__SIGNER_CERT_STORAGE_SLOT)) ||
-      (xpData == NULL) ||
-      (xDataLen == 0U) ||
-      (xpPlatformStatus == NULL))
+  if ((xObjectType > C_SAL_OBJECT__TYPE_TRUST_ANCHOR) ||
+      (NULL == xpObject) ||
+      (NULL == xpPlatformStatus))
   {
     M_KTALOG__ERR("Invalid parameter");
   }
   else
   {
-    if (xObjectType == C_SAL_OBJECT__TYPE_CERTIFICATE)
+    if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xIdentifier)
     {
-      if (C_KTA__DEVICE_CERT_STORAGE_SLOT == xObjectId)
+      status = lsalEncryptWrite(E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14, xpObject->data, xpObject->dataLen, 0);
+      if (E_K_STATUS_OK != status)
       {
-        M_KTALOG__INFO("Device cert len, %d", xDataLen);
-        cryptoStatus = atcacert_write_cert(&g_cert_def_3_device,
-                                           xpData,
-                                           xDataLen);
+        M_KTALOG__ERR("Encrypt Write to slot 14 failed.");
+        goto end;
       }
-      else if (C_KTA__SIGNER_CERT_STORAGE_SLOT == xObjectId)
+
+      cryptoStatus = salStorageSetValue(C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID,
+                                        xpObject->customerMetadata,
+                                        xpObject->customerMetadataLen);
+
+      if (cryptoStatus != ATCACERT_E_SUCCESS)
       {
-        M_KTALOG__INFO("Signer cert len, %d", xDataLen);
+        M_KTALOG__ERR("Trust Anchor Meta data set failed with error, 0x%02x", cryptoStatus);
+        goto end;
+      }
+
+      cryptoStatus = salStorageSetValue(C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID,
+                                        xpObject->objectUid,
+                                        xpObject->objectUidLen);
+
+      if (cryptoStatus != ATCACERT_E_SUCCESS)
+      {
+        M_KTALOG__ERR("Trust Anchor Object UID set failed with error, 0x%02x", cryptoStatus);
+        goto end;
+      }
+
+      status = E_K_STATUS_OK;
+    }
+    else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xIdentifier)
+    {
+      status = lsalEncryptWrite(E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5, xpObject->data, xpObject->dataLen, 0);
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("Encrypt Write to slot 5 failed.");
+        goto end;
+      }
+
+      cryptoStatus = salStorageSetValue(C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID,
+                                        xpObject->customerMetadata,
+                                        xpObject->customerMetadataLen);
+
+      if (cryptoStatus != ATCACERT_E_SUCCESS)
+      {
+        M_KTALOG__ERR("Symmetric Key Meta Data set failed with error, 0x%02x", cryptoStatus);
+        goto end;
+      }
+
+      cryptoStatus = salStorageSetValue(C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID,
+                                        xpObject->objectUid,
+                                        xpObject->objectUidLen);
+
+      if (cryptoStatus != ATCACERT_E_SUCCESS)
+      {
+        M_KTALOG__ERR("Symmetric Key Object UID set failed with error, 0x%02x", cryptoStatus);
+        goto end;
+      }
+
+      status = E_K_STATUS_OK;
+    }
+    else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8 == xIdentifier)
+    {
+      cryptoStatus = salStorageSetValue(C_K_KTA__CUSTOMER_DATA_ID,
+                                        xpObject->data,
+                                        xpObject->dataLen);
+
+      cryptoStatus = salStorageSetValue(C_K_KTA__CUSTOMER_DATA_METADATA_ID,
+                                        xpObject->customerMetadata,
+                                        xpObject->customerMetadataLen);
+
+      cryptoStatus = salStorageSetValue(C_K_KTA__CUSTOMER_DATA_OBJECT_UID_ID,
+                                        xpObject->objectUid,
+                                        xpObject->objectUidLen);
+      if (cryptoStatus != ATCACERT_E_SUCCESS)
+      {
+        M_KTALOG__ERR("Customer data set failed with error, 0x%02x", cryptoStatus);
+        goto end;
+      }
+
+      status = E_K_STATUS_OK;
+    }
+    else if (xObjectType == C_SAL_OBJECT__TYPE_CERTIFICATE)
+    {
+      if (C_KTA__DEVICE_CERT_STORAGE_SLOT == xIdentifier)
+      {
+        M_KTALOG__INFO("Device cert len, %d", xpObject->dataLen);
+        cryptoStatus = atcacert_write_cert(&g_cert_def_3_device,
+                                           xpObject->data,
+                                           xpObject->dataLen);
+      }
+      else if (C_KTA__SIGNER_CERT_STORAGE_SLOT == xIdentifier)
+      {
+        M_KTALOG__INFO("Signer cert len, %d", xpObject->dataLen);
         cryptoStatus = atcacert_write_cert(&g_cert_def_1_signer,
-                                           xpData,
-                                           xDataLen);
+                                           xpObject->data,
+                                           xpObject->dataLen);
       }
       else
       {
@@ -521,6 +623,69 @@ end:
 }
 
 /**
+ * @brief   Implement salGetChallenge
+ *
+ */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+ * Using goto for breaking during the error and return cases.
+ **/
+K_SAL_API TKStatus salGetChallenge
+(
+  uint8_t* xpChallengeKey,
+  uint8_t* xpPlatformStatus
+)
+{
+  ATCA_STATUS cryptoStatus = ATCA_STATUS_UNKNOWN;
+  TKStatus    status = E_K_STATUS_ERROR;
+  uint8_t     aNumIn[C_SAL_OBJ_RANDOM_NUM_IN_SIZE] = {0};
+  uint8_t     aRandOut[C_SAL_OBJ_32_BYTE_KEY_SIZE] = {0};
+  atca_nonce_in_out_t nonce_params;
+
+  M_KTALOG__START("Start");
+  if ((NULL == xpChallengeKey) ||
+      (NULL == xpPlatformStatus))
+  {
+    status = E_K_STATUS_PARAMETER;
+    M_KTALOG__ERR("Invalid parameter");
+  }
+  else
+  {
+    cryptoStatus = atcab_nonce_rand(aNumIn, aRandOut);
+    if (cryptoStatus != ATCA_SUCCESS)
+    {
+      M_KTALOG__ERR("atcab_nonce_rand() failed with ret=0x%08X", cryptoStatus);
+      goto end;
+    }
+
+    (void)memset(&nonce_params, 0, sizeof(nonce_params));
+    nonce_params.mode = NONCE_MODE_SEED_UPDATE;
+    nonce_params.zero = 0;
+    nonce_params.num_in = aNumIn;
+    nonce_params.rand_out = aRandOut;
+    nonce_params.temp_key = &gTempKey;
+    cryptoStatus = atcah_nonce(&nonce_params);
+    if (cryptoStatus != ATCA_SUCCESS)
+    {
+      M_KTALOG__ERR("atcah_nonce() failed with ret=0x%08X", cryptoStatus);
+      goto end;
+    }
+
+    (void)memcpy((void *)xpChallengeKey, (const void *)nonce_params.temp_key->value, MAX_MANAGED_SLOT_DATA_SIZE);
+
+    status = E_K_STATUS_OK;
+  }
+
+end:
+  M_KTALOG__END("End, status : %d", status);
+  (void)memcpy((void *)xpPlatformStatus, (const void *)&cryptoStatus, sizeof(cryptoStatus));
+
+  return status;
+}
+
+/**
  * @brief   implement salObjectKeyDelete
  *
  */
@@ -613,23 +778,250 @@ K_SAL_API TKStatus salObjectKeySet
 K_SAL_API TKStatus salObjectGet
 (
   TKSalObjectType  xObjectType,
-  uint32_t         xObjectId,
-  uint8_t*         xpData,
-  size_t*          xpDataLen,
+  uint32_t         xIdentifier,
+  object_t*        xpObject,
   uint8_t*         xpPlatformStatus
 )
 {
-  M_UNUSED(xObjectType);
-  M_UNUSED(xObjectId);
-  M_UNUSED(xpData);
-  M_UNUSED(xpDataLen);
-  M_UNUSED(xpPlatformStatus);
-  return E_K_STATUS_OK;
+  TKStatus  status = E_K_STATUS_ERROR;
+
+  M_KTALOG__START("Start");
+
+  /* Ensure xpObject is not NULL */
+  if (xpObject == NULL) {
+    M_KTALOG__ERR("xpObject is NULL");
+    return E_K_STATUS_PARAMETER;
+  }
+
+  /* Get data for managed slots */
+  if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xIdentifier)
+  {
+    M_KTALOG__INFO("Fetching data for MANAGED_SLOT_14");
+
+    status = salStorageGetValue(C_K_KTA__CUSTOMER_TRUST_ANCHOR_DATA_ID,
+                                xpObject->data,
+                                &xpObject->dataLen);
+    if (status != E_K_STATUS_OK) {
+      M_KTALOG__ERR("Failed to get CUSTOMER_TRUST_ANCHOR_DATA_ID");
+      goto end;
+    }
+
+    status = salStorageGetValue(C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID,
+                                xpObject->customerMetadata,
+                                &xpObject->customerMetadataLen);
+    if (status != E_K_STATUS_OK) {
+      M_KTALOG__ERR("Failed to get CUSTOMER_TRUST_ANCHOR_METADATA_ID");
+      goto end;
+    }
+
+    status = salStorageGetValue(C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID,
+                                xpObject->objectUid,
+                                &xpObject->objectUidLen);
+    if (status != E_K_STATUS_OK) {
+      M_KTALOG__ERR("Failed to get CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID");
+      goto end;
+    }
+  }
+  else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xIdentifier)
+  {
+    M_KTALOG__INFO("Fetching data for MANAGED_SLOT_5");
+
+    status = salStorageGetValue(C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID,
+                                xpObject->customerMetadata,
+                                &xpObject->customerMetadataLen);
+    if (status != E_K_STATUS_OK) {
+      M_KTALOG__ERR("Failed to get CUSTOMER_SYM_KEY_METADATA_ID");
+      goto end;
+    }
+
+    status = salStorageGetValue(C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID,
+                                xpObject->objectUid,
+                                &xpObject->objectUidLen);
+    if (status != E_K_STATUS_OK) {
+      M_KTALOG__ERR("Failed to get CUSTOMER_SYM_KEY_OBJECT_UID_ID");
+      goto end;
+    }
+  }
+  else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8 == xIdentifier)
+  {
+    M_KTALOG__INFO("Fetching data for MANAGED_SLOT_8");
+
+    status = salStorageGetValue(C_K_KTA__CUSTOMER_DATA_ID,
+                                xpObject->data,
+                                &xpObject->dataLen);
+    if (status != E_K_STATUS_OK) {
+      M_KTALOG__ERR("Failed to get CUSTOMER_DATA_ID");
+      goto end;
+    }
+
+    status = salStorageGetValue(C_K_KTA__CUSTOMER_DATA_METADATA_ID,
+                                xpObject->customerMetadata,
+                                &xpObject->customerMetadataLen);
+    if (status != E_K_STATUS_OK) {
+      M_KTALOG__ERR("Failed to get CUSTOMER_DATA_METADATA_ID");
+      goto end;
+    }
+
+    status = salStorageGetValue(C_K_KTA__CUSTOMER_DATA_OBJECT_UID_ID,
+                                xpObject->objectUid,
+                                &xpObject->objectUidLen);
+    if (status != E_K_STATUS_OK) {
+      M_KTALOG__ERR("Failed to get CUSTOMER_DATA_OBJECT_UID_ID");
+      goto end;
+    }
+  }
+  else
+  {
+    M_KTALOG__ERR("Unsupported xIdentifier: %d", xIdentifier);
+    status = E_K_STATUS_PARAMETER;
+    goto end;
+  }
+
+  status = E_K_STATUS_OK;
+
+end:
+  M_KTALOG__END("End, status : %d", status);
+  return status;
 }
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - IMPLEMENTATION                                           */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * @brief Function to do the encrypt write for slot 14 and 5
+ *
+ */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
+TKStatus lsalEncryptWrite
+(
+  uint16_t xSlot,
+  uint8_t* xpData,
+  size_t   xDataLen,
+  uint8_t  xblock
+)
+{
+  uint16_t     slot_addr      = 0;
+  TKStatus     status         = E_K_STATUS_ERROR;
+  ATCA_STATUS  cryptoStatus   = ATCA_STATUS_UNKNOWN;
+  uint8_t      other_data[4]  = {0};
+  uint8_t      writeBuffData[MAX_MANAGED_SLOT_DATA_SIZE] = {0};
+  uint8_t      writeBuffMac[MAX_MANAGED_SLOT_DATA_SIZE] = {0};
+  uint8_t      slot_14_block = 0;
+  uint8_t      aRandOut[32];
+  uint8_t      aNumIn[20] = {0};
+
+  M_KTALOG__START("Start");
+
+  other_data[0] = ATCA_GENDIG;
+  other_data[1] = GENDIG_ZONE_DATA;
+  other_data[2] = (uint8_t)(6 & 0xFFu);
+  other_data[3] = (uint8_t)(6 >> 8u);
+
+  // Send the GenDig command
+  status = atcab_gendig(GENDIG_ZONE_DATA, 6, other_data, (uint8_t)sizeof(other_data));
+  if (status != ATCA_SUCCESS)
+  {
+      M_KTALOG__ERR("encrWrite: GenDig failed");
+      goto end;
+  }
+  M_KTALOG__ERR("%d", xSlot);
+  if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xSlot)
+  {
+    cryptoStatus = atcab_get_addr(ATCA_ZONE_DATA, E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5, 0, 0, &slot_addr);
+    if (ATCA_SUCCESS != cryptoStatus)
+    {
+      M_KTALOG__ERR("Encrypt write failed to get addr for xSlot %d", xSlot);
+      goto end;
+    }
+
+    memcpy(writeBuffData, xpData, MAX_MANAGED_SLOT_DATA_SIZE);
+    memcpy(writeBuffMac, xpData+MAX_MANAGED_SLOT_DATA_SIZE, MAX_MANAGED_SLOT_DATA_SIZE);
+
+    cryptoStatus = atcab_write(C_SAL_ENCRYPT_WRITE_ZONE,
+                             slot_addr,
+                             writeBuffData,
+                             writeBuffMac);
+    if (ATCA_SUCCESS != cryptoStatus)
+    {
+      M_KTALOG__ERR("Encrypt write failed for xSlot %d : %d", xSlot, cryptoStatus);
+      status = cryptoStatus;
+      goto end;
+    }
+
+    cryptoStatus = atcab_nonce_rand(aNumIn, aRandOut);
+
+    if (ATCA_SUCCESS != cryptoStatus)
+    {
+      M_KTALOG__ERR("Atcab Nonce Rand Failed for xSlot %d : %d", xSlot, cryptoStatus);
+      status = cryptoStatus;
+      goto end;
+    }
+
+  }
+  else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xSlot)
+  {
+    M_KTALOG__INFO("Processing Slot 14 with xIdentifier: %d", xSlot);
+    if (globalEncWriteFlag == 0)
+    {
+      slot_14_block = E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0;
+      M_KTALOG__INFO("globalEncWriteFlag is 0, setting slot_14_block to 0");
+    }
+    else
+    {
+      slot_14_block = E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1;
+      M_KTALOG__INFO("globalEncWriteFlag is 1, setting slot_14_block to 1");
+    }
+    M_KTALOG__INFO("Current globalEncWriteFlag value: %d", globalEncWriteFlag);
+    cryptoStatus = atcab_get_addr(ATCA_ZONE_DATA, xSlot, slot_14_block, 0, &slot_addr);
+    M_KTALOG__INFO("Obtained slot address: %d", slot_addr);
+    if (ATCA_SUCCESS != cryptoStatus)
+    {
+        M_KTALOG__ERR("Failed to get address for xSlot %d, cryptoStatus: %d", xSlot, cryptoStatus);
+        goto end;
+    }
+
+    memcpy(writeBuffData, xpData, MAX_MANAGED_SLOT_DATA_SIZE);
+    memcpy(writeBuffMac, xpData+MAX_MANAGED_SLOT_DATA_SIZE, MAX_MANAGED_SLOT_DATA_SIZE);
+
+    M_KTALOG__INFO("Attempting to write to slot %d with data and MAC\r\n", slot_addr);
+
+    cryptoStatus = atcab_write(C_SAL_ENCRYPT_WRITE_ZONE,
+                               slot_addr,
+                               writeBuffData,
+                               writeBuffMac);
+    if (ATCA_SUCCESS != cryptoStatus)
+    {
+      M_KTALOG__ERR("Encrypt write failed for xSlot %d\r\n, cryptoStatus: %d\r\n", xSlot, cryptoStatus);
+      status = cryptoStatus;
+      goto end;
+    }
+    else
+    {
+      M_KTALOG__INFO("Encrypt write successful for xSlot %d", xSlot);
+      if (globalEncWriteFlag == 0)
+      {
+        globalEncWriteFlag = 1;
+        M_KTALOG__INFO("Setting globalEncWriteFlag to 1");
+      }
+      else
+      {
+        globalEncWriteFlag = 0;
+        M_KTALOG__INFO("Setting globalEncWriteFlag to 0");
+      }
+    }
+
+    status = E_K_STATUS_OK;
+  }
+
+end:
+  M_KTALOG__INFO("End, status : %d", status);
+  return status;
+}
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

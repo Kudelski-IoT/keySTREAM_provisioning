@@ -245,7 +245,9 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a03bb7661355b612da1a9386446f75cac">E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT</a> = 0x50u, 
 <br />
-&#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a3d5c8a2b9847f9563bcb18fb8b7a387e">E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT</a> = 0x51u
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a3d5c8a2b9847f9563bcb18fb8b7a387e">E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT</a> = 0x51u, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a1bcc74531632b1a61026000b28784862">E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE</a> = 0x52u
 <br />
  }</td></tr>
 <tr class="memdesc:addbb322270322f1443ed6b45713646a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Supported command tags.  <a href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3">More...</a><br /></td></tr>
@@ -287,9 +289,9 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a53745a51c18022167aab8ab27d2186c5">E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE</a> = 0xB3u, 
 <br />
-&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ae362fb65ab02bd4a93dd4750b8642573">E_K_ICPP_PARSER_FLD_TAG_CMD_OBJECT_ID</a> = 0xB0u, 
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a6ed9a787b4b356d77388579145a88c42">E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER</a> = 0xB0u, 
 <br />
-&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8af12b5bf0a7f1dedb47856e1d896afb3e">E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA_ATTRIBUTES</a> = 0xB1u, 
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a1eae52940580a08ed7419fb7260ddb33">E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES</a> = 0xB1u, 
 <br />
 &#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad19c787f66a962e0e9d09e33ba18b592">E_K_ICPP_PARSER_FLD_TAG_CMD_DATA</a> = 0xF8u, 
 <br />
@@ -297,7 +299,13 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a637990d15429515a8c2de9b480a8474f">E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER</a> = 0xB2u, 
 <br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ac955cd0c941d0c6f06653387fc5fb9ca">E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID</a> = 0xB5u, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a9bc2e601e60e521944a901c1aafe7952">E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA</a> = 0xB6u, 
+<br />
 &#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a4ddd96990eb535bc7e11f5a2fc764124">E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS</a> = 0xBFu, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8af2b6a58af2e3880107a4b6172c768745">E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE</a> = 0xB7u, 
 <br />
 &#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad79b9226354c593e5ecb3acbcab05bfa">E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY</a> = 0xF7u
 <br />
@@ -715,6 +723,8 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="addbb322270322f1443ed6b45713646a3a3d5c8a2b9847f9563bcb18fb8b7a387e"></a>E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT&#160;</td><td class="fielddoc"><p>Delete key object command tag. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="addbb322270322f1443ed6b45713646a3a1bcc74531632b1a61026000b28784862"></a>E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE&#160;</td><td class="fielddoc"><p>Get Challenge object command tag. </p>
+</td></tr>
 </table>
 
 </div>
@@ -769,9 +779,9 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a53745a51c18022167aab8ab27d2186c5"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE&#160;</td><td class="fielddoc"><p>ObjectType field in command from keySTREAM. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8ae362fb65ab02bd4a93dd4750b8642573"></a>E_K_ICPP_PARSER_FLD_TAG_CMD_OBJECT_ID&#160;</td><td class="fielddoc"><p>Identifier field in command from keySTREAM. </p>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a6ed9a787b4b356d77388579145a88c42"></a>E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER&#160;</td><td class="fielddoc"><p>Identifier field in command from keySTREAM. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8af12b5bf0a7f1dedb47856e1d896afb3e"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA_ATTRIBUTES&#160;</td><td class="fielddoc"><p>Data attributes field in command from keySTREAM. </p>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a1eae52940580a08ed7419fb7260ddb33"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES&#160;</td><td class="fielddoc"><p>Data attributes field in command from keySTREAM. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8ad19c787f66a962e0e9d09e33ba18b592"></a>E_K_ICPP_PARSER_FLD_TAG_CMD_DATA&#160;</td><td class="fielddoc"><p>Data field in command from keySTREAM. </p>
 </td></tr>
@@ -779,7 +789,13 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a637990d15429515a8c2de9b480a8474f"></a>E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER&#160;</td><td class="fielddoc"><p>Object Owner optional field in command from keySTREAM. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8ac955cd0c941d0c6f06653387fc5fb9ca"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID&#160;</td><td class="fielddoc"><p>Data field in command from keySTREAM </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a9bc2e601e60e521944a901c1aafe7952"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA&#160;</td><td class="fielddoc"><p>Customer Metadata field in command from keySTREAM </p>
+</td></tr>
 <tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a4ddd96990eb535bc7e11f5a2fc764124"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS&#160;</td><td class="fielddoc"><p>Command processing status field tag in command from keySTREAM. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8af2b6a58af2e3880107a4b6172c768745"></a>E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE&#160;</td><td class="fielddoc"><p>Response Challenge field tag in command from keySTREAM. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8ad79b9226354c593e5ecb3acbcab05bfa"></a>E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY&#160;</td><td class="fielddoc"><p>Public key field tag in command from keySTREAM. </p>
 </td></tr>

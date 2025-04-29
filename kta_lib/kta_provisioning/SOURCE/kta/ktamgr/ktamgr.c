@@ -814,14 +814,20 @@ TKStatus ktaExchangeMessage
 
           if ((status != E_K_STATUS_OK) || (parserStatus != E_K_ICPP_PARSER_STATUS_OK))
           {
-            (*xpKta2ksMsgLen) = 0;
 
             if (parserStatus != E_K_ICPP_PARSER_STATUS_NO_OPERATION)
             {
               M_KTALOG__ERR("Validation of the msg received from the server failed,");
               M_KTALOG__ERR("status = [%d], parserStatus = [%d]", status, parserStatus);
             }
-
+            if (parserStatus == E_K_ICPP_PARSER_STATUS_ERROR)
+            {
+              status = E_K_STATUS_OK;
+            }
+            else
+            {
+              (*xpKta2ksMsgLen) = 0;
+            }
             break;
           }
 
@@ -975,7 +981,7 @@ end:
 }
 
 /**
- * @brief implement ktaGetAssociatedObject
+ * @brief implement ktaGetObject
  *
  */
 /**
@@ -983,11 +989,10 @@ end:
  * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
  * Using goto for breaking during the error and return cases.
  **/
-TKStatus ktaGetAssociatedObject
+TKStatus ktaGetObject
 (
-  uint32_t  xObjWithAssociationId,
-  uint8_t*  xpOutData,
-  size_t*   xpOutDataLen
+  uint32_t          xIdentifier,
+  TKktaDataObject * xpObject
 )
 {
   uint8_t         aPsaStatus[4] = {0};
@@ -997,26 +1002,22 @@ TKStatus ktaGetAssociatedObject
   M_KTALOG__START("Start");
 
   // REQ RQ_M-KTA-STRT-FN-0300(1) : Input Parameters Check
-  if ((0UL == xObjWithAssociationId) ||
-      (NULL == xpOutData)              ||
-      (NULL == xpOutDataLen)           ||
-      (0UL == *xpOutDataLen))
+  if ((0UL == xIdentifier) ||
+      (NULL == xpObject))
   {
     status = E_K_STATUS_PARAMETER;
-    M_KTALOG__ERR("[ktaGetAssociatedObject]Invalid parameter passed");
+    M_KTALOG__ERR("[ktaGetObject]Invalid parameter passed");
     goto end;
   }
 
-  // REQ RQ_M-KTA-STRT-FN-0310(1) : Get Associated Object
+  // REQ RQ_M-KTA-STRT-FN-0310(1) : Get Object
   status = salObjectGet(objType,
-                        xObjWithAssociationId,
-                        xpOutData,
-                        xpOutDataLen,
+                        xIdentifier,
+                        (object_t*)xpObject,
                         (uint8_t*)aPsaStatus);
-
   if (E_K_STATUS_OK != status)
   {
-    M_KTALOG__ERR("[ktaGetAssociatedObject] failed[%d]", status);
+    M_KTALOG__ERR("[ktaGetObject] failed[%d]", status);
     status = E_K_STATUS_ERROR;
     goto end;
   }
@@ -1483,6 +1484,7 @@ static TKStatus lCheckKs2KtaMessage
     // REQ RQ_M-KTA-OBJM-FN-0720(1) : Decrypt the Set Object With Association data
     // REQ RQ_M-KTA-OBJM-FN-0920(2) : Decrypt the Delete Key Object data
     // REQ RQ_M-KTA-TRDP-FN-0020(1) : Decrypt the Third party data
+    // REQ RQ_M-KTA-OBJM-FN-0860(1) : Decrypt Get Challenge command
     clearMsgLength = clearMsgLength - C_K_ICPP_PARSER__HEADER_SIZE;
     status = ktacipherDecrypt(&xpKs2ktaMsg[C_K_ICPP_PARSER__HEADER_SIZE],
                               macOffset - C_K_ICPP_PARSER__HEADER_SIZE,
@@ -1516,13 +1518,14 @@ static TKStatus lCheckKs2KtaMessage
     }
 
     /* Remove the padding. */
-    // REQ RQ_M-KTA-ACTV-FN-0061(1) : Remove data padding
-    // REQ RQ_M-KTA-OBJM-FN-0030(1) : Remove data padding
-    // REQ RQ_M-KTA-OBJM-FN-0230(1) : Remove data padding
-    // REQ RQ_M-KTA-OBJM-FN-0530(1) : Remove data padding
-    // REQ RQ_M-KTA-OBJM-FN-0730(1) : Remove data padding
-    // REQ RQ_M-KTA-OBJM-FN-0930(2) : Remove data padding
-    // REQ RQ_M-KTA-TRDP-FN-0030(1) : Remove data padding
+    // REQ RQ_M-KTA-ACTV-FN-0061(1)   : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0030(1)   : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0230(1)   : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0530(1)   : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0730(1)   : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0930(2)   : Remove data padding
+    // REQ RQ_M-KTA-TRDP-FN-0030(1)   : Remove data padding
+    // REQ RQ_M-KTA-OBJM-FN-0890_1(1) : Remove Data Padding
     status = ktacipherRemovePadding(xpClearMsg, &clearMsgLength);
 
     if (E_K_STATUS_OK != status)
@@ -1575,6 +1578,8 @@ static TKStatus lCheckKs2KtaMessage
   /* Deserialize the decrypted key object data */
   // REQ RQ_M-KTA-TRDP-FN-0050(1) :
   /* Deserialize the decrypted Third party data. */
+  // REQ RQ_M-KTA-OBJM-FN-0870(1):
+  /* Desrialize the Get Challenge command. */
   *xpParserStatus = ktaIcppParserDeserializeMessage(xpClearMsg,
                                                     clearMsgLength,
                                                     xpRecvdProtoMessage);

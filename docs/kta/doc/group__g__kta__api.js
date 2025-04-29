@@ -1,5 +1,13 @@
 var group__g__kta__api =
 [
+    [ "TKktaDataObject", "struct_t_kkta_data_object.html", [
+      [ "data", "struct_t_kkta_data_object.html#a24d0c6d4da954ec3ad8ad1f477ff603b", null ],
+      [ "dataLen", "struct_t_kkta_data_object.html#aed96ac4afd33acd521b850e9953c9bc2", null ],
+      [ "customerMetadata", "struct_t_kkta_data_object.html#ab6f569e012acf06d3e280383ed6804d6", null ],
+      [ "customerMetadataLen", "struct_t_kkta_data_object.html#a7f779162fb256131db968fcefd2bbc3d", null ],
+      [ "objectUid", "struct_t_kkta_data_object.html#ac6129354a0caed851c764a7666a1a727", null ],
+      [ "objectUidLen", "struct_t_kkta_data_object.html#a7e3c21e97beee3c7ebcb596401405bd5", null ]
+    ] ],
     [ "C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE", "group__g__kta__api.html#ga75212f18273f03e9293081c45c832b42", null ],
     [ "C_K__DEVICE_SERIAL_NUM_MAX_SIZE", "group__g__kta__api.html#ga8743a756582b32a248b886a1c04e9e7d", null ],
     [ "C_K__L1_SEGMENTATION_SEED_SIZE", "group__g__kta__api.html#ga32c87f3bca79630d48e2015404c09e9c", null ],

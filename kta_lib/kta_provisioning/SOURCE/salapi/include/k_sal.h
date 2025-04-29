@@ -64,35 +64,54 @@ extern "C" {
  * @brief Crypto Object Ids.
  */
 /** @brief Chip Secret Key Id(Persistent). */
-#define C_K_KTA__CHIP_SK_ID          (0x0001u)
+#define C_K_KTA__CHIP_SK_ID                           (0x0001u)
 /** @brief L1 Filed Key Id(Persistent). */
-#define C_K_KTA__L1_FIELD_KEY_ID     (0x0002u)
+#define C_K_KTA__L1_FIELD_KEY_ID                      (0x0002u)
 /** @brief Volatile Id. */
-#define C_K_KTA__VOLATILE_ID         (0x8000u)
+#define C_K_KTA__VOLATILE_ID                          (0x8000u)
 /** @brief Volatile 2 Id. */
-#define C_K_KTA__VOLATILE_2_ID       (0x8001u)
+#define C_K_KTA__VOLATILE_2_ID                        (0x8001u)
 /** @brief Volatile 3 Id. */
-#define C_K_KTA__VOLATILE_3_ID       (0x8002u)
+#define C_K_KTA__VOLATILE_3_ID                        (0x8002u)
 
 /**
  * @brief Persistent Storage_Ids.
  */
 /** @brief Life cycle data ID. */
-#define C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID  (0x4000u)
+#define C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID          (0x4000u)
 /** @brief Rot public UID ID. */
-#define C_K_KTA__ROT_PUBLIC_UID_STORAGE_ID    (0x4001u)
+#define C_K_KTA__ROT_PUBLIC_UID_STORAGE_ID            (0x4001u)
 /** @brief Sealed data ID. */
-#define C_K_KTA__SEALED_DATA_STORAGE_ID       (0x4002u)
+#define C_K_KTA__SEALED_DATA_STORAGE_ID               (0x4002u)
 /** @brief L1 key material data ID. */
-#define C_K_KTA__L1_KEY_MATERIAL_DATA_ID      (0x4003u)
+#define C_K_KTA__L1_KEY_MATERIAL_DATA_ID              (0x4003u)
 /** @brief Device certificate ID. */
-#define C_K_KTA__DEVICE_CERTIFICATE_ID        (0x4004u)
+#define C_K_KTA__DEVICE_CERTIFICATE_ID                (0x4004u)
 /** @brief Signer certificate ID. */
-#define C_K_KTA__SIGNER_CERTIFICATE_ID        (0x4005u)
+#define C_K_KTA__SIGNER_CERTIFICATE_ID                (0x4005u)
 /** @brief Signer public key. */
-#define C_K_KTA__SIGNER_PUB_KEY_ID            (0x4006u)
+#define C_K_KTA__SIGNER_PUB_KEY_ID                    (0x4006u)
 /** @brief KTA Version ID*/
-#define C_K_KTA__VERSION_SLOT_ID              (0x4007u)
+#define C_K_KTA__VERSION_SLOT_ID                      (0x4007u)
+/** @brief Customer trust anchor metadata **/
+#define C_K_KTA__CUSTOMER_TRUST_ANCHOR_METADATA_ID    (0X4008u)
+/** @brief customer sym key metadata **/
+#define C_K_KTA__CUSTOMER_SYM_KEY_METADATA_ID         (0X4009u)
+/** @brief customer data metadata **/
+#define C_K_KTA__CUSTOMER_DATA_METADATA_ID            (0X400Au)
+/** @brief customer trust anchor object uid **/
+#define C_K_KTA__CUSTOMER_TRUST_ANCHOR_OBJECT_UID_ID  (0X400Bu)
+/** @brief customer sym key object uid **/
+#define C_K_KTA__CUSTOMER_SYM_KEY_OBJECT_UID_ID       (0X400Cu)
+/** @brief customer data **/
+#define C_K_KTA__CUSTOMER_DATA_ID                     (0X400Du)
+/** @brief customer data object uid **/
+#define C_K_KTA__CUSTOMER_DATA_OBJECT_UID_ID          (0X400Eu)
+/** @brief slot 14 clear data ID **/
+#define C_K_KTA__CUSTOMER_TRUST_ANCHOR_DATA_ID        (0X400Fu)
+/** @brief slot 14 clear data ID **/
+#define C_K_KTA__ENC_TEMPKEY_ID                       (0X4010u)
+
 
 /**
  * @brief HKDF Extract Mode.

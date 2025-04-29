@@ -655,6 +655,7 @@ static TKParserStatus lIcppParserIsValidTag
       case E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION:
       case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT:
       case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
+      case E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE:
       {
         if (xpTagLen != NULL)
         {
@@ -688,12 +689,15 @@ static TKParserStatus lIcppParserIsValidTag
       case E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER:
       case E_K_ICPP_PARSER_FIELD_TAG_KTA_VER:
       case E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO:
-      case E_K_ICPP_PARSER_FLD_TAG_CMD_OBJECT_ID:
+      case E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER:
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_DATA_ATTRIBUTES:
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES:
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO:
       case E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER:
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS:
+      case E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE:
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID:
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA:
       {
         if (xpTagLen != NULL)
         {
@@ -927,7 +931,7 @@ static TKParserStatus lIcppParserDeserializeCommands
       goto end;
     }
 
-    if (0U == commandLength)
+    if ((0U == commandLength) && (E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE != pCommand->commandTag))
     {
       M_KTALOG__ERR("Invalid command len %d", commandLength);
       status = E_K_ICPP_PARSER_STATUS_ERROR;

@@ -1,9 +1,9 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -123,6 +123,12 @@
 #define M_SAL_CRYPTO_GET_BIT31(x_shared_secret) \
   ((uint32_t)(((uint32_t)(x_shared_secret)) & (uint32_t)C_SAL_CRYPTO_SHARED_SECRET_BITMASK) == \
    (uint32_t)C_SAL_CRYPTO_SHARED_SECRET_BITMASK)
+
+/** @brief Slot 9 defines for Managing L2 keys */
+#define SLOT_9          0x09u
+#define SLOT_9_BLOCK_0  0u
+#define SLOT_9_BLOCK_1  1u
+#define SLOT_9_BLOCK_2  2u
 
 /**
  * @brief Object Id Map.
@@ -534,12 +540,8 @@ K_SAL_API TKStatus salRotHkdfExtractAndExpand
   uint8_t               aSalt[C_SAL_CRYPTO_KEY_SIZE_32_BYTE];
   uint8_t               aFixedInfo[C_SAL_CRYPTO_MAX_INFO_SIZE_BYTE] = { 0 };
   size_t                l1KeySize = sizeof(aL1Key);
-  #ifdef __free_rtos__
-  atcac_hmac_sha256_ctx ctx = { 0 };
-  #else
   atcac_hmac_ctx_t      ctx;
   atcac_sha2_256_ctx_t  sha256_ctx;
-  #endif
   size_t                infoLen = xInfoLen;
 
   M_KTALOG__START("Start");
@@ -582,11 +584,8 @@ K_SAL_API TKStatus salRotHkdfExtractAndExpand
           M_KTALOG__ERR("lGetValueById Failed");
           break;
         }
-#ifdef __free_rtos__
-		    cryptoStatus = atcac_sha256_hmac_init(&ctx, xpSalt, C_SAL_CRYPTO_KEY_SIZE_64_BYTE);
-#else
+
         cryptoStatus = atcac_sha256_hmac_init(&ctx, &sha256_ctx, xpSalt, C_SAL_CRYPTO_KEY_SIZE_64_BYTE);
-#endif
 
         if (cryptoStatus != ATCA_SUCCESS)
         {
@@ -780,12 +779,33 @@ K_SAL_API TKStatus salRotKeyDerivation
       M_KTALOG__INFO("Derived L2 key for activation request:");
       M_KTALOG__HEX("L2 Key:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
 
-      if (lSetValueById(xDerivedKeyId,
-                        aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
+      if (C_K_KTA__VOLATILE_2_ID == xDerivedKeyId)
       {
-        M_KTALOG__ERR("lSetValueById Failed");
+        (void)memset(&aKeyBuff[C_SAL_CRYPTO_KEY_SIZE_16_BYTE], 0x00, C_SAL_CRYPTO_KEY_SIZE_16_BYTE);
+        cryptoStatus = atcab_write_zone(ATCA_ZONE_DATA,
+                                        SLOT_9, SLOT_9_BLOCK_0, 0,
+                                        aKeyBuff,
+                                        C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
+      }
+      else if (C_K_KTA__VOLATILE_3_ID == xDerivedKeyId)
+      {
+        cryptoStatus = atcab_write_zone(ATCA_ZONE_DATA,
+                                        SLOT_9, SLOT_9_BLOCK_1, 0,
+                                        aKeyBuff,
+                                        C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
+      }
+      else
+      {
+        M_KTALOG__ERR("Wrong derivedKeyId");
         goto end;
       }
+
+      if (cryptoStatus != ATCA_SUCCESS)
+      {
+        M_KTALOG__ERR("Write to slot 9 failed with ret=0x%08X", cryptoStatus);
+        goto end;
+      }
+
       status = E_K_STATUS_OK;
     }
     else if (xKeyId == C_K_KTA__L1_FIELD_KEY_ID)
@@ -802,11 +822,33 @@ K_SAL_API TKStatus salRotKeyDerivation
       M_KTALOG__INFO("Derived l2 key for registration request:");
       M_KTALOG__HEX("L2 Key:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
 
-      if (lSetValueById(xDerivedKeyId, aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
+      if (C_K_KTA__VOLATILE_2_ID == xDerivedKeyId)
       {
-        M_KTALOG__ERR("lSetValueById Failed");
+        (void)memset(&aKeyBuff[C_SAL_CRYPTO_KEY_SIZE_16_BYTE], 0x00, C_SAL_CRYPTO_KEY_SIZE_16_BYTE);
+        cryptoStatus = atcab_write_zone(ATCA_ZONE_DATA,
+                                        SLOT_9, SLOT_9_BLOCK_0, 0,
+                                        aKeyBuff,
+                                        C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
+      }
+      else if (C_K_KTA__VOLATILE_3_ID == xDerivedKeyId)
+      {
+        cryptoStatus = atcab_write_zone(ATCA_ZONE_DATA,
+                                        SLOT_9, SLOT_9_BLOCK_1, 0,
+                                        aKeyBuff,
+                                        C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
+      }
+      else
+      {
+        M_KTALOG__ERR("Wrong derivedKeyId");
         goto end;
       }
+
+      if (cryptoStatus != ATCA_SUCCESS)
+      {
+        M_KTALOG__ERR("Write to slot 9 failed with ret=0x%08X", cryptoStatus);
+        goto end;
+      }
+
       status = E_K_STATUS_OK;
     }
     else
@@ -856,29 +898,12 @@ K_SAL_API TKStatus salCryptoHmac
   }
   else
   {
-    if (lGetValueById(xKeyId, aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
-    {
-      M_KTALOG__ERR("lGetValueById Failed");
-      goto end;
-    }
-
     M_KTALOG__INFO("L2 key for HMAC");
     M_KTALOG__HEX("L2 Key:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
     M_KTALOG__HEX("InputData:", xpInputData, xInputDataLen);
-    /* Truncate the key */
-    (void)memset(&aKeyBuff[C_SAL_CRYPTO_KEY_SIZE_16_BYTE], 0x00, C_SAL_CRYPTO_KEY_SIZE_16_BYTE);
-
-    cryptoStatus =  atcab_nonce_load(NONCE_MODE_TARGET_TEMPKEY, aKeyBuff,
-                                     C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
-
-    if (cryptoStatus != ATCA_SUCCESS)
-    {
-      M_KTALOG__ERR("atcab_nonce_load() with ret=0x%08X", cryptoStatus);
-      goto end;
-    }
 
     cryptoStatus = atcab_sha_hmac(xpInputData, xInputDataLen,
-                                  ATCA_TEMPKEY_KEYID, aMac, SHA_MODE_TARGET_OUT_ONLY);
+                                  SLOT_9, aMac, SHA_MODE_TARGET_OUT_ONLY);
 
     if (cryptoStatus != ATCA_SUCCESS)
     {
@@ -931,31 +956,14 @@ K_SAL_API TKStatus salCryptoHmacVerify
   }
   else
   {
-    if (lGetValueById(xKeyId, aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
-    {
-      M_KTALOG__ERR("lGetValueById Failed");
-      goto end;
-    }
-
     M_KTALOG__INFO("L2 key for HMAC verification");
     M_KTALOG__HEX("L2 Key:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
-    /* Truncate the key  to 16 bytes */
-    (void)memset(&aKeyBuff[C_SAL_CRYPTO_KEY_SIZE_16_BYTE], 0x00, C_SAL_CRYPTO_KEY_SIZE_16_BYTE);
-
-    cryptoStatus =  atcab_nonce_load(NONCE_MODE_TARGET_TEMPKEY, aKeyBuff,
-                                     C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
-
-    if (cryptoStatus != ATCA_SUCCESS)
-    {
-      M_KTALOG__ERR("atcab_nonce_load() with ret=0x%08X", cryptoStatus);
-      goto end;
-    }
 
     M_KTALOG__INFO("Input data for hmac verify ");
     M_KTALOG__HEX("Input Data:", xpInputData, xInputDataLen);
 
     cryptoStatus = atcab_sha_hmac(xpInputData, xInputDataLen,
-                                  ATCA_TEMPKEY_KEYID, aMac, SHA_MODE_TARGET_OUT_ONLY);
+                                  SLOT_9, aMac, SHA_MODE_TARGET_OUT_ONLY);
 
     if (cryptoStatus != ATCA_SUCCESS)
     {
@@ -1018,26 +1026,10 @@ K_SAL_API TKStatus salCryptoAesEnc
   }
   else
   {
-    if (lGetValueById(xKeyId,
-                      aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
-    {
-      M_KTALOG__ERR("lGetValueById Failed");
-      goto end;
-    }
-
     M_KTALOG__HEX("L2 key for HMAC verification:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
     M_KTALOG__HEX("Input Data for encryption :", xpInputData, xInputDataLen);
-    cryptoStatus =  atcab_nonce_load(NONCE_MODE_TARGET_TEMPKEY, aKeyBuff,
-                                     C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
 
-    if (cryptoStatus != ATCA_SUCCESS)
-    {
-      M_KTALOG__ERR("atcab_nonce_load() with ret=0x%08X", cryptoStatus);
-      goto end;
-    }
-
-    cryptoStatus = atcab_aes_cbc_init(&ctx, ATCA_TEMPKEY_KEYID, 0, aIV);
-
+    cryptoStatus = atcab_aes_cbc_init(&ctx, SLOT_9, SLOT_9_BLOCK_2, aIV);
     if (cryptoStatus != ATCA_SUCCESS)
     {
       M_KTALOG__ERR("atcab_aes_cbc_init() with ret=0x%08X", cryptoStatus);
@@ -1109,26 +1101,11 @@ K_SAL_API TKStatus salCryptoAesDec
       break;
     }
 
-    if (lGetValueById(xKeyId, aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
-    {
-      M_KTALOG__ERR("lGetValueById Failed");
-      break;
-    }
-
     M_KTALOG__INFO("L2 key for AES dec");
     M_KTALOG__HEX("L2 Key:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
 
     M_KTALOG__HEX("Input Data:", xpInputData, xInputDataLen);
-    cryptoStatus = atcab_nonce_load(NONCE_MODE_TARGET_TEMPKEY, aKeyBuff,
-                                    C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
-
-    if (cryptoStatus != ATCA_SUCCESS)
-    {
-      M_KTALOG__ERR("atcab_nonce_load() with ret=0x%08X", cryptoStatus);
-      break;
-    }
-
-    cryptoStatus = atcab_aes_cbc_init(&ctx, ATCA_TEMPKEY_KEYID, 0, aIV);
+    cryptoStatus = atcab_aes_cbc_init(&ctx, SLOT_9, SLOT_9_BLOCK_2, aIV);
 
     if (cryptoStatus != ATCA_SUCCESS)
     {
