@@ -895,6 +895,11 @@ static TKStatus lKtaSetThirdPartyData
  * @implements lKtaGenerateKeyPair
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lKtaGenerateKeyPair
 (
   TKIcppProtocolMessage* xpData,
@@ -934,6 +939,11 @@ end:
  * @implements lKtaSetObject
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lKtaSetObject
 (
   TKIcppProtocolMessage* xpData,
@@ -971,6 +981,11 @@ end:
  * @implements lKtaSetObjWithAssociation
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lKtaSetObjWithAssociation
 (
   TKIcppProtocolMessage* xpData,
@@ -1007,6 +1022,11 @@ end:
  * @implements lKtaDeleteObject
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lKtaDeleteObject
 (
   TKIcppProtocolMessage* xpData,
@@ -1039,6 +1059,11 @@ end:
  * @implements lKtaDeleteKeyObject
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lKtaDeleteKeyObject
 (
   TKIcppProtocolMessage* xpData,

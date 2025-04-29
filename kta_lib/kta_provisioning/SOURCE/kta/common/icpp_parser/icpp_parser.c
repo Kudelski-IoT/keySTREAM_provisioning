@@ -871,8 +871,7 @@ static TKParserStatus lIcppParserDeserializeFields
  *
  */
 /**
- * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
- * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
  * Using goto for breaking during the error and return cases.
  **/
 static TKParserStatus lIcppParserDeserializeCommands
@@ -1074,8 +1073,7 @@ end:
  *
  */
 /**
- * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
- * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Suppression: misra-c2012-15.4 and misra-c2012-15.1
  * Using goto for breaking during the error and return cases.
  **/
 static TKParserStatus lIcppParserSerializeCommands
