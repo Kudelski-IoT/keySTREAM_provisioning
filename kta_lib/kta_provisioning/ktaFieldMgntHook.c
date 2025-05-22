@@ -1,9 +1,9 @@
-﻿/*******************************************************************************
+/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2024 Nagravision Sàrl
 
-* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
+* Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -35,7 +35,7 @@
  ******************************************************************************/
 /**
  * @brief   keySTREAM Trusted Agent - Hook for initialization and field management.
-*/
+ */
 
 #include "ktaFieldMgntHook.h"
 /* -------------------------------------------------------------------------- */
@@ -64,14 +64,17 @@
 /** @brief Context Version */
 #define C_KTA_APP_CONTEXT_VERSION      {0x22, 0x01, 0x00, 0x02, 0x00, 0x03, 0x00, 0x04, 0x00, 0x05}
 
+/** @brief Boolean True */
+#define L_POLL_TRUE 1
+
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
 /** @brief  Connection required by KTA status */
-static uint8_t gConnectionReq = 0;
+static uint8_t gConnectionReq = 0u;
 
 /** @brief  KTA Initialized state */
-static uint8_t gKtaInitialized = 0;
+static uint8_t gKtaInitialized = 0u;
 uint8_t         gaSegSeed[C_K__L1_SEGMENTATION_SEED_SIZE] = C_KTA_APP__L1_SEG_SEED;
 uint8_t*        gpDeviceProfPubUid                        = (uint8_t*)C_KTA_APP__DEVICE_PUBLIC_UID;
 const uint8_t*  gpHost                                    = C_K_COMM__SERVER_HOST;
@@ -164,6 +167,11 @@ static void lprintData
  * @brief  implement ktaKeyStreamInit
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaKeyStreamInit
 (
   void
@@ -171,46 +179,45 @@ TKStatus ktaKeyStreamInit
 {
   TKStatus  retStatus = E_K_STATUS_ERROR;
 
-  for (;;)
+  if (gKtaInitialized == 0u)
   {
-    if (gKtaInitialized == 0)
+    C_KTA_APP__LOG("[INFO] ktaInitialize\r\n");
+    retStatus = ktaInitialize();
+
+    if (E_K_STATUS_OK != retStatus)
     {
-      C_KTA_APP__LOG("[INFO] ktaInitialize\r\n");
-      retStatus = ktaInitialize();
-
-      if (E_K_STATUS_OK != retStatus)
-      {
-        C_KTA_APP__LOG("[ERROR] ktaInitialize Status[%d]\r\n", retStatus);
-        break;
-      }
-
-      C_KTA_APP__LOG("[INFO] ktaInitialize Succeeded\r\n");
-
-      retStatus = lsetStartupInfo();
-
-      if (E_K_STATUS_OK != retStatus)
-      {
-        C_KTA_APP__LOG("[ERROR] ktaStartup Failed Status[%d]\r\n", retStatus);
-        break;
-      }
-
-      C_KTA_APP__LOG("[INFO] ktaStartup Succeeded\r\n");
-
-      retStatus = lsetDeviceInfo(&gConnectionReq);
-
-      if (E_K_STATUS_OK != retStatus)
-      {
-        C_KTA_APP__LOG("ktaSetDeviceInformation Failed Status[%d]\r\n", retStatus);
-        break;
-      }
-
-      C_KTA_APP__LOG("[INFO] ktaSetDeviceInformation Succeeded\r\n");
-      gKtaInitialized = 1;
+      C_KTA_APP__LOG("[ERROR] ktaInitialize Status[%d]\r\n", retStatus);
+      goto end;
     }
 
-    break;
+    C_KTA_APP__LOG("[INFO] ktaInitialize Succeeded\r\n");
+
+    retStatus = lsetStartupInfo();
+
+    if (E_K_STATUS_OK != retStatus)
+    {
+      C_KTA_APP__LOG("[ERROR] ktaStartup Failed Status[%d]\r\n", retStatus);
+      goto end;
+    }
+
+    C_KTA_APP__LOG("[INFO] ktaStartup Succeeded\r\n");
+
+    retStatus = lsetDeviceInfo(&gConnectionReq);
+
+    if (E_K_STATUS_OK != retStatus)
+    {
+      C_KTA_APP__LOG("ktaSetDeviceInformation Failed Status[%d]\r\n", retStatus);
+      goto end;
+    }
+
+    C_KTA_APP__LOG("[INFO] ktaSetDeviceInformation Succeeded\r\n");
+    gKtaInitialized = 1;
   }
 
+  retStatus = E_K_STATUS_OK;
+  goto end;
+
+end:
   return retStatus;
 }
 
@@ -218,6 +225,11 @@ TKStatus ktaKeyStreamInit
  * @brief  implement ktaKeyStreamFieldMgmt
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaKeyStreamFieldMgmt
 (
   bool                   xIsFieldMgmtReq,
@@ -228,47 +240,45 @@ TKStatus ktaKeyStreamFieldMgmt
 
   C_KTA_APP__LOG("[INFO] ktaKeyStreamFieldMgmt Start\r\n");
 
-  for (;;)
+  if (xpKtaKSCmdStatus == NULL)
   {
-    if (xpKtaKSCmdStatus == NULL)
-    {
-      C_KTA_APP__LOG("[ERROR] Invalid parameter\r\n");
-      retStatus = E_K_STATUS_PARAMETER;
-      break;
-    }
+    C_KTA_APP__LOG("[ERROR] Invalid parameter\r\n");
+    retStatus = E_K_STATUS_PARAMETER;
+    goto end;
+  }
 
-    if ((gConnectionReq == 1U) || (xIsFieldMgmtReq == true))
-    {
-      retStatus = lPollKeyStream();
-
-      if (E_K_STATUS_OK != retStatus)
-      {
-        C_KTA_APP__LOG("[ERROR] lPollKeyStream failed %d\r\n", retStatus);
-        break;
-      }
-    }
-    else
-    {
-      C_KTA_APP__LOG("[INFO] KTA is in provisioned state, exit...\r\n");
-    }
-
-    retStatus = ktaKeyStreamStatus(xpKtaKSCmdStatus);
+  if ((gConnectionReq == 1U) || (xIsFieldMgmtReq == true))
+  {
+    retStatus = lPollKeyStream();
 
     if (E_K_STATUS_OK != retStatus)
     {
-      C_KTA_APP__LOG("[ERROR] ktaKeyStreamStatus %d\r\n", retStatus);
-      break;
+      C_KTA_APP__LOG("[ERROR] lPollKeyStream failed %d\r\n", retStatus);
+      goto end;
     }
-
-    if (E_K_KTA_KS_STATUS_REFURBISH == *xpKtaKSCmdStatus)
-    {
-      C_KTA_APP__LOG("[INFO] Device refurbished, reboot the device...\r\n");
-      gKtaInitialized = 0;
-    }
-
-    break;
+  }
+  else
+  {
+    C_KTA_APP__LOG("[INFO] KTA is in provisioned state, exit...\r\n");
   }
 
+  retStatus = ktaKeyStreamStatus(xpKtaKSCmdStatus);
+
+  if (E_K_STATUS_OK != retStatus)
+  {
+    C_KTA_APP__LOG("[ERROR] ktaKeyStreamStatus %d\r\n", retStatus);
+    goto end;
+  }
+
+  if (E_K_KTA_KS_STATUS_REFURBISH == *xpKtaKSCmdStatus)
+  {
+    C_KTA_APP__LOG("[INFO] Device refurbished, reboot the device...\r\n");
+    gKtaInitialized = 0;
+  }
+
+  goto end;
+
+end:
   C_KTA_APP__LOG("[KTA] Done.\r\n");
 
   return retStatus;
@@ -278,32 +288,34 @@ TKStatus ktaKeyStreamFieldMgmt
  * @brief  implement ktaKeyStreamUpdateConfig
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 TKStatus ktaKeyStreamUpdateConfig(uint8_t *xpSegSeed, uint8_t* xpKsUrl, uint8_t *xpDevProfileUid)
 {
   TKStatus  retStatus = E_K_STATUS_ERROR;
 
   C_KTA_APP__LOG("[INFO] ktaKeyStreamUpdateConfig Start\r\n");
 
-  for (;;)
+  if ((xpSegSeed == NULL) ||
+      (xpKsUrl == NULL) ||
+      (xpDevProfileUid == NULL))
   {
-    if ((xpSegSeed == NULL) ||
-        (xpKsUrl == NULL) ||
-        (xpDevProfileUid == NULL))
-    {
-      C_KTA_APP__LOG("[ERROR] Invalid parameter\r\n");
-      retStatus = E_K_STATUS_PARAMETER;
-      break;
-    }
-
-    /* Update the global variables. */
-    memcpy(gaSegSeed, xpSegSeed, C_K__L1_SEGMENTATION_SEED_SIZE);
-    gpDeviceProfPubUid = xpDevProfileUid;
-    gpHost = xpKsUrl;
-
-    retStatus = E_K_STATUS_OK;
-    break;
+    C_KTA_APP__LOG("[ERROR] Invalid parameter\r\n");
+    retStatus = E_K_STATUS_PARAMETER;
+    goto end;
   }
-  
+
+  /* Update the global variables. */
+  memcpy(gaSegSeed, xpSegSeed, C_K__L1_SEGMENTATION_SEED_SIZE);
+  gpDeviceProfPubUid = xpDevProfileUid;
+  gpHost = xpKsUrl;
+
+  retStatus = E_K_STATUS_OK;
+  goto end;
+end:
   C_KTA_APP__LOG("[INFO] ktaKeyStreamUpdateConfig end\r\n");
 
   return retStatus;
@@ -353,17 +365,13 @@ static TKStatus lsetDeviceInfo
   size_t    serialNumLen = sizeof(aSerialNum);
   TKStatus  retStatus = E_K_STATUS_ERROR;
 
-  for (;;)
-  {
-    C_KTA_APP__LOG("[INFO] Calling ktaSetDeviceInformation\r\n");
-    /* Set device information(Device public uid) */
-    retStatus = ktaSetDeviceInformation(gpDeviceProfPubUid,
-                                        deviceProfPubUidLen,
-                                        aSerialNum,
-                                        serialNumLen,
-                                        xpConnectionReq);
-    break;
-  }
+  C_KTA_APP__LOG("[INFO] Calling ktaSetDeviceInformation\r\n");
+  /* Set device information(Device public uid) */
+  retStatus = ktaSetDeviceInformation(gpDeviceProfPubUid,
+                                      deviceProfPubUidLen,
+                                      aSerialNum,
+                                      serialNumLen,
+                                      xpConnectionReq);
 
   return retStatus;
 }
@@ -384,13 +392,18 @@ static TKStatus lcommInit
   C_KTA_APP__LOG("[INFO] commInit aHost[%s] port[%d] uri[%s]\r\n", gpHost, port, pUri);
   retStatus = commInit(gpHost, port, pUri);
 
-  return retStatus;
+  return (TKStatus)retStatus;
 }
 
 /**
  * @implements lPollKeyStream
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_005 : misra_c2012_rule_15.4_violation
+ * SUPPRESS: MISRA_DEV_KTA_004 : misra_c2012_rule_15.1_violation
+ * Using goto for breaking during the error and return cases.
+ **/
 static TKStatus lPollKeyStream
 (
   void
@@ -398,6 +411,9 @@ static TKStatus lPollKeyStream
 {
   static uint8_t  aRot2KsMsg[C_K__ICPP_MSG_MAX_SIZE] = { 0 };
   TKStatus        retStatus = E_K_STATUS_ERROR;
+#ifdef NETWORK_STACK_AVAILABLE
+  TCommIfStatus   commStatus = E_COMM_IF_STATUS_ERROR;
+#endif
   uint8_t*        pKs2RotMsg = aRot2KsMsg;
   size_t          rot2ksMsgSize = 0;
   size_t          ks2rotMsgSize = 0;
@@ -411,7 +427,7 @@ static TKStatus lPollKeyStream
     return retStatus;
   }
 
-  for (;;)
+  while(L_POLL_TRUE)
   {
     C_KTA_APP__LOG("[INFO] Calling ktaExchangeMessage...\r\n");
 
@@ -421,13 +437,13 @@ static TKStatus lPollKeyStream
     if (E_K_STATUS_OK != retStatus)
     {
       C_KTA_APP__LOG("[ERROR] ktaExchangeMessage Failed Status[%d]", retStatus);
-      break;
+      goto end;
     }
 
     if (0U == rot2ksMsgSize)
     {
       C_KTA_APP__LOG("[INFO] There is no message to send to keySTREAM.\r\n");
-      break;
+      goto end;
     }
 
     C_KTA_APP__LOG("[INFO] KTA msg generated successfully.\r\n");
@@ -435,13 +451,13 @@ static TKStatus lPollKeyStream
     lprintData(aRot2KsMsg, rot2ksMsgSize);
 
 /**********************************************************************************/
-/*     Below Code to be uncommented after communication stack is integrated       */
+/*                  Below code requires network stack integration                 */
 /**********************************************************************************/
-#if 0
+#ifdef NETWORK_STACK_AVAILABLE
     ks2rotMsgSize = C_K__ICPP_MSG_MAX_SIZE;
-    retStatus = commMsgExchange(aRot2KsMsg, rot2ksMsgSize, pKs2RotMsg, &ks2rotMsgSize);
+    commStatus = commMsgExchange(aRot2KsMsg, rot2ksMsgSize, pKs2RotMsg, &ks2rotMsgSize);
 
-    if (retStatus == E_COMM_IF_STATUS_OK)
+    if (commStatus == E_COMM_IF_STATUS_OK)
     {
       C_KTA_APP__LOG("[INFO] KS Resp MSG Length :[%zu]\r\n", ks2rotMsgSize);
 
@@ -454,18 +470,18 @@ static TKStatus lPollKeyStream
       {
         C_KTA_APP__LOG("[ERROR] KS_Resp msg length is = [%zu]\r\n", ks2rotMsgSize);
         retStatus = E_K_STATUS_ERROR;
-        break;
+        goto end;
       }
     }
     else
     {
       C_KTA_APP__LOG("[FAIL] commMsgExchange failed.\r\n");
       retStatus = E_K_STATUS_ERROR;
-      break;
+      goto end;
     }
 #endif
-    break;
   }
+end:
   if (E_COMM_IF_STATUS_OK != commTerm())
   {
     C_KTA_APP__LOG("[FAIL] Communication Stack Termination failed \r\n");

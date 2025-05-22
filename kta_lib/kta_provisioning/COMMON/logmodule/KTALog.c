@@ -1,9 +1,9 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2024 Nagravision Sàrl
 
-* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
+* Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -255,24 +255,24 @@ void ktaLog_PrintBuffer
   if (xLevel >= moduleLogLevel)
   {
     snprintf(aBuffer, C_MAX_BUFFER_SIZE, "%s : [%d]\r\n", xpFmt, xSize);
-    printf(aBuffer);
+    salPrint(aBuffer);
 
     for (Index = 0; Index < xSize; Index++)
     {
       snprintf(aValue, C_MAX_VALUE_SIZE, "%02X ", xpBuffer[Index]);
-      printf(aValue);
+      salPrint(aValue);
       if ((Index % (int32_t)C_LOG_COL_SIZE) == (C_LOG_COL_SIZE - 1u))
       {
         /* Line full. */
-        printf("\r\n");
+        salPrint("\r\n");
       }
     }
     if ((xSize % (int32_t)C_LOG_COL_SIZE) != 0)
     {
       /* Last line not full. */
-      printf("\r\n");
+      salPrint("\r\n");
     }
-    printf("\r\n");
+    salPrint("\r\n");
   }
 }
 
