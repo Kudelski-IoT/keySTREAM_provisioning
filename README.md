@@ -6,11 +6,20 @@ Documentation for this library can be found in following path within this reposi
 
 # Building and using the Library
 ## Prerequisites
-### Enable below preprocessor MACROS for KTA build
-  - Please use kta_lib/kta_provisioning/ktaFieldMgntHook.c from main repository.
-  - OBJECT_MANAGEMENT_FEATURE - Used by KTA Lib for provisioning
-  - DEVICE_PROVIDES_CHIP_CERT - Used by KTA Lib for provisioning
-  - NETWORK_STACK_AVAILABLE - Used for communication with keySTREAM, disable this if network stack is not integrated.
+### Enable below preprocessor MACRO for as per the requirement.
+  - NETWORK_STACK_AVAILABLE - Enable this MACRO once network stack is implemented by customer.
+  - FOTA_ENABLE - Enable this MACRO once FOTA agent is fully implemented by customer.
+
+### Mandatory API Implementation for FOTA Services
+
+To enable FOTA Services, user need to implement the following APIs in the specified source file:
+
+- **File Path:**  
+  keySTREAM_provisioning\kta_lib\kta_provisioning\fota_service\Fota_Platform.c
+
+- **Required APIs:**  
+  - fotaPlatformGetComponents()
+  - fotaStartInstallation()
   
 ### Install the following tools.
    - [Microchip MPLAB X IDE](https://www.microchip.com/mplab/mplab-x-ide)

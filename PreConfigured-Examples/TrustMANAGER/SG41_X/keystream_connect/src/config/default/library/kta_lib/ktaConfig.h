@@ -71,7 +71,7 @@ extern "C" {
 #define C_KTA_APP__L1_SEG_SEED              C_KTA_APP__L1_SEG_SEED_CIE
 
 /** @brief Device profile public uid of keySTREAM. */
-#define C_KTA_APP__DEVICE_PUBLIC_UID        ("1223")
+#define C_KTA_APP__DEVICE_PUBLIC_UID        ("")
 
 /** @brief Application log */
 #define C_KTA_APP__LOG                      printf

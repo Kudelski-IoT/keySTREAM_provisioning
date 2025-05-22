@@ -61,7 +61,7 @@ extern "C" {
 #define WIFI_PWD                            ""
 
 /** @brief TrustManaged Device Public UID */
-#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID "sf"
+#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID ""
 
 /** @brief keySTREAM COAP Endpoint */
 #define KEYSTREAM_COAP_URL                  (const uint8_t*)"icpp.mss.iot.kudelski.com"

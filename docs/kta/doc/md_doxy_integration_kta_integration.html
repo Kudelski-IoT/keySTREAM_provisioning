@@ -168,7 +168,28 @@ Integration Steps:</h1>
 <div class="image">
 <img src="generate.png" alt=""/>
 </div>
-   <p>20) Once code is generated it can be compiled and flashed into the device.</p>
+   <p>20) Enable the following preprocessor macros as per your project requirements:</p>
+      <ul>
+        <li><b>NETWORK_STACK_AVAILABLE</b> - Enable this macro once the network stack is implemented.</li>
+        <li><b>FOTA_ENABLE</b> - Enable this macro once the FOTA agent is fully implemented.</li>
+      </ul>
+      <p><b>Mandatory API Implementation for FOTA Services</b></p>
+      <p>
+        To enable FOTA Services, you must implement the following APIs in the specified source file:
+      </p>
+      <ul>
+        <li><b>File Path:</b><br>
+          keySTREAM_provisioning\kta_lib\kta_provisioning\fota_service\Fota_Platform.c
+        </li>
+        <li><b>Required APIs:</b>
+          <ul>
+            <li>fotaPlatformGetComponents()</li>
+            <li>fotaStartInstallation()</li>
+          </ul>
+        </li>
+      </ul>
+      <p>21) Once all the above steps are completed, click on <b>Generate Code</b> to include KTA_LIB in your project.</p>
+      <p>22) A preconfigured example with all features enabled is available in the <b>PreConfigured-Examples</b> directory in the public Git repository. This example also includes an integrated communication stack. Please refer to these examples for further integration guidance in your project.</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
 keySTREAM Trusted Agent Release Notes</h1>
 <p>see <a href="md_doxy_integration_release_notes.html"><code>Release Notes</code></a></p>

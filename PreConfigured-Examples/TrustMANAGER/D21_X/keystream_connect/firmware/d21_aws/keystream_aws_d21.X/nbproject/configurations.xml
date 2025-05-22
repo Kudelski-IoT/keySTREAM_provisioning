@@ -2038,7 +2038,7 @@
         <property key="memories.programmemory.ranges" value="0-9ffff"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmerToGoFilePath"
-                  value="../keystream_aws_d21.X/debug/keySTREAM_AWS_CONNECT/keystream_aws_coap_d21_ptg"/>
+                  value="C:/Users/sravicha/kudelski_repo_fota/keySTREAM_provisioning/PreConfigured-Examples/TrustMANAGER/D21_X/keystream_connect/firmware/d21_aws/keystream_aws_d21.X/debug/keySTREAM_AWS_CONNECT_COAP/keystream_aws_d21_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
@@ -3501,7 +3501,7 @@
         <property key="memories.programmemory.ranges" value="0-9ffff"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmerToGoFilePath"
-                  value="../keystream_aws_d21.X/debug/keySTREAM_AWS_CONNECT/keystream_aws_coap_d21_ptg"/>
+                  value="C:/Users/sravicha/kudelski_repo_fota/keySTREAM_provisioning/PreConfigured-Examples/TrustMANAGER/D21_X/keystream_connect/firmware/d21_aws/keystream_aws_d21.X/debug/keySTREAM_AWS_CONNECT_HTTP/keystream_aws_d21_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
