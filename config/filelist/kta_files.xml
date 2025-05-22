@@ -24,6 +24,14 @@
                         <file name="k_sal_com.c"/>
                     </dir>
                 </dir>
+                <dir name="fota_service">
+                     <file name="Fota_Agent.h"/>
+                     <file name="Fota_Process.h"/>
+                     <file name="Fota_Platform.h"/>
+                     <file name="Fota_Agent.c"/>
+                     <file name="Fota_Process.c"/>
+                     <file name="Fota_Platform.c"/>
+                </dir>
                 <dir name="SOURCE">
                     <dir name="include">
                         <file name="k_defs.h"/>
@@ -98,11 +106,13 @@
                             <file name="k_sal_storage.h"/>
                             <file name="k_sal.h"/>
                             <file name="slotConfig.h"/>
+			    <file name="k_sal_fota.h"/>
                         </dir>
                         <file name="k_sal_crypto.c"/>
                         <file name="k_sal_log.c"/>
                         <file name="k_sal_object.c"/>
                         <file name="k_sal_storage.c"/>
+                        <file name="k_sal_fota.c"/>
                     </dir>
                 </dir>
                 <file name="cust_def_device.c"/>

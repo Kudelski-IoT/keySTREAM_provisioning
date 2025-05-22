@@ -1,9 +1,9 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -52,8 +52,16 @@
 #include "KTALog.h"
 #include "general.h"
 #include "cryptoConfig.h"
+#include "kta_version.h"
+
 
 #include <string.h>
+#include <stdbool.h>
+
+#ifdef FOTA_ENABLE
+#include "k_sal_fota.h"
+#endif
+
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
 /* -------------------------------------------------------------------------- */
@@ -144,12 +152,22 @@ typedef struct
   /* Persistent object identifier. */
   uint32_t objectOwner;
   /* Object owner. */
+  uint8_t *fotaName;
+  /* Fota Name. */
+  uint8_t fotaNameLen;
+  /* Fota Name Length. */
+  uint8_t *fotaMetadata;
+  /* Fota Metadata */
+  uint8_t fotaMetadataLen;
+  /* Fota Metadata Length. */
   TKcmdRespFields attributes;
   /* Response data attributes. */
   TKSalObjAssociationInfo associationInfo;
   /* Object association info. */
   object_t object;
   /* Object Data. */
+  TTargetComponent xTargetComponents[COMPONENTS_MAX];
+  /* Components. */
 } TKcmdRespPayload;
 
 /** @brief  Different commands for field tag. */
@@ -553,11 +571,33 @@ TKStatus ktaCmdProcess
 #endif
                                        );
 
-    if (E_K_STATUS_OK != status)
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
+    goto end;
+  }
+
+#ifdef FOTA_ENABLE
+    // Check for command tags A0 and A1
+    bool fotaTagFound = false;
+
+    for (size_t i = 0; i < xpRecvdProtoMessage->commandsCount; i++)
+    {
+      if ((xpRecvdProtoMessage->commands[i].commandTag == E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA) ||
+          (xpRecvdProtoMessage->commands[i].commandTag == E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS))
+      {
+        fotaTagFound = true;
+        break;
+      }
+    }
+
+    if (E_K_STATUS_OK != status && !fotaTagFound)
     {
       M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
       goto end;
     }
+
+#endif // FOTA_ENABLE
 
     status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
                                   C_GEN__ENCRYPT | C_GEN__SIGNING),
@@ -661,6 +701,28 @@ static TKStatus lKtaCmdCheckFieldTag
       status = E_K_STATUS_OK;
     }
     break;
+#ifdef FOTA_ENABLE
+    case E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA:
+    {
+      /* This command has no fields. Returning OK */
+      status = E_K_STATUS_OK;
+    }
+    break;
+
+    case E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS:
+    {
+      /* This command has no fields. Returning OK */
+      status = E_K_STATUS_OK;
+    }
+    break;
+
+    case E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO:
+    {
+      /* This command has no fields. Returning OK */
+      status = E_K_STATUS_OK;
+    }
+    break;
+#endif // FOTA_ENABLE
 
     default:
     {
@@ -676,7 +738,7 @@ static TKStatus lKtaCmdCheckFieldTag
  * @implements lKtaCmdValidateAndGetPayload
  *
  */
-static TKStatus lKtaCmdValidateAndGetPayload
+static TKStatus   lKtaCmdValidateAndGetPayload
 (
   TKIcppProtocolMessage* xpRecvMsg,
   TKcmdRespPayload*      xpCmdRespPayload,
@@ -689,6 +751,11 @@ static TKStatus lKtaCmdValidateAndGetPayload
   uint32_t  isErrorOccured      = 0;
   uint32_t  fieldTagMask        = 0;
   TKIcppFieldList* pFieldList   = NULL;
+#ifdef FOTA_ENABLE
+  uint32_t  targetNameIndex     = 0;
+  uint32_t  targetVersionIndex  = 0;
+  uint32_t  targetUrlIndex      = 0;
+#endif
 
   for (;;)
   {
@@ -704,15 +771,19 @@ static TKStatus lKtaCmdValidateAndGetPayload
     for (; ((commandsLoop < xpRecvMsg->commandsCount) && (isErrorOccured == 0U)); commandsLoop++)
     {
       if ((E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR !=
-           xpRecvMsg->commands[commandsLoop].commandTag) &&
-          (E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT !=
-           xpRecvMsg->commands[commandsLoop].commandTag)  &&
-          (E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION !=
-           xpRecvMsg->commands[commandsLoop].commandTag)  &&
-          (E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT !=
-           xpRecvMsg->commands[commandsLoop].commandTag)  &&
-          (E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT !=
-           xpRecvMsg->commands[commandsLoop].commandTag))
+                xpRecvMsg->commands[commandsLoop].commandTag) &&
+                (E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT !=
+                xpRecvMsg->commands[commandsLoop].commandTag)  &&
+                (E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION !=
+                xpRecvMsg->commands[commandsLoop].commandTag)  &&
+                (E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT !=
+                xpRecvMsg->commands[commandsLoop].commandTag)  &&
+                (E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT !=
+                xpRecvMsg->commands[commandsLoop].commandTag) &&
+                (E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA !=
+                xpRecvMsg->commands[commandsLoop].commandTag) &&
+                (E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS !=
+                xpRecvMsg->commands[commandsLoop].commandTag))
       {
         M_KTALOG__ERR("Invalid command Tag %d", xpRecvMsg->commands[commandsLoop].commandTag);
         break;
@@ -832,6 +903,100 @@ static TKStatus lKtaCmdValidateAndGetPayload
             fieldTagMask |= E_K_CMD_FIELD_CUSTOMER_METADATA;
           }
           break;
+#ifdef FOTA_ENABLE
+          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA:
+          {
+            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
+            {
+              M_KTALOG__ERR("Invalid Data length");
+              isErrorOccured = 1;
+              break;
+            }
+
+            xpCmdRespPayload->fotaName = pFieldList->fields[fieldsLoop].fieldValue;
+            xpCmdRespPayload->fotaNameLen = pFieldList->fields[fieldsLoop].fieldLen;
+            fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA;
+          }
+          break;
+
+          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA:
+          {
+            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
+            {
+                M_KTALOG__ERR("Invalid Data length");
+                isErrorOccured = 1;
+                break;
+            }
+
+            xpCmdRespPayload->fotaMetadata = pFieldList->fields[fieldsLoop].fieldValue;
+            xpCmdRespPayload->fotaMetadataLen = pFieldList->fields[fieldsLoop].fieldLen;
+            fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA;
+          }
+          break;
+
+          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET:
+          {
+            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
+            {
+              M_KTALOG__ERR("Invalid Data length");
+              isErrorOccured = 1;
+              break;
+            }
+
+            if (targetNameIndex < COMPONENTS_MAX)
+            {
+              xpCmdRespPayload->xTargetComponents[targetNameIndex].componentTargetName =
+              pFieldList->fields[fieldsLoop].fieldValue;
+              xpCmdRespPayload->xTargetComponents[targetNameIndex].componentTargetNameLen =
+              pFieldList->fields[fieldsLoop].fieldLen;
+              fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
+            }
+            targetNameIndex++;
+          }
+          break;
+
+          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION:
+          {
+            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
+            {
+              M_KTALOG__ERR("Invalid Data length");
+              isErrorOccured = 1;
+              break;
+            }
+
+            if (targetVersionIndex < COMPONENTS_MAX)
+            {
+              xpCmdRespPayload->xTargetComponents[targetVersionIndex].componentTargetVersion =
+              pFieldList->fields[fieldsLoop].fieldValue;
+              xpCmdRespPayload->xTargetComponents[targetVersionIndex].componentTargetVersionLen =
+              pFieldList->fields[fieldsLoop].fieldLen;
+              fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
+            }
+            targetVersionIndex++;
+          }
+          break;
+
+          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL:
+          {
+            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
+            {
+              M_KTALOG__ERR("Invalid Data length");
+              isErrorOccured = 1;
+              break;
+            }
+
+            if (targetUrlIndex < COMPONENTS_MAX)
+            {
+              xpCmdRespPayload->xTargetComponents[targetUrlIndex].componentUrl =
+              pFieldList->fields[fieldsLoop].fieldValue;
+              xpCmdRespPayload->xTargetComponents[targetUrlIndex].componentUrlLen =
+              pFieldList->fields[fieldsLoop].fieldLen;
+              fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL;
+            }
+            targetUrlIndex++;
+          }
+          break;
+#endif // FOTA_ENABLE
 
           // REQ RQ_M-KTA-OBJM-FN-0770_05(1) : Association Info
           case E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO:
@@ -1047,6 +1212,90 @@ end:
   return status;
 }
 
+#ifdef FOTA_ENABLE
+/**
+ * @implements lktaInstallFota
+ *
+ */
+static TKStatus lktaInstallFota
+(
+  TKIcppProtocolMessage* xpData,
+  uint8_t*               fotaName,
+  uint8_t*               fotaNameLen,
+  TComponent             xComponents[COMPONENTS_MAX],
+  TFotaError*            xpFotaError,
+  uint8_t*               xpPlatformStatus
+)
+{
+  TKFotaStatus status = E_K_FOTA_ERROR;
+  TKcmdRespPayload   resPayload = { 0 };
+
+  M_KTALOG__DEBUG("Processing Install Fota specific data...");
+
+  if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, 0))
+  {
+    /* Original error status lost here on purpose of code size optimization. */
+    M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
+    goto end;
+  }
+
+  status = salFotaInstall(resPayload.fotaName,
+                          resPayload.fotaNameLen,
+                          resPayload.fotaMetadata,
+                          resPayload.fotaMetadataLen,
+                          resPayload.xTargetComponents,
+                          xpFotaError,
+                          xComponents);
+
+  memcpy(fotaName, resPayload.fotaName, resPayload.fotaNameLen);
+  *fotaNameLen = resPayload.fotaNameLen;
+
+end:
+  (void)memcpy((void *)xpPlatformStatus, (const void *)&status, sizeof(status));
+  return status;
+}
+
+/**
+ * @implements lktasalfotagetstatus
+ *
+ */
+static TKStatus lktasalfotagetstatus
+(
+  TKIcppProtocolMessage* xpData,
+  uint8_t*               fotaName,
+  uint8_t*               fotaNameLen,
+  TFotaError*            xpFotaError,
+  uint8_t*               xpPlatformStatus,
+  TComponent             xComponents[COMPONENTS_MAX]
+)
+{
+  TKFotaStatus status = E_K_FOTA_ERROR;
+  TKcmdRespPayload   resPayload = { 0 };
+
+  M_KTALOG__DEBUG("Processing Install Fota specific data...");
+
+  if (E_K_STATUS_OK != lKtaCmdValidateAndGetPayload(xpData, &resPayload, 0))
+  {
+    /* Original error status lost here on purpose of code size optimization. */
+    M_KTALOG__ERR("Getting field identifier, data attributes and object owner failed");
+    goto end;
+  }
+
+  status = salFotaGetStatus(resPayload.fotaName,
+                            resPayload.fotaNameLen,
+                            xpFotaError,
+                            xComponents);
+
+
+  memcpy(fotaName, resPayload.fotaName, resPayload.fotaNameLen);
+  *fotaNameLen = resPayload.fotaNameLen;
+
+end:
+  (void)memcpy((void *)xpPlatformStatus, (const void *)&status, sizeof(status));
+  return status;
+}
+#endif /* FOTA_ENABLE */
+
 /**
  * @implements lKtaSetObjWithAssociation
  *
@@ -1198,10 +1447,25 @@ static TKStatus lProcessCmdPrepareResponse
 #endif
 )
 {
-  TKStatus status     = E_K_STATUS_ERROR;
-  size_t commandCount = 0;
-  size_t dataSize     = 0;
+  TKStatus status                                       = E_K_STATUS_ERROR;
+  size_t commandCount                                   = 0;
+  size_t dataSize                                       = 0;
   uint8_t challenge[C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE] = {0};
+#ifdef FOTA_ENABLE
+  TKFotaStatus fotaStatus                               = E_K_FOTA_ERROR;
+  uint8_t fotaNameLen                                   = 0;
+  uint8_t fieldIndex                                    = 0;
+  uint8_t errorCode                                     = 0;
+  uint8_t fotaErrorCause[CURRENT_MAX_LENGTH]            = {0};
+  TFotaError fotaError                                  = {0};
+
+  fotaError.fotaErrorCause                              = (uint8_t *)&fotaErrorCause;
+  fotaError.fotaErrorCauseLen                           = sizeof(fotaErrorCause);
+  fotaError.fotaErrorCode                               = (uint8_t *)&errorCode;
+  fotaError.fotaErrorCodeLen                            = ERROR_CODE_LEN;
+  TComponent components[COMPONENTS_MAX]                 = {0};
+  uint8_t fotaName[CURRENT_MAX_LENGTH]                  = {0};
+#endif // FOTA_ENABLE
 
   if ((NULL == xpRecvdProtoMessage) || (NULL == xpSendProtoMessage) ||
       (NULL == xpCmdResponse) || (0u == xCmdItemSize)
@@ -1467,6 +1731,282 @@ static TKStatus lProcessCmdPrepareResponse
         }
         break;
 
+#ifdef FOTA_ENABLE
+
+        case E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA:
+        {
+          fotaStatus = lktaInstallFota(xpRecvdProtoMessage, fotaName, &fotaNameLen, components, &fotaError, xpPlatformStatus);
+
+          uint32_t tempStatus = *((uint32_t *)xpPlatformStatus);
+
+          // Swap LSB to MSB
+          uint32_t platformStatusMSB = ((tempStatus & 0x000000FF) << 24) |
+                                       ((tempStatus & 0x0000FF00) << 8)  |
+                                       ((tempStatus & 0x00FF0000) >> 8)  |
+                                       ((tempStatus & 0xFF000000) >> 24);
+
+          xpSendProtoMessage->commands[commandCount].commandTag = E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 2;
+
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+              E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+              C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+              (uint8_t*)&platformStatusMSB;
+          fieldIndex++;
+
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+              E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+              fotaName;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+              fotaNameLen;
+          fieldIndex++;
+
+          if (E_K_FOTA_ERROR == fotaStatus)
+          {
+            uint32_t errorCodeMSB = ((fotaError.fotaErrorCode[3] & 0x000000FF) << 24) |
+                                    ((fotaError.fotaErrorCode[2] & 0x000000FF) << 16) |
+                                    ((fotaError.fotaErrorCode[1] & 0x000000FF) << 8)  |
+                                    ((fotaError.fotaErrorCode[0] & 0x000000FF));
+
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                (uint8_t*)&errorCodeMSB;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                sizeof(fotaError.fotaErrorCode);
+            fieldIndex++;
+
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+            E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                (uint8_t*)fotaError.fotaErrorCause;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                fotaError.fotaErrorCauseLen;
+            fieldIndex++;
+
+            const char* ktaVersion = (const char*)ktaGetVersion();
+
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                (uint8_t*)ktaVersion;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                strlen(ktaVersion);
+            fieldIndex++;
+
+            for (size_t i = 0; i < COMPONENTS_MAX; i++)
+            {
+              if ((components[i].componentNameLen > 0) && (components[i].componentVersionLen > 0))
+              {
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                    (uint8_t*)components[i].componentName;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                    components[i].componentNameLen;
+                fieldIndex++;
+
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                    (uint8_t*)components[i].componentVersion;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                    components[i].componentVersionLen;
+                fieldIndex++;
+              }
+            }
+            fotaStatus = status;
+          }
+          else if (E_K_FOTA_SUCCESS == fotaStatus)
+          {
+            const char* ktaVersion = (const char*)ktaGetVersion();
+
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                (uint8_t*)ktaVersion;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                strlen(ktaVersion);
+            fieldIndex++;
+
+            for (size_t i = 0; i < COMPONENTS_MAX; i++)
+            {
+              if ((components[i].componentNameLen > 0) && (components[i].componentVersionLen > 0))
+              {
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                    (uint8_t*)components[i].componentName;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                    components[i].componentNameLen;
+                fieldIndex++;
+
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                    (uint8_t*)components[i].componentVersion;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                    components[i].componentVersionLen;
+                fieldIndex++;
+              }
+            }
+            fotaStatus = status;
+          }
+          else if (E_K_FOTA_IN_PROGRESS == fotaStatus)
+          {
+            M_KTALOG__INFO("FOTA IN PROGRESS\r\n");
+            fotaStatus = status;
+          }
+          else
+          {
+            M_KTALOG__ERR("Install FOTA command failed with status = [%d]\r\n", status);
+          }
+
+          // Update the final field count
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = fieldIndex;
+        }
+        break;
+
+        case E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS:
+        {
+          fotaStatus = lktasalfotagetstatus(xpRecvdProtoMessage, fotaName, &fotaNameLen, &fotaError, xpPlatformStatus, components);
+
+          uint32_t tempStatus = *((uint32_t *)xpPlatformStatus);
+
+          // Swap LSB to MSB
+          uint32_t platformStatusMSB = ((tempStatus & 0x000000FF) << 24) |
+                                       ((tempStatus & 0x0000FF00) << 8)  |
+                                       ((tempStatus & 0x00FF0000) >> 8)  |
+                                       ((tempStatus & 0xFF000000) >> 24);
+
+          xpSendProtoMessage->commands[commandCount].commandTag = E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 2;
+
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+              E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+              C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+              (uint8_t*)&platformStatusMSB;
+          fieldIndex++;
+
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+              E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+              fotaName;
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+              fotaNameLen;
+          fieldIndex++;
+
+          if (E_K_FOTA_ERROR == fotaStatus)
+          {
+            uint32_t errorCodeMSB = ((fotaError.fotaErrorCode[3] & 0x000000FF) << 24) |
+                                    ((fotaError.fotaErrorCode[2] & 0x000000FF) << 16) |
+                                    ((fotaError.fotaErrorCode[1] & 0x000000FF) << 8)  |
+                                    ((fotaError.fotaErrorCode[0] & 0x000000FF));
+
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                (uint8_t*)&errorCodeMSB;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                fotaError.fotaErrorCodeLen;
+            fieldIndex++;
+
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+            E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                (uint8_t*)fotaError.fotaErrorCause;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                fotaError.fotaErrorCauseLen;
+            fieldIndex++;
+
+            const char* ktaVersion = (const char*)ktaGetVersion();
+
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                (uint8_t*)ktaVersion;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                strlen(ktaVersion);
+            fieldIndex++;
+
+            for (size_t i = 0; i < COMPONENTS_MAX; i++)
+            {
+              if ((components[i].componentNameLen > 0) && (components[i].componentVersionLen > 0))
+              {
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                    (uint8_t*)components[i].componentName;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                    components[i].componentNameLen;
+                fieldIndex++;
+
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                    (uint8_t*)components[i].componentVersion;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                    components[i].componentVersionLen;
+                fieldIndex++;
+              }
+            }
+            fotaStatus = status;
+          }
+          else if (E_K_FOTA_SUCCESS == fotaStatus)
+          {
+            const char* ktaVersion = (const char*)ktaGetVersion();
+
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                (uint8_t*)ktaVersion;
+            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                strlen(ktaVersion);
+            fieldIndex++;
+
+            for (size_t i = 0; i < COMPONENTS_MAX; i++)
+            {
+              if ((components[i].componentNameLen > 0) && (components[i].componentVersionLen > 0))
+              {
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                    (uint8_t*)components[i].componentName;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                    components[i].componentNameLen;
+                fieldIndex++;
+
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
+                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
+                    (uint8_t*)components[i].componentVersion;
+                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
+                    components[i].componentVersionLen;
+                fieldIndex++;
+              }
+            }
+            fotaStatus = status;
+          }
+          else if (E_K_FOTA_IN_PROGRESS == fotaStatus)
+          {
+            M_KTALOG__INFO("FOTA IN PROGRESS\r\n");
+            fotaStatus = status;
+          }
+          else
+          {
+            M_KTALOG__ERR("Install FOTA command failed with status = [%d]\r\n", fotaStatus);
+          }
+          // Update the final field count
+          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = fieldIndex;
+        }
+        break;
+
+#endif //FOTA_ENABLE
 #endif /* OBJECT_MANAGEMENT_FEATURE */
 
         default:
@@ -1476,7 +2016,6 @@ static TKStatus lProcessCmdPrepareResponse
       }
     }
   }
-
   return status;
 }
 

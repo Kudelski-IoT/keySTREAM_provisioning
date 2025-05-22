@@ -1,9 +1,9 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -38,7 +38,6 @@
  * @brief keySTREAM Trusted Agent - ICPP parser to parse message received from
  *        keySTREAM.
  */
-
 #ifndef ICPP_PARSER_H
 #define ICPP_PARSER_H
 
@@ -51,6 +50,8 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 #include <stddef.h>
 #include <stdint.h>
+#include "k_kta.h"
+#include "k_sal_fota.h"
 
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
@@ -70,7 +71,7 @@ extern "C" {
 #define C_K_ICPP_PARSER__HEADER_SIZE                             (21u)
 
 /** @brief Maximum ICPP fields in the command. */
-#define C_K_ICPP_PARSER__MAX_FIELDS_COUNT                        (8u)
+#define C_K_ICPP_PARSER__MAX_FIELDS_COUNT                        (12u)
 
 /** @brief Maximum ICPP commands in the message. */
 #define C_K_ICPP_PARSER__MAX_COMMANDS_COUNT                      (8u)
@@ -243,7 +244,19 @@ typedef enum
   /**
    * Get Challenge object command tag.
    */
-  E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE             = 0x52u
+    E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE           = 0x52u,
+  /**
+   * Install Fota object command tag.
+   */
+  E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA              = 0xA0,
+  /**
+   * Get Fota Status object command tag.
+   */
+  E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS           = 0xA1,
+  /**
+  * Device Info command tag
+  */
+  E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO           = 0x88
 } TKIcppCommandTag;
 
 /** @brief Supported Field Tags. */
@@ -252,115 +265,143 @@ typedef enum
   /**
    * Immutable device profile uid tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID            = 0x85u,
+  E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID                      = 0x85u,
   /**
    * Mutable device profile uid tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_MUTABLE_DEVPROFUID    = 0x86u,
+  E_K_ICPP_PARSER_FIELD_TAG_MUTABLE_DEVPROFUID              = 0x86u,
   /**
    * Rot Sol ID tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_ROT_SOL_ID            = 0x9Bu,
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_SOL_ID                      = 0x9Bu,
   /**
    * Chip uid tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CHIP_UID              = 0xABu,
+  E_K_ICPP_PARSER_FIELD_TAG_CHIP_UID                        = 0xABu,
   /**
    * Rot Public uid tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_ROT_PUBLIC_UID        = 0xD1u,
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_PUBLIC_UID                  = 0xD1u,
   /**
    * Chip certificate tag.
    */
-  E_K_ICPP_PARSER_FLD_TAG_CHIP_CERT               = 0xF3u,
+  E_K_ICPP_PARSER_FLD_TAG_CHIP_CERT                         = 0xF3u,
   /**
    * Rot e_pk tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_ROT_E_PK              = 0xF4u,
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_E_PK                        = 0xF4u,
   /**
    * Signed public key tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_SIGNED_PUB_KEY        = 0xF6u,
+  E_K_ICPP_PARSER_FIELD_TAG_SIGNED_PUB_KEY                  = 0xF6u,
   /**
    * Chip attestation certificate tag.
    */
-  E_K_ICPP_PARSER_FLD_TAG_CHIP_ATTEST_CERT        = 0xF9u,
+  E_K_ICPP_PARSER_FLD_TAG_CHIP_ATTEST_CERT                  = 0xF9u,
   /**
    * Act seq_cnt tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT           = 0x92u,
+  E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT                     = 0x92u,
   /**
    * keySTREAM Trusted Agent Capability tag.
    */
-  E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY          = 0xACu,
+  E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY                    = 0xACu,
   /**
    * keySTREAM Trusted Agent context profile uid tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID       = 0x8Du,
+  E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID                 = 0x8Du,
   /**
    * keySTREAM Trusted Agent context serial number tag.
    */
-  E_K_ICPP_PARSER_FLD_TAG_KTA_CTX_SERIAL_NO       = 0x8Au,
+  E_K_ICPP_PARSER_FLD_TAG_KTA_CTX_SERIAL_NO                 = 0x8Au,
   /**
    * keySTREAM Trusted Agent context version tag.
    */
-  E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER               = 0x8Cu,
+  E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER                         = 0x8Cu,
   /**
    * keySTREAM Trusted Agent version tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_KTA_VER               = 0x89u,
+  E_K_ICPP_PARSER_FIELD_TAG_KTA_VER                         = 0x89u,
   /**
    * Device serial number tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO         = 0x82u,
+  E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO                   = 0x82u,
   /**
    * keySTREAM Ephemeral Public Key tag.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK               = 0xF5u,
+  E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK                         = 0xF5u,
   /**
    * ObjectType field in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE       = 0xB3u,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE                 = 0xB3u,
   /**
    * Identifier field in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER          = 0xB0u,
+  E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER                    = 0xB0u,
   /**
    * Data attributes field in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES        = 0xB1u,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES                  = 0xB1u,
   /**
    * Data field in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FLD_TAG_CMD_DATA                = 0xF8u,
+  E_K_ICPP_PARSER_FLD_TAG_CMD_DATA                          = 0xF8u,
   /**
    * Association info field in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO  = 0xB4u,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO            = 0xB4u,
   /**
    * Object Owner optional field in command from keySTREAM.
    */
-  E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER          = 0xB2u,
+  E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER                    = 0xB2u,
   /**
    * Data field in command from keySTREAM
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID        = 0xB5u,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID                  = 0xB5u,
   /**
    * Customer Metadata field in command from keySTREAM
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA = 0xB6u,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA           = 0xB6u,
   /**
    * Command processing status field tag in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS = 0xBFu,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS           = 0xBFu,
   /**
    * Response Challenge field tag in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE             = 0xB7u,
+  E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE                       = 0xB7u,
   /**
    * Public key field tag in command from keySTREAM.
    */
-  E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY          = 0xF7u,
+  E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY                    = 0xF7u,
+  /**
+   * Fota tag in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA                        = 0xB8u,
+  /**
+   * Fota Metadata tag in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA               = 0xB9u,
+  /**
+   * Fota Component target name tag in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET       = 0xBA,
+  /**
+   * Fota Component target version tag in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION      = 0xBB,
+  /**
+   * Fota Component Url tag in command from keySTREAM.
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL          = 0xFA,
+  /**
+   * Fota Error Code tag
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE             = 0xBC,
+  /**
+   * Fota Error Cause tag
+   */
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE            = 0xBD
 } TKIcppFieldTag;
 
 /** @brief ICPP field structure. */
@@ -423,6 +464,10 @@ typedef struct
   /* ICPP no of valid commands. */
   TKIcppCommand     commands[C_K_ICPP_PARSER__MAX_COMMANDS_COUNT];
   /* List of ICPP commands. */
+  uint8_t aKtaVersion[C_KTA__VERSION_MAX_SIZE];
+  /* Version buffer. */
+  TComponent xComponents[COMPONENTS_MAX];
+  /* Component list. */
 } TKIcppProtocolMessage;
 
 /* -------------------------------------------------------------------------- */

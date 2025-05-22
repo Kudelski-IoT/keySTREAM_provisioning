@@ -1,9 +1,9 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -180,8 +180,13 @@
 /** @brief Position to start updating segmentation seed provided by application. */
 #define C_KTA__FIELD_KEY_FIXED_INFO_L1SEGSEED_POS    (55u)
 
-/** @brief Vendor specific maximum buffer size for icpp messages. */
-#define C_K__ICPP_MSG_MAX_SIZE                       (1400u)
+#ifdef FOTA_ENABLE
+/** @brief Vendor specific maximum buffer size for ICPP messages when FOTA is enabled. */
+#define C_K__ICPP_MSG_MAX_SIZE    (2000u)
+#else
+/** @brief Vendor specific maximum buffer size for ICPP messages when FOTA is disabled. */
+#define C_K__ICPP_MSG_MAX_SIZE    (1400u)
+#endif
 
 /** @brief Vendor specific chip certificate size. */
 #define C_K__CHIP_CERT_MAX_SIZE_VENDOR_SPECIFIC      (1400u)

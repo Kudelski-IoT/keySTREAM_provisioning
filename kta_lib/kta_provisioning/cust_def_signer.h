@@ -1,4 +1,4 @@
-#ifndef CUST_DEF_SIGNER_H
+﻿#ifndef CUST_DEF_SIGNER_H
 #define CUST_DEF_SIGNER_H
 
 #include "atcacert/atcacert_def.h"

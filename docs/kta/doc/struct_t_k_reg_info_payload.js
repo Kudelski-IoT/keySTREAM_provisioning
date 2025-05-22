@@ -4,5 +4,6 @@ var struct_t_k_reg_info_payload =
     [ "contextInfo", "struct_t_k_reg_info_payload.html#a530217650a8f560b55cd93eed659e6c6", null ],
     [ "aAckSeqCnt", "struct_t_k_reg_info_payload.html#a6a08d013b6335816978e6e8e52b61414", null ],
     [ "aKtaCapability", "struct_t_k_reg_info_payload.html#aa7726f0e466af4b19ab92d85e3a9b403", null ],
-    [ "aKtaVersion", "struct_t_k_reg_info_payload.html#a757e03ff195a28444107b1b85f9b6987", null ]
+    [ "aKtaVersion", "struct_t_k_reg_info_payload.html#a757e03ff195a28444107b1b85f9b6987", null ],
+    [ "xComponents", "struct_t_k_reg_info_payload.html#a31f5f9c932d0915a834a4ef0dff73b1f", null ]
 ];

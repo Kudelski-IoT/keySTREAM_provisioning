@@ -1,4 +1,4 @@
-#ifndef K_SAL_FOTA_H
+﻿#ifndef K_SAL_FOTA_H
 #define K_SAL_FOTA_H
 
 #ifdef __cplusplus
@@ -14,7 +14,6 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
-
 #include <stddef.h>
 #include <stdint.h>
 
@@ -26,8 +25,10 @@ extern "C" {
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
 
-#define CURRENT_MAX_LENGTH 16
-#define COMPONENTS_MAX 8
+#define CURRENT_MAX_LENGTH                                              16
+#define COMPONENTS_MAX                                                  8
+#define ERROR_CODE_LEN                                                  1
+
 /** @brief Structure holds the FOTA error information. */
 typedef struct SFotaError {
   uint8_t *fotaErrorCode;
@@ -110,9 +111,9 @@ typedef enum {
  */
 K_SAL_API TKFotaStatus salFotaInstall
 (
-  const uint8_t         *xpfota_name,
+  const uint8_t          *xpfota_name,
   const size_t           fota_name_len,
-  const uint8_t         *xpfota_metadata,
+  const uint8_t          *xpfota_metadata,
   const size_t           fota_metadata_len,
   const TTargetComponent target_components[COMPONENTS_MAX],
   TFotaError           * xpfota_error,
@@ -136,10 +137,10 @@ K_SAL_API TKFotaStatus salFotaInstall
  */
 K_SAL_API TKFotaStatus salFotaGetStatus
 (
-  const uint8_t *xpfota_name,
-  size_t         fota_name_len,
-  TFotaError   * xpfota_error,
-  TComponent     components[COMPONENTS_MAX]
+  const uint8_t      *xpfota_name,
+  size_t             fota_name_len,
+  TFotaError       * xpfota_error,
+  TComponent         components[COMPONENTS_MAX]
 );
 
 /**

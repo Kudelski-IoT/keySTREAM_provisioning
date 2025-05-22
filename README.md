@@ -48,5 +48,6 @@ Please refer the following page for release notes. [Release Notes](./release_not
 | apps       | Example application to demonstrate usage of KTA_LIB with Harmony           |
 | config     | KTA_LIB module configuration files                                          |
 | docs       | KTA_LIB help documentation                                                  |
+| PreConfigured-Examples       | Pre integrated application to demonstrate usage of KTA_LIB, More details available in [README](./PreConfigured-Examples/README.md)
 |
 

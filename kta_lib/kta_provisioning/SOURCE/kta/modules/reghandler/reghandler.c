@@ -1,9 +1,9 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -36,7 +36,6 @@
 /**
  * @brief keySTREAM Trusted Agent - Registration module.
  */
-
 #include "reghandler.h"
 /* -------------------------------------------------------------------------- */
 /* IMPORTS                                                                    */
@@ -52,6 +51,10 @@
 #include "cryptoConfig.h"
 
 #include <string.h>
+
+#ifdef FOTA_ENABLE
+#include "k_sal_fota.h"
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
@@ -90,6 +93,8 @@ typedef struct
   /* Capability with respect to feature. */
   uint8_t aKtaVersion[C_KTA__VERSION_MAX_SIZE];
   /* Version buffer. */
+  TComponent xComponents[COMPONENTS_MAX];
+  /* Component list. */
 } TKRegInfoPayload;
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
@@ -265,6 +270,9 @@ end:
 /**
  * @implements lGetRegistrationInfo
  *
+ *//**
+ * @implements lGetRegistrationInfo
+ *
  */
 static TKStatus lGetRegistrationInfo
 (
@@ -272,33 +280,58 @@ static TKStatus lGetRegistrationInfo
 )
 {
   TKStatus status                                = E_K_STATUS_ERROR;
-  uint8_t aAckSeqCnt[C_ACK_SEQ_CNT_SIZE]       = {0x00, 0x00, 0x00};
-  uint8_t aKtaCapability[C_KTA_CAPABILITY_SIZE] = C_KTA_CAPABILITY;
+  uint8_t aAckSeqCnt[C_ACK_SEQ_CNT_SIZE]         = {0x00, 0x00, 0x00};
+  uint8_t aKtaCapability[C_KTA_CAPABILITY_SIZE]  = C_KTA_CAPABILITY;
+
+#ifdef FOTA_ENABLE
+  TComponent xComponents[COMPONENTS_MAX]         = {0};
+  uint8_t startIndex = 0;
+#endif
 
   status = ktaGetContextInfoConfig(&(xpRegInfo->contextInfo));
 
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Reading context specific data from platform failed, status = [%d]", status);
+    return status;
   }
-  else
-  {
-    /* Fetch required info (Device info from config module). */
-    status =  ktaGetDeviceInfoConfig(&(xpRegInfo->deviceInfo));
 
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("Reading device info from config failed, status = [%d]", status);
-    }
-    else
-    {
-      (void)memcpy(xpRegInfo->aAckSeqCnt, aAckSeqCnt, sizeof(aAckSeqCnt));
-      (void)memcpy(xpRegInfo->aKtaCapability, aKtaCapability, sizeof(aKtaCapability));
-      (void)memcpy(xpRegInfo->aKtaVersion,
-                  xpRegInfo->contextInfo.ktaVersion,
-                  C_KTA__VERSION_MAX_SIZE);
-    }
+  /* Fetch required info (Device info from config module). */
+  status = ktaGetDeviceInfoConfig(&(xpRegInfo->deviceInfo));
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Reading device info from config failed, status = [%d]", status);
+    return status;
   }
+
+  (void)memcpy(xpRegInfo->aAckSeqCnt, aAckSeqCnt, sizeof(aAckSeqCnt));
+  (void)memcpy(xpRegInfo->aKtaCapability, aKtaCapability, sizeof(aKtaCapability));
+  (void)memcpy(xpRegInfo->aKtaVersion,
+               xpRegInfo->contextInfo.ktaVersion,
+               C_KTA__VERSION_MAX_SIZE);
+
+#ifdef FOTA_ENABLE
+
+  status = salDeviceGetInfo(xComponents);
+
+  // Check if the device info was successfully retrieved
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Reading component failed, status = [%d]", status);
+    return status;
+  }
+  // Copy the xComponents array to xpRegInfo->xComponents one by one
+  for (startIndex = 0; startIndex < COMPONENTS_MAX; startIndex++)
+  {
+    (void)memcpy(xpRegInfo->xComponents[startIndex].componentName, xComponents[startIndex].componentName, CURRENT_MAX_LENGTH);
+    xpRegInfo->xComponents[startIndex].componentNameLen = xComponents[startIndex].componentNameLen;
+    (void)memcpy(xpRegInfo->xComponents[startIndex].componentVersion, xComponents[startIndex].componentVersion, CURRENT_MAX_LENGTH);
+    xpRegInfo->xComponents[startIndex].componentVersionLen = xComponents[startIndex].componentVersionLen;
+  }
+
+#endif // FOTA_ENABLE
+
   return status;
 }
 
@@ -326,13 +359,29 @@ static TKStatus lPrepareNotificationMsg
   xpProtoMessage->commands[currentPos].commandTag =
     E_K_ICPP_PARSER_COMMAND_TAG_REGISTERATION_INFO;
 
+
+  /* Calculate the total number of fields */
+  uint32_t totalFields = 7u;
+
+#ifdef FOTA_ENABLE
+
+  for (uint32_t i = 0; i < COMPONENTS_MAX; i++)
+  {
+    if ((xpRegInfo->xComponents[i].componentNameLen > 0) && (xpRegInfo->xComponents[i].componentVersionLen > 0))
+    {
+      totalFields += 2u;
+    }
+  }
+
+#endif // FOTA_ENABLE
+
   /* Two fields are available for this message type. */
-  xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount = 7u;
+  xpProtoMessage->commands[currentPos].data.fieldList.fieldsCount = totalFields;
 
   /**
    * Set the first field tag with "E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT" to indicate that
    * the first field contains ack seq cnt.
-   */
+    */
   // REQ RQ_M-KTA-REGT-FN-0011_01(1) : Acknowledgement sequence count
   xpProtoMessage->commands[currentPos].data.fieldList.fields[0].fieldTag   =
     E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT;
@@ -412,6 +461,42 @@ static TKStatus lPrepareNotificationMsg
     xpRegInfo->deviceInfo.deviceSerailNoLength;
   xpProtoMessage->commands[currentPos].data.fieldList.fields[6].fieldValue =
     xpRegInfo->deviceInfo.deviceSerailNo;
+
+#ifdef FOTA_ENABLE
+
+  // Initialize fieldIndex to 7, as the first 7 fields are already set
+  uint32_t fieldIndex = 7;
+
+  for (uint32_t i = 0; i < COMPONENTS_MAX; i++)
+  {
+    if ((xpRegInfo->xComponents[i].componentNameLen > 0) && (xpRegInfo->xComponents[i].componentVersionLen > 0))
+    {
+   /**
+   * Set the Seventh field tag with "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET"
+   */
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldIndex].fieldTag =
+      E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldIndex].fieldLen =
+      xpRegInfo->xComponents[i].componentNameLen;
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldIndex].fieldValue =
+      xpRegInfo->xComponents[i].componentName;
+
+   /**
+   * Set the Seventh field tag with "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION"
+   */
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldIndex + 1].fieldTag =
+      E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldIndex + 1].fieldLen =
+      xpRegInfo->xComponents[i].componentVersionLen;
+    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldIndex + 1].fieldValue =
+      xpRegInfo->xComponents[i].componentVersion;
+
+    // Increment fieldIndex by 2 to move to the next pair of fields
+    fieldIndex += 2;
+    }
+  }
+
+#endif // FOTA_ENABLE
 
   status = E_K_STATUS_OK;
 

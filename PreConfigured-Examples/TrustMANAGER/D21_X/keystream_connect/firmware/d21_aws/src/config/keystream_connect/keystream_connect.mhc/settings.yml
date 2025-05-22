@@ -1,0 +1,14 @@
+configName: keystream_connect
+folderName: keystream_aws_d21
+format_version: v1.0
+frameworkPath: E:\Harmony3
+processor: ATSAMD21E18A
+projectName: keystream_aws_d21
+settings:
+  PackageFilter: aws_cloud;bootloader;bootloader_apps_uart;bsp;core;core_apps_pic32mk;core_apps_pic32mz_ef;core_apps_sam_d21_da1;crypto;cryptoauthlib;cryptoauthlib_apps;csp;csp_apps_pic32mz_ef;csp_apps_sam_d21_da1;csp_apps_sam_l10_l11;net;net_apps_sam_e5x;quick_docs;usb;wireless
+  FORCE_OPTIMIZATION: 'false'
+  GENERATE_BACKUP: 'true'
+  TRUSTZONE: 'false'
+  CMSISPath: .\dev_packs\arm\CMSIS\5.7.0
+  MERGE_STRATEGY: USER_ALL
+  DFPPath: .\dev_packs\Microchip\SAMD21_DFP\3.4.116\samd21a\atdf\ATSAMD21E18A.atdf

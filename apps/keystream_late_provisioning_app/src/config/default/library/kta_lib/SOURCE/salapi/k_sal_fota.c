@@ -1,9 +1,9 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -46,6 +46,8 @@
 #include "k_sal_fota.h"
 #include "KTALog.h"
 
+
+
 #ifndef K_SAL_API
 #define K_SAL_API
 #endif
@@ -65,9 +67,9 @@ static const char* gpModuleName = "SALFOTA";
 
 K_SAL_API TKFotaStatus salFotaInstall
 (
-  const uint8_t         *xpFotaName,
+  const uint8_t          *xpFotaName,
   const size_t           xFotaNameLen,
-  const uint8_t         *xpFotaMetadata,
+  const uint8_t          *xpFotaMetadata,
   const size_t           xFotaMetadataLen,
   const TTargetComponent xTargetComponents[COMPONENTS_MAX],
   TFotaError           * xpFotaError,
@@ -84,6 +86,7 @@ K_SAL_API TKFotaStatus salFotaInstall
     M_KTALOG__ERR("FOTA installation Invalid input parameter");
     goto end;
   }
+
 
   retStatus = fotaAgentInstall(xpFotaName,
                                xFotaNameLen,
@@ -116,10 +119,10 @@ end:
  */
 K_SAL_API TKFotaStatus salFotaGetStatus
 (
-  const uint8_t *xpFotaName,
-  size_t         xFotaNameLen,
-  TFotaError   * xpFotaError,
-  TComponent     xComponents[COMPONENTS_MAX]
+  const uint8_t        *xpFotaName,
+  size_t               xFotaNameLen,
+  TFotaError         * xpFotaError,
+  TComponent           xComponents[COMPONENTS_MAX]
 )
 {
   TKFotaStatus retStatus = E_K_FOTA_ERROR;
