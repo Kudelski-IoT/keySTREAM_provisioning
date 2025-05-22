@@ -351,6 +351,7 @@
                 <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_hmac.c</itemPath>
                 <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_aes.c</itemPath>
                 <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_nonce.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_packet.c</itemPath>
               </logicalFolder>
               <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
                 <logicalFolder name="hashes" displayName="hashes" projectFiles="true">
@@ -488,6 +489,9 @@
       <itemPath>../src/main.c</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>../src/config/default/library/cryptoauthlib/calib</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
