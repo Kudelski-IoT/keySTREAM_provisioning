@@ -135,5 +135,5 @@ def instantiateComponent(ktaComponent):
     ktaSymbol = ktaComponent.createSettingSymbol("KTA_XC32_PREPROCESSOR", None)
     ktaSymbol.setCategory("C32")
     ktaSymbol.setKey("preprocessor-macros")
-    ktaSymbol.setValue( 'OBJECT_MANAGEMENT_FEATURE;DEVICE_PROVIDES_CHIP_CERT;NETWORK_STACK_AVAILABLE')
+    ktaSymbol.setValue( 'OBJECT_MANAGEMENT_FEATURE;DEVICE_PROVIDES_CHIP_CERT')
     ktaSymbol.setAppend(True, ';')
