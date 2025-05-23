@@ -51,7 +51,9 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 #include "k_kta.h"
+#ifdef FOTA_ENABLE
 #include "k_sal_fota.h"
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
@@ -466,8 +468,10 @@ typedef struct
   /* List of ICPP commands. */
   uint8_t aKtaVersion[C_KTA__VERSION_MAX_SIZE];
   /* Version buffer. */
+#ifdef FOTA_ENABLE
   TComponent xComponents[COMPONENTS_MAX];
   /* Component list. */
+#endif
 } TKIcppProtocolMessage;
 
 /* -------------------------------------------------------------------------- */

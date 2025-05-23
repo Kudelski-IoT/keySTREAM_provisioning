@@ -74,7 +74,28 @@ extern "C" {
 #define C_KTA_APP__DEVICE_PUBLIC_UID        ("${KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID}")
 
 /** @brief Application log */
+/** 
+ * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
+ * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
+ * Using printf for logging.
+ * Not checking the return status of printf, since not required.
+ **/
+
+/** @brief Application log */
 #define C_KTA_APP__LOG                      printf
+
+/**
+ * @brief Enable FOTA services.
+ * Define this macro to enable FOTA-Services.
+ */
+// #define FOTA_ENABLE
+
+/**
+ * @brief Enable Network Stack.
+ * Define this macro to enable Network Stack.
+ */
+// #define NETWORK_STACK_AVAILABLE
+
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */

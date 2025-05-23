@@ -1,4 +1,5 @@
-﻿/*******************************************************************************
+﻿
+/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
 * (c) 2023-2024 Nagravision Sàrl
@@ -24,92 +25,79 @@
 * SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY
 * TO NAGRAVISION FOR THIS SOFTWARE.
 ********************************************************************************/
-/** \brief Configuration file for keySTREAM Trusted Agent.
+/** \brief  Interface for Fota platform to be implemented by integrator as per 
+            target platform.
  *
  *  \author Kudelski IoT
  *
- *  \date 2023/06/12
+ *  \date 2025/02/04
  *
- *  \file ktaConfig.h
+ *  \file Fota_platform.h
  ******************************************************************************/
 
 /**
- * @brief Configuration file for keySTREAM Trusted Agent.
+ * @brief Interface API for Fota platform specific implementations.
  */
 
-/** @addtogroup g_kta_hook
- * @{
- */
-/** @defgroup g_kta_hook */
-/** @} g_kta_hook */
-
-#ifndef K_KTA_CONFIG_H
-#define K_KTA_CONFIG_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* C++ */
+#ifndef FOTA_PLATFORM_H
+#define FOTA_PLATFORM_H
 
 /* -------------------------------------------------------------------------- */
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
+#include "k_sal_fota.h"
 
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
-/* -------------------------------------------------------------------------- */
-/** @brief keySTREAM PROD CoAP Url. */
-#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)"icpp.mss.iot.kudelski.com"
-
-/** @brief keySTREAM PROD http Url. */
-#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       (const uint8_t*)"icph.mss.iot.kudelski.com"
-
-/** @brief L1 Segmentation Seed of CIE. */
-#define C_KTA_APP__L1_SEG_SEED_CIE          {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b,\
-                                             0x73, 0xf0, 0x56, 0x1d, 0xc4, 0xe0, 0x54, 0x72}
-
-/** @brief L1 Segmentation Seed. */
-#define C_KTA_APP__L1_SEG_SEED              C_KTA_APP__L1_SEG_SEED_CIE
-
-/** @brief Device profile public uid of keySTREAM. */
-
-#define C_KTA_APP__DEVICE_PUBLIC_UID        ("mchp_dev")
-
-/** @brief Application log */
-/** 
- * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
- * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
- * Using printf for logging.
- * Not checking the return status of printf, since not required.
- **/
-
-/** @brief Application log */
-#define C_KTA_APP__LOG                      printf
-
-/**
- * @brief Enable FOTA services.
- * Define this macro to enable FOTA-Services.
- */
-// #define FOTA_ENABLE
-
-/**
- * @brief Enable Network Stack.
- * Define this macro to enable Network Stack.
- */
-// #define NETWORK_STACK_AVAILABLE
-
-/* -------------------------------------------------------------------------- */
-/* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------- */
 /* FUNCTIONS                                                                  */
 /* -------------------------------------------------------------------------- */
 
-#ifdef __cplusplus
-}
-#endif /* C++ */
+/**
+ * @brief This API will get all component versions installed on platform.
+ *
+ *
+ * @param[out] xpComponents
+ *   Array of components.
+ *   Should not be NULL.
+ * 
+ * @return
+ * - E_K_FOTA_SUCCESS in case of success.
+ * - E_K_FOTA_ERROR for other errors.
+ */
+ 
+TKFotaStatus fotaPlatformGetComponents
+(
+  TComponent *xpComponents
+);
 
-#endif // K_KTA_CONFIG_H
+
+/**
+ * @brief This API starts the installation of components.
+ *        This API should return immediately by starting a fota thread function of target platform.
+ *
+ * Component array contains information like name, version and url.
+ * This component information is to be stored by integrator based on platform capabilities.
+ * Component data should be able to retrieved upon reboot of platform in case of tearing/power off,
+ * so the it can install components after reboot.
+ * Call FOTA thread function by passing Component information, then retunr from this function immediately.
+ * FOTA Thread function responsibility is to download and install components.
+ * Once component is installed, it should inform FOTA Agent by calling fotaUpdateComponent();
+ * This process should be followed for each component.
+ *
+ * @param[out] xpComponents
+ *   Array of target components.
+ *   Should not be NULL.
+ * 
+ */
+void fotaStartInstalltation
+(
+  const TTargetComponent *xpComponents
+);
+
+#endif // FOTA_PLATFORM_H
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

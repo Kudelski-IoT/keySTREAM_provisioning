@@ -1,10 +1,33 @@
-/******************************************************************************
- * Copyright (c) 2023-2023 Nagravision Sàrl. All rights reserved.
- ******************************************************************************/
+/*******************************************************************************
+*************************keySTREAM Trusted Agent ("KTA")************************
+
+* (c) 2023-2024 Nagravision Sàrl
+
+* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Software and any derivatives exclusively with Nagravision's products. It is your
+* responsibility to comply with third party license terms applicable to your
+* use of third party software (including open source software) that may accompany
+* Nagravision Software.
+
+* Redistribution of this Nagravision Software in source or binary form is allowed
+* and must include the above terms of use and the following disclaimer with the
+* distribution and accompanying materials.
+
+* THIS SOFTWARE IS SUPPLIED BY NAGRAVISION "AS IS". NO WARRANTIES, WHETHER EXPRESS,
+* IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED WARRANTIES OF
+* NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE. IN NO
+* EVENT WILL NAGRAVISION BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL
+* OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO
+* THE SOFTWARE, HOWEVER CAUSED, EVEN IF NAGRAVISION HAS BEEN ADVISED OF THE
+* POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW,
+* NAGRAVISION 'S TOTAL LIABILITY ON ALL CLAIMS IN ANY WAY RELATED TO THIS
+* SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY
+* TO NAGRAVISION FOR THIS SOFTWARE.
+********************************************************************************/
 /** \brief  keySTREAM Trusted Agent - Hook for keySTREAM Trusted Agent
  *          initialization and field management.
  *
- *  \author Griffin_Team
+ *  \author Kudelski IoT
  *
  *  \date 2023/06/12
  *
@@ -12,7 +35,7 @@
  ******************************************************************************/
 /**
  * @brief   keySTREAM Trusted Agent - Hook for initialization and field management.
-*/
+ */
 
 #include "ktaFieldMgntHook.h"
 /* -------------------------------------------------------------------------- */
@@ -24,10 +47,6 @@
 
 #include <stdbool.h>
 #include <string.h>
-#include <stdio.h>
-#include "FreeRTOS.h"
-#include "task.h"
-#include "freertos_http_task.h"
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
@@ -141,60 +160,52 @@ static void lprintData
  * @brief  implement ktaKeyStreamInit
  *
  */
-
 TKStatus ktaKeyStreamInit
 (
   void
 )
 {
   TKStatus  retStatus = E_K_STATUS_ERROR;
-//      // Create the HTTPS client task
-//    xTaskCreate(FreeRTOS_HTTP_Task, "HTTPS Client Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
-//
-//    // Start the FreeRTOS scheduler
-//    vTaskStartScheduler();
-//  FreeRTOS_HTTP_Task(NULL);
-//  http_client_task(NULL);
-  https_client_task(NULL);
-//  app_main(NULL);
-//  for (;;)
-//  {
-//    if (gKtaInitialized == 0)
-//    {
-//      C_KTA_APP__LOG("[INFO] ktaInitialize\r\n");
-//      retStatus = ktaInitialize();
-//
-//      if (E_K_STATUS_OK != retStatus)
-//      {
-//        C_KTA_APP__LOG("[ERROR] ktaInitialize Status[%d]\r\n", retStatus);
-//        break;
-//      }
-//
-//      C_KTA_APP__LOG("[INFO] ktaInitialize Succeeded\r\n");
-//
-//      retStatus = lsetStartupInfo();
-//
-//      if (E_K_STATUS_OK != retStatus)
-//      {
-//        C_KTA_APP__LOG("[ERROR] ktaStartup Failed Status[%d]\r\n", retStatus);
-//        break;
-//      }
-//
-//      C_KTA_APP__LOG("[INFO] ktaStartup Succeeded\r\n");
-//
-//      retStatus = lsetDeviceInfo(&gConnectionReq);
-//
-//      if (E_K_STATUS_OK != retStatus)
-//      {
-//        C_KTA_APP__LOG("ktaSetDeviceInformation Failed Status[%d]\r\n", retStatus);
-//        break;
-//      }
-//
-//      C_KTA_APP__LOG("[INFO] ktaSetDeviceInformation Succeeded\r\n");
-//      gKtaInitialized = 1;
-//    }
-//    break;
-//  }
+
+  for (;;)
+  {
+    if (gKtaInitialized == 0)
+    {
+      C_KTA_APP__LOG("[INFO] ktaInitialize\r\n");
+      retStatus = ktaInitialize();
+
+      if (E_K_STATUS_OK != retStatus)
+      {
+        C_KTA_APP__LOG("[ERROR] ktaInitialize Status[%d]\r\n", retStatus);
+        break;
+      }
+
+      C_KTA_APP__LOG("[INFO] ktaInitialize Succeeded\r\n");
+
+      retStatus = lsetStartupInfo();
+
+      if (E_K_STATUS_OK != retStatus)
+      {
+        C_KTA_APP__LOG("[ERROR] ktaStartup Failed Status[%d]\r\n", retStatus);
+        break;
+      }
+
+      C_KTA_APP__LOG("[INFO] ktaStartup Succeeded\r\n");
+
+      retStatus = lsetDeviceInfo(&gConnectionReq);
+
+      if (E_K_STATUS_OK != retStatus)
+      {
+        C_KTA_APP__LOG("ktaSetDeviceInformation Failed Status[%d]\r\n", retStatus);
+        break;
+      }
+
+      C_KTA_APP__LOG("[INFO] ktaSetDeviceInformation Succeeded\r\n");
+      gKtaInitialized = 1;
+    }
+
+    break;
+  }
 
   return retStatus;
 }
@@ -212,49 +223,50 @@ TKStatus ktaKeyStreamFieldMgmt
   TKStatus  retStatus = E_K_STATUS_ERROR;
 
   C_KTA_APP__LOG("[INFO] ktaKeyStreamFieldMgmt Start\r\n");
+  resetLifeCycleState();
 
-//  for (;;)
-//  {
-//    if (xpKtaKSCmdStatus == NULL)
-//    {
-//      C_KTA_APP__LOG("[ERROR] Invalid parameter\r\n");
-//      retStatus = E_K_STATUS_PARAMETER;
-//      break;
-//    }
-//
-//    if ((gConnectionReq == 1U) || (xIsFieldMgmtReq == true))
-//    {
-//      retStatus = lPollKeyStream();
-//
-//      if (E_K_STATUS_OK != retStatus)
-//      {
-//        C_KTA_APP__LOG("[ERROR] lPollKeyStream failed %d\r\n", retStatus);
-//        break;
-//      }
-//    }
-//    else
-//    {
-//      C_KTA_APP__LOG("[INFO] KTA is in provisioned state, exit...\r\n");
-//    }
-//
-//    retStatus = ktaKeyStreamStatus(xpKtaKSCmdStatus);
-//
-//    if (E_K_STATUS_OK != retStatus)
-//    {
-//      C_KTA_APP__LOG("[ERROR] ktaKeyStreamStatus %d\r\n", retStatus);
-//      break;
-//    }
-//
-//    if (E_K_KTA_KS_STATUS_REFURBISH == *xpKtaKSCmdStatus)
-//    {
-//      C_KTA_APP__LOG("[INFO] Device refurbished, reboot the device...\r\n");
-//      gKtaInitialized = 0;
-//    }
-//
-//    break;
-//  }
-//
-//  C_KTA_APP__LOG("[KTA] Done.\r\n");
+  for (;;)
+  {
+    if (xpKtaKSCmdStatus == NULL)
+    {
+      C_KTA_APP__LOG("[ERROR] Invalid parameter\r\n");
+      retStatus = E_K_STATUS_PARAMETER;
+      break;
+    }
+
+    if ((gConnectionReq == 1U) || (xIsFieldMgmtReq == true))
+    {
+      retStatus = lPollKeyStream();
+
+      if (E_K_STATUS_OK != retStatus)
+      {
+        C_KTA_APP__LOG("[ERROR] lPollKeyStream failed %d\r\n", retStatus);
+        break;
+      }
+    }
+    else
+    {
+      C_KTA_APP__LOG("[INFO] KTA is in provisioned state, exit...\r\n");
+    }
+
+    retStatus = ktaKeyStreamStatus(xpKtaKSCmdStatus);
+
+    if (E_K_STATUS_OK != retStatus)
+    {
+      C_KTA_APP__LOG("[ERROR] ktaKeyStreamStatus %d\r\n", retStatus);
+      break;
+    }
+
+    if (E_K_KTA_KS_STATUS_REFURBISH == *xpKtaKSCmdStatus)
+    {
+      C_KTA_APP__LOG("[INFO] Device refurbished, reboot the device...\r\n");
+      gKtaInitialized = 0;
+    }
+
+    break;
+  }
+
+  C_KTA_APP__LOG("[KTA] Done.\r\n");
 
   return retStatus;
 }

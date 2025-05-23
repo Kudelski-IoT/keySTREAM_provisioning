@@ -93,8 +93,10 @@ typedef struct
   /* Capability with respect to feature. */
   uint8_t aKtaVersion[C_KTA__VERSION_MAX_SIZE];
   /* Version buffer. */
+#ifdef FOTA_ENABLE
   TComponent xComponents[COMPONENTS_MAX];
   /* Component list. */
+#endif
 } TKRegInfoPayload;
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */

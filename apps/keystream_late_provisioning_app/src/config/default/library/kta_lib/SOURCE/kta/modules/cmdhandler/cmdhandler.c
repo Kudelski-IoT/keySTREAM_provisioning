@@ -166,8 +166,10 @@ typedef struct
   /* Object association info. */
   object_t object;
   /* Object Data. */
+#ifdef FOTA_ENABLE
   TTargetComponent xTargetComponents[COMPONENTS_MAX];
   /* Components. */
+#endif
 } TKcmdRespPayload;
 
 /** @brief  Different commands for field tag. */

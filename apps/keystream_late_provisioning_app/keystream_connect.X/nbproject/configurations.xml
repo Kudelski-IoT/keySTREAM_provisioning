@@ -87,6 +87,13 @@
                   </logicalFolder>
                 </logicalFolder>
               </logicalFolder>
+              <logicalFolder name="fota_service"
+                             displayName="fota_service"
+                             projectFiles="true">
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Agent.h</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Platform.h</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Process.h</itemPath>
+              </logicalFolder>
               <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
                 <logicalFolder name="include" displayName="include" projectFiles="true">
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/include/k_defs.h</itemPath>
@@ -150,6 +157,7 @@
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_rot.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_storage.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/cryptoConfig.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_fota.h</itemPath>
                   </logicalFolder>
                 </logicalFolder>
               </logicalFolder>
@@ -404,6 +412,13 @@
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/http.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
+              <logicalFolder name="fota_service"
+                             displayName="fota_service"
+                             projectFiles="true">
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Agent.c</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Platform.c</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Process.c</itemPath>
+              </logicalFolder>
               <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
                 <logicalFolder name="kta" displayName="kta" projectFiles="true">
                   <logicalFolder name="common" displayName="common" projectFiles="true">
@@ -443,6 +458,7 @@
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_storage.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_log.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_object.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_fota.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
               <itemPath>../src/config/default/library/kta_lib/cust_def_signer.c</itemPath>
@@ -490,6 +506,8 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
+    <Elem>../src/config/default/library/kta_lib/fota_service</Elem>
+    <Elem>../src/config/default/library/kta_lib/SOURCE/salapi</Elem>
     <Elem>../src/config/default/library/cryptoauthlib/calib</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
@@ -545,7 +563,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/default;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include"/>
+                  value="../src;../src/config/default;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\config\default\library\kta_lib\fota_service"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>

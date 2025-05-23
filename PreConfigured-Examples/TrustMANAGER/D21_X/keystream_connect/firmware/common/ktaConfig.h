@@ -88,6 +88,13 @@ extern "C" {
 #else
 #define C_KTA_APP__LOG                      APP_DebugPrintf
 #endif
+
+/**
+ * @brief Enable FOTA services.
+ * Define this macro to enable FOTA-Services.
+ */
+// #define FOTA_ENABLE
+
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */

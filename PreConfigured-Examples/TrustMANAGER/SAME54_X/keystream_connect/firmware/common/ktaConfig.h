@@ -76,12 +76,6 @@ extern "C" {
 /** @brief Device profile public uid of keySTREAM. */
 #define C_KTA_APP__DEVICE_PUBLIC_UID        KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID
 
-/** 
- * @brief Enable FOTA services.
- * Define this macro to include FOTA-Services.
- */
-// #define FOTA_ENABLE
-
 /** @brief Application log */
 /** 
  * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
@@ -94,6 +88,13 @@ extern "C" {
 #else
 #define C_KTA_APP__LOG                      APP_DebugPrintf
 #endif
+
+/**
+ * @brief Enable FOTA services.
+ * Define this macro to enable FOTA-Services.
+ */
+// #define FOTA_ENABLE
+
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */

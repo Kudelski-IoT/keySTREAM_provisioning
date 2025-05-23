@@ -24,92 +24,61 @@
 * SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY
 * TO NAGRAVISION FOR THIS SOFTWARE.
 ********************************************************************************/
-/** \brief Configuration file for keySTREAM Trusted Agent.
+/** \brief  Fota Installer for Mircrochip.
  *
  *  \author Kudelski IoT
  *
- *  \date 2023/06/12
+ *  \date 2025/01/22
  *
- *  \file ktaConfig.h
+ *  \file Fota_Platform.c
  ******************************************************************************/
 
 /**
- * @brief Configuration file for keySTREAM Trusted Agent.
+ * @brief Fota Platform for Mircrochip.
  */
 
-/** @addtogroup g_kta_hook
- * @{
- */
-/** @defgroup g_kta_hook */
-/** @} g_kta_hook */
-
-#ifndef K_KTA_CONFIG_H
-#define K_KTA_CONFIG_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* C++ */
+#include "Fota_Platform.h"
 
 /* -------------------------------------------------------------------------- */
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------- */
-/* CONSTANTS, TYPES, ENUM                                                     */
+/* PUBLIC FUNCTIONS - IMPLEMENTATION                                          */
 /* -------------------------------------------------------------------------- */
-/** @brief keySTREAM PROD CoAP Url. */
-#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)"icpp.mss.iot.kudelski.com"
-
-/** @brief keySTREAM PROD http Url. */
-#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       (const uint8_t*)"icph.mss.iot.kudelski.com"
-
-/** @brief L1 Segmentation Seed of CIE. */
-#define C_KTA_APP__L1_SEG_SEED_CIE          {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b,\
-                                             0x73, 0xf0, 0x56, 0x1d, 0xc4, 0xe0, 0x54, 0x72}
-
-/** @brief L1 Segmentation Seed. */
-#define C_KTA_APP__L1_SEG_SEED              C_KTA_APP__L1_SEG_SEED_CIE
-
-/** @brief Device profile public uid of keySTREAM. */
-
-#define C_KTA_APP__DEVICE_PUBLIC_UID        ("mchp_dev")
-
-/** @brief Application log */
-/** 
- * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
- * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
- * Using printf for logging.
- * Not checking the return status of printf, since not required.
- **/
-
-/** @brief Application log */
-#define C_KTA_APP__LOG                      printf
 
 /**
- * @brief Enable FOTA services.
- * Define this macro to enable FOTA-Services.
+ * @brief  implement fotaPlatformGetComponents
+ *
  */
-// #define FOTA_ENABLE
-
-/**
- * @brief Enable Network Stack.
- * Define this macro to enable Network Stack.
- */
-// #define NETWORK_STACK_AVAILABLE
-
-/* -------------------------------------------------------------------------- */
-/* VARIABLES                                                                  */
-/* -------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------- */
-/* FUNCTIONS                                                                  */
-/* -------------------------------------------------------------------------- */
-
-#ifdef __cplusplus
+TKFotaStatus fotaPlatformGetComponents
+(
+  TComponent *xpComponents
+)
+{
+  (void)xpComponents;
+  // Get each installed component version from platform.
+  // Update xpComponents structure with component names and versions
+  return E_K_FOTA_SUCCESS;
 }
-#endif /* C++ */
 
-#endif // K_KTA_CONFIG_H
+/**
+ * @brief  implement fotaPlatformGetComponents
+ *
+ */
+void fotaStartInstalltation
+(
+  const TTargetComponent *xpComponents
+)
+{
+  (void)xpComponents;
+  // xpComponents contains components name, version and URL information.
+  // Call FOTA thread function by passing this information, and return immediately.
+  // FOTA Thread function is responsibility to download and install components
+  // Once component installation is completed, it should inform FOTA Agent by calling
+  // fotaUpdateComponent();
+  return;
+}
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

@@ -168,28 +168,48 @@ Integration Steps:</h1>
 <div class="image">
 <img src="generate.png" alt=""/>
 </div>
-   <p>20) Enable the following preprocessor macros as per your project requirements:</p>
-      <ul>
-        <li><b>NETWORK_STACK_AVAILABLE</b> - Enable this macro once the network stack is implemented.</li>
-        <li><b>FOTA_ENABLE</b> - Enable this macro once the FOTA agent is fully implemented.</li>
-      </ul>
-      <p><b>Mandatory API Implementation for FOTA Services</b></p>
-      <p>
-        To enable FOTA Services, you must implement the following APIs in the specified source file:
-      </p>
-      <ul>
-        <li><b>File Path:</b><br>
-          keySTREAM_provisioning\kta_lib\kta_provisioning\fota_service\Fota_Platform.c
-        </li>
-        <li><b>Required APIs:</b>
-          <ul>
-            <li>fotaPlatformGetComponents()</li>
-            <li>fotaStartInstallation()</li>
-          </ul>
-        </li>
-      </ul>
-      <p>21) Once all the above steps are completed, click on <b>Generate Code</b> to include KTA_LIB in your project.</p>
-      <p>22) A preconfigured example with all features enabled is available in the <b>PreConfigured-Examples</b> directory in the public Git repository. This example also includes an integrated communication stack. Please refer to these examples for further integration guidance in your project.</p>
+     <p>20) Once all the above steps are completed, click on <b>Generate Code</b> to include KTA_LIB in your project.</p>
+     <p>21) A lightweight example application is available in the <b>apps/keystream_late_provisioning_app</b> directory of our Git repository. This example demonstrates an updated <code>main()</code> function and the use of <code>PORT_Initialize()</code> within the <code>SYS_Initialize()</code> API to enable console prints. Please refer to this application and adapt these changes in your generated project.</p>
+     <p>22) Enable the following preprocessor macros as per your project requirements from the file path below:</p>
+   <ul>
+     <li><b>File Path:</b><br>
+       Header Files\config\default\library\kta_lib\ktaConfig.h
+     </li>
+     <li><b>NETWORK_STACK_AVAILABLE</b> - Enable this macro once the network stack is implemented.</li>
+     <li><b>FOTA_ENABLE</b> - Enable this macro once the FOTA agent is fully implemented.</li>
+   </ul>
+   
+   <p><b>Mandatory API Implementation for FOTA Services</b></p>
+   <p>
+     To enable FOTA services, you must implement the following APIs in the specified source file:
+   </p>
+   <ul>
+     <li><b>File Path:</b><br>
+       Source Files\config\default\kta_lib\fota_service\Fota_Platform.c
+     </li>
+     <li><b>Required APIs:</b>
+       <ul>
+         <li>fotaPlatformGetComponents()</li>
+         <li>fotaStartInstallation()</li>
+       </ul>
+     </li>
+   </ul>
+   <p>23) Preconfigured example applications are also provided in the <b>PreConfigured-Examples</b> directory of our Git repository. These examples include an integrated communication stack and other supported features, as described below.</p>
+   <p><b>NOTE:</b> The Getting Started Guide for the preconfigured examples is available in the <b>PreConfigured-Examples</b> directory of our Git repository.</p>
+   <ul>
+     <li>
+       <b>D21_X:</b> This preconfigured example includes both communication and application layers. FOTA services are <b>disabled</b> by default.<br>
+       The D21 application uses a Wi-Fi communication stack with the WINC1500 Wi-Fi module. Users must provide the Wi-Fi SSID, password, and device profile UID obtained from keySTREAM.
+     </li>
+     <li>
+       <b>SAME54_X:</b> This preconfigured example includes both communication and application layers. FOTA services are <b>disabled</b> by default.<br>
+       The SAME54 application uses an Ethernet communication stack. Users must provide the device profile UID obtained from keySTREAM.
+     </li>
+     <li>
+       <b>SG41_X:</b> This preconfigured example includes both communication and application layers. FOTA services are <b>enabled</b> by default.<br>
+       The SG41 application uses a Wi-Fi communication stack with the WINCS02 Wi-Fi module. Users must provide the Wi-Fi SSID, password, and device profile UID obtained from keySTREAM.
+     </li>
+   </ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
 keySTREAM Trusted Agent Release Notes</h1>
 <p>see <a href="md_doxy_integration_release_notes.html"><code>Release Notes</code></a></p>

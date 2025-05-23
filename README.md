@@ -7,20 +7,27 @@ Documentation for this library can be found in following path within this reposi
 # Building and using the Library
 ## Prerequisites
 ### Enable below preprocessor MACRO for as per the requirement.
+  - **File Path:**  
+  - Header Files\config\default\library\kta_lib\ktaConfig.h
   - NETWORK_STACK_AVAILABLE - Enable this MACRO once network stack is implemented by customer.
   - FOTA_ENABLE - Enable this MACRO once FOTA agent is fully implemented by customer.
 
 ### Mandatory API Implementation for FOTA Services
 
-To enable FOTA Services, user need to implement the following APIs in the specified source file:
+To enable FOTA Services, user needs to implement the following APIs in the specified source file:
 
 - **File Path:**  
-  keySTREAM_provisioning\kta_lib\kta_provisioning\fota_service\Fota_Platform.c
+  Source Files\config\default\kta_lib\fota_service\Fota_Platform.c
 
 - **Required APIs:**  
   - fotaPlatformGetComponents()
   - fotaStartInstallation()
-  
+
+# Preconfigured Examples
+
+- Preconfigured example applications are provided in the **PreConfigured-Examples** directory of our Git repository. These examples include an integrated communication stack and additional supported features.
+- For more information on the preconfigured examples, please refer to the Getting Started Guide available in the **PreConfigured-Examples** directory, or the offline documentation as described later in this README.
+
 ### Install the following tools.
    - [Microchip MPLAB X IDE](https://www.microchip.com/mplab/mplab-x-ide)
    - [Microchip MPLAB® Harmony](https://www.microchip.com/mplab/mplab-harmony)
