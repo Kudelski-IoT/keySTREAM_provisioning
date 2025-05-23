@@ -64,10 +64,10 @@ extern "C" {
 #define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID ""
 
 /** @brief keySTREAM COAP Endpoint */
-#define KEYSTREAM_COAP_URL                  (const uint8_t*)"icpp.mss.iot.kudelski.com"
+#define KEYSTREAM_COAP_URL                  "icpp.mss.iot.kudelski.com"
 
 /** @brief keySTREAM HTTP Endpoint */
-#define KEYSTREAM_HTTP_URL                  (const uint8_t*)"icph.mss.iot.kudelski.com"
+#define KEYSTREAM_HTTP_URL                  "icph.mss.iot.kudelski.com"
 
 /** @brief AWS Endpoint */
 #define AWS_ENDPOINT                        "a3k3bohxtu19qi-ats.iot.us-east-2.amazonaws.com"
