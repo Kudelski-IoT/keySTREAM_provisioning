@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
 * (c) 2023-2024 Nagravision Sàrl
@@ -81,7 +81,22 @@ extern "C" {
  * Using printf for logging.
  * Not checking the return status of printf, since not required.
  **/
+
+/** @brief Application log */
 #define C_KTA_APP__LOG                      printf
+
+/**
+ * @brief Enable FOTA services.
+ * Define this macro to enable FOTA-Services.
+ */
+// #define FOTA_ENABLE
+
+/**
+ * @brief Enable Network Stack.
+ * Define this macro to enable Network Stack.
+ */
+// #define NETWORK_STACK_AVAILABLE
+
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */

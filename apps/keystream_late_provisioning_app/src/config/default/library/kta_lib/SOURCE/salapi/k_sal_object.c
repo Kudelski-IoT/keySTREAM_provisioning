@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
 * (c) 2023-2024 Nagravision Sàrl
@@ -961,7 +961,6 @@ TKStatus lsalEncryptWrite
       status = cryptoStatus;
       goto end;
     }
-
   }
   else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xSlot)
   {
@@ -981,8 +980,8 @@ TKStatus lsalEncryptWrite
     M_KTALOG__INFO("Obtained slot address: %d", slot_addr);
     if (ATCA_SUCCESS != cryptoStatus)
     {
-        M_KTALOG__ERR("Failed to get address for xSlot %d, cryptoStatus: %d", xSlot, cryptoStatus);
-        goto end;
+      M_KTALOG__ERR("Failed to get address for xSlot %d, cryptoStatus: %d", xSlot, cryptoStatus);
+      goto end;
     }
 
     memcpy(writeBuffData, xpData, MAX_MANAGED_SLOT_DATA_SIZE);

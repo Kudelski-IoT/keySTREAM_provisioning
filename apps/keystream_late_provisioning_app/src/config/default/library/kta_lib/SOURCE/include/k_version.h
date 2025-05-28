@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
 * (c) 2023-2024 Nagravision Sàrl
@@ -56,10 +56,10 @@ extern "C" {
 #define C_K_KTA__VERSION_MAJOR     1
 
 /** @brief Minor Version. */
-#define C_K_KTA__VERSION_MINOR     2
+#define C_K_KTA__VERSION_MINOR     3
 
 /** @brief Patch Version. */
-#define C_K_KTA__VERSION_PATCH     9
+#define C_K_KTA__VERSION_PATCH     0
 
 /** @brief Hot fix after release. */
 #define C_K_VERSION__HOT_FIX   ""
