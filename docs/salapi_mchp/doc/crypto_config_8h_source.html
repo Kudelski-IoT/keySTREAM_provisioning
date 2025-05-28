@@ -231,27 +231,33 @@ $(document).ready(function(){initNavTree('crypto_config_8h_source.html',''); ini
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
 <div class="line"><a name="l00181"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#a66589e37efde84390a49857fc41c65a9">  181</a></span>&#160;<span class="preprocessor">#define C_KTA__FIELD_KEY_FIXED_INFO_L1SEGSEED_POS    (55u)</span></div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
-<div class="line"><a name="l00184"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#a5d578966f559be29229811a05ee3b490">  184</a></span>&#160;<span class="preprocessor">#define C_K__ICPP_MSG_MAX_SIZE                       (1400u)</span></div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#aff00b687c80be7953eb95b41f90625ac">  187</a></span>&#160;<span class="preprocessor">#define C_K__CHIP_CERT_MAX_SIZE_VENDOR_SPECIFIC      (1400u)</span></div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#a713dafeadf0b8b9b4d8c6523cad5d72d">  190</a></span>&#160;<span class="preprocessor">#define C_K__ICPP_CMD_RESPONSE_SIZE_VENDOR_SPECIFIC  (160u)</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
-<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#ac0d8e1125fc68e349e23a93391345cff">  193</a></span>&#160;<span class="preprocessor">#define C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC  (0xF6u)</span></div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment">/* VARIABLES                                                                  */</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="comment">/* FUNCTIONS                                                                  */</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="preprocessor">#endif // CRYPTOCONFIG_H</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="preprocessor">#ifdef FOTA_ENABLE</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="preprocessor">#define C_K__ICPP_MSG_MAX_SIZE    (2000u)</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
+<div class="line"><a name="l00188"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#a5d578966f559be29229811a05ee3b490">  188</a></span>&#160;<span class="preprocessor">#define C_K__ICPP_MSG_MAX_SIZE    (1400u)</span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00192"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#aff00b687c80be7953eb95b41f90625ac">  192</a></span>&#160;<span class="preprocessor">#define C_K__CHIP_CERT_MAX_SIZE_VENDOR_SPECIFIC      (1400u)</span></div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
+<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#a713dafeadf0b8b9b4d8c6523cad5d72d">  195</a></span>&#160;<span class="preprocessor">#define C_K__ICPP_CMD_RESPONSE_SIZE_VENDOR_SPECIFIC  (160u)</span></div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
+<div class="line"><a name="l00198"></a><span class="lineno"><a class="line" href="crypto_config_8h.html#ac0d8e1125fc68e349e23a93391345cff">  198</a></span>&#160;<span class="preprocessor">#define C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC  (0xF6u)</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="comment">/* VARIABLES                                                                  */</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="comment">/* FUNCTIONS                                                                  */</span></div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="preprocessor">#endif // CRYPTOCONFIG_H</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.9.1-->

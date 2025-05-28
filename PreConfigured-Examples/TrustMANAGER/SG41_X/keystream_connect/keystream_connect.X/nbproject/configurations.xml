@@ -1,0 +1,1173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="65">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <logicalFolder name="config" displayName="config" projectFiles="true">
+        <logicalFolder name="default" displayName="default" projectFiles="true">
+          <logicalFolder name="driver" displayName="driver" projectFiles="true">
+            <logicalFolder name="usb" displayName="usb" projectFiles="true">
+              <logicalFolder name="usbfsv1" displayName="usbfsv1" projectFiles="true">
+                <logicalFolder name="src" displayName="src" projectFiles="true">
+                  <itemPath>../src/config/default/driver/usb/usbfsv1/src/drv_usbfsv1_local.h</itemPath>
+                  <itemPath>../src/config/default/driver/usb/usbfsv1/src/drv_usbfsv1_variant_mapping.h</itemPath>
+                </logicalFolder>
+                <itemPath>../src/config/default/driver/usb/usbfsv1/drv_usbfsv1.h</itemPath>
+              </logicalFolder>
+              <itemPath>../src/config/default/driver/usb/drv_usb.h</itemPath>
+              <itemPath>../src/config/default/driver/usb/drv_usb_external_dependencies.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="wifi" displayName="wifi" projectFiles="true">
+              <logicalFolder name="wincs02" displayName="wincs02" projectFiles="true">
+                <logicalFolder name="dev" displayName="dev" projectFiles="true">
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/dev/wdrv_winc_eint.h</itemPath>
+                </logicalFolder>
+                <logicalFolder name="include" displayName="include" projectFiles="true">
+                  <logicalFolder name="dev" displayName="dev" projectFiles="true">
+                    <itemPath>../src/config/default/driver/wifi/wincs02/include/dev/conf_winc_dev.h</itemPath>
+                    <itemPath>../src/config/default/driver/wifi/wincs02/include/dev/wdrv_winc_spi.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+                <logicalFolder name="nc_driver" displayName="nc_driver" projectFiles="true">
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/nc_driver/winc_tables.h</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/nc_driver/winc_sdio_drv.h</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/nc_driver/winc_cmds.h</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/nc_driver/microchip_pic32mzw2_nc_intf.h</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/nc_driver/winc_socket.h</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/nc_driver/winc_dev.h</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/nc_driver/winc_debug.h</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/include/nc_driver/winc_cmd_req.h</itemPath>
+                </logicalFolder>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_softap.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_tls.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_extcrypto.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_common.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_ota.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_debug.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_bssfind.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_authctx.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_dhcps.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_sta.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_dns.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_netif.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_socket.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_assoc.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_file.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_bssctx.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_systime.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_nvm.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_client_api.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_wifi.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_sntp.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_mqtt.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_utils.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_prov.h</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/include/wdrv_winc_api.h</itemPath>
+              </logicalFolder>
+            </logicalFolder>
+            <itemPath>../src/config/default/driver/driver.h</itemPath>
+            <itemPath>../src/config/default/driver/driver_common.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="library" displayName="library" projectFiles="true">
+            <logicalFolder name="cryptoauthlib"
+                           displayName="cryptoauthlib"
+                           projectFiles="true">
+              <logicalFolder name="atcacert" displayName="atcacert" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_check_config.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_der.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_date.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_def.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_pem.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_host_sw.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_client.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_host_hw.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="calib" displayName="calib" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_device.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_config_check.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_command.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_aes_gcm.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_packet.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_basic.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_execution.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                <logicalFolder name="hashes" displayName="hashes" projectFiles="true">
+                  <itemPath>../src/config/default/library/cryptoauthlib/crypto/hashes/sha1_routines.h</itemPath>
+                  <itemPath>../src/config/default/library/cryptoauthlib/crypto/hashes/sha2_routines.h</itemPath>
+                </logicalFolder>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_hw_aes.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/crypto_sw_config_check.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_sw_sha2.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_sw.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_sw_sha1.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/crypto_hw_config_check.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="hal" displayName="hal" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/hal/atca_hal.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="host" displayName="host" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/host/atca_host.h</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/host/atca_host_config_check.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="jwt" displayName="jwt" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/jwt/atca_jwt.h</itemPath>
+              </logicalFolder>
+              <itemPath>../src/config/default/library/cryptoauthlib/cal_internal.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_config.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_compiler.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_devtypes.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_iface.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_helpers.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_version.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_cfgs.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_device.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_basic.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_config_check.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_status.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_platform.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_debug.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/cryptoauthlib.h</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/cal_buffer.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="kta_lib" displayName="kta_lib" projectFiles="true">
+              <logicalFolder name="COMMON" displayName="COMMON" projectFiles="true">
+                <logicalFolder name="logmodule" displayName="logmodule" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                    <itemPath>../src/config/default/library/kta_lib/COMMON/logmodule/include/KTALog.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="COMMSTACK" displayName="COMMSTACK" projectFiles="true">
+                <logicalFolder name="http" displayName="http" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                    <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/http.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/fota_services/Fota_Agent.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/http_if.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/comm_if.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/k_comm_defs.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/k_sal_com.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
+                <logicalFolder name="include" displayName="include" projectFiles="true">
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/include/k_kta.h</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/include/k_version.h</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/include/k_defs.h</itemPath>
+                </logicalFolder>
+                <logicalFolder name="kta" displayName="kta" projectFiles="true">
+                  <logicalFolder name="common" displayName="common" projectFiles="true">
+                    <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include/k_crypto.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="general" displayName="general" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/common/general/include/general.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="icpp_parser" displayName="icpp_parser" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include/icpp_parser.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="version" displayName="version" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/common/version/include/kta_version.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                  </logicalFolder>
+                  <logicalFolder name="modules" displayName="modules" projectFiles="true">
+                    <logicalFolder name="acthandler" displayName="acthandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include/acthandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="cmdhandler" displayName="cmdhandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include/cmdhandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="config" displayName="config" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include/config.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="reghandler" displayName="reghandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include/reghandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                  </logicalFolder>
+                </logicalFolder>
+                <logicalFolder name="salapi" displayName="salapi" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_object.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_rot.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_platform.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_storage.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_log.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/slotConfig.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/cryptoConfig.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_crypto.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+              <itemPath>../src/config/default/library/kta_lib/ktaFieldMgntHook.h</itemPath>
+              <itemPath>../src/config/default/library/kta_lib/ktaConfig.h</itemPath>
+              <itemPath>../src/config/default/library/kta_lib/cust_def_device.h</itemPath>
+              <itemPath>../src/config/default/library/kta_lib/cust_def_signer.h</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="osal" displayName="osal" projectFiles="true">
+            <itemPath>../src/config/default/osal/osal_definitions.h</itemPath>
+            <itemPath>../src/config/default/osal/osal.h</itemPath>
+            <itemPath>../src/config/default/osal/osal_impl_basic.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="peripheral" displayName="peripheral" projectFiles="true">
+            <logicalFolder name="clock" displayName="clock" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/clock/plib_clock.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="cmcc" displayName="cmcc" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/cmcc/plib_cmcc.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="eic" displayName="eic" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/eic/plib_eic.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="evsys" displayName="evsys" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/evsys/plib_evsys.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nvic" displayName="nvic" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/nvic/plib_nvic.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nvmctrl" displayName="nvmctrl" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/nvmctrl/plib_nvmctrl.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="port" displayName="port" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/port/plib_port.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="sercom" displayName="sercom" projectFiles="true">
+              <logicalFolder name="i2c_master" displayName="i2c_master" projectFiles="true">
+                <itemPath>../src/config/default/peripheral/sercom/i2c_master/plib_sercom_i2c_master_common.h</itemPath>
+                <itemPath>../src/config/default/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="spi_master" displayName="spi_master" projectFiles="true">
+                <itemPath>../src/config/default/peripheral/sercom/spi_master/plib_sercom_spi_master_common.h</itemPath>
+                <itemPath>../src/config/default/peripheral/sercom/spi_master/plib_sercom7_spi_master.h</itemPath>
+              </logicalFolder>
+              <logicalFolder name="usart" displayName="usart" projectFiles="true">
+                <itemPath>../src/config/default/peripheral/sercom/usart/plib_sercom_usart_common.h</itemPath>
+                <itemPath>../src/config/default/peripheral/sercom/usart/plib_sercom6_usart.h</itemPath>
+              </logicalFolder>
+            </logicalFolder>
+            <logicalFolder name="systick" displayName="systick" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/systick/plib_systick.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="tc" displayName="tc" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/tc/plib_tc0.h</itemPath>
+              <itemPath>../src/config/default/peripheral/tc/plib_tc_common.h</itemPath>
+              <itemPath>../src/config/default/peripheral/tc/plib_tc2.h</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="system" displayName="system" projectFiles="true">
+            <logicalFolder name="cache" displayName="cache" projectFiles="true">
+              <itemPath>../src/config/default/system/cache/sys_cache.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="console" displayName="console" projectFiles="true">
+              <itemPath>../src/config/default/system/console/src/sys_console_local.h</itemPath>
+              <itemPath>../src/config/default/system/console/sys_console.h</itemPath>
+              <itemPath>../src/config/default/system/console/src/sys_console_usb_cdc_definitions.h</itemPath>
+              <itemPath>../src/config/default/system/console/src/sys_console_usb_cdc.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="debug" displayName="debug" projectFiles="true">
+              <itemPath>../src/config/default/system/debug/sys_debug.h</itemPath>
+              <itemPath>../src/config/default/system/debug/src/sys_debug_local.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="dma" displayName="dma" projectFiles="true">
+              <itemPath>../src/config/default/system/dma/sys_dma.h</itemPath>
+              <itemPath>../src/config/default/system/dma/sys_dma_mapping.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="int" displayName="int" projectFiles="true">
+              <itemPath>../src/config/default/system/int/sys_int_mapping.h</itemPath>
+              <itemPath>../src/config/default/system/int/sys_int.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="mqtt" displayName="mqtt" projectFiles="true">
+              <itemPath>../src/config/default/system/mqtt/sys_wincs_mqtt_service.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="net" displayName="net" projectFiles="true">
+              <itemPath>../src/config/default/system/net/sys_wincs_net_service.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="reset" displayName="reset" projectFiles="true">
+              <itemPath>../src/config/default/system/reset/sys_reset.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="time" displayName="time" projectFiles="true">
+              <itemPath>../src/config/default/system/time/sys_time.h</itemPath>
+              <itemPath>../src/config/default/system/time/src/sys_time_local.h</itemPath>
+              <itemPath>../src/config/default/system/time/sys_time_definitions.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="wifi" displayName="wifi" projectFiles="true">
+              <itemPath>../src/config/default/system/wifi/sys_wincs_wifi_service.h</itemPath>
+            </logicalFolder>
+            <itemPath>../src/config/default/system/system_common.h</itemPath>
+            <itemPath>../src/config/default/system/system.h</itemPath>
+            <itemPath>../src/config/default/system/sys_wincs_system_service.h</itemPath>
+            <itemPath>../src/config/default/system/system_module.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="usb" displayName="usb" projectFiles="true">
+            <logicalFolder name="src" displayName="src" projectFiles="true">
+              <itemPath>../src/config/default/usb/src/usb_device_function_driver.h</itemPath>
+              <itemPath>../src/config/default/usb/src/usb_device_local.h</itemPath>
+              <itemPath>../src/config/default/usb/src/usb_external_dependencies.h</itemPath>
+              <itemPath>../src/config/default/usb/src/usb_device_mapping.h</itemPath>
+              <itemPath>../src/config/default/usb/src/usb_device_cdc_local.h</itemPath>
+            </logicalFolder>
+            <itemPath>../src/config/default/usb/usb_host.h</itemPath>
+            <itemPath>../src/config/default/usb/usb_host_client_driver.h</itemPath>
+            <itemPath>../src/config/default/usb/usb_chapter_9.h</itemPath>
+            <itemPath>../src/config/default/usb/usb_cdc.h</itemPath>
+            <itemPath>../src/config/default/usb/usb_host_hub_interface.h</itemPath>
+            <itemPath>../src/config/default/usb/usb_device.h</itemPath>
+            <itemPath>../src/config/default/usb/usb_hub.h</itemPath>
+            <itemPath>../src/config/default/usb/usb_device_cdc.h</itemPath>
+            <itemPath>../src/config/default/usb/usb_common.h</itemPath>
+          </logicalFolder>
+          <itemPath>../src/config/default/device_cache.h</itemPath>
+          <itemPath>../src/config/default/user.h</itemPath>
+          <itemPath>../src/config/default/sys_tasks.h</itemPath>
+          <itemPath>../src/config/default/device_vectors.h</itemPath>
+          <itemPath>../src/config/default/toolchain_specifics.h</itemPath>
+          <itemPath>../src/config/default/device.h</itemPath>
+          <itemPath>../src/config/default/configuration.h</itemPath>
+          <itemPath>../src/config/default/interrupts.h</itemPath>
+          <itemPath>../src/config/default/definitions.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="packs" displayName="packs" projectFiles="true">
+        <logicalFolder name="CMSIS" displayName="CMSIS" projectFiles="true">
+          <logicalFolder name="CMSIS" displayName="CMSIS" projectFiles="true">
+            <logicalFolder name="Core" displayName="Core" projectFiles="true">
+              <logicalFolder name="Include" displayName="Include" projectFiles="true">
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_compiler.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_iccarm.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_version.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_armcc.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_gcc.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/core_cm4.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_armclang.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cachel1_armv7.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/mpu_armv7.h</itemPath>
+                <itemPath>../src/packs/CMSIS/CMSIS/Core/Include/cmsis_armclang_ltm.h</itemPath>
+              </logicalFolder>
+            </logicalFolder>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="PIC32CX1025SG41100_DFP"
+                       displayName="PIC32CX1025SG41100_DFP"
+                       projectFiles="true">
+          <logicalFolder name="component" displayName="component" projectFiles="true">
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/tc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/pm.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/pcc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/rstc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/dsu.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/osc32kctrl.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/gclk.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/eic.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/wdt.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/gmac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/oscctrl.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/tcc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/can.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/port.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/dmac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/pukcc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/hmatrixb.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/fuses.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/mclk.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/nvmctrl.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/adc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/evsys.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/i2s.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/sdhc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/dac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/icm.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/qspi.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/ac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/rtc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/sercom.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/ccl.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/pdec.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/trng.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/ramecc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/aes.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/freqm.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/pac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/supc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/usb.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/component/cmcc.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="instance" displayName="instance" projectFiles="true">
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/gclk.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/dsu.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/pcc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tc1.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tcc4.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/ramecc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sercom4.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tc2.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/dac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/qspi.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sercom3.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/fuses.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/hmatrix.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tc3.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tcc2.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sercom6.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/osc32kctrl.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/cmcc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/nvmctrl.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/can0.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tc4.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/dmac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/adc0.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/usb.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tcc3.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sercom5.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/can1.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/adc1.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tc5.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/ccl.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tcc0.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/oscctrl.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sercom0.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/pdec.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/pac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tc6.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/rtc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sdhc1.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tcc1.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sercom7.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/aes.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/ac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/evsys.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/mclk.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tc7.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/supc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/gmac.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/pm.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/icm.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sdhc0.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sercom2.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/trng.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/i2s.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/eic.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/wdt.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/port.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/rstc.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/tc0.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/freqm.h</itemPath>
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/instance/sercom1.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="pio" displayName="pio" projectFiles="true">
+            <itemPath>../src/packs/PIC32CX1025SG41100_DFP/pio/pic32cx1025sg41100.h</itemPath>
+          </logicalFolder>
+          <itemPath>../src/packs/PIC32CX1025SG41100_DFP/pic32cx1025sg41100.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <itemPath>../src/app_wincs02.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="true">
+      <itemPath>Makefile</itemPath>
+      <itemPath>WINCS02_Test.mc3</itemPath>
+    </logicalFolder>
+    <logicalFolder name="LinkerScript"
+                   displayName="Linker Files"
+                   projectFiles="true">
+      <logicalFolder name="config" displayName="config" projectFiles="true">
+        <logicalFolder name="default" displayName="default" projectFiles="true">
+          <itemPath>../src/config/default/PIC32CX1025SG41100.ld</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="config" displayName="config" projectFiles="true">
+        <logicalFolder name="default" displayName="default" projectFiles="true">
+          <logicalFolder name="driver" displayName="driver" projectFiles="true">
+            <logicalFolder name="usb" displayName="usb" projectFiles="true">
+              <logicalFolder name="usbfsv1" displayName="usbfsv1" projectFiles="true">
+                <logicalFolder name="src" displayName="src" projectFiles="true">
+                  <itemPath>../src/config/default/driver/usb/usbfsv1/src/drv_usbfsv1.c</itemPath>
+                  <itemPath>../src/config/default/driver/usb/usbfsv1/src/drv_usbfsv1_device.c</itemPath>
+                </logicalFolder>
+              </logicalFolder>
+            </logicalFolder>
+            <logicalFolder name="wifi" displayName="wifi" projectFiles="true">
+              <logicalFolder name="wincs02" displayName="wincs02" projectFiles="true">
+                <logicalFolder name="dev" displayName="dev" projectFiles="true">
+                  <logicalFolder name="spi" displayName="spi" projectFiles="true">
+                    <itemPath>../src/config/default/driver/wifi/wincs02/dev/wdrv_winc_spi.c</itemPath>
+                  </logicalFolder>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/dev/wdrv_winc_eint.c</itemPath>
+                </logicalFolder>
+                <logicalFolder name="nc_driver" displayName="nc_driver" projectFiles="true">
+                  <itemPath>../src/config/default/driver/wifi/wincs02/nc_driver/winc_sdio_drv.c</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/nc_driver/winc_cmds.c</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/nc_driver/winc_dev.c</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/nc_driver/winc_cmd_req.c</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/nc_driver/winc_socket.c</itemPath>
+                  <itemPath>../src/config/default/driver/wifi/wincs02/nc_driver/winc_tables.c</itemPath>
+                </logicalFolder>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_prov.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_softap.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_dhcps.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_extcrypto.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_dns.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_sntp.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_nvm.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_ota.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_wifi.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_mqtt.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_authctx.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_bssctx.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_utils.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_file.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_tls.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_sta.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_socket.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_bssfind.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_assoc.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_netif.c</itemPath>
+                <itemPath>../src/config/default/driver/wifi/wincs02/wdrv_winc_systime.c</itemPath>
+              </logicalFolder>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="library" displayName="library" projectFiles="true">
+            <logicalFolder name="cryptoauthlib"
+                           displayName="cryptoauthlib"
+                           projectFiles="true">
+              <logicalFolder name="atcacert" displayName="atcacert" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_der.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_date.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_def.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_pem.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_client.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_host_sw.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/atcacert/atcacert_host_hw.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="calib" displayName="calib" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_nonce.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_privwrite.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_kdf.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_mac.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_delete.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_write.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_lock.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_command.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_sha.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_sign.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_read.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_selftest.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_helpers.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_derivekey.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_random.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_verify.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_hmac.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_counter.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_aes_gcm.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_ecdh.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_basic.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_packet.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_genkey.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_execution.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_aes.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_info.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_checkmac.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_updateextra.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_secureboot.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_gendig.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                <logicalFolder name="hashes" displayName="hashes" projectFiles="true">
+                  <itemPath>../src/config/default/library/cryptoauthlib/crypto/hashes/sha1_routines.c</itemPath>
+                  <itemPath>../src/config/default/library/cryptoauthlib/crypto/hashes/sha2_routines.c</itemPath>
+                </logicalFolder>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_hw_aes_cbc.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_pbkdf2.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_hw_aes_cbcmac.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_sw_aes_cmac.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_pad.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_sw_aes_gcm.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_sw_sha2.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_hw_aes_ccm.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_sw_sha1.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_hw_aes_cmac.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/crypto/atca_crypto_hw_aes_ctr.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="hal" displayName="hal" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/hal/hal_harmony_init.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/hal/hal_cortex_m_delay.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/hal/hal_gpio_harmony.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/hal/hal_i2c_harmony.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/hal/ATECC608_0.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/hal/atca_hal.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="host" displayName="host" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/host/atca_host.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="jwt" displayName="jwt" projectFiles="true">
+                <itemPath>../src/config/default/library/cryptoauthlib/jwt/atca_jwt.c</itemPath>
+              </logicalFolder>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_iface.c</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_helpers.c</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_cfgs.c</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_device.c</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_basic.c</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/atca_debug.c</itemPath>
+              <itemPath>../src/config/default/library/cryptoauthlib/cal_buffer.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="kta_lib" displayName="kta_lib" projectFiles="true">
+              <logicalFolder name="COMMON" displayName="COMMON" projectFiles="true">
+                <logicalFolder name="logmodule" displayName="logmodule" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                  </logicalFolder>
+                  <itemPath>../src/config/default/library/kta_lib/COMMON/logmodule/KTALog.c</itemPath>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="COMMSTACK" displayName="COMMSTACK" projectFiles="true">
+                <logicalFolder name="http" displayName="http" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                  </logicalFolder>
+                  <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/comm_if.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/http.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/k_sal_com.c</itemPath>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="fota_service"
+                             displayName="fota_service"
+                             projectFiles="true">
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Agent.c</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Platform.c</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Process.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
+                <logicalFolder name="include" displayName="include" projectFiles="true">
+                </logicalFolder>
+                <logicalFolder name="kta" displayName="kta" projectFiles="true">
+                  <logicalFolder name="common" displayName="common" projectFiles="true">
+                    <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/crypto.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="general" displayName="general" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/common/general/general.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="icpp_parser" displayName="icpp_parser" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/icpp_parser.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="version" displayName="version" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/common/version/version.c</itemPath>
+                    </logicalFolder>
+                  </logicalFolder>
+                  <logicalFolder name="ktamgr" displayName="ktamgr" projectFiles="true">
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/ktamgr/ktamgr.c</itemPath>
+                  </logicalFolder>
+                  <logicalFolder name="modules" displayName="modules" projectFiles="true">
+                    <logicalFolder name="acthandler" displayName="acthandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/acthandler.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="cmdhandler" displayName="cmdhandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/cmdhandler.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="config" displayName="config" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/config/config.c</itemPath>
+                    </logicalFolder>
+                    <logicalFolder name="reghandler" displayName="reghandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/reghandler.c</itemPath>
+                    </logicalFolder>
+                  </logicalFolder>
+                </logicalFolder>
+                <logicalFolder name="salapi" displayName="salapi" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                  </logicalFolder>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_crypto.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_fota.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_object.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_storage.c</itemPath>
+                </logicalFolder>
+              </logicalFolder>
+              <itemPath>../src/config/default/library/kta_lib/cust_def_device.c</itemPath>
+              <itemPath>../src/config/default/library/kta_lib/cust_def_signer.c</itemPath>
+              <itemPath>../src/config/default/library/kta_lib/ktaFieldMgntHook.c</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="peripheral" displayName="peripheral" projectFiles="true">
+            <logicalFolder name="clock" displayName="clock" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/clock/plib_clock.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="cmcc" displayName="cmcc" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/cmcc/plib_cmcc.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="eic" displayName="eic" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/eic/plib_eic.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="evsys" displayName="evsys" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/evsys/plib_evsys.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nvic" displayName="nvic" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/nvic/plib_nvic.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nvmctrl" displayName="nvmctrl" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/nvmctrl/plib_nvmctrl.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="port" displayName="port" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/port/plib_port.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="sercom" displayName="sercom" projectFiles="true">
+              <logicalFolder name="i2c_master" displayName="i2c_master" projectFiles="true">
+                <itemPath>../src/config/default/peripheral/sercom/i2c_master/plib_sercom3_i2c_master.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="spi_master" displayName="spi_master" projectFiles="true">
+                <itemPath>../src/config/default/peripheral/sercom/spi_master/plib_sercom7_spi_master.c</itemPath>
+              </logicalFolder>
+              <logicalFolder name="usart" displayName="usart" projectFiles="true">
+                <itemPath>../src/config/default/peripheral/sercom/usart/plib_sercom6_usart.c</itemPath>
+              </logicalFolder>
+            </logicalFolder>
+            <logicalFolder name="systick" displayName="systick" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/systick/plib_systick.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="tc" displayName="tc" projectFiles="true">
+              <itemPath>../src/config/default/peripheral/tc/plib_tc0.c</itemPath>
+              <itemPath>../src/config/default/peripheral/tc/plib_tc2.c</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="stdio" displayName="stdio" projectFiles="true">
+            <itemPath>../src/config/default/stdio/xc32_monitor.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="system" displayName="system" projectFiles="true">
+            <logicalFolder name="cache" displayName="cache" projectFiles="true">
+              <itemPath>../src/config/default/system/cache/sys_cache.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="console" displayName="console" projectFiles="true">
+              <itemPath>../src/config/default/system/console/src/sys_console.c</itemPath>
+              <itemPath>../src/config/default/system/console/src/sys_console_usb_cdc.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="debug" displayName="debug" projectFiles="true">
+              <itemPath>../src/config/default/system/debug/src/sys_debug.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="dma" displayName="dma" projectFiles="true">
+              <itemPath>../src/config/default/system/dma/sys_dma.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="int" displayName="int" projectFiles="true">
+              <itemPath>../src/config/default/system/int/src/sys_int.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="mqtt" displayName="mqtt" projectFiles="true">
+              <itemPath>../src/config/default/system/mqtt/src/sys_wincs_mqtt_service.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="net" displayName="net" projectFiles="true">
+              <itemPath>../src/config/default/system/net/src/sys_wincs_net_service.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="reset" displayName="reset" projectFiles="true">
+              <itemPath>../src/config/default/system/reset/sys_reset.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="time" displayName="time" projectFiles="true">
+              <itemPath>../src/config/default/system/time/src/sys_time.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="wifi" displayName="wifi" projectFiles="true">
+              <itemPath>../src/config/default/system/wifi/src/sys_wincs_wifi_service.c</itemPath>
+            </logicalFolder>
+            <itemPath>../src/config/default/system/sys_wincs_system_service.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="usb" displayName="usb" projectFiles="true">
+            <logicalFolder name="src" displayName="src" projectFiles="true">
+              <itemPath>../src/config/default/usb/src/usb_device_cdc_acm.c</itemPath>
+              <itemPath>../src/config/default/usb/src/usb_device.c</itemPath>
+              <itemPath>../src/config/default/usb/src/usb_device_cdc.c</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <itemPath>../src/config/default/exceptions.c</itemPath>
+          <itemPath>../src/config/default/libc_syscalls.c</itemPath>
+          <itemPath>../src/config/default/startup_xc32.c</itemPath>
+          <itemPath>../src/config/default/tasks.c</itemPath>
+          <itemPath>../src/config/default/interrupts.c</itemPath>
+          <itemPath>../src/config/default/initialization.c</itemPath>
+          <itemPath>../src/config/default/usb_device_init_data.c</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <itemPath>../src/config/default/pin_configurations.csv</itemPath>
+      <itemPath>../src/main.c</itemPath>
+      <itemPath>../src/app_wincs02.c</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>../src/config/default/library/kta_lib</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="default" type="2">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <targetDevice>PIC32CX1025SG41100</targetDevice>
+        <targetHeader></targetHeader>
+        <targetPluginBoard></targetPluginBoard>
+        <platformTool>pkob4hybrid</platformTool>
+        <languageToolchain>XC32</languageToolchain>
+        <languageToolchainVersion>4.35</languageToolchainVersion>
+        <platform>3</platform>
+      </toolsSet>
+      <packs>
+        <pack name="CMSIS" vendor="ARM" version="5.9.0"/>
+        <pack name="PIC32CX-SG41_DFP" vendor="Microchip" version="1.5.140"/>
+      </packs>
+      <ScriptingSettings>
+      </ScriptingSettings>
+      <compileType>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+        <archiverTool>
+        </archiverTool>
+        <loading>
+          <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>false</parseOnProdLoad>
+          <alternateLoadableFile></alternateLoadableFile>
+        </loading>
+        <subordinates>
+        </subordinates>
+      </compileType>
+      <makeCustomizationType>
+        <makeCustomizationPreStepEnabled>false</makeCustomizationPreStepEnabled>
+        <makeUseCleanTarget>false</makeUseCleanTarget>
+        <makeCustomizationPreStep></makeCustomizationPreStep>
+        <makeCustomizationPostStepEnabled>false</makeCustomizationPostStepEnabled>
+        <makeCustomizationPostStep></makeCustomizationPostStep>
+        <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
+        <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
+        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+      </makeCustomizationType>
+      <C32>
+        <property key="additional-warnings" value="true"/>
+        <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
+        <property key="cast-align" value="false"/>
+        <property key="code-model" value="default"/>
+        <property key="const-model" value="default"/>
+        <property key="data-model" value="default"/>
+        <property key="disable-instruction-scheduling" value="false"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-procedural-abstraction" value="false"/>
+        <property key="enable-short-double" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="expand-pragma-config" value="false"/>
+        <property key="extra-include-directories"
+                  value="../src;../src/config/default;../src/config/default/driver/wifi/wincs02/include/;../src/config/default/driver/wifi/wincs02/include/dev;../src/config/default/driver/wifi/wincs02/include/nc_driver;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/config/default/library/kta_lib/fota_services../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/PIC32CX1025SG41100_DFP;../src/third_party/rtos/FreeRTOS/Source/include;../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F;..\src\config\default\library\cryptoauthlib\atcacert;..\src\config\default\library\kta_lib\fota_service"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="isolate-each-function" value="true"/>
+        <property key="keep-inline" value="false"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="oXC16gcc-errata" value=""/>
+        <property key="oXC16gcc-large-aggregate" value="false"/>
+        <property key="oXC16gcc-mpa-lvl" value=""/>
+        <property key="oXC16gcc-name-text-sec" value=""/>
+        <property key="oXC16gcc-near-chars" value="false"/>
+        <property key="oXC16gcc-no-isr-warn" value="false"/>
+        <property key="oXC16gcc-sfr-warn" value="false"/>
+        <property key="oXC16gcc-smar-io-lvl" value="1"/>
+        <property key="oXC16gcc-smart-io-fmt" value=""/>
+        <property key="optimization-level" value="-O1"/>
+        <property key="place-data-into-section" value="true"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros"
+                  value="CLOUD_CONFIG_AWS;CLOUD_CONNECT_WITH_CUSTOM_CERTS;DEVICE_PROVIDES_CHIP_CERT;NETWORK_STACK_AVAILABLE;OBJECT_MANAGEMENT_FEATURE,FOTA_ENABLE"/>
+        <property key="scalar-model" value="default"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="support-ansi" value="false"/>
+        <property key="tentative-definitions" value="-fno-common"/>
+        <property key="toplevel-reordering" value=""/>
+        <property key="unaligned-access" value=""/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32>
+      <C32-AR>
+        <property key="additional-options-chop-files" value="false"/>
+      </C32-AR>
+      <C32-AS>
+        <property key="assembler-symbols" value=""/>
+        <property key="enable-symbols" value="true"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="expand-macros" value="false"/>
+        <property key="extra-include-directories-for-assembler" value=""/>
+        <property key="extra-include-directories-for-preprocessor" value=""/>
+        <property key="false-conditionals" value="false"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="keep-locals" value="false"/>
+        <property key="list-assembly" value="false"/>
+        <property key="list-section-info" value="false"/>
+        <property key="list-source" value="false"/>
+        <property key="list-symbols" value="false"/>
+        <property key="oXC16asm-extra-opts" value=""/>
+        <property key="oXC32asm-list-to-file" value="false"/>
+        <property key="omit-debug-dirs" value="false"/>
+        <property key="omit-forms" value="false"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="relax" value="false"/>
+        <property key="warning-level" value=""/>
+      </C32-AS>
+      <C32-CO>
+        <property key="coverage-enable" value=""/>
+        <property key="stack-guidance" value="false"/>
+      </C32-CO>
+      <C32-LD>
+        <property key="additional-options-use-response-files" value="false"/>
+        <property key="additional-options-write-sla" value="false"/>
+        <property key="allocate-dinit" value="false"/>
+        <property key="appendMe" value=""/>
+        <property key="code-dinit" value="false"/>
+        <property key="ebase-addr" value=""/>
+        <property key="enable-check-sections" value="false"/>
+        <property key="enable-data-init" value="true"/>
+        <property key="enable-default-isr" value="true"/>
+        <property key="exclude-floating-point-library" value="false"/>
+        <property key="exclude-standard-libraries" value="false"/>
+        <property key="extra-lib-directories" value=""/>
+        <property key="fill-flash-options-addr" value=""/>
+        <property key="fill-flash-options-const" value=""/>
+        <property key="fill-flash-options-how" value="0"/>
+        <property key="fill-flash-options-inc-const" value="1"/>
+        <property key="fill-flash-options-increment" value=""/>
+        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-what" value="0"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-cross-reference-file" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="heap-size" value="80000"/>
+        <property key="input-libraries" value=""/>
+        <property key="kseg-length" value=""/>
+        <property key="kseg-origin" value=""/>
+        <property key="linker-symbols" value=""/>
+        <property key="map-file" value="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"/>
+        <property key="no-device-startup-code" value="true"/>
+        <property key="no-ivt" value="false"/>
+        <property key="no-startup-files" value="false"/>
+        <property key="oXC16ld-force-link" value="false"/>
+        <property key="oXC16ld-no-smart-io" value="false"/>
+        <property key="oXC16ld-stackguard" value="16"/>
+        <property key="oXC32ld-extra-opts" value=""/>
+        <property key="optimization-level" value=""/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="remove-unused-sections" value="true"/>
+        <property key="report-memory-usage" value="false"/>
+        <property key="serial-length" value=""/>
+        <property key="serial-origin" value=""/>
+        <property key="stack-size" value=""/>
+        <property key="symbol-stripping" value=""/>
+        <property key="trace-symbols" value=""/>
+        <property key="warn-section-align" value="false"/>
+      </C32-LD>
+      <C32CPP>
+        <property key="additional-warnings" value="false"/>
+        <property key="addresss-attribute-use" value="false"/>
+        <property key="appendMe" value=""/>
+        <property key="check-new" value="false"/>
+        <property key="eh-specs" value="true"/>
+        <property key="enable-app-io" value="false"/>
+        <property key="enable-omit-frame-pointer" value="false"/>
+        <property key="enable-symbols" value="true"/>
+        <property key="enable-unroll-loops" value="false"/>
+        <property key="exceptions" value="true"/>
+        <property key="exclude-floating-point" value="false"/>
+        <property key="extra-include-directories"
+                  value="../src;../src/config/default;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/PIC32CX1025SG41100_DFP;../src/third_party/rtos/FreeRTOS/Source/include;../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F"/>
+        <property key="generate-16-bit-code" value="false"/>
+        <property key="generate-micro-compressed-code" value="false"/>
+        <property key="isolate-each-function" value="true"/>
+        <property key="make-warnings-into-errors" value="false"/>
+        <property key="optimization-level" value="-O1"/>
+        <property key="place-data-into-section" value="false"/>
+        <property key="post-instruction-scheduling" value="default"/>
+        <property key="pre-instruction-scheduling" value="default"/>
+        <property key="preprocessor-macros" value=""/>
+        <property key="rtti" value="true"/>
+        <property key="strict-ansi" value="false"/>
+        <property key="toplevel-reordering" value=""/>
+        <property key="unaligned-access" value=""/>
+        <property key="use-cci" value="false"/>
+        <property key="use-iar" value="false"/>
+        <property key="use-indirect-calls" value="false"/>
+      </C32CPP>
+      <C32Global>
+        <property key="appendMe" value=""/>
+        <property key="combine-sourcefiles" value="false"/>
+        <property key="common-include-directories" value=""/>
+        <property key="common-macros" value=""/>
+        <property key="dual-boot-partition" value="0"/>
+        <property key="generic-16-bit" value="false"/>
+        <property key="gp-relative-option" value=""/>
+        <property key="legacy-libc" value="false"/>
+        <property key="mdtcm" value=""/>
+        <property key="mitcm" value=""/>
+        <property key="mpreserve-all" value="false"/>
+        <property key="mstacktcm" value="false"/>
+        <property key="omit-pack-options" value="1"/>
+        <property key="preserve-all" value="false"/>
+        <property key="preserve-file" value=""/>
+        <property key="relaxed-math" value="false"/>
+        <property key="save-temps" value="false"/>
+        <property key="stack-smashing" value=""/>
+        <property key="wpo-lto" value="false"/>
+      </C32Global>
+      <Tool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UpdateOptions"
+                  value="ToolFirmwareOption.UseLatest"/>
+        <property key="ToolFirmwareToolPack"
+                  value="Press to select which tool pack to use"/>
+        <property key="communication.interface" value="swd"/>
+        <property key="communication.interface.jtag" value="2wire"/>
+        <property key="communication.speed" value="2.000"/>
+        <property key="debugoptions.debug-startup" value="Use system settings"/>
+        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="debugoptions.simultaneous.debug" value="false"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
+        <property key="event.recorder.enabled" value="false"/>
+        <property key="event.recorder.scvd.files" value=""/>
+        <property key="freeze.timers" value="false"/>
+        <property key="lastid" value=""/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.exclude.configurationmemory" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.instruction.ram.ranges"
+                  value="${memories.instruction.ram.ranges}"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.ranges" value="0-47001fff"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/c41800/Desktop/sg41_trustplatform_board/0-Test/TEST_WINCSO2/WINCS02_Test.X/debug/default/WINCS02_Test_ptg"/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.pgmentry.voltage" value="low"/>
+        <property key="programoptions.pgmspeed" value="Med"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preservedataflash.ranges"
+                  value="${memories.dataflash.default}"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveeeprom.ranges" value=""/>
+        <property key="programoptions.preserveprogram.ranges" value=""/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.program.otpconfig" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.smart.program" value="When debugging only"/>
+        <property key="programoptions.testmodeentrymethod" value="VDDFirst"/>
+        <property key="toolpack.updateoptions"
+                  value="toolpack.updateoptions.uselatestoolpack"/>
+        <property key="toolpack.updateoptions.packversion"
+                  value="Press to select which tool pack to use"/>
+        <property key="x.erase.clearprot" value="true"/>
+      </Tool>
+      <pkob4hybrid>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
+        <property key="ToolFirmwareFilePath"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="ToolFirmwareOption.UpdateOptions"
+                  value="ToolFirmwareOption.UseLatest"/>
+        <property key="ToolFirmwareToolPack"
+                  value="Press to select which tool pack to use"/>
+        <property key="communication.interface" value="swd"/>
+        <property key="communication.interface.jtag" value="2wire"/>
+        <property key="communication.speed" value="2.000"/>
+        <property key="debugoptions.debug-startup" value="Use system settings"/>
+        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="debugoptions.simultaneous.debug" value="false"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
+        <property key="event.recorder.enabled" value="false"/>
+        <property key="event.recorder.scvd.files" value=""/>
+        <property key="freeze.timers" value="false"/>
+        <property key="lastid" value=""/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.exclude.configurationmemory" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.instruction.ram.ranges"
+                  value="${memories.instruction.ram.ranges}"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.ranges" value="0-47001fff"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/c41800/Desktop/sg41_trustplatform_board/0-Test/TEST_WINCSO2/WINCS02_Test.X/debug/default/WINCS02_Test_ptg"/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.pgmentry.voltage" value="low"/>
+        <property key="programoptions.pgmspeed" value="Med"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preservedataflash.ranges"
+                  value="${memories.dataflash.default}"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveeeprom.ranges" value=""/>
+        <property key="programoptions.preserveprogram.ranges" value=""/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.program.otpconfig" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.smart.program" value="When debugging only"/>
+        <property key="programoptions.testmodeentrymethod" value="VDDFirst"/>
+        <property key="toolpack.updateoptions"
+                  value="toolpack.updateoptions.uselatestoolpack"/>
+        <property key="toolpack.updateoptions.packversion"
+                  value="Press to select which tool pack to use"/>
+        <property key="x.erase.clearprot" value="true"/>
+      </pkob4hybrid>
+    </conf>
+  </confs>
+</configurationDescriptor>

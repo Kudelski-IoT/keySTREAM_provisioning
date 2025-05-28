@@ -6,12 +6,33 @@ Documentation for this library can be found in following path within this reposi
 
 # Building and using the Library
 ## Prerequisites
-### Enable below preprocessor MACROS for KTA build
-  - Please use kta_lib/kta_provisioning/ktaFieldMgntHook.c from main repository.
-  - OBJECT_MANAGEMENT_FEATURE - Used by KTA Lib for provisioning
-  - DEVICE_PROVIDES_CHIP_CERT - Used by KTA Lib for provisioning
-  - NETWORK_STACK_AVAILABLE - Used for communication with keySTREAM, disable this if network stack is not integrated.
-  
+### Enable below preprocessor MACROS as per the requirement.  
+  - NETWORK_STACK_AVAILABLE - Enable this MACRO once network stack is implemented in the following file "Header Files\config\default\library\kta_lib\ktaConfig.h".
+
+- **FOTA_ENABLE**  
+  Enable this macro once the FOTA agent is fully implemented. To enable it from the project settings, follow these steps:
+  1. Go to **Files** > **Project Properties**.
+  2. Click on **xc32-gcc** under **XC32 (Global Options)**.
+  3. In the **Option Categories** dropdown, select **Processing and Messages**.
+  4. Navigate to **Preprocessor Macros** and add `FOTA_ENABLE`.
+  5. Click **Apply** and then **OK** to save the changes.
+
+### Mandatory API Implementation for FOTA Services
+
+To enable FOTA Services, user needs to implement the following APIs in the specified source file:
+
+- **File Path:**  
+  Source Files\config\default\kta_lib\fota_service\Fota_Platform.c
+
+- **Required APIs:**  
+  - fotaPlatformGetComponents()
+  - fotaStartInstallation()
+
+# Preconfigured Examples
+
+- Preconfigured example applications are provided in the **PreConfigured-Examples** directory of our Git repository. These examples include an integrated communication stack and additional supported features.
+- For more information on the preconfigured examples, please refer to the Getting Started Guide available in the **PreConfigured-Examples** directory, or the offline documentation as described later in this README.
+
 ### Install the following tools.
    - [Microchip MPLAB X IDE](https://www.microchip.com/mplab/mplab-x-ide)
    - [Microchip MPLAB® Harmony](https://www.microchip.com/mplab/mplab-harmony)
@@ -48,5 +69,6 @@ Please refer the following page for release notes. [Release Notes](./release_not
 | apps       | Example application to demonstrate usage of KTA_LIB with Harmony           |
 | config     | KTA_LIB module configuration files                                          |
 | docs       | KTA_LIB help documentation                                                  |
+| PreConfigured-Examples       | Pre integrated application to demonstrate usage of KTA_LIB, More details available in [README](./PreConfigured-Examples/README.md)
 |
 

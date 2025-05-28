@@ -480,6 +480,7 @@ static TKStatus lPollKeyStream
       goto end;
     }
 #endif
+    break; // To be removed when network stack is integrated.
   }
 end:
   if (E_COMM_IF_STATUS_OK != commTerm())

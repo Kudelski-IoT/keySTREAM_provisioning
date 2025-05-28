@@ -1,4 +1,4 @@
-#include "atcacert/atcacert_def.h"
+﻿#include "atcacert/atcacert_def.h"
 #include "cust_def_signer.h"
 
 const uint8_t g_template_3_device[471] = {
