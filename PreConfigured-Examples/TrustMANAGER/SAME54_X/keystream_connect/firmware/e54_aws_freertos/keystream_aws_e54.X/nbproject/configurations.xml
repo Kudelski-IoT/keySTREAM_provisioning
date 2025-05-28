@@ -1097,11 +1097,6 @@
             <logicalFolder name="cryptoauthlib"
                            displayName="cryptoauthlib"
                            projectFiles="true">
-              <logicalFolder name="app" displayName="app" projectFiles="true">
-                <logicalFolder name="pkcs11" displayName="pkcs11" projectFiles="true">
-                  <itemPath>../src/config/keystream_connect/library/cryptoauthlib/app/pkcs11/trust_pkcs11_config.c</itemPath>
-                </logicalFolder>
-              </logicalFolder>
               <logicalFolder name="atcacert" displayName="atcacert" projectFiles="true">
                 <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_client.c</itemPath>
                 <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atcacert/atcacert_date.c</itemPath>
@@ -1200,6 +1195,7 @@
               <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_helpers.c</itemPath>
               <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_iface.c</itemPath>
               <itemPath>../src/config/keystream_connect/library/cryptoauthlib/cal_buffer.c</itemPath>
+              <itemPath>../src/config/keystream_connect/library/cryptoauthlib/calib/calib_packet.c</itemPath>
             </logicalFolder>
           </logicalFolder>
           <logicalFolder name="f7" displayName="osal" projectFiles="true">

@@ -238,6 +238,13 @@ elseif ($selectedSubFolder -eq "same54_X")
         Write-Host "Source cryptoauthlib folder not found at $srcCryptoAuthLib"
     }
 
+    $atcaConfigPath    = Join-Path $dstCryptoAuthLib "atca_config.h"
+
+    # 1. atca_config.h: Replace extern atca_plib_i2c_api_t sercom2_plib_i2c_api; with extern atca_plib_i2c_api_t sercom3_plib_i2c_api;
+    if (Test-Path $atcaConfigPath) {
+        (Get-Content $atcaConfigPath) -replace 'extern atca_plib_i2c_api_t sercom2_plib_i2c_api;', 'extern atca_plib_i2c_api_t sercom7_plib_i2c_api;' | Set-Content $atcaConfigPath
+    }
+
     # Professional delivery message for customer
     $xProjPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\e54_aws_freertos\keystream_aws_e54.X."
     Write-Host ""
