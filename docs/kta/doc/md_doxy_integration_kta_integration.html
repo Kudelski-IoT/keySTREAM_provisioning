@@ -171,13 +171,29 @@ Integration Steps:</h1>
      <p>20) Once all the above steps are completed, click on <b>Generate Code</b> to include KTA_LIB in your project.</p>
      <p>21) A lightweight example application is available in the <b>apps/keystream_late_provisioning_app</b> directory of our Git repository. This example demonstrates an updated <code>main()</code> function and the use of <code>PORT_Initialize()</code> within the <code>SYS_Initialize()</code> API to enable console prints. Please refer to this application and adapt these changes in your generated project.</p>
      <p>22) Enable the following preprocessor macros as per your project requirements from the file path below:</p>
-   <ul>
-     <li><b>File Path:</b><br>
-       Header Files\config\default\library\kta_lib\ktaConfig.h
-     </li>
-     <li><b>NETWORK_STACK_AVAILABLE</b> - Enable this macro once the network stack is implemented.</li>
-     <li><b>FOTA_ENABLE</b> - Enable this macro once the FOTA agent is fully implemented.</li>
-   </ul>
+ <ul>
+  <li>
+    <b>File Path:</b><br>
+    Header Files\config\default\library\kta_lib\ktaConfig.h
+  </li>
+  <li>
+    <b>NETWORK_STACK_AVAILABLE</b>  
+    <br>
+    Enable this macro once the network stack is implemented.
+  </li>
+  <li>
+    <b>FOTA_ENABLE</b>
+    <br>
+    Enable this macro once the FOTA agent is fully implemented. To enable it from the project settings, follow these steps:
+    <ol>
+      <li>Go to <b>Files</b> &gt; <b>Project Properties</b>.</li>
+      <li>Click on <b>xc32-gcc</b> under <b>XC32 (Global Options)</b>.</li>
+      <li>In the <b>Option Categories</b> dropdown, select <b>Processing and Messages</b>.</li>
+      <li>Navigate to <b>Preprocessor Macros</b> and add <code>FOTA_ENABLE</code>.</li>
+      <li>Click <b>Apply</b> and then <b>OK</b> to save the changes.</li>
+    </ol>
+  </li>
+</ul>
    
    <p><b>Mandatory API Implementation for FOTA Services</b></p>
    <p>
