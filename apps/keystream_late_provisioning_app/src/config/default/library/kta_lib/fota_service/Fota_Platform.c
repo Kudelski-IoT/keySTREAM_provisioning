@@ -24,111 +24,61 @@
 * SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY
 * TO NAGRAVISION FOR THIS SOFTWARE.
 ********************************************************************************/
-/** \brief keySTREAM Trusted Agent - Type definitions.
+/** \brief  Fota Installer for Mircrochip.
  *
  *  \author Kudelski IoT
  *
- *  \date 2023/06/12
+ *  \date 2025/01/22
  *
- *  \file k_defs.h
+ *  \file Fota_Platform.c
  ******************************************************************************/
 
 /**
- * @brief keySTREAM Trusted Agent - Type definitions.
+ * @brief Fota Platform for Mircrochip.
  */
 
-#ifndef K_DEFS_H
-#define K_DEFS_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* C++ */
-
-#ifndef K_SAL_API
-#define K_SAL_API
-#endif /* K_SAL_API */
-
-/** @defgroup g_kta_api keySTREAM Trusted Agent Interface */
-
-/** @addtogroup g_kta_api
- * @{
-*/
+#include "Fota_Platform.h"
 
 /* -------------------------------------------------------------------------- */
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
-#ifdef INCLUDE_OBFUSCATE_SYMBOLS
-#include "symbols.h"
-#endif /* INCLUDE_OBFUSCATE_SYMBOLS */
-
-#include <stdint.h>
 
 /* -------------------------------------------------------------------------- */
-/* CONSTANTS, TYPES, ENUM                                                     */
+/* PUBLIC FUNCTIONS - IMPLEMENTATION                                          */
 /* -------------------------------------------------------------------------- */
 
-/** @brief keySTREAM Trusted Agent return status codes. */
-typedef enum
+/**
+ * @brief  implement fotaPlatformGetComponents
+ *
+ */
+TKFotaStatus fotaPlatformGetComponents
+(
+  TComponent *xpComponents
+)
 {
-  /**
-   * Status OK, everything is fine.
-   */
-  E_K_STATUS_OK,
-  /**
-   * Bad parameter
-   */
-  E_K_STATUS_PARAMETER,
-  /**
-   * Inconsistent or unsupported data.
-   */
-  E_K_STATUS_DATA,
-  /**
-   * Call cannot be done at this time (due to call sequence or life cycle).
-   */
-  E_K_STATUS_STATE,
-  /**
-   * Failure on memory allocation.
-   */
-  E_K_STATUS_MEMORY,
-  /**
-   * Missing, empty or non-available data.
-   */
-  E_K_STATUS_MISSING,
-  /**
-   * Undefined error.
-   */
-  E_K_STATUS_ERROR,
-  /**
-   * Decryption failed.
-   */
-  E_K_STATUS_DECRYPTION,
-  /**
-   * Already personalized.
-   */
-  E_K_STATUS_PERSONALIZED,
-  /**
-   * The requested action is unsupported.
-   */
-  E_K_STATUS_NOT_SUPPORTED,
-  /**
-   * Number of status values.
-   */
-  E_K_NUM_STATUS
-} TKStatus;
-
-/** @} g_kta_api */
-/* -------------------------------------------------------------------------- */
-/* VARIABLES                                                                  */
-/* -------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------- */
-/* FUNCTIONS                                                                  */
-/* -------------------------------------------------------------------------- */
-#ifdef __cplusplus
+  (void)xpComponents;
+  // Get each installed component version from platform.
+  // Update xpComponents structure with component names and versions
+  return E_K_FOTA_SUCCESS;
 }
-#endif /* C++ */
 
-#endif // K_DEFS_H
+/**
+ * @brief  implement fotaPlatformGetComponents
+ *
+ */
+void fotaStartInstalltation
+(
+  const TTargetComponent *xpComponents
+)
+{
+  (void)xpComponents;
+  // xpComponents contains components name, version and URL information.
+  // Call FOTA thread function by passing this information, and return immediately.
+  // FOTA Thread function is responsibility to download and install components
+  // Once component installation is completed, it should inform FOTA Agent by calling
+  // fotaUpdateComponent();
+  return;
+}
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

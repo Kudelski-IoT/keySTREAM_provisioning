@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
 * (c) 2023-2024 Nagravision Sàrl
@@ -656,6 +656,11 @@ static TKParserStatus lIcppParserIsValidTag
       case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT:
       case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
       case E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE:
+#ifdef FOTA_ENABLE
+      case E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA:
+      case E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS:
+      case E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO:
+#endif // FOTA_ENABLE
       {
         if (xpTagLen != NULL)
         {
@@ -698,6 +703,14 @@ static TKParserStatus lIcppParserIsValidTag
       case E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE:
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID:
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA:
+#ifdef FOTA_ENABLE
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA:
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA:
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET:
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION:
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE:
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE:
+#endif // FOTA_ENABLE
       {
         if (xpTagLen != NULL)
         {
@@ -714,6 +727,9 @@ static TKParserStatus lIcppParserIsValidTag
       case E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK:
       case E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY:
       case E_K_ICPP_PARSER_FLD_TAG_CMD_DATA:
+#ifdef FOTA_ENABLE
+      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL:
+#endif //FOTA_ENABLE
       {
         if (xpTagLen != NULL)
         {
@@ -861,7 +877,6 @@ static TKParserStatus lIcppParserDeserializeFields
     pField->fieldValue = (uint8_t*)&xpMessage[curPosition];
     curPosition += fieldLength;
     cmdLength -= (uint32_t)(fieldLength + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES + tagLen);
-
     ++fieldsCount;
     M_KTALOG__DEBUG("Fields Count %u", fieldsCount);
   }
@@ -940,7 +955,7 @@ static TKParserStatus lIcppParserDeserializeCommands
 
     if ((int)M_K_ICPP_PARSER__COMMAND_TAG_HAS_FIELDS(pCommand->commandTag) != 0)
     {
-      M_KTALOG__DEBUG("Command Tag[%x] Len[%d]", pCommand->commandTag, commandLength);
+      M_KTALOG__INFO("Command Tag[%x] Len[%d]\r\n", pCommand->commandTag, commandLength);
       /* Deserialize Fields. */
       // REQ RQ_M-KTA-ICPP-FN-0160(1) : Deserialize Fileds in Commands
       status = lIcppParserDeserializeFields(&xpReceivedMessage[curPosition],

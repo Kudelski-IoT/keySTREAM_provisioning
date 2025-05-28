@@ -1,4 +1,5 @@
-﻿/*******************************************************************************
+﻿
+/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
 * (c) 2023-2024 Nagravision Sàrl
@@ -24,111 +25,79 @@
 * SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY
 * TO NAGRAVISION FOR THIS SOFTWARE.
 ********************************************************************************/
-/** \brief keySTREAM Trusted Agent - Type definitions.
+/** \brief  Interface for Fota platform to be implemented by integrator as per 
+            target platform.
  *
  *  \author Kudelski IoT
  *
- *  \date 2023/06/12
+ *  \date 2025/02/04
  *
- *  \file k_defs.h
+ *  \file Fota_platform.h
  ******************************************************************************/
 
 /**
- * @brief keySTREAM Trusted Agent - Type definitions.
+ * @brief Interface API for Fota platform specific implementations.
  */
 
-#ifndef K_DEFS_H
-#define K_DEFS_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* C++ */
-
-#ifndef K_SAL_API
-#define K_SAL_API
-#endif /* K_SAL_API */
-
-/** @defgroup g_kta_api keySTREAM Trusted Agent Interface */
-
-/** @addtogroup g_kta_api
- * @{
-*/
+#ifndef FOTA_PLATFORM_H
+#define FOTA_PLATFORM_H
 
 /* -------------------------------------------------------------------------- */
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
-#ifdef INCLUDE_OBFUSCATE_SYMBOLS
-#include "symbols.h"
-#endif /* INCLUDE_OBFUSCATE_SYMBOLS */
-
-#include <stdint.h>
+#include "k_sal_fota.h"
 
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
 
-/** @brief keySTREAM Trusted Agent return status codes. */
-typedef enum
-{
-  /**
-   * Status OK, everything is fine.
-   */
-  E_K_STATUS_OK,
-  /**
-   * Bad parameter
-   */
-  E_K_STATUS_PARAMETER,
-  /**
-   * Inconsistent or unsupported data.
-   */
-  E_K_STATUS_DATA,
-  /**
-   * Call cannot be done at this time (due to call sequence or life cycle).
-   */
-  E_K_STATUS_STATE,
-  /**
-   * Failure on memory allocation.
-   */
-  E_K_STATUS_MEMORY,
-  /**
-   * Missing, empty or non-available data.
-   */
-  E_K_STATUS_MISSING,
-  /**
-   * Undefined error.
-   */
-  E_K_STATUS_ERROR,
-  /**
-   * Decryption failed.
-   */
-  E_K_STATUS_DECRYPTION,
-  /**
-   * Already personalized.
-   */
-  E_K_STATUS_PERSONALIZED,
-  /**
-   * The requested action is unsupported.
-   */
-  E_K_STATUS_NOT_SUPPORTED,
-  /**
-   * Number of status values.
-   */
-  E_K_NUM_STATUS
-} TKStatus;
-
-/** @} g_kta_api */
-/* -------------------------------------------------------------------------- */
-/* VARIABLES                                                                  */
-/* -------------------------------------------------------------------------- */
-
 /* -------------------------------------------------------------------------- */
 /* FUNCTIONS                                                                  */
 /* -------------------------------------------------------------------------- */
-#ifdef __cplusplus
-}
-#endif /* C++ */
 
-#endif // K_DEFS_H
+/**
+ * @brief This API will get all component versions installed on platform.
+ *
+ *
+ * @param[out] xpComponents
+ *   Array of components.
+ *   Should not be NULL.
+ * 
+ * @return
+ * - E_K_FOTA_SUCCESS in case of success.
+ * - E_K_FOTA_ERROR for other errors.
+ */
+ 
+TKFotaStatus fotaPlatformGetComponents
+(
+  TComponent *xpComponents
+);
+
+
+/**
+ * @brief This API starts the installation of components.
+ *        This API should return immediately by starting a fota thread function of target platform.
+ *
+ * Component array contains information like name, version and url.
+ * This component information is to be stored by integrator based on platform capabilities.
+ * Component data should be able to retrieved upon reboot of platform in case of tearing/power off,
+ * so the it can install components after reboot.
+ * Call FOTA thread function by passing Component information, then retunr from this function immediately.
+ * FOTA Thread function responsibility is to download and install components.
+ * Once component is installed, it should inform FOTA Agent by calling fotaUpdateComponent();
+ * This process should be followed for each component.
+ *
+ * @param[out] xpComponents
+ *   Array of target components.
+ *   Should not be NULL.
+ * 
+ */
+void fotaStartInstalltation
+(
+  const TTargetComponent *xpComponents
+);
+
+#endif // FOTA_PLATFORM_H
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

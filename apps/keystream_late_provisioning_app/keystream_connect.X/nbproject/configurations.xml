@@ -87,6 +87,13 @@
                   </logicalFolder>
                 </logicalFolder>
               </logicalFolder>
+              <logicalFolder name="fota_service"
+                             displayName="fota_service"
+                             projectFiles="true">
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Agent.h</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Platform.h</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Process.h</itemPath>
+              </logicalFolder>
               <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
                 <logicalFolder name="include" displayName="include" projectFiles="true">
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/include/k_defs.h</itemPath>
@@ -150,6 +157,7 @@
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_rot.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_storage.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/cryptoConfig.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_fota.h</itemPath>
                   </logicalFolder>
                 </logicalFolder>
               </logicalFolder>
@@ -351,6 +359,7 @@
                 <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_hmac.c</itemPath>
                 <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_aes.c</itemPath>
                 <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_nonce.c</itemPath>
+                <itemPath>../src/config/default/library/cryptoauthlib/calib/calib_packet.c</itemPath>
               </logicalFolder>
               <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
                 <logicalFolder name="hashes" displayName="hashes" projectFiles="true">
@@ -403,6 +412,13 @@
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/http.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
+              <logicalFolder name="fota_service"
+                             displayName="fota_service"
+                             projectFiles="true">
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Agent.c</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Platform.c</itemPath>
+                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Process.c</itemPath>
+              </logicalFolder>
               <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
                 <logicalFolder name="kta" displayName="kta" projectFiles="true">
                   <logicalFolder name="common" displayName="common" projectFiles="true">
@@ -442,6 +458,7 @@
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_storage.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_log.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_object.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_fota.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
               <itemPath>../src/config/default/library/kta_lib/cust_def_signer.c</itemPath>
@@ -488,6 +505,11 @@
       <itemPath>../src/main.c</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>../src/config/default/library/kta_lib/fota_service</Elem>
+    <Elem>../src/config/default/library/kta_lib/SOURCE/salapi</Elem>
+    <Elem>../src/config/default/library/cryptoauthlib/calib</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -496,7 +518,7 @@
         <targetDevice>ATSAMD21E18A</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>nEdbgTool</platformTool>
+        <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.35</languageToolchainVersion>
         <platform>3</platform>
@@ -535,14 +557,13 @@
       <C32>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe" value=""/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/default;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include"/>
+                  value="../src;../src/config/default;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\config\default\library\kta_lib\fota_service"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>
@@ -552,7 +573,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
-                  value="OBJECT_MANAGEMENT_FEATURE;DEVICE_PROVIDES_CHIP_CERT;NETWORK_STACK_AVAILABLE"/>
+                  value="OBJECT_MANAGEMENT_FEATURE;DEVICE_PROVIDES_CHIP_CERT"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="tentative-definitions" value="-fno-common"/>
@@ -593,7 +614,6 @@
         <property key="additional-options-use-response-files" value="false"/>
         <property key="additional-options-write-sla" value="false"/>
         <property key="allocate-dinit" value="false"/>
-        <property key="appendMe" value=""/>
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
@@ -633,7 +653,6 @@
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe" value=""/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>
@@ -674,6 +693,118 @@
         <property key="stack-smashing" value=""/>
         <property key="wpo-lto" value="false"/>
       </C32Global>
+      <Tool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="arm.use_vtor" value="false"/>
+        <property key="arm.vtor_adr" value="exception_table"/>
+        <property key="communication.activationmode" value="nohv"/>
+        <property key="communication.interface" value="swd"/>
+        <property key="communication.speed" value="2.000"/>
+        <property key="debugoptions.debug-startup" value="Use system settings"/>
+        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
+        <property key="event.recorder.enabled" value="false"/>
+        <property key="event.recorder.scvd.files" value=""/>
+        <property key="firmware.path"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="firmware.toolpack"
+                  value="Press to select which tool pack to use"/>
+        <property key="firmware.update.action" value="firmware.update.use.latest"/>
+        <property key="freeze.timers" value="false"/>
+        <property key="lastid" value=""/>
+        <property key="loader.board_file" value="${ProjectDir}/board.xboard"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.exclude.configurationmemory" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.instruction.ram.ranges"
+                  value="${memories.instruction.ram.ranges}"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.ranges" value="0-3ffff"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preservedataflash.ranges"
+                  value="${memories.dataflash.default}"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveeeprom.ranges" value=""/>
+        <property key="programoptions.preserveprogram.ranges" value=""/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="script.has_reset" value="true"/>
+        <property key="script.log_level" value="1"/>
+        <property key="script.reset_delay" value="0"/>
+        <property key="script.show_output" value="false"/>
+        <property key="toolpack.updateoptions"
+                  value="toolpack.updateoptions.uselatestoolpack"/>
+        <property key="toolpack.updateoptions.packversion"
+                  value="Press to select which tool pack to use"/>
+        <property key="voltagevalue" value=""/>
+        <property key="x.erase.clearprot" value="true"/>
+      </Tool>
+      <nEdbgTool>
+        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="arm.use_vtor" value="false"/>
+        <property key="arm.vtor_adr" value="exception_table"/>
+        <property key="communication.activationmode" value="nohv"/>
+        <property key="communication.interface" value="swd"/>
+        <property key="communication.speed" value="2.000"/>
+        <property key="debugoptions.debug-startup" value="Use system settings"/>
+        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
+        <property key="event.recorder.enabled" value="false"/>
+        <property key="event.recorder.scvd.files" value=""/>
+        <property key="firmware.path"
+                  value="Press to browse for a specific firmware version"/>
+        <property key="firmware.toolpack"
+                  value="Press to select which tool pack to use"/>
+        <property key="firmware.update.action" value="firmware.update.use.latest"/>
+        <property key="freeze.timers" value="false"/>
+        <property key="lastid" value=""/>
+        <property key="loader.board_file" value="${ProjectDir}/board.xboard"/>
+        <property key="memories.aux" value="false"/>
+        <property key="memories.bootflash" value="true"/>
+        <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.configurationmemory2" value="true"/>
+        <property key="memories.dataflash" value="true"/>
+        <property key="memories.eeprom" value="true"/>
+        <property key="memories.exclude.configurationmemory" value="true"/>
+        <property key="memories.flashdata" value="true"/>
+        <property key="memories.id" value="true"/>
+        <property key="memories.instruction.ram.ranges"
+                  value="${memories.instruction.ram.ranges}"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.ranges" value="0-3ffff"/>
+        <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.eraseb4program" value="true"/>
+        <property key="programoptions.preservedataflash" value="false"/>
+        <property key="programoptions.preservedataflash.ranges"
+                  value="${memories.dataflash.default}"/>
+        <property key="programoptions.preserveeeprom" value="false"/>
+        <property key="programoptions.preserveeeprom.ranges" value=""/>
+        <property key="programoptions.preserveprogram.ranges" value=""/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programuserotp" value="false"/>
+        <property key="script.has_reset" value="true"/>
+        <property key="script.log_level" value="1"/>
+        <property key="script.reset_delay" value="0"/>
+        <property key="script.show_output" value="false"/>
+        <property key="toolpack.updateoptions"
+                  value="toolpack.updateoptions.uselatestoolpack"/>
+        <property key="toolpack.updateoptions.packversion"
+                  value="Press to select which tool pack to use"/>
+        <property key="voltagevalue" value=""/>
+        <property key="x.erase.clearprot" value="true"/>
+      </nEdbgTool>
     </conf>
   </confs>
 </configurationDescriptor>
