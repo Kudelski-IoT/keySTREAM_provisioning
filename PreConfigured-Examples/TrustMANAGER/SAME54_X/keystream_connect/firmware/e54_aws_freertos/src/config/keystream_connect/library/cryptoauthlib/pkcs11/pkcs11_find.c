@@ -274,45 +274,31 @@ CK_RV pkcs11_find_init(CK_SESSION_HANDLE hSession, CK_ATTRIBUTE_PTR pTemplate, C
     /* Check Public/Private Session info - although I don't think we can actually
         get private unless we're using a shared key system - and that will only be
         for secured data and not key info */
-    printf("pkcs11_find_init log1\r\n");
     if (pkcs11_find_handle(pTemplate, ulCount, &index))
     {
-        printf("pkcs11_find_init log2\r\n");
         if (ulCount)
         {
-            printf("pkcs11_find_init log3\r\n");
             rv = pkcs11_find_copy_template(pkcs11_find_template_cache, PKCS11_SEARCH_CACHE_SIZE, pTemplate, ulCount);
             if (rv)
             {
-                printf("pkcs11_find_init log4\r\n");
                 return rv;
             }
             pSession->attrib_list = (CK_ATTRIBUTE_PTR)pkcs11_find_template_cache;
         }
         else
         {
-            printf("pkcs11_find_init log4\r\n");
             pSession->attrib_list = NULL_PTR;
         }
-        printf("pkcs11_find_init log5\r\n");
         pSession->attrib_count = ulCount;
         pSession->object_index = index;
         pSession->object_count = 1;
         index++;
-        while (pkcs11_find_handle(pSession->attrib_list, ulCount, &index))
         {
-            printf("\r\n");
-            printf("pkcs11_find_init pSession->object_count : %d\r\n", pSession->object_count);
-            printf("\r\n");
             pSession->object_count++;
-            printf("pkcs11_find_init pSession->object_count : %d\r\n", pSession->object_count);
             index++;
         }
     }
 
-    printf("\r\n");
-    printf("pkcs11_find_init pSession->object_count : %d\r\n", pSession->object_count);
-    printf("\r\n");
     return CKR_OK;
 }
 
@@ -322,7 +308,6 @@ CK_RV pkcs11_find_continue(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE_PTR phOb
     CK_ULONG i;
     CK_RV rv;
 
-    printf("pkcs11_find_continue hSession : %ld\r\n", hSession);
     rv = pkcs11_init_check(NULL, FALSE);
     if (rv)
     {
@@ -340,13 +325,8 @@ CK_RV pkcs11_find_continue(CK_SESSION_HANDLE hSession, CK_OBJECT_HANDLE_PTR phOb
     {
         return rv;
     }
-
-    printf("#########\r\n");
-    printf("pSession->object_count : %d\r\n", pSession->object_count);
-    printf("ulMaxObjectCount : %d\r\n", ulMaxObjectCount);
     
     *pulObjectCount = (pSession->object_count < ulMaxObjectCount) ? pSession->object_count : ulMaxObjectCount;
-    printf("*pulObjectCount : %d\r\n", *pulObjectCount);
     
     for (i = 0; i < *pulObjectCount; i++)
     {

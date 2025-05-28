@@ -200,6 +200,44 @@ elseif ($selectedSubFolder -eq "same54_X")
     Copy-Item "$ktaLibPath\cust_def_signer.c"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_signer.h"    -Destination $destCommon -Force
 
+    $preConfigRoot = Split-Path $currentPath -Parent
+    $srcCryptoAuthLib = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\cryptoauthlib"
+
+    # Dynamic destination path (based on selected TrustMANAGER and device)
+    $dstCryptoAuthLib = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\e54_aws_freertos\src\config\keystream_connect\library\cryptoauthlib"
+
+    if (Test-Path $srcCryptoAuthLib) {
+        # Ensure destination exists
+        if (-not (Test-Path $dstCryptoAuthLib)) {
+            New-Item -ItemType Directory -Path $dstCryptoAuthLib -Force | Out-Null
+        }
+
+        # Copy all .c and .h files from cryptoauthlib (root and subfolders), EXCLUDING hal
+        Get-ChildItem -Path $srcCryptoAuthLib -Include *.c,*.h -File -Recurse | Where-Object {
+            $_.FullName -notmatch '\\hal\\'
+        } | ForEach-Object {
+            $dest = Join-Path $dstCryptoAuthLib ($_.FullName.Substring($srcCryptoAuthLib.Length).TrimStart('\'))
+            $destDir = Split-Path $dest -Parent
+            if (-not (Test-Path $destDir)) {
+                New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+            }
+            Copy-Item $_.FullName -Destination $dest -Force
+        }
+
+        # Copy each required subfolder individually
+        $subfolders = @('atcacert', 'calib', 'crypto', 'host', 'jwt')
+        foreach ($folder in $subfolders) {
+            $srcSub = Join-Path $srcCryptoAuthLib $folder
+            if (Test-Path $srcSub) {
+                Copy-Item $srcSub -Destination $dstCryptoAuthLib -Recurse -Force
+            } else {
+                Write-Host "Folder not found: $folder"
+            }
+        }
+    } else {
+        Write-Host "Source cryptoauthlib folder not found at $srcCryptoAuthLib"
+    }
+
     # Professional delivery message for customer
     $xProjPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\e54_aws_freertos\keystream_aws_e54.X."
     Write-Host ""

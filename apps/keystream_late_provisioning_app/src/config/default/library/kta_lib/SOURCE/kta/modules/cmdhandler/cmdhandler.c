@@ -573,12 +573,6 @@ TKStatus ktaCmdProcess
 #endif
                                        );
 
-  if (E_K_STATUS_OK != status)
-  {
-    M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
-    goto end;
-  }
-
 #ifdef FOTA_ENABLE
     // Check for command tags A0 and A1
     bool fotaTagFound = false;
@@ -598,7 +592,12 @@ TKStatus ktaCmdProcess
       M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
       goto end;
     }
-
+#else
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
+      goto end;
+    }
 #endif // FOTA_ENABLE
 
     status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
