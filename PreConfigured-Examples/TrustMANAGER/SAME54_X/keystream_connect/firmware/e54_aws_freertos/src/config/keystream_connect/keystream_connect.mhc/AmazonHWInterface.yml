@@ -1,0 +1,120 @@
+format_version: v1.0
+type: UniqueComponent
+attributes: {id: AmazonHWInterface}
+children:
+- type: Symbols
+  children:
+  - type: Setting
+    attributes: {id: AFR2_XC32_AS_PRE_PROC_DIRS0}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'false'}
+  - type: Setting
+    attributes: {id: AFR2_XC32_AS_PRE_PROC_DIRS1}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+  - type: File
+    attributes: {id: AMAZON-FREERTOS/LIBRARIES/ABSTRACTIONS/PKCS11/MBEDTLS/IOT_PKCS11_MBEDTLS.C}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'false'}
+  - type: File
+    attributes: {id: AMAZON-FREERTOS/VENDORS/MICROCHIP/BOARDS/SAME54_XPRO/AWS_DEMOS/APPLICATION_CODE/ATCA_CERT_CHAIN.C}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+  - type: File
+    attributes: {id: AMAZON-FREERTOS/VENDORS/MICROCHIP/BOARDS/SAME54_XPRO/AWS_DEMOS/APPLICATION_CODE/ATCA_CERT_CHAIN.H}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+  - type: File
+    attributes: {id: AMAZON-FREERTOS/VENDORS/MICROCHIP/BOARDS/SAME54_XPRO/PORTS/PKCS11/IOT_PKCS11_PAL.C}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'false'}
+  - type: File
+    attributes: {id: AMAZON-FREERTOS/VENDORS/MICROCHIP/BOARDS/SAME54_XPRO/PORTS/PKCS11/IOT_PKCS11_SECURE_ELEMENT.C}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Integer
+    attributes: {id: AWS_CLOUD_SHADOW_UC}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2'}
+  - type: Combo
+    attributes: {id: AWS_DEMO_RUN}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: SHADOW}
+  - type: Combo
+    attributes: {id: H3_AWS_CLOUD_CONF}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: Ethernet + ECC608}
+- type: Attachments
+  children:
+  - type: DirectCapability
+    attributes: {id: AmazonHWInterface}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: targetComponentID}
+        children:
+        - {type: Value, value: AmazonFreeRTOS}
+      - type: String
+        attributes: {id: targetAttachmentID}
+        children:
+        - {type: Value, value: AmazonHWInterface}
+  - type: DirectDependency
+    attributes: {id: NETCONFIG_MAC_Dependency}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: targetComponentID}
+        children:
+        - {type: Value, value: drvGmac}
+      - type: String
+        attributes: {id: targetAttachmentID}
+        children:
+        - {type: Value, value: libdrvGmac}
+- type: ElementPosition
+  attributes: {x: '174', y: '430', id: AmazonHWInterface}
