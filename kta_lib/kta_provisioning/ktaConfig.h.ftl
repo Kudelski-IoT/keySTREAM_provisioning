@@ -84,11 +84,6 @@ extern "C" {
 /** @brief Application log */
 #define C_KTA_APP__LOG                      printf
 
-/**
- * @brief Enable FOTA services.
- * Define this macro to enable FOTA-Services.
- */
-// #define FOTA_ENABLE
 
 /**
  * @brief Enable Network Stack.

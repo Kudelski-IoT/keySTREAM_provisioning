@@ -116,7 +116,23 @@ if ($selectedSubFolder -eq "d21_X")
     Copy-Item "$ktaLibPath\cust_def_device.h"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_signer.c"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_signer.h"    -Destination $destCommon -Force
+    Copy-Item "$ktaLibPath\ktaFieldMgntHook.c"    -Destination $destCommon -Force
+    Copy-Item "$ktaLibPath\ktaFieldMgntHook.h"    -Destination $destCommon -Force
 
+    # Remove only the 'break;' at line 483 in ktaFieldMgntHook.c (1-based line number)
+    $ktaFieldMgntHookPath = Join-Path $destCommon "ktaFieldMgntHook.c"
+    if (Test-Path $ktaFieldMgntHookPath) {
+        $lines = Get-Content $ktaFieldMgntHookPath
+        # Remove line 483 (index 482 in 0-based array) if it starts with 'break;'
+        if ($lines.Count -ge 483 -and $lines[482].Trim().StartsWith('break;')) {
+            $lines = $lines[0..481] + $lines[483..($lines.Count-1)]
+            Set-Content $ktaFieldMgntHookPath $lines
+        } else {
+            Write-Host "'break;' not found at line 483 in ktaFieldMgntHook.c."
+        }
+    } else {
+        Write-Host "ktaFieldMgntHook.c not found at $ktaFieldMgntHookPath"
+    }
 
     $preConfigRoot = Split-Path $currentPath -Parent
     $srcCryptoAuthLib = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\cryptoauthlib"
@@ -199,6 +215,23 @@ elseif ($selectedSubFolder -eq "same54_X")
     Copy-Item "$ktaLibPath\cust_def_device.h"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_signer.c"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_signer.h"    -Destination $destCommon -Force
+    Copy-Item "$ktaLibPath\ktaFieldMgntHook.c"    -Destination $destCommon -Force
+    Copy-Item "$ktaLibPath\ktaFieldMgntHook.h"    -Destination $destCommon -Force
+
+    # Remove only the 'break;' at line 483 in ktaFieldMgntHook.c (1-based line number)
+    $ktaFieldMgntHookPath = Join-Path $destCommon "ktaFieldMgntHook.c"
+    if (Test-Path $ktaFieldMgntHookPath) {
+        $lines = Get-Content $ktaFieldMgntHookPath
+        # Remove line 483 (index 482 in 0-based array) if it starts with 'break;'
+        if ($lines.Count -ge 483 -and $lines[482].Trim().StartsWith('break;')) {
+            $lines = $lines[0..481] + $lines[483..($lines.Count-1)]
+            Set-Content $ktaFieldMgntHookPath $lines
+        } else {
+            Write-Host "'break;' not found at line 483 in ktaFieldMgntHook.c."
+        }
+    } else {
+        Write-Host "ktaFieldMgntHook.c not found at $ktaFieldMgntHookPath"
+    }
 
     $preConfigRoot = Split-Path $currentPath -Parent
     $srcCryptoAuthLib = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\cryptoauthlib"
@@ -305,7 +338,23 @@ elseif ($selectedSubFolder -eq "sg41_X")
     Copy-Item (Join-Path $ktaLibPath "cust_def_device.h")      -Destination $destKtaLib -Force
     Copy-Item (Join-Path $ktaLibPath "cust_def_signer.c")      -Destination $destKtaLib -Force
     Copy-Item (Join-Path $ktaLibPath "cust_def_signer.h")      -Destination $destKtaLib -Force
+    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.c")    -Destination $destCommon -Force
+    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.h")     -Destination $destCommon -Force
 
+    # Remove only the 'break;' at line 483 in ktaFieldMgntHook.c (1-based line number)
+    $ktaFieldMgntHookPath = Join-Path $destCommon "ktaFieldMgntHook.c"
+    if (Test-Path $ktaFieldMgntHookPath) {
+        $lines = Get-Content $ktaFieldMgntHookPath
+        # Remove line 483 (index 482 in 0-based array) if it starts with 'break;'
+        if ($lines.Count -ge 483 -and $lines[482].Trim().StartsWith('break;')) {
+            $lines = $lines[0..481] + $lines[483..($lines.Count-1)]
+            Set-Content $ktaFieldMgntHookPath $lines
+        } else {
+            Write-Host "'break;' not found at line 483 in ktaFieldMgntHook.c."
+        }
+    } else {
+        Write-Host "ktaFieldMgntHook.c not found at $ktaFieldMgntHookPath"
+    }
 
     $preConfigRoot = Split-Path $currentPath -Parent
     $srcCryptoAuthLib = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\cryptoauthlib"
