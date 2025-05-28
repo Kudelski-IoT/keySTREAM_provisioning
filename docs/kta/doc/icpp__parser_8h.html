@@ -135,7 +135,7 @@ Macros</h2></td></tr>
 <tr class="memitem:a39f2bf15dc3f0b114e8578d32c0f050e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icpp__parser_8h.html#a39f2bf15dc3f0b114e8578d32c0f050e">C_K_ICPP_PARSER__HEADER_SIZE</a>&#160;&#160;&#160;(21u)</td></tr>
 <tr class="memdesc:a39f2bf15dc3f0b114e8578d32c0f050e"><td class="mdescLeft">&#160;</td><td class="mdescRight">keySTREAM Trusted Agent - ICPP parser to parse message received from keySTREAM.  <a href="icpp__parser_8h.html#a39f2bf15dc3f0b114e8578d32c0f050e">More...</a><br /></td></tr>
 <tr class="separator:a39f2bf15dc3f0b114e8578d32c0f050e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8417f89bf1e34b88193796664e973df"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icpp__parser_8h.html#ab8417f89bf1e34b88193796664e973df">C_K_ICPP_PARSER__MAX_FIELDS_COUNT</a>&#160;&#160;&#160;(8u)</td></tr>
+<tr class="memitem:ab8417f89bf1e34b88193796664e973df"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icpp__parser_8h.html#ab8417f89bf1e34b88193796664e973df">C_K_ICPP_PARSER__MAX_FIELDS_COUNT</a>&#160;&#160;&#160;(12u)</td></tr>
 <tr class="memdesc:ab8417f89bf1e34b88193796664e973df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum ICPP fields in the command.  <a href="icpp__parser_8h.html#ab8417f89bf1e34b88193796664e973df">More...</a><br /></td></tr>
 <tr class="separator:ab8417f89bf1e34b88193796664e973df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3a6b09a8770a733fc9287960a78f4f2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="icpp__parser_8h.html#ab3a6b09a8770a733fc9287960a78f4f2">C_K_ICPP_PARSER__MAX_COMMANDS_COUNT</a>&#160;&#160;&#160;(8u)</td></tr>
@@ -247,7 +247,13 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a3d5c8a2b9847f9563bcb18fb8b7a387e">E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT</a> = 0x51u, 
 <br />
-&#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a1bcc74531632b1a61026000b28784862">E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE</a> = 0x52u
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a1bcc74531632b1a61026000b28784862">E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE</a> = 0x52u, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a055667a35be8937be5939e783fa61d67">E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA</a> = 0xA0, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3acdacf32f615f732435a49e7a300b4b20">E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS</a> = 0xA1, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a1f8736c8cb9403a4b5ce862255edca2b">E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO</a> = 0x88
 <br />
  }</td></tr>
 <tr class="memdesc:addbb322270322f1443ed6b45713646a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Supported command tags.  <a href="icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3">More...</a><br /></td></tr>
@@ -307,7 +313,21 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8af2b6a58af2e3880107a4b6172c768745">E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE</a> = 0xB7u, 
 <br />
-&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad79b9226354c593e5ecb3acbcab05bfa">E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY</a> = 0xF7u
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad79b9226354c593e5ecb3acbcab05bfa">E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY</a> = 0xF7u, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a89f5612d53961d39ff6e101cf58daf37">E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA</a> = 0xB8u, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a0721b5b3b4a9e75b1405fa88bd9c62d3">E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA</a> = 0xB9u, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad25c8f32231a98535405401147f01cdf">E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET</a> = 0xBA, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8aa5394fd3e73b344c77bcc794239c7b46">E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION</a> = 0xBB, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a7b87805bb3a375514305bb6507f4ec4d">E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL</a> = 0xFA, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a32d5aaaf0b258ac1433f0f706a82ac9c">E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE</a> = 0xBC, 
+<br />
+&#160;&#160;<a class="el" href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a35ddbc550f55aca5347e905d23734fd6">E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE</a> = 0xBD
 <br />
  }</td></tr>
 <tr class="memdesc:aaa0759dedcca7979bff7e08a358b79e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Supported Field Tags.  <a href="icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8">More...</a><br /></td></tr>
@@ -361,7 +381,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define C_K_ICPP_PARSER__MAX_FIELDS_COUNT&#160;&#160;&#160;(8u)</td>
+          <td class="memname">#define C_K_ICPP_PARSER__MAX_FIELDS_COUNT&#160;&#160;&#160;(12u)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -725,6 +745,12 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="addbb322270322f1443ed6b45713646a3a1bcc74531632b1a61026000b28784862"></a>E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE&#160;</td><td class="fielddoc"><p>Get Challenge object command tag. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="addbb322270322f1443ed6b45713646a3a055667a35be8937be5939e783fa61d67"></a>E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA&#160;</td><td class="fielddoc"><p>Install Fota object command tag. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="addbb322270322f1443ed6b45713646a3acdacf32f615f732435a49e7a300b4b20"></a>E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS&#160;</td><td class="fielddoc"><p>Get Fota Status object command tag. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="addbb322270322f1443ed6b45713646a3a1f8736c8cb9403a4b5ce862255edca2b"></a>E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO&#160;</td><td class="fielddoc"><p>Device Info command tag </p>
+</td></tr>
 </table>
 
 </div>
@@ -798,6 +824,20 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8af2b6a58af2e3880107a4b6172c768745"></a>E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE&#160;</td><td class="fielddoc"><p>Response Challenge field tag in command from keySTREAM. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8ad79b9226354c593e5ecb3acbcab05bfa"></a>E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY&#160;</td><td class="fielddoc"><p>Public key field tag in command from keySTREAM. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a89f5612d53961d39ff6e101cf58daf37"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA&#160;</td><td class="fielddoc"><p>Fota tag in command from keySTREAM. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a0721b5b3b4a9e75b1405fa88bd9c62d3"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA&#160;</td><td class="fielddoc"><p>Fota Metadata tag in command from keySTREAM. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8ad25c8f32231a98535405401147f01cdf"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET&#160;</td><td class="fielddoc"><p>Fota Component target name tag in command from keySTREAM. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8aa5394fd3e73b344c77bcc794239c7b46"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION&#160;</td><td class="fielddoc"><p>Fota Component target version tag in command from keySTREAM. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a7b87805bb3a375514305bb6507f4ec4d"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL&#160;</td><td class="fielddoc"><p>Fota Component Url tag in command from keySTREAM. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a32d5aaaf0b258ac1433f0f706a82ac9c"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE&#160;</td><td class="fielddoc"><p>Fota Error Code tag </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa0759dedcca7979bff7e08a358b79e8a35ddbc550f55aca5347e905d23734fd6"></a>E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE&#160;</td><td class="fielddoc"><p>Fota Error Cause tag </p>
 </td></tr>
 </table>
 
@@ -1048,10 +1088,10 @@ Functions</h2></td></tr>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aicpp__parser_8h_html_a5f8cc48baf220e642c7740277b9e558e"><div class="ttname"><a href="icpp__parser_8h.html#a5f8cc48baf220e642c7740277b9e558e">C_K_ICPP__1BYTE_END_WITH_FILED_RANGE_CMD_TAG</a></div><div class="ttdeci">#define C_K_ICPP__1BYTE_END_WITH_FILED_RANGE_CMD_TAG</div><div class="ttdoc">ICPP command tag with length 1byte and field end.</div><div class="ttdef"><b>Definition:</b> icpp_parser.h:91</div></div>
-<div class="ttc" id="aicpp__parser_8h_html_a1ecbdcc485b5a516d5caccf1e88fc3d7"><div class="ttname"><a href="icpp__parser_8h.html#a1ecbdcc485b5a516d5caccf1e88fc3d7">C_K_ICPP__1BYTE_START_WITH_FILED_RANGE_CMD_TAG</a></div><div class="ttdeci">#define C_K_ICPP__1BYTE_START_WITH_FILED_RANGE_CMD_TAG</div><div class="ttdoc">ICPP command tag with length 1byte and field start.</div><div class="ttdef"><b>Definition:</b> icpp_parser.h:88</div></div>
-<div class="ttc" id="aicpp__parser_8h_html_a2468d9d9163e79254dee415417c8b30c"><div class="ttname"><a href="icpp__parser_8h.html#a2468d9d9163e79254dee415417c8b30c">C_K_ICPP__2BYTE_END_WITH_FILED_RANGE_CMD_TAG</a></div><div class="ttdeci">#define C_K_ICPP__2BYTE_END_WITH_FILED_RANGE_CMD_TAG</div><div class="ttdoc">ICPP command tag with length 2byte and with field end.</div><div class="ttdef"><b>Definition:</b> icpp_parser.h:103</div></div>
-<div class="ttc" id="aicpp__parser_8h_html_aaf5d39357e6333a613a239d3eb2d122d"><div class="ttname"><a href="icpp__parser_8h.html#aaf5d39357e6333a613a239d3eb2d122d">C_K_ICPP__2BYTE_START_WITH_FILED_RANGE_CMD_TAG</a></div><div class="ttdeci">#define C_K_ICPP__2BYTE_START_WITH_FILED_RANGE_CMD_TAG</div><div class="ttdoc">ICPP command tag with length 2byte and with field start.</div><div class="ttdef"><b>Definition:</b> icpp_parser.h:100</div></div>
+<div class="ttc" id="aicpp__parser_8h_html_a5f8cc48baf220e642c7740277b9e558e"><div class="ttname"><a href="icpp__parser_8h.html#a5f8cc48baf220e642c7740277b9e558e">C_K_ICPP__1BYTE_END_WITH_FILED_RANGE_CMD_TAG</a></div><div class="ttdeci">#define C_K_ICPP__1BYTE_END_WITH_FILED_RANGE_CMD_TAG</div><div class="ttdoc">ICPP command tag with length 1byte and field end.</div><div class="ttdef"><b>Definition:</b> icpp_parser.h:92</div></div>
+<div class="ttc" id="aicpp__parser_8h_html_a1ecbdcc485b5a516d5caccf1e88fc3d7"><div class="ttname"><a href="icpp__parser_8h.html#a1ecbdcc485b5a516d5caccf1e88fc3d7">C_K_ICPP__1BYTE_START_WITH_FILED_RANGE_CMD_TAG</a></div><div class="ttdeci">#define C_K_ICPP__1BYTE_START_WITH_FILED_RANGE_CMD_TAG</div><div class="ttdoc">ICPP command tag with length 1byte and field start.</div><div class="ttdef"><b>Definition:</b> icpp_parser.h:89</div></div>
+<div class="ttc" id="aicpp__parser_8h_html_a2468d9d9163e79254dee415417c8b30c"><div class="ttname"><a href="icpp__parser_8h.html#a2468d9d9163e79254dee415417c8b30c">C_K_ICPP__2BYTE_END_WITH_FILED_RANGE_CMD_TAG</a></div><div class="ttdeci">#define C_K_ICPP__2BYTE_END_WITH_FILED_RANGE_CMD_TAG</div><div class="ttdoc">ICPP command tag with length 2byte and with field end.</div><div class="ttdef"><b>Definition:</b> icpp_parser.h:104</div></div>
+<div class="ttc" id="aicpp__parser_8h_html_aaf5d39357e6333a613a239d3eb2d122d"><div class="ttname"><a href="icpp__parser_8h.html#aaf5d39357e6333a613a239d3eb2d122d">C_K_ICPP__2BYTE_START_WITH_FILED_RANGE_CMD_TAG</a></div><div class="ttdeci">#define C_K_ICPP__2BYTE_START_WITH_FILED_RANGE_CMD_TAG</div><div class="ttdoc">ICPP command tag with length 2byte and with field start.</div><div class="ttdef"><b>Definition:</b> icpp_parser.h:101</div></div>
 <!-- HTML footer for doxygen 1.9.1-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

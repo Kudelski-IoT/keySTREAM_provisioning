@@ -7,5 +7,7 @@ var struct_t_k_icpp_protocol_message =
     [ "rotPublicUID", "struct_t_k_icpp_protocol_message.html#a0d541e28515331e7886cd0cd6a7d18d8", null ],
     [ "rotKeySetId", "struct_t_k_icpp_protocol_message.html#ab8c2e3daa403f30c38f17e58c8b1f32a", null ],
     [ "commandsCount", "struct_t_k_icpp_protocol_message.html#a668770232d76171afd2590908786772a", null ],
-    [ "commands", "struct_t_k_icpp_protocol_message.html#a78ebb0fe6da96f2b0a7f06860cc16b21", null ]
+    [ "commands", "struct_t_k_icpp_protocol_message.html#a78ebb0fe6da96f2b0a7f06860cc16b21", null ],
+    [ "aKtaVersion", "struct_t_k_icpp_protocol_message.html#adac88eb7c5eb19d12eab81f41ca4085e", null ],
+    [ "xComponents", "struct_t_k_icpp_protocol_message.html#a2f083d64673e22ef85c879c131e5348c", null ]
 ];
