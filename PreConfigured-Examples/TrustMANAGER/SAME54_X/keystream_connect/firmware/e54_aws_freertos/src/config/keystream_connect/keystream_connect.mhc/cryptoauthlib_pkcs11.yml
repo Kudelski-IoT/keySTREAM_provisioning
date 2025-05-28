@@ -1,0 +1,15 @@
+format_version: v1.0
+type: UniqueComponent
+attributes: {id: cryptoauthlib_pkcs11}
+children:
+- type: Symbols
+  children:
+  - type: Boolean
+    attributes: {id: CAL_PKCS11_AWS_FREERTOS}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
+- type: ElementPosition
+  attributes: {x: '800', y: '20', id: cryptoauthlib_pkcs11}
