@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
 * (c) 2023-2024 Nagravision Sàrl
@@ -150,7 +150,7 @@ extern "C" {
 #define C_K_KTA__ROT_PUBLIC_UID_MAX_SIZE      (8u)
 
 /** @brief Maximal size of command field , in bytes. */
-#define C_K_KTA__CMD_FIELD_MAX_SIZE           (1024u)
+#define C_K_KTA__CMD_FIELD_MAX_SIZE           (2000u)
 
 /** @brief Maximal size of sealed information, in bytes. */
 #define C_K_KTA__SEALED_INFORMATION_MAX_SIZE  (133u)

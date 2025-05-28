@@ -54,7 +54,10 @@ var icpp__parser_8h =
       [ "E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3ab5ae55a3f592c89e4522ec0410435cdc", null ],
       [ "E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a03bb7661355b612da1a9386446f75cac", null ],
       [ "E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a3d5c8a2b9847f9563bcb18fb8b7a387e", null ],
-      [ "E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a1bcc74531632b1a61026000b28784862", null ]
+      [ "E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a1bcc74531632b1a61026000b28784862", null ],
+      [ "E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a055667a35be8937be5939e783fa61d67", null ],
+      [ "E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3acdacf32f615f732435a49e7a300b4b20", null ],
+      [ "E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO", "icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3a1f8736c8cb9403a4b5ce862255edca2b", null ]
     ] ],
     [ "TKIcppFieldTag", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8", [
       [ "E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a6de4488a1a19df0d40adf1e6c9c2906f", null ],
@@ -84,7 +87,14 @@ var icpp__parser_8h =
       [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a9bc2e601e60e521944a901c1aafe7952", null ],
       [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a4ddd96990eb535bc7e11f5a2fc764124", null ],
       [ "E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8af2b6a58af2e3880107a4b6172c768745", null ],
-      [ "E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad79b9226354c593e5ecb3acbcab05bfa", null ]
+      [ "E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad79b9226354c593e5ecb3acbcab05bfa", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a89f5612d53961d39ff6e101cf58daf37", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a0721b5b3b4a9e75b1405fa88bd9c62d3", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ad25c8f32231a98535405401147f01cdf", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8aa5394fd3e73b344c77bcc794239c7b46", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a7b87805bb3a375514305bb6507f4ec4d", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a32d5aaaf0b258ac1433f0f706a82ac9c", null ],
+      [ "E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a35ddbc550f55aca5347e905d23734fd6", null ]
     ] ],
     [ "ktaIcppParserSerializeMessage", "icpp__parser_8h.html#a9d58bc2f039e601482251eba2a3a6822", null ],
     [ "ktaIcppParserDeserializeMessage", "icpp__parser_8h.html#a057091479fb8fd8c28b05cdbfa297f2f", null ],

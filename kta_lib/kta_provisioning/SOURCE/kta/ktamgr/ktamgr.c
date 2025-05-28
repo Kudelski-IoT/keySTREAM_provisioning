@@ -1,4 +1,4 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
 * (c) 2023-2024 Nagravision Sàrl
@@ -54,6 +54,10 @@
 #include "k_sal_crypto.h"
 #include "cryptoConfig.h"
 #include "KTALog.h"
+
+#ifdef FOTA_ENABLE
+#include "k_sal_fota.h"
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
@@ -1341,14 +1345,20 @@ static TKStatus lPrepareNoOpNotificationRequest
   size_t*   xpMessageToSendSize
 )
 {
-  TKStatus              status = E_K_STATUS_ERROR;
+  TKStatus              status           = E_K_STATUS_ERROR;
   size_t                transactionIDLen = C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES;
   TKIcppProtocolMessage sendProtoMessage = {0};
-  size_t                rotPublicUidLen = C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES;
+  size_t                rotPublicUidLen  = C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES;
+  size_t                ktaVersionLen    = C_KTA__VERSION_MAX_SIZE;
+#ifndef FOTA_ENABLE
   uint8_t               aSerializeBuffer[C_K__ICPP_MSG_MAX_SIZE] = {0};
   size_t                aSerializeBufferLen = C_K__ICPP_MSG_MAX_SIZE;
   TKParserStatus        parserStatus = E_K_ICPP_PARSER_STATUS_ERROR;
   uint8_t               aComputedMac[C_KTA_ACT__HMACSHA256_SIZE] = {0};
+#else
+  size_t                startIndex       = 0;
+  uint32_t              fieldIndex       = 0;
+#endif // FOTA_ENABLE
 
   /**
    * Fill the messgae type with "E_K_ICPP_PARSER_MESSAGE_TYPE_NOTIFICATION" to indicate it is
@@ -1359,7 +1369,6 @@ static TKStatus lPrepareNoOpNotificationRequest
   /* Retrive rot key set ID from NVM. */
   // REQ RQ_M-KTA-NOOP-FN-0050_05(1) : rot key set id
   status = ktaGetRotKeySetId(&(sendProtoMessage.rotKeySetId));
-
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Retrieval of rot key set ID from NVM failed, status = [%d]", status);
@@ -1397,13 +1406,91 @@ static TKStatus lPrepareNoOpNotificationRequest
                   C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES);
   }
 
+  status = salStorageGetValue(C_K_KTA__VERSION_SLOT_ID,
+                              sendProtoMessage.aKtaVersion,
+                              &ktaVersionLen);
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__DEBUG("Reading KTA Version failed with status:%d.\r\n", status);
+    goto end;
+  }
+
+#ifdef FOTA_ENABLE
+  status = salDeviceGetInfo(sendProtoMessage.xComponents);
+
+  // Check if the device info was successfully retrieved
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Reading component failed, status = [%d]", status);
+    return status;
+  }
+
+  // Fill the xComponents array
+  for (; startIndex < COMPONENTS_MAX; startIndex++)
+  {
+    sendProtoMessage.xComponents[startIndex] = sendProtoMessage.xComponents[startIndex];
+  }
+
+  // Fill the component information.
+  sendProtoMessage.commandsCount = 1;
+  sendProtoMessage.commands[0].commandTag = E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO;
+
+  sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldTag  =
+  E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
+  sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldLen  =
+  strnlen((char*)sendProtoMessage.aKtaVersion, C_KTA__VERSION_MAX_SIZE);
+  sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldValue =
+  sendProtoMessage.aKtaVersion;
+  fieldIndex++;
+
+  // Fill the FOTA component target and version fields in a loop.
+  for (uint32_t i = 0; i < COMPONENTS_MAX; i++)
+  {
+    if ((sendProtoMessage.xComponents[i].componentNameLen > 0) && (sendProtoMessage.xComponents[i].componentVersionLen > 0))
+    {
+      // Fill the FOTA component target field.
+      sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldTag =
+      E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
+      sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldLen =
+      sendProtoMessage.xComponents[i].componentNameLen;
+      sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldValue =
+      sendProtoMessage.xComponents[i].componentName;
+      fieldIndex++;
+
+      // Fill the FOTA component version field.
+      sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldTag =
+      E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
+      sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldLen =
+      sendProtoMessage.xComponents[i].componentVersionLen;
+      sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldValue =
+      sendProtoMessage.xComponents[i].componentVersion;
+      fieldIndex++;
+    }
+  }
+
+  // Update the fields count
+  sendProtoMessage.commands[0].data.fieldList.fieldsCount = fieldIndex;
+
+  // Call ktaGenerateResponse after filling all the tags and data
+  status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
+                                C_GEN__ENCRYPT | C_GEN__SIGNING),
+                                &sendProtoMessage,
+                                xpMessageToSend,
+                                xpMessageToSendSize);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", status);
+    goto end;
+  }
+#else
   sendProtoMessage.commandsCount = 0;
 
   M_KTALOG__DEBUG("ICCP parser serializing the message...");
   // REQ RQ_M-KTA-NOOP-FN-0060(1) : Serialize NoOP Message
   parserStatus = ktaIcppParserSerializeMessage(&sendProtoMessage,
-                                                aSerializeBuffer,
-                                                &aSerializeBufferLen);
+                                               aSerializeBuffer,
+                                               &aSerializeBufferLen);
 
   if (E_K_ICPP_PARSER_STATUS_OK != parserStatus)
   {
@@ -1425,6 +1512,9 @@ static TKStatus lPrepareNoOpNotificationRequest
   (void)memcpy(xpMessageToSend, aSerializeBuffer, aSerializeBufferLen);
   (void)memcpy(&xpMessageToSend[aSerializeBufferLen], aComputedMac, C_KTA_ACT__HMACSHA256_SIZE);
   *xpMessageToSendSize =  aSerializeBufferLen + C_KTA_ACT__HMACSHA256_SIZE;
+#endif // FOTA_ENABLE
+
+  status = E_K_STATUS_OK;
 
 end:
   return status;

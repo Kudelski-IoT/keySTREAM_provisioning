@@ -168,12 +168,64 @@ Integration Steps:</h1>
 <div class="image">
 <img src="generate.png" alt=""/>
 </div>
-   <p>20) Once code is generated the following preprocessor Macro's will be enabled by default.</p><ul>
-      <li>OBJECT_MANAGEMENT_FEATURE - Used by KTA Lib for provisioning</li>
-      <li>DEVICE_PROVIDES_CHIP_CERT - Used by KTA Lib for provisioning</li>
-      <li>NETWORK_STACK_AVAILABLE - Used for communication with keySTREAM, disable this if network stack is not integrated.</li>
-      </ul>
-   <p>21) Once all the above steps are complete the project can be compiled and flashed into the device.</p>
+     <p>20) Once all the above steps are completed, click on <b>Generate Code</b> to include KTA_LIB in your project.</p>
+     <p>21) A lightweight example application is available in the <b>apps/keystream_late_provisioning_app</b> directory of our Git repository. This example demonstrates an updated <code>main()</code> function and the use of <code>PORT_Initialize()</code> within the <code>SYS_Initialize()</code> API to enable console prints. Please refer to this application and adapt these changes in your generated project.</p>
+     <p>22) Enable the following preprocessor macros as per your project requirements from the file path below:</p>
+ <ul>
+  <li>
+    <b>File Path:</b><br>
+    Header Files\config\default\library\kta_lib\ktaConfig.h
+  </li>
+  <li>
+    <b>NETWORK_STACK_AVAILABLE</b>  
+    <br>
+    Enable this macro once the network stack is implemented.
+  </li>
+  <li>
+    <b>FOTA_ENABLE</b>
+    <br>
+    Enable this macro once the FOTA agent is fully implemented. To enable it from the project settings, follow these steps:
+    <ol>
+      <li>Go to <b>Files</b> &gt; <b>Project Properties</b>.</li>
+      <li>Click on <b>xc32-gcc</b> under <b>XC32 (Global Options)</b>.</li>
+      <li>In the <b>Option Categories</b> dropdown, select <b>Processing and Messages</b>.</li>
+      <li>Navigate to <b>Preprocessor Macros</b> and add <code>FOTA_ENABLE</code>.</li>
+      <li>Click <b>Apply</b> and then <b>OK</b> to save the changes.</li>
+    </ol>
+  </li>
+</ul>
+   
+   <p><b>Mandatory API Implementation for FOTA Services</b></p>
+   <p>
+     To enable FOTA services, you must implement the following APIs in the specified source file:
+   </p>
+   <ul>
+     <li><b>File Path:</b><br>
+       Source Files\config\default\kta_lib\fota_service\Fota_Platform.c
+     </li>
+     <li><b>Required APIs:</b>
+       <ul>
+         <li>fotaPlatformGetComponents()</li>
+         <li>fotaStartInstallation()</li>
+       </ul>
+     </li>
+   </ul>
+   <p>23) Preconfigured example applications are also provided in the <b>PreConfigured-Examples</b> directory of our Git repository. These examples include an integrated communication stack and other supported features, as described below.</p>
+   <p><b>NOTE:</b> The Getting Started Guide for the preconfigured examples is available in the <b>PreConfigured-Examples</b> directory of our Git repository.</p>
+   <ul>
+     <li>
+       <b>D21_X:</b> This preconfigured example includes both communication and application layers. FOTA services are <b>disabled</b> by default.<br>
+       The D21 application uses a Wi-Fi communication stack with the WINC1500 Wi-Fi module. Users must provide the Wi-Fi SSID, password, and device profile UID obtained from keySTREAM.
+     </li>
+     <li>
+       <b>SAME54_X:</b> This preconfigured example includes both communication and application layers. FOTA services are <b>disabled</b> by default.<br>
+       The SAME54 application uses an Ethernet communication stack. Users must provide the device profile UID obtained from keySTREAM.
+     </li>
+     <li>
+       <b>SG41_X:</b> This preconfigured example includes both communication and application layers. FOTA services are <b>enabled</b> by default.<br>
+       The SG41 application uses a Wi-Fi communication stack with the WINCS02 Wi-Fi module. Users must provide the Wi-Fi SSID, password, and device profile UID obtained from keySTREAM.
+     </li>
+   </ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
 keySTREAM Trusted Agent Release Notes</h1>
 <p>see <a href="md_doxy_integration_release_notes.html"><code>Release Notes</code></a></p>

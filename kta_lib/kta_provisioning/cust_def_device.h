@@ -1,4 +1,4 @@
-#ifndef CUST_DEF_DEVICE_H
+﻿#ifndef CUST_DEF_DEVICE_H
 #define CUST_DEF_DEVICE_H
 
 #include "atcacert/atcacert_def.h"
