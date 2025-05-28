@@ -894,7 +894,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
-                  value="CLOUD_CONFIG_AWS;OBJECT_MANAGEMENT_FEATURE;MICROCHIP_CFG_3;DEVICE_PROVIDES_CHIP_CERT;SN_COAP_BLOCKWISE_ENABLED;SN_COAP_RESENDING_QUEUE_SIZE_MSGS=5;SN_COAP_DUPLICATION_MAX_MSGS_COUNT=5;DEBUG"/>
+                  value="CLOUD_CONFIG_AWS;OBJECT_MANAGEMENT_FEATURE;MICROCHIP_CFG_3;DEVICE_PROVIDES_CHIP_CERT;SN_COAP_BLOCKWISE_ENABLED;SN_COAP_RESENDING_QUEUE_SIZE_MSGS=5;SN_COAP_DUPLICATION_MAX_MSGS_COUNT=5;DEBUG;NETWORK_STACK_AVAILABLE"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="tentative-definitions" value="-fno-common"/>

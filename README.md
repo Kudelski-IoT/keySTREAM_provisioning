@@ -6,11 +6,16 @@ Documentation for this library can be found in following path within this reposi
 
 # Building and using the Library
 ## Prerequisites
-### Enable below preprocessor MACRO for as per the requirement.
-  - **File Path:**  
-  - Header Files\config\default\library\kta_lib\ktaConfig.h
-  - NETWORK_STACK_AVAILABLE - Enable this MACRO once network stack is implemented by customer.
-  - FOTA_ENABLE - Enable this MACRO once FOTA agent is fully implemented by customer.
+### Enable below preprocessor MACROS as per the requirement.  
+  - NETWORK_STACK_AVAILABLE - Enable this MACRO once network stack is implemented in the following file "Header Files\config\default\library\kta_lib\ktaConfig.h".
+
+- **FOTA_ENABLE**  
+  Enable this macro once the FOTA agent is fully implemented. To enable it from the project settings, follow these steps:
+  1. Go to **Files** > **Project Properties**.
+  2. Click on **xc32-gcc** under **XC32 (Global Options)**.
+  3. In the **Option Categories** dropdown, select **Processing and Messages**.
+  4. Navigate to **Preprocessor Macros** and add `FOTA_ENABLE`.
+  5. Click **Apply** and then **OK** to save the changes.
 
 ### Mandatory API Implementation for FOTA Services
 
