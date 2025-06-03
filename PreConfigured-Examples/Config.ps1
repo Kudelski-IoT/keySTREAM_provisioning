@@ -338,11 +338,11 @@ elseif ($selectedSubFolder -eq "sg41_X")
     Copy-Item (Join-Path $ktaLibPath "cust_def_device.h")      -Destination $destKtaLib -Force
     Copy-Item (Join-Path $ktaLibPath "cust_def_signer.c")      -Destination $destKtaLib -Force
     Copy-Item (Join-Path $ktaLibPath "cust_def_signer.h")      -Destination $destKtaLib -Force
-    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.c")    -Destination $destCommon -Force
-    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.h")     -Destination $destCommon -Force
+    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.c")     -Destination $destKtaLib -Force
+    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.h")     -Destination $destKtaLib -Force
 
     # Remove only the 'break;' at line 483 in ktaFieldMgntHook.c (1-based line number)
-    $ktaFieldMgntHookPath = Join-Path $destCommon "ktaFieldMgntHook.c"
+    $ktaFieldMgntHookPath = Join-Path $destKtaLib "ktaFieldMgntHook.c"
     if (Test-Path $ktaFieldMgntHookPath) {
         $lines = Get-Content $ktaFieldMgntHookPath
         # Remove line 483 (index 482 in 0-based array) if it starts with 'break;'
