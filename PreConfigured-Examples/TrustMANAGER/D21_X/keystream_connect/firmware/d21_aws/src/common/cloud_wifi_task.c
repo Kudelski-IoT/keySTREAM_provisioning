@@ -38,9 +38,11 @@
 #include "ecc_types.h"
 #include "kta_handler.h"
 
+#ifdef FOTA_ENABLE
 #include "k_sal_fota.h"
 #include "Fota_Agent.h"
 #include "Fota_Process.h"
+#endif
 
 #define MQTT_BUFFER_SIZE            (1024)
 #define MQTT_COMMAND_TIMEOUT_MS     (4000)
@@ -801,6 +803,7 @@ int cloud_wifi_init(DRV_HANDLE handle)
     return status;
 }
 
+#ifdef FOTA_ENABLE
 void printFotaStatus(TKFotaStatus status)
 {
     switch (status)
@@ -902,6 +905,8 @@ void Fota_Test()
     APP_DebugPrintf("\r\nFota Test End.\r\n\r\n");
 
 }
+#endif // FOTA_ENABLE
+
 void APP_ExampleTasks(DRV_HANDLE handle)
 {
     MQTTPacket_connectData mqtt_options = MQTTPacket_connectData_initializer;
@@ -1000,8 +1005,10 @@ void APP_ExampleTasks(DRV_HANDLE handle)
             if (isReadOnce)
                 return;  // Exit if already executed.
 
+#ifdef FOTA_ENABLE
             // Test Fota usecase
             Fota_Test();
+#endif
 
             // Local buffers for data, metadata, and UID
             uint8_t dataBuffer[MAX_DATA_SIZE];

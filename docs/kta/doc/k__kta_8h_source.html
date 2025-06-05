@@ -124,159 +124,164 @@ $(document).ready(function(){initNavTree('k__kta_8h_source.html',''); initResiza
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">/* IMPORTS                                                                                       */</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="k__defs_8h.html">k_defs.h</a>&quot;</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">/* CONSTANTS, TYPES, ENUM                                                                        */</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ga75212f18273f03e9293081c45c832b42">   65</a></span>&#160;<span class="preprocessor">#define C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE  (32u)</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ga8743a756582b32a248b886a1c04e9e7d">   68</a></span>&#160;<span class="preprocessor">#define C_K__DEVICE_SERIAL_NUM_MAX_SIZE          (16u)</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ga32c87f3bca79630d48e2015404c09e9c">   71</a></span>&#160;<span class="preprocessor">#define C_K__L1_SEGMENTATION_SEED_SIZE           (16u)</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gae322d94081305df8fc1fbd78138d826c">   74</a></span>&#160;<span class="preprocessor">#define C_K__CONTEXT_PROFILE_UID_MAX_SIZE        (32u)</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gadcfd52133edabe3a1a32aee86e6ec367">   77</a></span>&#160;<span class="preprocessor">#define C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE      (16u)</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gac76c5edeed2326a3878133e2c83eb9d0">   80</a></span>&#160;<span class="preprocessor">#define C_K__CONTEXT_VERSION_MAX_SIZE            (16u)</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gad65b1fa39e42237da6ac382c3136bdca">   83</a></span>&#160;<span class="preprocessor">#define C_KTA__VERSION_MAX_SIZE                  (16u)</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gaf1f6e8c29b1daa6e4083b6dbcecfb4a5">   86</a></span>&#160;<span class="preprocessor">#define C_K__CONN_REQ_MAX_SIZE                   (4u)</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gad0a999d36fd0127890a4873749af779b">   89</a></span>&#160;<span class="preprocessor">#define C_K__VERSION_STORAGE_LENGTH              (2u)</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">   92</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;{</div>
-<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8">   97</a></span>&#160;  <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8">E_K_KTA_KS_STATUS_NONE</a> = -1,</div>
-<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f">  102</a></span>&#160;  <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f">E_K_KTA_KS_STATUS_NO_OPERATION</a>,</div>
-<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae61da7b107d47d720a5cd2426a7a6ae5">  106</a></span>&#160;  <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae61da7b107d47d720a5cd2426a7a6ae5">E_K_KTA_KS_STATUS_RENEW</a>,</div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe">  111</a></span>&#160;  <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe">E_K_KTA_KS_STATUS_REFURBISH</a>,</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;} <a class="code" href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a>;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">/* VARIABLES                                                                                     */</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="struct_t_kkta_data_object.html">  118</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;{</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  uint8_t*  data;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  <span class="comment">/* Address of buffer containing the object input data. */</span></div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="keywordtype">size_t</span>    dataLen;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="comment">/* Length of object input data buffer (in Bytes). */</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  uint8_t*  customerMetadata;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="comment">/* Address of the buffer containing the object customer metadata. */</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="keywordtype">size_t</span>    customerMetadataLen;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="comment">/* Length of the buffer containing the object customer metadata. */</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  uint8_t*  objectUid;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <span class="comment">/* Address of the buffer containing the Object UID. */</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="keywordtype">size_t</span>    objectUidLen;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  <span class="comment">/* Length of the buffer containing the Object UID. */</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;}  <a class="code" href="struct_t_kkta_data_object.html">TKktaDataObject</a>;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="comment">/* FUNCTIONS                                                                                     */</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga76b155d79d8a6858e424797682a2cc21">ktaInitialize</a></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;(</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <span class="keywordtype">void</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;);</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga71c68154dc1d65df6d55041382eead7e">ktaStartup</a></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;(</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  <span class="keyword">const</span> uint8_t*  xpL1SegSeed,</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  <span class="keyword">const</span> uint8_t*  xpKtaContextProfileUid,</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  <span class="keywordtype">size_t</span>          xKtaContextProfileUidLen,</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  <span class="keyword">const</span> uint8_t*  xpKtaContexSerialNumber,</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="keywordtype">size_t</span>          xKtaContexSerialNumberLen,</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  <span class="keyword">const</span> uint8_t*  xpKtaContextVersion,</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  <span class="keywordtype">size_t</span>          xKtaContextVersionLen</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;);</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga046b31490e1b3df30ad44d4a423bf16a">ktaSetDeviceInformation</a></div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;(</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;  <span class="keyword">const</span> uint8_t*  xpDeviceProfilePublicUid,</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;  <span class="keywordtype">size_t</span>          xDeviceProfilePublicUidSize,</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;  <span class="keyword">const</span> uint8_t*  xpDeviceSerialNum,</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;  <span class="keywordtype">size_t</span>          xDeviceSerialNumSize,</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  uint8_t*        xpConnectionRequest</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;);</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207">ktaExchangeMessage</a></div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;(</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;  <span class="keyword">const</span> uint8_t*  xpKs2ktaMsg,</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  <span class="keywordtype">size_t</span>          xKs2ktaMsgLen,</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  uint8_t*        xpKta2ksMsg,</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;  <span class="keywordtype">size_t</span>*         xpKta2ksMsgLen</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;);</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160; </div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="preprocessor">#ifdef OBJECT_MANAGEMENT_FEATURE</span></div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> ktaGetObjectWithAssociation</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;(</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;  uint32_t   xObjWithAssociationId,</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;  uint32_t*  xpAssociatedKeyId,</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;  uint32_t*  xpAssociatedObjId,</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;  uint8_t*   xpOutData,</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;  <span class="keywordtype">size_t</span>*    xpOutDataLen</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;);</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160; </div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> ktaGetObject</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;(</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  uint32_t          xIdentifier,</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  <a class="code" href="struct_t_kkta_data_object.html">TKktaDataObject</a> * xpObject</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;);</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> ktaSignHash</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;(</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;  uint32_t  xKeyId,</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;  uint8_t*  xpHash,</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;  <span class="keywordtype">size_t</span>    xHashLen,</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;  uint8_t*  xpSignedHashOutBuff,</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;  uint32_t  xSignedHashOutBuffLen,</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;  <span class="keywordtype">size_t</span>*   xpActualSignedHashOutLen</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;);</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160; </div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga865318ab46e05aaea00932f1eb7dc052">ktaKeyStreamStatus</a></div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;(</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;  <a class="code" href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a>*  xpKtaKSCmdStatus</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;);</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160; </div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;<span class="preprocessor">#ifdef TEST_COVERAGE</span></div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;<span class="keywordtype">void</span> ktaReset</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;(</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;  <span class="keywordtype">void</span></div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;);</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160; </div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;}</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160; </div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;<span class="preprocessor">#endif // K_KTA_H</span></div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160; </div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="kta_config_8h.html">ktaConfig.h</a>&quot;</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">/* CONSTANTS, TYPES, ENUM                                                                        */</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ga75212f18273f03e9293081c45c832b42">   66</a></span>&#160;<span class="preprocessor">#define C_K__DEVICE_PROFILE_PUBLIC_UID_MAX_SIZE  (32u)</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ga8743a756582b32a248b886a1c04e9e7d">   69</a></span>&#160;<span class="preprocessor">#define C_K__DEVICE_SERIAL_NUM_MAX_SIZE          (16u)</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ga32c87f3bca79630d48e2015404c09e9c">   72</a></span>&#160;<span class="preprocessor">#define C_K__L1_SEGMENTATION_SEED_SIZE           (16u)</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gae322d94081305df8fc1fbd78138d826c">   75</a></span>&#160;<span class="preprocessor">#define C_K__CONTEXT_PROFILE_UID_MAX_SIZE        (32u)</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gadcfd52133edabe3a1a32aee86e6ec367">   78</a></span>&#160;<span class="preprocessor">#define C_K__CONTEXT_SERIAL_NUMBER_MAX_SIZE      (16u)</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gac76c5edeed2326a3878133e2c83eb9d0">   81</a></span>&#160;<span class="preprocessor">#define C_K__CONTEXT_VERSION_MAX_SIZE            (16u)</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gad65b1fa39e42237da6ac382c3136bdca">   84</a></span>&#160;<span class="preprocessor">#define C_KTA__VERSION_MAX_SIZE                  (16u)</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gaf1f6e8c29b1daa6e4083b6dbcecfb4a5">   87</a></span>&#160;<span class="preprocessor">#define C_K__CONN_REQ_MAX_SIZE                   (4u)</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gad0a999d36fd0127890a4873749af779b">   90</a></span>&#160;<span class="preprocessor">#define C_K__VERSION_STORAGE_LENGTH              (2u)</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">   93</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;{</div>
+<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8">   98</a></span>&#160;  <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8">E_K_KTA_KS_STATUS_NONE</a> = -1,</div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f">  103</a></span>&#160;  <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f">E_K_KTA_KS_STATUS_NO_OPERATION</a>,</div>
+<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae61da7b107d47d720a5cd2426a7a6ae5">  107</a></span>&#160;  <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae61da7b107d47d720a5cd2426a7a6ae5">E_K_KTA_KS_STATUS_RENEW</a>,</div>
+<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe">  112</a></span>&#160;  <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe">E_K_KTA_KS_STATUS_REFURBISH</a>,</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;} <a class="code" href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">/* VARIABLES                                                                                     */</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="struct_t_kkta_data_object.html">  119</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;{</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  uint8_t*  data;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="comment">/* Address of buffer containing the object input data. */</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <span class="keywordtype">size_t</span>    dataLen;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="comment">/* Length of object input data buffer (in Bytes). */</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  uint8_t*  customerMetadata;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="comment">/* Address of the buffer containing the object customer metadata. */</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="keywordtype">size_t</span>    customerMetadataLen;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  <span class="comment">/* Length of the buffer containing the object customer metadata. */</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  uint8_t*  objectUid;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="comment">/* Address of the buffer containing the Object UID. */</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  <span class="keywordtype">size_t</span>    objectUidLen;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="comment">/* Length of the buffer containing the Object UID. */</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}  <a class="code" href="struct_t_kkta_data_object.html">TKktaDataObject</a>;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="comment">/* FUNCTIONS                                                                                     */</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga76b155d79d8a6858e424797682a2cc21">ktaInitialize</a></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;(</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <span class="keywordtype">void</span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga71c68154dc1d65df6d55041382eead7e">ktaStartup</a></div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;(</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  <span class="keyword">const</span> uint8_t*  xpL1SegSeed,</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  <span class="keyword">const</span> uint8_t*  xpKtaContextProfileUid,</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  <span class="keywordtype">size_t</span>          xKtaContextProfileUidLen,</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="keyword">const</span> uint8_t*  xpKtaContexSerialNumber,</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  <span class="keywordtype">size_t</span>          xKtaContexSerialNumberLen,</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  <span class="keyword">const</span> uint8_t*  xpKtaContextVersion,</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <span class="keywordtype">size_t</span>          xKtaContextVersionLen</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;);</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga046b31490e1b3df30ad44d4a423bf16a">ktaSetDeviceInformation</a></div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;(</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;  <span class="keyword">const</span> uint8_t*  xpDeviceProfilePublicUid,</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;  <span class="keywordtype">size_t</span>          xDeviceProfilePublicUidSize,</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;  <span class="keyword">const</span> uint8_t*  xpDeviceSerialNum,</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  <span class="keywordtype">size_t</span>          xDeviceSerialNumSize,</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;  uint8_t*        xpConnectionRequest</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;);</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207">ktaExchangeMessage</a></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;(</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  <span class="keyword">const</span> uint8_t*  xpKs2ktaMsg,</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  <span class="keywordtype">size_t</span>          xKs2ktaMsgLen,</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;  uint8_t*        xpKta2ksMsg,</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="keywordtype">size_t</span>*         xpKta2ksMsgLen</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;);</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="preprocessor">#ifdef OBJECT_MANAGEMENT_FEATURE</span></div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga8cd7ee8ffd7e24e789a914cb8a2e3db4">ktaGetObjectWithAssociation</a></div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;(</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;  uint32_t   xObjWithAssociationId,</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;  uint32_t*  xpAssociatedKeyId,</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;  uint32_t*  xpAssociatedObjId,</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;  uint8_t*   xpOutData,</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;  <span class="keywordtype">size_t</span>*    xpOutDataLen</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;);</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160; </div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#gacc19b52e78e3200cf6ddb6b666b98041">ktaGetObject</a></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;(</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  uint32_t          xIdentifier,</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  <a class="code" href="struct_t_kkta_data_object.html">TKktaDataObject</a> * xpObject</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#gafe6a9be7bb9e2ac1237e0121dc9aa749">ktaSignHash</a></div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;(</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;  uint32_t  xKeyId,</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;  uint8_t*  xpHash,</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;  <span class="keywordtype">size_t</span>    xHashLen,</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;  uint8_t*  xpSignedHashOutBuff,</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;  uint32_t  xSignedHashOutBuffLen,</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;  <span class="keywordtype">size_t</span>*   xpActualSignedHashOutLen</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;);</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160; </div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;<a class="code" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> <a class="code" href="group__g__kta__api.html#ga865318ab46e05aaea00932f1eb7dc052">ktaKeyStreamStatus</a></div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;(</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;  <a class="code" href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a>*  xpKtaKSCmdStatus</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;);</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160; </div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;<span class="preprocessor">#ifdef TEST_COVERAGE</span></div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;<span class="keywordtype">void</span> ktaReset</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;(</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;  <span class="keywordtype">void</span></div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;);</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160; </div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;}</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160; </div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="preprocessor">#endif // K_KTA_H</span></div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160; </div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="agroup__g__kta__api_html_gafe6a9be7bb9e2ac1237e0121dc9aa749"><div class="ttname"><a href="group__g__kta__api.html#gafe6a9be7bb9e2ac1237e0121dc9aa749">ktaSignHash</a></div><div class="ttdeci">TKStatus ktaSignHash(uint32_t xKeyId, uint8_t *xpHash, size_t xHashLen, uint8_t *xpSignedHashOutBuff, uint32_t xSignedHashOutBuffLen, size_t *xpActualSignedHashOutLen)</div><div class="ttdoc">Sign the data with keySTREAM Trusted Agent provisioned key. The key is always located inside the secu...</div></div>
 <div class="ttc" id="agroup__g__kta__api_html_ga76b155d79d8a6858e424797682a2cc21"><div class="ttname"><a href="group__g__kta__api.html#ga76b155d79d8a6858e424797682a2cc21">ktaInitialize</a></div><div class="ttdeci">TKStatus ktaInitialize(void)</div><div class="ttdoc">Initialize the keySTREAM Trusted Agent.</div><div class="ttdef"><b>Definition:</b> ktamgr.c:298</div></div>
-<div class="ttc" id="agroup__g__kta__api_html_gaae332fe18ad4822069439374ce313962"><div class="ttname"><a href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a></div><div class="ttdeci">TKktaKeyStreamStatus</div><div class="ttdoc">keySTREAM command status.</div><div class="ttdef"><b>Definition:</b> k_kta.h:92</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_gaae332fe18ad4822069439374ce313962"><div class="ttname"><a href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a></div><div class="ttdeci">TKktaKeyStreamStatus</div><div class="ttdoc">keySTREAM command status.</div><div class="ttdef"><b>Definition:</b> k_kta.h:93</div></div>
 <div class="ttc" id="agroup__g__kta__api_html_ga865318ab46e05aaea00932f1eb7dc052"><div class="ttname"><a href="group__g__kta__api.html#ga865318ab46e05aaea00932f1eb7dc052">ktaKeyStreamStatus</a></div><div class="ttdeci">TKStatus ktaKeyStreamStatus(TKktaKeyStreamStatus *xpKtaKSCmdStatus)</div><div class="ttdoc">Provide command received from the keySTREAM There can be three valid command from keySTREAM.</div><div class="ttdef"><b>Definition:</b> ktamgr.c:1099</div></div>
-<div class="ttc" id="astruct_t_kkta_data_object_html"><div class="ttname"><a href="struct_t_kkta_data_object.html">TKktaDataObject</a></div><div class="ttdoc">Structure holds all information to be exported to calling application.</div><div class="ttdef"><b>Definition:</b> k_kta.h:118</div></div>
+<div class="ttc" id="astruct_t_kkta_data_object_html"><div class="ttname"><a href="struct_t_kkta_data_object.html">TKktaDataObject</a></div><div class="ttdoc">Structure holds all information to be exported to calling application.</div><div class="ttdef"><b>Definition:</b> k_kta.h:119</div></div>
 <div class="ttc" id="agroup__g__kta__api_html_ga046b31490e1b3df30ad44d4a423bf16a"><div class="ttname"><a href="group__g__kta__api.html#ga046b31490e1b3df30ad44d4a423bf16a">ktaSetDeviceInformation</a></div><div class="ttdeci">TKStatus ktaSetDeviceInformation(const uint8_t *xpDeviceProfilePublicUid, size_t xDeviceProfilePublicUidSize, const uint8_t *xpDeviceSerialNum, size_t xDeviceSerialNumSize, uint8_t *xpConnectionRequest)</div><div class="ttdoc">Set the device specific info.</div><div class="ttdef"><b>Definition:</b> ktamgr.c:434</div></div>
-<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f">E_K_KTA_KS_STATUS_NO_OPERATION</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_NO_OPERATION</div><div class="ttdef"><b>Definition:</b> k_kta.h:102</div></div>
-<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8">E_K_KTA_KS_STATUS_NONE</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_NONE</div><div class="ttdef"><b>Definition:</b> k_kta.h:97</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae1d9487d8065391cbe7262ac1640280f">E_K_KTA_KS_STATUS_NO_OPERATION</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_NO_OPERATION</div><div class="ttdef"><b>Definition:</b> k_kta.h:103</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_gacc19b52e78e3200cf6ddb6b666b98041"><div class="ttname"><a href="group__g__kta__api.html#gacc19b52e78e3200cf6ddb6b666b98041">ktaGetObject</a></div><div class="ttdeci">TKStatus ktaGetObject(uint32_t xIdentifier, TKktaDataObject *xpObject)</div><div class="ttdoc">Gets an object which includes signer cerificate and assosciated info. This object has been provisione...</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962adf6562246f636fced111f7d900b060b8">E_K_KTA_KS_STATUS_NONE</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_NONE</div><div class="ttdef"><b>Definition:</b> k_kta.h:98</div></div>
 <div class="ttc" id="agroup__g__kta__api_html_ga71c68154dc1d65df6d55041382eead7e"><div class="ttname"><a href="group__g__kta__api.html#ga71c68154dc1d65df6d55041382eead7e">ktaStartup</a></div><div class="ttdeci">TKStatus ktaStartup(const uint8_t *xpL1SegSeed, const uint8_t *xpKtaContextProfileUid, size_t xKtaContextProfileUidLen, const uint8_t *xpKtaContexSerialNumber, size_t xKtaContexSerialNumberLen, const uint8_t *xpKtaContextVersion, size_t xKtaContextVersionLen)</div><div class="ttdoc">Set keySTREAM Trusted Agent context configuration data to the platform.</div><div class="ttdef"><b>Definition:</b> ktamgr.c:327</div></div>
 <div class="ttc" id="agroup__g__kta__api_html_ga5fb1b599f29f45874740e356a97d7d25"><div class="ttname"><a href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a></div><div class="ttdeci">TKStatus</div><div class="ttdoc">keySTREAM Trusted Agent return status codes.</div><div class="ttdef"><b>Definition:</b> k_defs.h:71</div></div>
 <div class="ttc" id="ak__defs_8h_html"><div class="ttname"><a href="k__defs_8h.html">k_defs.h</a></div><div class="ttdoc">keySTREAM Trusted Agent - Type definitions.</div></div>
-<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962ae61da7b107d47d720a5cd2426a7a6ae5"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae61da7b107d47d720a5cd2426a7a6ae5">E_K_KTA_KS_STATUS_RENEW</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_RENEW</div><div class="ttdef"><b>Definition:</b> k_kta.h:106</div></div>
-<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe">E_K_KTA_KS_STATUS_REFURBISH</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_REFURBISH</div><div class="ttdef"><b>Definition:</b> k_kta.h:111</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962ae61da7b107d47d720a5cd2426a7a6ae5"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962ae61da7b107d47d720a5cd2426a7a6ae5">E_K_KTA_KS_STATUS_RENEW</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_RENEW</div><div class="ttdef"><b>Definition:</b> k_kta.h:107</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe">E_K_KTA_KS_STATUS_REFURBISH</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_REFURBISH</div><div class="ttdef"><b>Definition:</b> k_kta.h:112</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_ga8cd7ee8ffd7e24e789a914cb8a2e3db4"><div class="ttname"><a href="group__g__kta__api.html#ga8cd7ee8ffd7e24e789a914cb8a2e3db4">ktaGetObjectWithAssociation</a></div><div class="ttdeci">TKStatus ktaGetObjectWithAssociation(uint32_t xObjWithAssociationId, uint32_t *xpAssociatedKeyId, uint32_t *xpAssociatedObjId, uint8_t *xpOutData, size_t *xpOutDataLen)</div><div class="ttdoc">Gets an object which includes key, device cerificate and assosciated info. This object has been provi...</div></div>
+<div class="ttc" id="akta_config_8h_html"><div class="ttname"><a href="kta_config_8h.html">ktaConfig.h</a></div><div class="ttdoc">Configuration file for keySTREAM Trusted Agent.</div></div>
 <div class="ttc" id="agroup__g__kta__api_html_ga9ba21eab8cceee0d3a3ca976e33b6207"><div class="ttname"><a href="group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207">ktaExchangeMessage</a></div><div class="ttdeci">TKStatus ktaExchangeMessage(const uint8_t *xpKs2ktaMsg, size_t xKs2ktaMsgLen, uint8_t *xpKta2ksMsg, size_t *xpKta2ksMsgLen)</div><div class="ttdoc">keySTREAM Trusted Agent builds notification message, which must then be sent via application to keyST...</div><div class="ttdef"><b>Definition:</b> ktamgr.c:576</div></div>
 <!-- HTML footer for doxygen 1.9.1-->
 <!-- start footer part -->

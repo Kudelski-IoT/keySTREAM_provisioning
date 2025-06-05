@@ -29,15 +29,15 @@
 *
 *  \date 2023/06/12
 *
-*  \file tmg_conf.h
+*  \file APP_Config.h
 ******************************************************************************/
 
 /**
  * @brief Configuration file for environment setup.
  */
 
-#ifndef TMG_CONF_H
-#define TMG_CONF_H
+#ifndef APP_CONFIG
+#define APP_CONFIG
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,23 +54,25 @@ extern "C" {
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
 
-/** @brief Wifi SSID for TrustManaged device */
-#define WIFI_SSID                           ""
+// /** @brief Wifi SSID for TrustManaged device */
+// #define WIFI_SSID                           ""
+// /** @brief Wifi password for TrustManaged device */
+// #define WIFI_PWD                            ""
+#if !defined(WIFI_SSID) || !defined(WIFI_PWD)
+    #error WLAN/WiFi WIFI_SSID and Password are not defined! \
+            Uncomment defines and replace xxxxxxxxxx with SSID and Password!
+#endif
 
-/** @brief Wifi password for TrustManaged device */
-#define WIFI_PWD                            ""
 
-/** @brief TrustManaged Device Public UID */
-#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID ""
-
-/** @brief keySTREAM COAP Endpoint */
-#define KEYSTREAM_COAP_URL                  "icpp.mss.iot.kudelski.com"
-
-/** @brief keySTREAM HTTP Endpoint */
-#define KEYSTREAM_HTTP_URL                  "icph.mss.iot.kudelski.com"
-
-/** @brief AWS Endpoint */
-#define AWS_ENDPOINT                        "a3k3bohxtu19qi-ats.iot.us-east-2.amazonaws.com"
+/**
+ * @brief Fleet Profile UID created in keySTREAM.
+ * Copy the Fleet Profile UID from keySTREAM and uncomment the following line.
+ * Replace xxxxxxxxxxx with the Fleet Profile UID.
+ */
+//#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID             "xxxxxxxxxxx"
+#if !defined(KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID)
+    #error KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID not defined Uncomment define and replace xxxxxxxxxx with Fleet Profile UID!
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
@@ -84,7 +86,7 @@ extern "C" {
 }
 #endif /* C++ */
 
-#endif // TMG_CONF_H
+#endif // APP_CONFIG
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

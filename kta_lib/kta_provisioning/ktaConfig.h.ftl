@@ -74,23 +74,7 @@ extern "C" {
 #define C_KTA_APP__DEVICE_PUBLIC_UID        ("${KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID}")
 
 /** @brief Application log */
-/** 
- * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
- * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
- * Using printf for logging.
- * Not checking the return status of printf, since not required.
- **/
-
-/** @brief Application log */
 #define C_KTA_APP__LOG                      printf
-
-
-/**
- * @brief Enable Network Stack.
- * Define this macro to enable Network Stack.
- */
-// #define NETWORK_STACK_AVAILABLE
-
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -98,6 +82,51 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 /* FUNCTIONS                                                                  */
 /* -------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/* FOTA SERVICES                                                              */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable FOTA services.
+ * Define this macro to enable FOTA-Services.
+ */
+//  #define FOTA_ENABLE
+
+/* -------------------------------------------------------------------------- */
+/* OBJECT_MANAGEMENT_FEATURE                                                  */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable Object Management Feature.
+ * Define this macro to enable Object Management Feature.
+ */
+ #define OBJECT_MANAGEMENT_FEATURE
+
+/* -------------------------------------------------------------------------- */
+/* PLATFORM_PROCESS_FEATURE                                                   */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable Platform Process Feature.
+ * Define this macro to enable Platform Process Feature.
+ */
+//  #define PLATFORM_PROCESS_FEATURE
+
+/* -------------------------------------------------------------------------- */
+/* NETWORK STACK AVAILABLE                                                    */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable Network Stack Feature.
+ * Define this macro to enable Network Stack Feature.
+ */
+ #define NETWORK_STACK_AVAILABLE
+
+/* -------------------------------------------------------------------------- */
+/* CHIP CERTIFICATE AVAILABLE                                                 */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable Device Provides Chip Certificate.
+ * Define this macro to enable chip certificate support.
+ */
+#define DEVICE_PROVIDES_CHIP_CERT
 
 #ifdef __cplusplus
 }

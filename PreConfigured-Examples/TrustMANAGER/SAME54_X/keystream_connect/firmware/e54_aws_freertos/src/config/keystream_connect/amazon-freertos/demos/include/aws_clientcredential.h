@@ -26,19 +26,20 @@
 #ifndef __AWS_CLIENTCREDENTIAL__H__
 #define __AWS_CLIENTCREDENTIAL__H__
 
+#include "App_Config.h"
 /*
  * @brief MQTT Broker endpoint.
  *
  * @todo Set this to the fully-qualified DNS name of your MQTT broker.
  */
-#define clientcredentialMQTT_BROKER_ENDPOINT         "a3k3bohxtu19qi.iot.us-east-2.amazonaws.com"
+#define clientcredentialMQTT_BROKER_ENDPOINT         AWS_ENDPOINT
 
 /*
  * @brief Host name.
  *
  * @todo Set this to the unique name of your IoT Thing.
  */
-#define clientcredentialIOT_THING_NAME               "mcp_test"
+#define clientcredentialIOT_THING_NAME               AWS_THING_NAME
 
 /*
  * @brief Port number the MQTT broker is using.

@@ -1,26 +1,4 @@
 var searchData=
 [
-  ['tkactreqpayload_230',['TKactreqPayload',['../struct_t_kactreq_payload.html',1,'']]],
-  ['tkactrespfields_231',['TKactRespFields',['../struct_t_kact_resp_fields.html',1,'']]],
-  ['tkactresppayload_232',['TKactRespPayload',['../struct_t_kact_resp_payload.html',1,'']]],
-  ['tkicppcommand_233',['TKIcppCommand',['../struct_t_k_icpp_command.html',1,'']]],
-  ['tkicppcommandinfo_234',['TKIcppCommandInfo',['../struct_t_k_icpp_command_info.html',1,'']]],
-  ['tkicppcommandtag_235',['TKIcppCommandTag',['../icpp__parser_8h.html#addbb322270322f1443ed6b45713646a3',1,'icpp_parser.h']]],
-  ['tkicppcryptoversiontype_236',['TKIcppCryptoVersionType',['../icpp__parser_8h.html#ac61ab115775f31cf6615f2ed8c7dcd8e',1,'icpp_parser.h']]],
-  ['tkicppencmodetype_237',['TKIcppEncModeType',['../icpp__parser_8h.html#a2731f305d36e99f740af2f13538de145',1,'icpp_parser.h']]],
-  ['tkicppfield_238',['TKIcppField',['../struct_t_k_icpp_field.html',1,'']]],
-  ['tkicppfieldlist_239',['TKIcppFieldList',['../struct_t_k_icpp_field_list.html',1,'']]],
-  ['tkicppfieldtag_240',['TKIcppFieldTag',['../icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8',1,'icpp_parser.h']]],
-  ['tkicppmessagetype_241',['TKIcppMessageType',['../icpp__parser_8h.html#af366495dea1248fc21bb7b5721500af0',1,'icpp_parser.h']]],
-  ['tkicppprotocolmessage_242',['TKIcppProtocolMessage',['../struct_t_k_icpp_protocol_message.html',1,'']]],
-  ['tkicpptagtype_243',['TKIcppTagType',['../icpp__parser_8c.html#a831ba21e12bccdacf62383e1c613afaf',1,'icpp_parser.c']]],
-  ['tkktadataobject_244',['TKktaDataObject',['../struct_t_kkta_data_object.html',1,'']]],
-  ['tkktakeystreamstatus_245',['TKktaKeyStreamStatus',['../group__g__kta__api.html#gaae332fe18ad4822069439374ce313962',1,'k_kta.h']]],
-  ['tkparserstatus_246',['TKParserStatus',['../icpp__parser_8h.html#a233d42179627f7685507d1eeb4d0d634',1,'icpp_parser.h']]],
-  ['tkreginfopayload_247',['TKRegInfoPayload',['../struct_t_k_reg_info_payload.html',1,'']]],
-  ['tkstatus_248',['TKStatus',['../group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25',1,'k_defs.h']]],
-  ['tktacontextinfoconfig_249',['TKtaContextInfoConfig',['../struct_t_kta_context_info_config.html',1,'']]],
-  ['tktadeviceinfoconfig_250',['TKtaDeviceInfoConfig',['../struct_t_kta_device_info_config.html',1,'']]],
-  ['tktalifecyclestate_251',['TKtaLifeCycleState',['../config_8h.html#aa5c9157baa2f5bd3c58a59e4b7862ac0',1,'config.h']]],
-  ['tktastate_252',['TKtaState',['../ktamgr_8c.html#aed8202577e5e7c458d48684a47156bc6',1,'ktamgr.c']]]
+  ['network_5fstack_5favailable_240',['NETWORK_STACK_AVAILABLE',['../kta_config_8h.html#a706569a103c87eb60a3071b71ea68325',1,'ktaConfig.h']]]
 ];

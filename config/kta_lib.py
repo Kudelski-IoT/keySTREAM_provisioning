@@ -131,9 +131,3 @@ def instantiateComponent(ktaComponent):
     ktaSymbol.setValue( '{0};{0}/../cryptoauthlib/atcacert;{0};{0}/COMMON/logmodule/include;{0}/COMMSTACK/http;{0}/COMMSTACK/http/include;{0}/SOURCE/include;{0}/SOURCE/kta/common/crypto/include;{0}/SOURCE/kta/common/general/include;{0}/SOURCE/kta/common/icpp_parser/include;{0}/SOURCE/kta/common/version/include;{0}/SOURCE/kta/modules/acthandler/include;{0}/SOURCE/kta/modules/cmdhandler/include;{0}/SOURCE/kta/modules/config/include;{0}/SOURCE/kta/modules/reghandler/include;{0}/SOURCE/salapi/include;{0}/fota_service/;'.format(includePath))
     ktaSymbol.setAppend(True, ';')
 
-    # Add the MACRO's in MPLABX IDE
-    ktaSymbol = ktaComponent.createSettingSymbol("KTA_XC32_PREPROCESSOR", None)
-    ktaSymbol.setCategory("C32")
-    ktaSymbol.setKey("preprocessor-macros")
-    ktaSymbol.setValue( 'OBJECT_MANAGEMENT_FEATURE;DEVICE_PROVIDES_CHIP_CERT')
-    ktaSymbol.setAppend(True, ';')

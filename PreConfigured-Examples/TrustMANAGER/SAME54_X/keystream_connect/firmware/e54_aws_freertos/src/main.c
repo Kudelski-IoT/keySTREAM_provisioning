@@ -32,6 +32,7 @@
 #include "definitions.h"                // SYS function prototypes
 
 #include "iot_network_types.h"
+#include "iot_secure_sockets.h"
 /* Standard includes. */
 #include <time.h>
 

@@ -1,14 +1,12 @@
 ---
 title: "keySTREAM Trusted Agent Release Notes"
-date:  "2025.05.22"
+date:  "2025.06.05"
 author: "Kudelski IoT"
 ---
-# Release v1.3.0 (22/05/2025)
+# Release v1.3.1 (05/06/2025)
 
 ## New features/Changes in this version
-- Symmetric key service
-- Signing public key service
-- FOTA service
+- Added PreConfigured Applications
 
 ## Compatibility
 - This version is compatible with
@@ -19,11 +17,29 @@ author: "Kudelski IoT"
 - NA
 
 ## Identifier
-- Git Tag: v1.3.0
+- Git Tag: v1.3.1
 
 ---
 
 # History
+
+## Release v1.3.0 (22/05/2025)
+
+### New features/Changes in this version
+- Symmetric key service
+- Signing public key service
+- FOTA service
+
+### Compatibility
+- This version is compatible with
+- CAL Version       - 3.7.8
+- keySTREAM Version - 1.28
+
+### Open source information
+- NA
+
+### Identifier
+- Git Tag: v1.3.0
 
 # Release v1.2.8 (09/03/2024)
 

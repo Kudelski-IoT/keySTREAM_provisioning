@@ -1,9 +1,9 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -479,8 +479,9 @@ static TKStatus lPollKeyStream
       retStatus = E_K_STATUS_ERROR;
       goto end;
     }
-#endif
+#else
     break; // To be removed when network stack is integrated.
+#endif
   }
 end:
   if (E_COMM_IF_STATUS_OK != commTerm())

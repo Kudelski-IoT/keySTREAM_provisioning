@@ -1,10 +1,9 @@
-﻿/*******************************************************************************
-*************************keySTREAM Trusted Agent ("KTA")************************
+/******************************************************************************
+*************************keySTREAM Trusted Agent ("KTA")***********************
+* (c) 2023-2024 Nagravision Sarl
 
-* (c) 2023-2024 Nagravision Sàrl
-
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
-* Software and any derivatives exclusively with Nagravision's products. It is your
+* Subject to your compliance with these terms, you may use the Nagravision Sarl
+* Software and any derivatives exclusively with Nagravision�s products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
 * Nagravision Software.
@@ -20,35 +19,32 @@
 * OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO
 * THE SOFTWARE, HOWEVER CAUSED, EVEN IF NAGRAVISION HAS BEEN ADVISED OF THE
 * POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE FULLEST EXTENT ALLOWED BY LAW,
-* NAGRAVISION 'S TOTAL LIABILITY ON ALL CLAIMS IN ANY WAY RELATED TO THIS
+* NAGRAVISION S TOTAL LIABILITY ON ALL CLAIMS IN ANY WAY RELATED TO THIS
 * SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY
-* TO NAGRAVISION FOR THIS SOFTWARE.
-********************************************************************************/
-/** \brief Configuration file for keySTREAM Trusted Agent.
- *
- *  \author Kudelski IoT
- *
- *  \date 2023/06/12
- *
- *  \file ktaConfig.h
- ******************************************************************************/
+* TO NAGRAVISION FOR THIS SOFTWARE. 
+******************************************************************************/
+/** \brief  Configuration file for environment setup.
+*
+*  \author Kudelski IoT
+*
+*  \date 2023/06/12
+*
+*  \file APP_Config.h
+******************************************************************************/
 
 /**
- * @brief Configuration file for keySTREAM Trusted Agent.
+ * @brief Configuration file for environment setup.
  */
 
-/** @addtogroup g_kta_hook
- * @{
- */
-/** @defgroup g_kta_hook */
-/** @} g_kta_hook */
-
-#ifndef K_KTA_CONFIG_H
-#define K_KTA_CONFIG_H
+#ifndef APP_CONFIG
+#define APP_CONFIG
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* C++ */
+
+/* This header file generated from one of the TPDS steps */
+/* Please do NOT make any changes to this file */
 
 /* -------------------------------------------------------------------------- */
 /* IMPORTS                                                                    */
@@ -57,45 +53,41 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
-/** @brief keySTREAM PROD CoAP Url. */
-#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)"icpp.mss.iot.kudelski.com"
 
-/** @brief keySTREAM PROD http Url. */
-#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       (const uint8_t*)"icph.mss.iot.kudelski.com"
+// /** @brief Wifi SSID for TrustManaged device */
+// #define WIFI_SSID                           ""
+// /** @brief Wifi password for TrustManaged device */
+// #define WIFI_PWD                            ""
+#if !defined(WIFI_SSID) || !defined(WIFI_PWD)
+    #error WLAN/WiFi WIFI_SSID and Password are not defined! \
+            Uncomment defines and replace xxxxxxxxxx with SSID and Password!
+#endif
 
-/** @brief L1 Segmentation Seed of CIE. */
-#define C_KTA_APP__L1_SEG_SEED_CIE          {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b,\
-                                             0x73, 0xf0, 0x56, 0x1d, 0xc4, 0xe0, 0x54, 0x72}
-
-/** @brief L1 Segmentation Seed. */
-#define C_KTA_APP__L1_SEG_SEED              C_KTA_APP__L1_SEG_SEED_CIE
-
-/** @brief Device profile public uid of keySTREAM. */
-
-#define C_KTA_APP__DEVICE_PUBLIC_UID        ("mchp_dev")
-
-/** @brief Application log */
-/** 
- * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
- * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
- * Using printf for logging.
- * Not checking the return status of printf, since not required.
- **/
-
-/** @brief Application log */
-#define C_KTA_APP__LOG                      printf
 
 /**
- * @brief Enable FOTA services.
- * Define this macro to enable FOTA-Services.
+ * @brief Fleet Profile UID created in keySTREAM.
+ * Copy the Fleet Profile UID from keySTREAM and uncomment the following line.
+ * Replace xxxxxxxxxxx with the Fleet Profile UID.
  */
-// #define FOTA_ENABLE
+//#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID             "xxxxxxxxxxx"
+#if !defined(KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID)
+    #error KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID not defined Uncomment define and replace xxxxxxxxxx with Fleet Profile UID!
+#endif
 
 /**
- * @brief Enable Network Stack.
- * Define this macro to enable Network Stack.
+ * @brief AWS endpoint URL.
+ * Define this macro to set the AWS endpoint URL.
+ * This is the URL of the AWS IoT Core service.
+ * The URL should be in the format of "xxxxxxxxxxxxxx.iot.region.amazonaws.com".
+ * This is used to connect to the AWS IoT Core service.
+ * Replace xxxxxxxxxxx with your AWS IoT Core endpoint.
+ * Example: "a1b2c3d4e5f6g7h8i9j0.iot.us-west-2.amazonaws.com"
  */
-// #define NETWORK_STACK_AVAILABLE
+//#define AWS_ENDPOINT      "xxxxxxxxxxx"
+#if !defined(AWS_ENDPOINT)
+    #error AWS_ENDPOINT not defined! \
+            Uncomment define and replace xxxxxxxxxx with AWS endpoint!
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
@@ -109,7 +101,7 @@ extern "C" {
 }
 #endif /* C++ */
 
-#endif // K_KTA_CONFIG_H
+#endif // APP_CONFIG
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

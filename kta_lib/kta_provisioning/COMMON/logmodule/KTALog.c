@@ -1,9 +1,9 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -69,7 +69,7 @@
 #define C_MAX_VALUE_SIZE (4u)
 
 /** @brief Maximum Modules for log */
-#define C_MAX_MODULES (12u)
+#define C_MAX_MODULES (14u)
 
 /** @brief MAximum Log Levels */
 #define C_MAX_LOG_LEVELS (6u)
@@ -97,7 +97,8 @@ static moduleLevelConfig gaLogConfigs[C_MAX_MODULES] = {
   {"SALSTORAGE", LOG_KTA_ENABLE},
   {"SALCRYPTO", LOG_KTA_ENABLE},
   {"SALOBJECT", LOG_KTA_ENABLE},
-  {"SALTHIRDPARTY", LOG_KTA_ENABLE}
+  {"SALTHIRDPARTY", LOG_KTA_ENABLE},
+  {"SALFOTA", LOG_KTA_ENABLE}
 };
 
 /** @brief Log event info structure. */
@@ -255,24 +256,24 @@ void ktaLog_PrintBuffer
   if (xLevel >= moduleLogLevel)
   {
     snprintf(aBuffer, C_MAX_BUFFER_SIZE, "%s : [%d]\r\n", xpFmt, xSize);
-    salPrint(aBuffer);
+    printf(aBuffer);
 
     for (Index = 0; Index < xSize; Index++)
     {
       snprintf(aValue, C_MAX_VALUE_SIZE, "%02X ", xpBuffer[Index]);
-      salPrint(aValue);
+      printf(aValue);
       if ((Index % (int32_t)C_LOG_COL_SIZE) == (C_LOG_COL_SIZE - 1u))
       {
         /* Line full. */
-        salPrint("\r\n");
+        printf("\r\n");
       }
     }
     if ((xSize % (int32_t)C_LOG_COL_SIZE) != 0)
     {
       /* Last line not full. */
-      salPrint("\r\n");
+      printf("\r\n");
     }
-    salPrint("\r\n");
+    printf("\r\n");
   }
 }
 

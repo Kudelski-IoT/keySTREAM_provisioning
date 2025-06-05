@@ -18,6 +18,7 @@
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
 //#include "iot_secure_sockets.h"
+#include "FreeRTOS_IP.h"
 #include "FreeRTOS_Sockets.h"
 
 #include <errno.h>
@@ -150,7 +151,7 @@ K_SAL_API TKCommStatus salComConnect
   TKComInfo*          pComInfo = (TKComInfo *)xpComInfo;
   TKCommStatus        status = E_K_COMM_STATUS_ERROR;
   int32_t             socStatus = FREERTOS_SOCKET_ERROR;
-  SocketsSockaddr_t   socketAddress = { 0 };
+  struct              freertos_sockaddr socketAddress = { 0 };
   uint16_t            port = 0;
   char*               pEnd = NULL;
 
@@ -207,15 +208,13 @@ K_SAL_API TKCommStatus salComConnect
       status = E_K_COMM_STATUS_OK;
       break;
     }
-    socketAddress.ucLength = sizeof(SocketsSockaddr_t);
-    socketAddress.ucSocketDomain = FREERTOS_AF_INET;
-    socketAddress.ulAddress = FreeRTOS_gethostbyname((const char *)xpHost);
-    socketAddress.usPort = SOCKETS_htons(port);
+    socketAddress.sin_port = SOCKETS_htons(port);
+    socketAddress.sin_addr = FreeRTOS_gethostbyname((const char *)xpHost);
 
     M_INTL_SAL_COM_DEBUG(("Connect To Add [%d %x %x]",
-                          socketAddress.ucSocketDomain,
-                          socketAddress.usPort,
-                          (unsigned int)socketAddress.ulAddress));
+                          FREERTOS_AF_INET,
+                          socketAddress.sin_port,
+                          (unsigned int)socketAddress.sin_addr));
 
     socStatus = FreeRTOS_connect(pComInfo->socketId,
                                 &socketAddress,
