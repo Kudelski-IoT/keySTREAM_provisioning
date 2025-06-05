@@ -19,5 +19,8 @@ var k__kta_8h =
     [ "ktaStartup", "group__g__kta__api.html#ga71c68154dc1d65df6d55041382eead7e", null ],
     [ "ktaSetDeviceInformation", "group__g__kta__api.html#ga046b31490e1b3df30ad44d4a423bf16a", null ],
     [ "ktaExchangeMessage", "group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207", null ],
+    [ "ktaGetObjectWithAssociation", "group__g__kta__api.html#ga8cd7ee8ffd7e24e789a914cb8a2e3db4", null ],
+    [ "ktaGetObject", "group__g__kta__api.html#gacc19b52e78e3200cf6ddb6b666b98041", null ],
+    [ "ktaSignHash", "group__g__kta__api.html#gafe6a9be7bb9e2ac1237e0121dc9aa749", null ],
     [ "ktaKeyStreamStatus", "group__g__kta__api.html#ga865318ab46e05aaea00932f1eb7dc052", null ]
 ];

@@ -67,30 +67,7 @@ Write-Host "You selected Device: $selectedSubFolder"
 # Perform operations based on subfolder
 if ($selectedSubFolder -eq "d21_X")
 {
-    # Path to tmg_conf.h
-    $tmgConfPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\tmg_conf.h"
-
-    if (Test-Path $tmgConfPath) 
-    {
-        $ssid = Read-Host "Enter new WIFI SSID"
-        $pwd = Read-Host "Enter new WIFI password"
-        $uid = Read-Host "Enter new KEYSTREAM Device Public Profile UID"
-
-        $content = Get-Content $tmgConfPath
-
-        $content = $content -replace '(#define\s+WIFI_SSID\s*)".*"', "`$1`"$ssid`""
-        $content = $content -replace '(#define\s+WIFI_PWD\s*)".*"', "`$1`"$pwd`""
-        $content = $content -replace '(#define\s+KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID\s*)".*"', "`$1`"$uid`""
-
-        Set-Content $tmgConfPath $content
-
-        Write-Host "updated successfully."
-    } 
-    else 
-    {
-        Write-Host "update failure $tmgConfPath"
-    }
-
+    Write-Host "Performing d21_X operations..."
     $preConfigRoot = Split-Path $currentPath -Parent
     $ktaLibPath = Join-Path $preConfigRoot "kta_lib\kta_provisioning"
     if (-not (Test-Path $ktaLibPath))
@@ -100,9 +77,65 @@ if ($selectedSubFolder -eq "d21_X")
     }
 
     # 1. Copy SOURCE folder to ...\firmware\common\kta_provisioning
-    $destKtaProv = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\common\kta_provisioning"
     $sourcePath = Join-Path $ktaLibPath "SOURCE"
-    Copy-Item $sourcePath -Destination $destKtaProv -Recurse -Force
+    $destPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\common\kta_provisioning\SOURCE"
+
+    # Remove the destination SOURCE folder if it already exists
+    if (Test-Path $destPath) {
+        Remove-Item $destPath -Recurse -Force
+    }
+
+    # Copy all files from SOURCE (including ktaConfig.h)
+    Copy-Item $sourcePath -Destination $destPath -Recurse -Force
+
+    # Overwrite ktaConfig.h with the latest version
+    $srcKtaConfig = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\SOURCE\include\ktaConfig.h"
+    $destKtaConfig = Join-Path $destPath "include\ktaConfig.h"
+    Copy-Item $srcKtaConfig -Destination $destKtaConfig -Force
+
+    # --- Custom script for ktaConfig.h ---
+    $ktaConfigPath = Join-Path $destPath "include\ktaConfig.h"
+    if (Test-Path $ktaConfigPath) {
+        # Replace the commented or existing define with the required define
+        (Get-Content $ktaConfigPath) | ForEach-Object {
+            if ($_ -match '^\s*//\s*#define\s+C_KTA_APP__LOG\b' -or $_ -match '^\s*#define\s+C_KTA_APP__LOG\b') {
+                '#define C_KTA_APP__LOG               APP_DebugPrintf'
+            } else {
+                $_
+            }
+        } | Set-Content $ktaConfigPath
+
+        $lines = Get-Content $ktaConfigPath
+        if ($lines.Count -ge 56) {
+            $lines = $lines[0..54] + '#include "app.h"' + '#include "App_Config.h"' + $lines[55..($lines.Count-1)]
+            $lines | Set-Content $ktaConfigPath
+        } else {
+            # If file is shorter, just append both at the end
+            Add-Content $ktaConfigPath '#include "app.h"'
+            Add-Content $ktaConfigPath '#include "App_Config.h"'
+        }
+            
+        # 1. Replace C_KTA_APP__DEVICE_PUBLIC_UID with required macro
+        $lines = $lines | ForEach-Object {
+            if ($_ -match '^\s*#define\s+C_KTA_APP__DEVICE_PUBLIC_UID\b') {
+                '#define C_KTA_APP__DEVICE_PUBLIC_UID    KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID'
+            } else {
+                $_
+            }
+        }
+
+        # 2. Uncomment NETWORK_STACK_AVAILABLE
+        $lines = $lines | ForEach-Object {
+            if ($_ -match '^\s*//\s*#define\s+NETWORK_STACK_AVAILABLE\b') {
+                ' #define NETWORK_STACK_AVAILABLE'
+            } else {
+                $_
+            }
+        }
+
+        $lines | Set-Content $ktaConfigPath
+        }
+
 
     # 2. Copy other files to ...\firmware\common\
     $destCommon = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\common"
@@ -118,21 +151,6 @@ if ($selectedSubFolder -eq "d21_X")
     Copy-Item "$ktaLibPath\cust_def_signer.h"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\ktaFieldMgntHook.c"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\ktaFieldMgntHook.h"    -Destination $destCommon -Force
-
-    # Remove only the 'break;' at line 483 in ktaFieldMgntHook.c (1-based line number)
-    $ktaFieldMgntHookPath = Join-Path $destCommon "ktaFieldMgntHook.c"
-    if (Test-Path $ktaFieldMgntHookPath) {
-        $lines = Get-Content $ktaFieldMgntHookPath
-        # Remove line 483 (index 482 in 0-based array) if it starts with 'break;'
-        if ($lines.Count -ge 483 -and $lines[482].Trim().StartsWith('break;')) {
-            $lines = $lines[0..481] + $lines[483..($lines.Count-1)]
-            Set-Content $ktaFieldMgntHookPath $lines
-        } else {
-            Write-Host "'break;' not found at line 483 in ktaFieldMgntHook.c."
-        }
-    } else {
-        Write-Host "ktaFieldMgntHook.c not found at $ktaFieldMgntHookPath"
-    }
 
     $preConfigRoot = Split-Path $currentPath -Parent
     $srcCryptoAuthLib = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\cryptoauthlib"
@@ -186,22 +204,59 @@ elseif ($selectedSubFolder -eq "same54_X")
 {
     Write-Host "Performing same54 operations..."
 
-    # Only take UID as input
-    $uid = Read-Host "Enter new KEYSTREAM Device Public Profile UID"
-
-    $ktaLibPath = Join-Path (Split-Path $currentPath) "kta_lib\kta_provisioning" 
-    $tmgConfPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\tmg_conf.h"
-    $content = Get-Content $tmgConfPath
-    $content = $content -replace '(#define\s+KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID\s*)".*"', "`$1`"$uid`""
-    Set-Content $tmgConfPath $content
-
     $preConfigRoot = Split-Path $currentPath -Parent
     $ktaLibPath = Join-Path $preConfigRoot "kta_lib\kta_provisioning"
 
     # 1. Copy SOURCE folder to ...\firmware\common\kta_provisioning
-    $destKtaProv = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\common\kta_provisioning"
     $sourcePath = Join-Path $ktaLibPath "SOURCE"
-    Copy-Item $sourcePath -Destination $destKtaProv -Recurse -Force
+    $destPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\common\kta_provisioning\SOURCE"
+
+    # Remove the destination SOURCE folder if it already exists
+    if (Test-Path $destPath) {
+        Remove-Item $destPath -Recurse -Force
+    }
+
+    # Copy all files from SOURCE (including ktaConfig.h)
+    Copy-Item $sourcePath -Destination $destPath -Recurse -Force
+
+    # Overwrite ktaConfig.h with the latest version
+    $srcKtaConfig = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\SOURCE\include\ktaConfig.h"
+    $destKtaConfig = Join-Path $destPath "include\ktaConfig.h"
+    Copy-Item $srcKtaConfig -Destination $destKtaConfig -Force
+
+    # --- Custom script for ktaConfig.h ---
+    $ktaConfigPath = Join-Path $destPath "include\ktaConfig.h"
+    if (Test-Path $ktaConfigPath) {
+
+        $lines = Get-Content $ktaConfigPath
+        if ($lines.Count -ge 56) {
+            $lines = $lines[0..54] + '#include "App_Config.h"' + $lines[55..($lines.Count-1)]
+            $lines | Set-Content $ktaConfigPath
+        } else {
+            # If file is shorter, just append at the end
+            Add-Content $ktaConfigPath '#include "App_Config.h"'
+        }
+
+        # 1. Replace C_KTA_APP__DEVICE_PUBLIC_UID with required macro
+        $lines = $lines | ForEach-Object {
+            if ($_ -match '^\s*#define\s+C_KTA_APP__DEVICE_PUBLIC_UID\b') {
+                '#define C_KTA_APP__DEVICE_PUBLIC_UID                 KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID'
+            } else {
+                $_
+            }
+        }
+
+        # 2. Uncomment NETWORK_STACK_AVAILABLE
+        $lines = $lines | ForEach-Object {
+            if ($_ -match '^\s*//\s*#define\s+NETWORK_STACK_AVAILABLE\b') {
+                ' #define NETWORK_STACK_AVAILABLE'
+            } else {
+                $_
+            }
+        }
+
+        $lines | Set-Content $ktaConfigPath
+    }
 
     # 2. Copy other files to ...\firmware\common\
     $destCommon = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\common"
@@ -217,21 +272,6 @@ elseif ($selectedSubFolder -eq "same54_X")
     Copy-Item "$ktaLibPath\cust_def_signer.h"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\ktaFieldMgntHook.c"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\ktaFieldMgntHook.h"    -Destination $destCommon -Force
-
-    # Remove only the 'break;' at line 483 in ktaFieldMgntHook.c (1-based line number)
-    $ktaFieldMgntHookPath = Join-Path $destCommon "ktaFieldMgntHook.c"
-    if (Test-Path $ktaFieldMgntHookPath) {
-        $lines = Get-Content $ktaFieldMgntHookPath
-        # Remove line 483 (index 482 in 0-based array) if it starts with 'break;'
-        if ($lines.Count -ge 483 -and $lines[482].Trim().StartsWith('break;')) {
-            $lines = $lines[0..481] + $lines[483..($lines.Count-1)]
-            Set-Content $ktaFieldMgntHookPath $lines
-        } else {
-            Write-Host "'break;' not found at line 483 in ktaFieldMgntHook.c."
-        }
-    } else {
-        Write-Host "ktaFieldMgntHook.c not found at $ktaFieldMgntHookPath"
-    }
 
     $preConfigRoot = Split-Path $currentPath -Parent
     $srcCryptoAuthLib = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\cryptoauthlib"
@@ -291,35 +331,6 @@ elseif ($selectedSubFolder -eq "same54_X")
 } 
 elseif ($selectedSubFolder -eq "sg41_X") 
 {
-    # Path to configuration.h
-    $configPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\src\config\default\configuration.h"
-    if (Test-Path $configPath) {
-        $ssid = Read-Host "Enter new WIFI SSID"
-        $pwd = Read-Host "Enter new WIFI password"
-
-        # Update only SSID and PASSWORD in configuration.h
-        $configContent = Get-Content $configPath
-        $configContent = $configContent -replace '(#define SYS_WINCS_WIFI_STA_SSID\s+)"[^"]*"', "`$1`"$ssid`""
-        $configContent = $configContent -replace '(#define SYS_WINCS_WIFI_STA_PWD\s+)"[^"]*"', "`$1`"$pwd`""
-        Set-Content $configPath $configContent
-    } else {
-        Write-Host "configuration.h not found at $configPath"
-    }
-
-    # Path to ktaConfig.h
-    $ktaConfigPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\src\config\default\library\kta_lib\ktaConfig.h"
-    if (Test-Path $ktaConfigPath) {
-        $uid = Read-Host "Enter new KEYSTREAM Device Public Profile UID"
-
-        $ktaConfigContent = Get-Content $ktaConfigPath
-        $ktaConfigContent = $ktaConfigContent -replace '(\#define C_KTA_APP__DEVICE_PUBLIC_UID\s*)\([^\)]*\)', "`$1(`"$uid`")"
-        Set-Content $ktaConfigPath $ktaConfigContent
-        Write-Host "ktaConfig.h updated successfully."
-    } else {
-        Write-Host "ktaConfig.h not found at $ktaConfigPath"
-    }
-
-
     $preConfigRoot = Split-Path $currentPath -Parent
     $ktaLibPath = Join-Path $preConfigRoot "kta_lib\kta_provisioning"
     if (-not (Test-Path $ktaLibPath)) {
@@ -327,34 +338,67 @@ elseif ($selectedSubFolder -eq "sg41_X")
         exit
     }
 
-    $destKtaLib = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\src\config\default\library\kta_lib"
-    if (-not (Test-Path $destKtaLib)) {
-        New-Item -ItemType Directory -Path $destKtaLib -Force | Out-Null
+    # 1. Copy SOURCE folder to ...\src\config\default\library\kta_lib\SOURCE
+    $sourcePath = Join-Path $ktaLibPath "SOURCE"
+    $destSourcePath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\src\config\default\library\kta_lib\SOURCE"
+
+    # Remove the destination SOURCE folder if it already exists
+    if (Test-Path $destSourcePath) {
+        Remove-Item $destSourcePath -Recurse -Force
     }
 
-    Copy-Item (Join-Path $ktaLibPath "SOURCE")                -Destination $destKtaLib -Recurse -Force
-    Copy-Item (Join-Path $ktaLibPath "fota_service")           -Destination $destKtaLib -Recurse -Force
-    Copy-Item (Join-Path $ktaLibPath "cust_def_device.c")      -Destination $destKtaLib -Force
-    Copy-Item (Join-Path $ktaLibPath "cust_def_device.h")      -Destination $destKtaLib -Force
-    Copy-Item (Join-Path $ktaLibPath "cust_def_signer.c")      -Destination $destKtaLib -Force
-    Copy-Item (Join-Path $ktaLibPath "cust_def_signer.h")      -Destination $destKtaLib -Force
-    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.c")     -Destination $destKtaLib -Force
-    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.h")     -Destination $destKtaLib -Force
+    # Copy all files from SOURCE (including ktaConfig.h)
+    Copy-Item $sourcePath -Destination $destSourcePath -Recurse -Force
 
-    # Remove only the 'break;' at line 483 in ktaFieldMgntHook.c (1-based line number)
-    $ktaFieldMgntHookPath = Join-Path $destKtaLib "ktaFieldMgntHook.c"
-    if (Test-Path $ktaFieldMgntHookPath) {
-        $lines = Get-Content $ktaFieldMgntHookPath
-        # Remove line 483 (index 482 in 0-based array) if it starts with 'break;'
-        if ($lines.Count -ge 483 -and $lines[482].Trim().StartsWith('break;')) {
-            $lines = $lines[0..481] + $lines[483..($lines.Count-1)]
-            Set-Content $ktaFieldMgntHookPath $lines
+    # Overwrite ktaConfig.h with the latest version
+    $srcKtaConfig = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\SOURCE\include\ktaConfig.h"
+    $destKtaConfig = Join-Path $destSourcePath "include\ktaConfig.h"
+    Copy-Item $srcKtaConfig -Destination $destKtaConfig -Force
+
+
+    # --- Custom script for ktaConfig.h ---
+    $ktaConfigPath = $destKtaConfig
+    if (Test-Path $ktaConfigPath) {
+
+        $lines = Get-Content $ktaConfigPath
+        if ($lines.Count -ge 56) {
+            $lines = $lines[0..54] + '#include "App_Config.h"' + $lines[55..($lines.Count-1)]
+            $lines | Set-Content $ktaConfigPath
         } else {
-            Write-Host "'break;' not found at line 483 in ktaFieldMgntHook.c."
+            # If file is shorter, just append at the end
+            Add-Content $ktaConfigPath '#include "App_Config.h"'
         }
-    } else {
-        Write-Host "ktaFieldMgntHook.c not found at $ktaFieldMgntHookPath"
+                
+        # 1. Replace C_KTA_APP__DEVICE_PUBLIC_UID with required macro
+        $lines = $lines | ForEach-Object {
+            if ($_ -match '^\s*#define\s+C_KTA_APP__DEVICE_PUBLIC_UID\b') {
+                '#define C_KTA_APP__DEVICE_PUBLIC_UID                 KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID'
+            } else {
+                $_
+            }
+        }
+
+        # 2. Uncomment NETWORK_STACK_AVAILABLE
+        $lines = $lines | ForEach-Object {
+            if ($_ -match '^\s*//\s*#define\s+NETWORK_STACK_AVAILABLE\b') {
+                ' #define NETWORK_STACK_AVAILABLE'
+            } else {
+                $_
+            }
+        }
+
+        $lines | Set-Content $ktaConfigPath
     }
+
+
+    $destcustdef = Join-Path $destSourcePath "..\"
+    Copy-Item (Join-Path $ktaLibPath "fota_service")           -Destination $destcustdef -Recurse -Force
+    Copy-Item (Join-Path $ktaLibPath "cust_def_device.c")      -Destination $destcustdef -Force
+    Copy-Item (Join-Path $ktaLibPath "cust_def_device.h")      -Destination $destcustdef -Force
+    Copy-Item (Join-Path $ktaLibPath "cust_def_signer.c")      -Destination $destcustdef -Force
+    Copy-Item (Join-Path $ktaLibPath "cust_def_signer.h")      -Destination $destcustdef -Force
+    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.c")     -Destination $destcustdef -Force
+    Copy-Item (Join-Path $ktaLibPath "ktaFieldMgntHook.h")     -Destination $destcustdef -Force
 
     $preConfigRoot = Split-Path $currentPath -Parent
     $srcCryptoAuthLib = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\cryptoauthlib"

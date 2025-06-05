@@ -50,25 +50,75 @@ cd "path\to\your\keySTREAM_provisioning-main\PreConfigured-Examples"
 
 ### 4. Run the Configuration Script
 
+Set Execution context to RemoteSgned before running config.ps1
+```powershell
+Set-ExecutionPolicy RemoteSigned
+```
 Execute the script:
 ```powershell
 .\Config.ps1
 ```
+Set Execution context to Restricted after running config.ps1
+```powershell
+Set-ExecutionPolicy Restricted
+```
 
-### 5. Follow the On-Screen Prompts
+### 5. Run the Provisioning Script
 
-The script will guide you through the following steps:
+The script will guide you through:
 
-- **Select a folder**: Choose the main folder (e.g., `TrustMANAGER`).
-- **Select a device**: Choose your target device (`d21_X`, `same54_X`, or `sg41_X`).
-- **Enter configuration values**:
-  - For `d21_X`: Enter WiFi SSID, WiFi password, and Device Public Profile UID.
-  - For `same54_X`: Enter only the Device Public Profile UID.
-  - For `sg41_X`: Enter WiFi SSID, WiFi password, and Device Public Profile UID (when prompted).
+- **Selecting a folder**: Choose the main folder (e.g., `TrustMANAGER`).
+- **Selecting a device**: Choose your target device (`d21_X`, `same54_X`, or `sg41_X`).
 
-The script will automatically update the relevant configuration files and copy required provisioning files for your selected platform.
+The script will automatically update the relevant project files and copy all required provisioning files for your selected platform.
 
-### 6. Open the MPLAB X Project
+---
+
+### 6. Configure KTA features
+
+The KTA configuration file (`App_Config.h`) is used to set device-specific and feature options.
+
+**Location:**  
+- For all devices:  
+  `<TrustMANAGER>\<Device>\keystream_connect\App_Config.h`  
+  *(For `sg41_X`, the path may be: `<TrustMANAGER>\sg41_X\keystream_connect\App_Config.h`)*
+
+**Typical edits:**
+1. Set your device's public UID for fleet profile:
+    ```c
+    //#define C_KTA_APP__DEVICE_PUBLIC_UID             "xxxxxxxxxxx"
+    ```
+    Replace `xxxxxxxxxxx` with your device UID and uncomment the line if needed.
+2. Other KTA features can also be enabled/disabled from ktaConfig.h<br> For ex, Enable FOTA service
+   ```c
+   //#define FOTA_ENABLE
+   ``` 
+---
+
+### 7. Configure App specific configuration
+
+Update application-specific settings in the following files:
+
+#### D21_X
+- **File:** `<TrustMANAGER>\D21_X\keystream_connect\App_Config.h`
+- **What to update:**  
+  - WiFi SSID and Password  
+  - AWS Endpoint
+
+#### SAME54_X
+- **File:** `<TrustMANAGER>\SAME54_X\keystream_connect\App_Config.h`
+- **What to update:**  
+  - AWS Endpoint
+  - AWS Thing Name
+
+#### SG41_X
+- **File:** `<TrustMANAGER>\SG41_X\keystream_connect\App_Config.h`
+- **What to update:**  
+  - WiFi SSID and Password
+
+---
+
+### 8. Open the MPLAB X Project
 
 After completion, the script will display the **full path** to the generated `.X` project file for your device.  
 Example output:

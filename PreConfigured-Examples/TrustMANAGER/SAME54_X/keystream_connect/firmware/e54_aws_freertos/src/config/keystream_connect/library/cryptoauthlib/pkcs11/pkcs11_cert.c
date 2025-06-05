@@ -26,7 +26,8 @@
  */
 
 #include "cryptoauthlib.h"
-#include "atcacert/atcacert_def.h"
+#include "cust_def_device.h"
+#include "cust_def_signer.h"
 #include "atcacert/atcacert_client.h"
 #if defined(ATCA_TNGTLS_SUPPORT) || defined(ATCA_TNGLORA_SUPPORT) || defined(ATCA_TFLEX_SUPPORT)
 #include "tng_atca.h"
@@ -38,6 +39,8 @@
 #include "pkcs11_cert.h"
 #include "pkcs11_os.h"
 #include "pkcs11_util.h"
+#define SIGNER_PUBLIC_KEY_MAX_LEN   64
+#define SIGNER_CERT_MAX_LEN         600
 
 /**
  * \defgroup pkcs11 Key (pkcs11_key_)
@@ -77,28 +80,52 @@ static CK_RV pkcs11_cert_load(pkcs11_object_ptr pObject, CK_ATTRIBUTE_PTR pAttri
         /* Load Certificate */
         if (pAttribute->pValue && pAttribute->ulValueLen)
         {
-            uint8_t ca_key[64];
-            status  = ATCA_SUCCESS;
-
-            if (cert_cfg->ca_cert_def)
-            {
-                if (cert_cfg->ca_cert_def->public_key_dev_loc.is_genkey)
-                {
-                    status = atcab_get_pubkey(cert_cfg->ca_cert_def->public_key_dev_loc.slot, ca_key);
-                }
-                else
-                {
-                    status = atcab_read_pubkey(cert_cfg->ca_cert_def->public_key_dev_loc.slot, ca_key);
-                }
-            }
-
-            if (status)
-            {
-                return CKR_DEVICE_ERROR;
-            }
-
             size_t temp = pAttribute->ulValueLen;
-            status = atcacert_read_cert(pObject->data, cert_cfg->ca_cert_def ? ca_key : NULL, pAttribute->pValue, &temp);
+
+            // --- Device Certificate ---
+            if (cert_cfg->ca_cert_def != NULL)
+            {
+                uint8_t signer_cert[SIGNER_CERT_MAX_LEN];
+                size_t signer_cert_size = sizeof(signer_cert);
+                cal_buffer ca_public_key_buf = { .buf = g_cert_ca_public_key_1_signer, .len = SIGNER_PUBLIC_KEY_MAX_LEN };
+
+                status = atcacert_read_cert(
+                    cert_cfg->ca_cert_def,
+                    &ca_public_key_buf,
+                    signer_cert,
+                    &signer_cert_size);
+                if (status != ATCACERT_E_SUCCESS) {
+                    return CKR_DEVICE_ERROR;
+                }
+
+                uint8_t signer_public_key[SIGNER_PUBLIC_KEY_MAX_LEN];
+                cal_buffer signer_public_key_buf = { .buf = signer_public_key, .len = SIGNER_PUBLIC_KEY_MAX_LEN };
+                status = atcacert_get_subj_public_key(
+                    cert_cfg->ca_cert_def,
+                    signer_cert,
+                    signer_cert_size,
+                    &signer_public_key_buf);
+                if (status != ATCACERT_E_SUCCESS) {
+                    return CKR_DEVICE_ERROR;
+                }
+
+                status = atcacert_read_cert(
+                    cert_cfg,
+                    &signer_public_key_buf,
+                    pAttribute->pValue,
+                    &temp);
+            }
+            // --- Signer Certificate ---
+            else
+            {
+                cal_buffer ca_public_key_buf = { .buf = g_cert_ca_public_key_1_signer, .len = 64 };
+                status = atcacert_read_cert(
+                    cert_cfg,
+                    &ca_public_key_buf,
+                    pAttribute->pValue,
+                    &temp);
+            }
+
             pAttribute->ulValueLen = (uint32_t)temp;
 
             if (ATCACERT_E_DECODING_ERROR == status)

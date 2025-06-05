@@ -2,7 +2,7 @@
 #define _AWS_CONNECT_H
 
 #include "cryptoauthlib.h"
-#include "tmg_conf.h"
+#include "App_Config.h"
 
 #ifdef __cplusplus
 extern "C" {

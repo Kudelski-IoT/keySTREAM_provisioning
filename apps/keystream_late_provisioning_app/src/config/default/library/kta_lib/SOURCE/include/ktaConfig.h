@@ -1,9 +1,9 @@
-/*******************************************************************************
+﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -57,11 +57,16 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
+
 /** @brief keySTREAM PROD CoAP Url. */
 #define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)"icpp.mss.iot.kudelski.com"
 
 /** @brief keySTREAM PROD http Url. */
 #define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       (const uint8_t*)"icph.mss.iot.kudelski.com"
+
+/** @brief Device profile public uid of keySTREAM. */
+#define C_KTA_APP__DEVICE_PUBLIC_UID             "mchp_dev"
+
 
 /** @brief L1 Segmentation Seed of CIE. */
 #define C_KTA_APP__L1_SEG_SEED_CIE          {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b,\
@@ -70,11 +75,61 @@ extern "C" {
 /** @brief L1 Segmentation Seed. */
 #define C_KTA_APP__L1_SEG_SEED              C_KTA_APP__L1_SEG_SEED_CIE
 
-/** @brief Device profile public uid of keySTREAM. */
-#define C_KTA_APP__DEVICE_PUBLIC_UID        ("")
-
 /** @brief Application log */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
+ * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
+ * Using printf for logging.
+ * Not checking the return status of printf, since not required.
+ **/
 #define C_KTA_APP__LOG                      printf
+
+/* -------------------------------------------------------------------------- */
+/* FOTA SERVICES                                                              */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable FOTA services.
+ * Define this macro to enable FOTA-Services.
+ */
+//#define FOTA_ENABLE
+
+/* -------------------------------------------------------------------------- */
+/* PLATFORM_PROCESS_FEATURE                                                   */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable Platform Process Feature.
+ * Define this macro to enable Platform Process Feature.
+ */
+//#define PLATFORM_PROCESS_FEATURE
+
+#ifndef PLATFORM_PROCESS_FEATURE
+/* -------------------------------------------------------------------------- */
+/* OBJECT_MANAGEMENT_FEATURE                                                  */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable Object Management Feature.
+ * Define this macro to enable Object Management Feature.
+ */
+#define OBJECT_MANAGEMENT_FEATURE
+#endif
+
+/* -------------------------------------------------------------------------- */
+/* NETWORK STACK AVAILABLE                                                    */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable Network Stack Feature.
+ * Define this macro to enable Network Stack Feature.
+ */
+//#define NETWORK_STACK_AVAILABLE
+
+/* -------------------------------------------------------------------------- */
+/* CHIP CERTIFICATE AVAILABLE                                                 */
+/* -------------------------------------------------------------------------- */
+/**
+ * @brief Enable Device Provides Chip Certificate.
+ * Define this macro to enable chip certificate support.
+ */
+#define DEVICE_PROVIDES_CHIP_CERT
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -92,3 +147,5 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */
 /* -------------------------------------------------------------------------- */
+
+

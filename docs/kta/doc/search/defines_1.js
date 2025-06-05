@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['k_5fsal_5fapi_483',['K_SAL_API',['../k__defs_8h.html#a1a8e84430e52400313049a4910d394ee',1,'k_defs.h']]]
+  ['device_5fprovides_5fchip_5fcert_507',['DEVICE_PROVIDES_CHIP_CERT',['../kta_config_8h.html#ab5961f149bb05ea7f4440648ca869a38',1,'ktaConfig.h']]]
 ];

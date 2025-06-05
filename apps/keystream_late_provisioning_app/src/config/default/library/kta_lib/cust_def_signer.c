@@ -170,22 +170,6 @@ const atcacert_cert_element_t g_cert_elements_1_signer[] = {
             TF_NONE
         }
     },
-#ifdef __free_rtos__
-    {
-        .id = "AuthorityKeyId",
-        .device_loc = {
-            .zone = DEVZONE_DATA,
-            .slot = 8,
-            .is_genkey = 0,
-            .offset = 64,
-            .count = 20
-        },
-        .cert_loc = {
-            .offset = 365,
-            .count = 20
-        }
-    }
-#endif
 };
 
 const atcacert_def_t g_cert_def_1_signer = {

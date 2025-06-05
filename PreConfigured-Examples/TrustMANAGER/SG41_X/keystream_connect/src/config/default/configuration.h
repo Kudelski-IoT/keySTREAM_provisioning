@@ -57,6 +57,7 @@
 
 #include "user.h"
 #include "device.h"
+#include "App_Config.h"
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
@@ -210,8 +211,8 @@ extern "C" {
 
 #define SYS_WINCS_WIFI_DEVMODE        		SYS_WINCS_WIFI_MODE_STA
 
-#define SYS_WINCS_WIFI_STA_SSID				    ""
-#define SYS_WINCS_WIFI_STA_PWD        		""
+#define SYS_WINCS_WIFI_STA_SSID				     WIFI_SSID
+#define SYS_WINCS_WIFI_STA_PWD        		 WIFI_PWD
 #define SYS_WINCS_WIFI_STA_SECURITY			   SYS_WINCS_WIFI_SECURITY_WPA2 
 #define SYS_WINCS_WIFI_STA_AUTOCONNECT   	 true
 

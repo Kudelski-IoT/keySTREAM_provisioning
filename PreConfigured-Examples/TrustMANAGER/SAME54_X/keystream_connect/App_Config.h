@@ -29,15 +29,15 @@
 *
 *  \date 2023/06/12
 *
-*  \file tmg_conf.h
+*  \file APP_Config.h
 ******************************************************************************/
 
 /**
  * @brief Configuration file for environment setup.
  */
 
-#ifndef TMG_CONF_H
-#define TMG_CONF_H
+#ifndef APP_CONFIG
+#define APP_CONFIG
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,24 +54,47 @@ extern "C" {
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
 
-/** @brief Wifi SSID for TrustManaged device */
-#define WIFI_SSID                           ""
 
-/** @brief Wifi password for TrustManaged device */
-#define WIFI_PWD                            ""
 
-/** @brief TrustManaged Device Public UID */
-#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID ""
+/**
+ * @brief Fleet Profile UID created in keySTREAM.
+ * Copy the Fleet Profile UID from keySTREAM and uncomment the following line.
+ * Replace xxxxxxxxxxx with the Fleet Profile UID.
+ */
+// #define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID             ""
+#if !defined(KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID)
+    #error KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID not defined Uncomment define and replace xxxxxxxxxx with Fleet Profile UID!
+#endif
 
-/** @brief keySTREAM COAP Endpoint */
-#define KEYSTREAM_COAP_URL                  (const uint8_t*)"icpp.mss.iot.kudelski.com"
+/**
+ * @brief AWS endpoint URL.
+ * Define this macro to set the AWS endpoint URL.
+ * This is the URL of the AWS IoT Core service.
+ * The URL should be in the format of "xxxxxxxxxxxxxx.iot.region.amazonaws.com".
+ * This is used to connect to the AWS IoT Core service.
+ * Replace xxxxxxxxxxx with your AWS IoT Core endpoint.
+ * Example: "a1b2c3d4e5f6g7h8i9j0.iot.us-west-2.amazonaws.com"
+ */
+// #define AWS_ENDPOINT      "xxxxxxxxxxx"
+#if !defined(AWS_ENDPOINT)
+    #error AWS_ENDPOINT not defined! \
+            Uncomment define and replace xxxxxxxxxx with AWS endpoint!
+#endif
 
-/** @brief keySTREAM HTTP Endpoint */
-#define KEYSTREAM_HTTP_URL                  (const uint8_t*)"icph.mss.iot.kudelski.com"
 
-/** @brief AWS Endpoint */
-#define AWS_ENDPOINT                        "a3k3bohxtu19qi-ats.iot.us-east-2.amazonaws.com"
-
+/**
+ * @brief AWS IoT Core Thing name.
+ * Define AWS_THING_NAME macro to set the AWS IoT Core Thing name.
+ * This is the name of the Thing in AWS IoT Core.
+ * The Thing name should be unique within your AWS account.
+ * Replace xxxxxxxxxxx with your Thing name.
+ * Example: "MyIoTDevice"
+ */
+// #define AWS_THING_NAME      "xxxxxxxxxxx"
+#if !defined(AWS_THING_NAME)
+    #error AWS_THING_NAME not defined! \
+            Uncomment define and replace xxxxxxxxxx with AWS Thing name!
+#endif
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -84,7 +107,7 @@ extern "C" {
 }
 #endif /* C++ */
 
-#endif // TMG_CONF_H
+#endif // APP_CONFIG
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

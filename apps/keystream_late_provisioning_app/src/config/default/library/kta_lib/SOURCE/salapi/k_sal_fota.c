@@ -1,9 +1,9 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -51,11 +51,7 @@
 #ifndef K_SAL_API
 #define K_SAL_API
 #endif
-//#define M_KTALOG__ERR(fmt, ...) APP_DebugPrintf("ERROR: " fmt, ##__VA_ARGS__)
-//#define M_KTALOG__DEBUG(fmt, ...) APP_DebugPrintf("DEBUG: " fmt, ##__VA_ARGS__)
-//#define M_KTALOG__INFO(fmt, ...) APP_DebugPrintf("INFO: " fmt, ##__VA_ARGS__)
-//#define M_KTALOG__START(fmt, ...)
-//#define M_KTALOG__END(fmt, ...)
+
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */

@@ -16,6 +16,7 @@ var files_dup =
     [ "k_kta.h", "k__kta_8h.html", "k__kta_8h" ],
     [ "k_version.h", "k__version_8h.html", "k__version_8h" ],
     [ "kta_version.h", "kta__version_8h.html", "kta__version_8h" ],
+    [ "ktaConfig.h", "kta_config_8h.html", "kta_config_8h" ],
     [ "ktamgr.c", "ktamgr_8c.html", "ktamgr_8c" ],
     [ "reghandler.c", "reghandler_8c.html", "reghandler_8c" ],
     [ "reghandler.h", "reghandler_8h.html", "reghandler_8h" ],

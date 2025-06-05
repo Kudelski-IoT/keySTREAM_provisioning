@@ -54,8 +54,6 @@ extern "C" {
 /** @brief Set an argument/return value as unused */
 #define M_UNUSED(xArg)            (void)(xArg)
 
-#define LOG_KTA_ENABLE E_KTALOG_LEVEL_ERROR
-
 #if !defined(LOG_KTA_ENABLE)
 /** @brief keySTREAM Trusted Agent log level. */
 #define LOG_KTA_ENABLE E_KTALOG_LEVEL_NONE

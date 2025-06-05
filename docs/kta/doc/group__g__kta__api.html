@@ -187,6 +187,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga9ba21eab8cceee0d3a3ca976e33b6207"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207">ktaExchangeMessage</a> (const uint8_t *xpKs2ktaMsg, size_t xKs2ktaMsgLen, uint8_t *xpKta2ksMsg, size_t *xpKta2ksMsgLen)</td></tr>
 <tr class="memdesc:ga9ba21eab8cceee0d3a3ca976e33b6207"><td class="mdescLeft">&#160;</td><td class="mdescRight">keySTREAM Trusted Agent builds notification message, which must then be sent via application to keySTREAM.  <a href="group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207">More...</a><br /></td></tr>
 <tr class="separator:ga9ba21eab8cceee0d3a3ca976e33b6207"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8cd7ee8ffd7e24e789a914cb8a2e3db4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__kta__api.html#ga8cd7ee8ffd7e24e789a914cb8a2e3db4">ktaGetObjectWithAssociation</a> (uint32_t xObjWithAssociationId, uint32_t *xpAssociatedKeyId, uint32_t *xpAssociatedObjId, uint8_t *xpOutData, size_t *xpOutDataLen)</td></tr>
+<tr class="memdesc:ga8cd7ee8ffd7e24e789a914cb8a2e3db4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets an object which includes key, device cerificate and assosciated info. This object has been provisioned and is managed by keySTREAM.  <a href="group__g__kta__api.html#ga8cd7ee8ffd7e24e789a914cb8a2e3db4">More...</a><br /></td></tr>
+<tr class="separator:ga8cd7ee8ffd7e24e789a914cb8a2e3db4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacc19b52e78e3200cf6ddb6b666b98041"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__kta__api.html#gacc19b52e78e3200cf6ddb6b666b98041">ktaGetObject</a> (uint32_t xIdentifier, <a class="el" href="struct_t_kkta_data_object.html">TKktaDataObject</a> *xpObject)</td></tr>
+<tr class="memdesc:gacc19b52e78e3200cf6ddb6b666b98041"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets an object which includes signer cerificate and assosciated info. This object has been provisioned and is managed by keySTREAM.  <a href="group__g__kta__api.html#gacc19b52e78e3200cf6ddb6b666b98041">More...</a><br /></td></tr>
+<tr class="separator:gacc19b52e78e3200cf6ddb6b666b98041"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafe6a9be7bb9e2ac1237e0121dc9aa749"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__kta__api.html#gafe6a9be7bb9e2ac1237e0121dc9aa749">ktaSignHash</a> (uint32_t xKeyId, uint8_t *xpHash, size_t xHashLen, uint8_t *xpSignedHashOutBuff, uint32_t xSignedHashOutBuffLen, size_t *xpActualSignedHashOutLen)</td></tr>
+<tr class="memdesc:gafe6a9be7bb9e2ac1237e0121dc9aa749"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sign the data with keySTREAM Trusted Agent provisioned key. The key is always located inside the secure platform and addressed by an identifier.  <a href="group__g__kta__api.html#gafe6a9be7bb9e2ac1237e0121dc9aa749">More...</a><br /></td></tr>
+<tr class="separator:gafe6a9be7bb9e2ac1237e0121dc9aa749"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga865318ab46e05aaea00932f1eb7dc052"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__kta__api.html#ga865318ab46e05aaea00932f1eb7dc052">ktaKeyStreamStatus</a> (<a class="el" href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a> *xpKtaKSCmdStatus)</td></tr>
 <tr class="memdesc:ga865318ab46e05aaea00932f1eb7dc052"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provide command received from the keySTREAM There can be three valid command from keySTREAM.  <a href="group__g__kta__api.html#ga865318ab46e05aaea00932f1eb7dc052">More...</a><br /></td></tr>
 <tr class="separator:ga865318ab46e05aaea00932f1eb7dc052"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -638,6 +647,187 @@ Functions</h2></td></tr>
 </dd></dl>
 <p>keySTREAM Trusted Agent builds notification message, which must then be sent via application to keySTREAM. </p>
 <p>Process the received commands.</p>
+
+</div>
+</div>
+<a id="ga8cd7ee8ffd7e24e789a914cb8a2e3db4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8cd7ee8ffd7e24e789a914cb8a2e3db4">&#9670;&nbsp;</a></span>ktaGetObjectWithAssociation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> ktaGetObjectWithAssociation </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>xObjWithAssociationId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>xpAssociatedKeyId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>xpAssociatedObjId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>xpOutData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>xpOutDataLen</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets an object which includes key, device cerificate and assosciated info. This object has been provisioned and is managed by keySTREAM. </p>
+<dl class="section pre"><dt>Precondition</dt><dd>The function <a class="el" href="group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207" title="keySTREAM Trusted Agent builds notification message, which must then be sent via application to keyST...">ktaExchangeMessage()</a> is called and device is in provisioned state.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">xObjWithAssociationId</td><td>Should be a valid key identifier, It is pre defined in application and user is not expected to change its value. Object with Association identifier. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">xpAssociatedKeyId</td><td>[in] Pointer to buffer to carry asscociated key ID. [out] Associated key identifier (e.g. private key associated to a certificate). Should not be NULL. Buffer must be provided by the caller. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">xpAssociatedObjId</td><td>[in] Pointer to buffer to carry asscociated object ID. [out] Associated object identifier (e.g. signing certificate id info, which then be used by ktaGetAssociatedObject() API, to read the signer cetificate. Should not be NULL. Buffer must be provided by the caller. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">xpOutData</td><td>[in] Pointer to buffer to carry the device ceritficate (in Bytes). [out] Device ceritifcate in der (e.g. x.509 device certificate). Should not be NULL. Buffer must be provided by the caller. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">xpOutDataLen</td><td>[in] Pointer to buffer to carry length of the device ceritficate (in Bytes). [out] Actual output length. The caller set the maximum length expected (typ. the buffer size). Then, keySTREAM Trusted Agent writes the actual length of the data written to the buffer. Should be provided by the caller.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>E_K_STATUS_OK in case of success.</li>
+<li>E_K_STATUS_PARAMETER for wrong input parameter.</li>
+<li>E_K_STATUS_ERROR for other errors. </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="gacc19b52e78e3200cf6ddb6b666b98041"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacc19b52e78e3200cf6ddb6b666b98041">&#9670;&nbsp;</a></span>ktaGetObject()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> ktaGetObject </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>xIdentifier</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_t_kkta_data_object.html">TKktaDataObject</a> *&#160;</td>
+          <td class="paramname"><em>xpObject</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets an object which includes signer cerificate and assosciated info. This object has been provisioned and is managed by keySTREAM. </p>
+<dl class="section pre"><dt>Precondition</dt><dd>The function <a class="el" href="group__g__kta__api.html#gacc19b52e78e3200cf6ddb6b666b98041" title="Gets an object which includes signer cerificate and assosciated info. This object has been provisione...">ktaGetObject()</a> is called and device is in provisioned state.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">xIdentifier</td><td>Should be a valid key identifier, It is the same key Identifier which application receives from the parameter "associatedObjId", in <a class="el" href="group__g__kta__api.html#gacc19b52e78e3200cf6ddb6b666b98041" title="Gets an object which includes signer cerificate and assosciated info. This object has been provisione...">ktaGetObject()</a> API. Object with Association identifier. Should be provided by the caller </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">xpObject</td><td>[in] Pointer to buffer to carry the device ceritficate (in Bytes). [out] Signer ceritifcate in der (e.g. x.509 signer certificate). Should not be NULL. Buffer must be provided by the caller.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>E_K_STATUS_OK in case of success.</li>
+<li>E_K_STATUS_PARAMETER for wrong input parameter.</li>
+<li>E_K_STATUS_ERROR for other errors. </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="gafe6a9be7bb9e2ac1237e0121dc9aa749"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafe6a9be7bb9e2ac1237e0121dc9aa749">&#9670;&nbsp;</a></span>ktaSignHash()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__g__kta__api.html#ga5fb1b599f29f45874740e356a97d7d25">TKStatus</a> ktaSignHash </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>xKeyId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>xpHash</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>xHashLen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>xpSignedHashOutBuff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>xSignedHashOutBuffLen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>xpActualSignedHashOutLen</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sign the data with keySTREAM Trusted Agent provisioned key. The key is always located inside the secure platform and addressed by an identifier. </p>
+<dl class="section pre"><dt>Precondition</dt><dd>The function <a class="el" href="group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207" title="keySTREAM Trusted Agent builds notification message, which must then be sent via application to keyST...">ktaExchangeMessage()</a> is called and device is in provisioned state.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">xKeyId</td><td>Should be a valid key identifier, It is the same key Identifier which application receives from the parameter "xpAssociatedKeyId", in <a class="el" href="group__g__kta__api.html#ga8cd7ee8ffd7e24e789a914cb8a2e3db4" title="Gets an object which includes key, device cerificate and assosciated info. This object has been provi...">ktaGetObjectWithAssociation()</a> API. Object with Association identifier. Should be provided by the caller </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xpHash</td><td>Hash To Sign: pointer to buffer to compute hash. Should not be NULL. Buffer must be provided by the caller. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xHashLen</td><td>Length of buffer to compute hash. Should be provided by the caller. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">xpSignedHashOutBuff</td><td>[in] Pointer to buffer carrying signed data. [out] SignHash output data: pointer to buffer. Should not be NULL. Buffer must be provided by the caller. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">xSignedHashOutBuffLen</td><td>SignHash output data length, max size. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">xpActualSignedHashOutLen</td><td>Length of filled signedHashOutBuffLen data. Should not be NULL. Buffer must be provided by the caller.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>E_K_STATUS_OK in case of success.</li>
+<li>E_K_STATUS_PARAMETER for wrong input parameter.</li>
+<li>E_K_STATUS_ERROR for other errors. </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>
