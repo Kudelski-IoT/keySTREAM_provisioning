@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -54,10 +54,15 @@ extern "C" {
 /* IMPORTS                                                                    */
 /* -------------------------------------------------------------------------- */
 
+
+
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
-
+/**
+ * SUPPRESS: MISRA_DEV_KTA_007 : misra_c2012_rule_2.5_violation
+ * Macros in this header are defined for configuration input only; unused macros are expected and do not indicate a defect.
+ */
 /** @brief keySTREAM PROD CoAP Url. */
 #define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)"icpp.mss.iot.kudelski.com"
 
@@ -68,12 +73,8 @@ extern "C" {
 #define C_KTA_APP__DEVICE_PUBLIC_UID             "mchp_dev"
 
 
-/** @brief L1 Segmentation Seed of CIE. */
-#define C_KTA_APP__L1_SEG_SEED_CIE          {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b,\
-                                             0x73, 0xf0, 0x56, 0x1d, 0xc4, 0xe0, 0x54, 0x72}
-
 /** @brief L1 Segmentation Seed. */
-#define C_KTA_APP__L1_SEG_SEED              C_KTA_APP__L1_SEG_SEED_CIE
+#define C_KTA_APP__L1_SEG_SEED              {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b, 0x73, 0xf0, 0x56, 0x1d, 0xc4, 0xe0, 0x54, 0x72}
 
 /** @brief Application log */
 /**
@@ -83,6 +84,24 @@ extern "C" {
  * Not checking the return status of printf, since not required.
  **/
 #define C_KTA_APP__LOG                      printf
+
+/* -------------------------------------------------------------------------- */
+/* LOG LEVEL CONFIGURATION - USER SECTION                                     */
+/* -------------------------------------------------------------------------- */
+/**
+* @brief Set the log level for KTA logs.
+*
+* Set LOG_KTA_ENABLE to one of the following values:
+*   C_KTA_LOG_LEVEL_DEBUG      = 1 - DEBUG logs
+*   C_KTA_LOG_LEVEL_INFO       = 2 - INFO logs
+*   C_KTA_LOG_LEVEL_WARN       = 3 - WARN logs
+*   C_KTA_LOG_LEVEL_ENTRY_EXIT = 4 - ENTRY/EXIT logs
+*   C_KTA_LOG_LEVEL_ERROR      = 5 - ERROR logs
+*   C_KTA_LOG_LEVEL_NONE       = 6 - NO logs
+*
+*   #define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_DEBUG      // Enable DEBUG logs
+*/
+//  #define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_DEBUG  // <--- USER: Set your desired log level here
 
 /* -------------------------------------------------------------------------- */
 /* FOTA SERVICES                                                              */

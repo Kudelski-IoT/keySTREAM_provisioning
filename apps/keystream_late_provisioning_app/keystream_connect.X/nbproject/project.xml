@@ -9,7 +9,7 @@
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>../src/config/default/library/kta_lib/fota_service</sourceRootElem>
+                <sourceRootElem>../src/config/default/library/kta_lib/fotaservice</sourceRootElem>
                 <sourceRootElem>../src/config/default/library/kta_lib/SOURCE/salapi</sourceRootElem>
                 <sourceRootElem>../src/config/default/library/cryptoauthlib/calib</sourceRootElem>
             </sourceRootList>

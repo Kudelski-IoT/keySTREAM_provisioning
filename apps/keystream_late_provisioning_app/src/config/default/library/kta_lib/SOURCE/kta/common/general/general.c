@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -58,7 +58,13 @@
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_010 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "KTAGENERAL";
+#endif
 
 
 /* -------------------------------------------------------------------------- */

@@ -1,6 +1,7 @@
 var group__g__kta__api =
 [
     [ "TKktaDataObject", "struct_t_kkta_data_object.html", [
+      [ "Integration Notes", "md_doxy_integration_kta_fota_integration.html#autotoc_md17", null ],
       [ "data", "struct_t_kkta_data_object.html#a24d0c6d4da954ec3ad8ad1f477ff603b", null ],
       [ "dataLen", "struct_t_kkta_data_object.html#aed96ac4afd33acd521b850e9953c9bc2", null ],
       [ "customerMetadata", "struct_t_kkta_data_object.html#ab6f569e012acf06d3e280383ed6804d6", null ],

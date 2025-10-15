@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -100,8 +100,14 @@ typedef struct
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
 /* Module name used for logging */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "KTAACTHANDLER";
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -357,14 +363,6 @@ TKStatus ktaActBuildActivationRequest
   }
   else
   {
-    status = lFetchActivationReqData(&actPayload);
-
-    if (E_K_STATUS_OK != status)
-    {
-      M_KTALOG__ERR("Fetching of activation request data failed, status = [%d]", status);
-      goto end;
-    }
-
     /* Generate key pair and provide public key in return. */
     // REQ RQ_M-KTA-ACTV-FN-0005_02(1) : Rot Ephemeral Public Key
     status = salRotKeyPairGeneration(actPayload.aRotEpk);
@@ -374,6 +372,15 @@ TKStatus ktaActBuildActivationRequest
       M_KTALOG__ERR("SAL API while generation key pair failed, status = [%d]", status);
       goto end;
     }
+    
+    status = lFetchActivationReqData(&actPayload);
+
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR("Fetching of activation request data failed, status = [%d]", status);
+      goto end;
+    }
+
 
     // REQ RQ_M-KTA-ACTV-FN-0015(1) : Generate L1 Key
     status = lActReqDeriveL1Key(actPayload.aRotEpk);

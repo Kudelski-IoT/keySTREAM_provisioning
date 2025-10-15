@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -69,7 +69,7 @@
 #define C_MAX_VALUE_SIZE (4u)
 
 /** @brief Maximum Modules for log */
-#define C_MAX_MODULES (14u)
+#define C_MAX_MODULES (17u)
 
 /** @brief MAximum Log Levels */
 #define C_MAX_LOG_LEVELS (6u)
@@ -98,7 +98,11 @@ static moduleLevelConfig gaLogConfigs[C_MAX_MODULES] = {
   {"SALCRYPTO", LOG_KTA_ENABLE},
   {"SALOBJECT", LOG_KTA_ENABLE},
   {"SALTHIRDPARTY", LOG_KTA_ENABLE},
-  {"SALFOTA", LOG_KTA_ENABLE}
+  {"SALFOTA", LOG_KTA_ENABLE},
+  {"FOTAAGENT", LOG_KTA_ENABLE},
+  {"FOTAPROCESS", LOG_KTA_ENABLE},
+  {"FOTAPLATFORM", LOG_KTA_ENABLE},
+  {"KSALFOTASTORAGE", LOG_KTA_ENABLE}
 };
 
 /** @brief Log event info structure. */
@@ -111,18 +115,6 @@ typedef struct {
   int line;
   int level;
 } logEvent;
-
-typedef void (*log_LogFn)(logEvent *ev);
-
-/* Log levels */
-static const char *gapLevelStrings[C_MAX_LOG_LEVELS] = {
-                                      "NONE",
-                                      "DEBUG",
-                                      "INFO",
-                                      "WARNING",
-                                      "ENTRY_EXIT",
-                                      "ERROR"
-};
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -168,6 +160,11 @@ static void initEvent
  * @brief implement ktaLog_Fct
  *
  */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_010 : misra_c2012_rule_8.7_violation
+ * Function ktaLog_Fct is defined with external linkage to provide a public API for other modules.
+ * It is referenced in the header file for external use, even if not called within this source file.
+ */
 void ktaLog_Fct
 (
   int xLevel,
@@ -179,38 +176,47 @@ void ktaLog_Fct
   ...
 )
 {
-  if ((xLevel < 0) || (xLevel > 5)) {
-    goto end;
-  }
-  logEvent ev = {
-    .pFmt   = xpFmt,
-    .pFile  = xpFile, /* Name of the file from which log is triggered. */
-    .pFunc = xpFunc,  /* Name of the function. */
-    .line  = xLine,   /* At what line number in the file error occured. */
-    .level = xLevel,  /**
-                       * Decides whether it is debug, or trace or other levels,
-                       * keep 0 for debug and so on
-                       */
-  };
-  int moduleLogLevel = E_KTALOG_LEVEL_DEBUG;
+  /* To fix the misra-c2012-15.5-A function should have a single point of exit at the end*/
+  bool bretvalue = true;
 
-  for (int i = 0; i < (sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
+  if ((xLevel < 0) || (xLevel > 5)) 
   {
-    if (strncmp(gaLogConfigs[i].aModuleName, xpModuleName,
-        strlen(gaLogConfigs[i].aModuleName)) == 0)
+    bretvalue = false;
+  }
+
+  if ( bretvalue )
+  {
+      logEvent ev = {
+      .pFmt   = xpFmt,
+      .pFile  = xpFile, /* Name of the file from which log is triggered. */
+      .pFunc = xpFunc,  /* Name of the function. */
+      .line  = xLine,   /* At what line number in the file error occured. */
+      .level = xLevel,  /**
+                        * Decides whether it is debug, or trace or other levels,
+                        * keep 0 for debug and so on
+                        */
+    };
+    int moduleLogLevel = E_KTALOG_LEVEL_DEBUG;
+
+    for (int i = 0; i < (sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
     {
-       moduleLogLevel = gaLogConfigs[i].level;
-       break;
+      if (strncmp(gaLogConfigs[i].aModuleName, xpModuleName,
+          strlen(gaLogConfigs[i].aModuleName)) == 0)
+      {
+        moduleLogLevel = gaLogConfigs[i].level;
+        break;
+      }
     }
-  }
-  if (xLevel >= moduleLogLevel)
-  {
-    initEvent(&ev);
-    va_start(ev.ap, xpFmt);
-    logPrepare(&ev);
-    va_end(ev.ap);
-  }
-end:
+
+    if (xLevel >= moduleLogLevel)
+    {
+      initEvent(&ev);
+      va_start(ev.ap, xpFmt);
+      logPrepare(&ev);
+      va_end(ev.ap);
+    }
+ }
+
   return;
 }
 
@@ -221,6 +227,11 @@ end:
 /**
  * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
  * Not using the return value of snprintf
+ */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_010 : misra_c2012_rule_8.7_violation
+ * Function ktaLog_PrintBuffer is defined with external linkage to provide a public API for other modules.
+ * It is referenced in the header file for external use, even if not called within this source file.
  */
 void ktaLog_PrintBuffer
 (
@@ -241,7 +252,7 @@ void ktaLog_PrintBuffer
   int Index = 0;
   char aValue[C_MAX_VALUE_SIZE] = {0};
   char aBuffer[C_MAX_BUFFER_SIZE] = {0};
-  int moduleLogLevel = E_KTALOG_LEVEL_ERROR;
+  int moduleLogLevel = E_KTALOG_LEVEL_DEBUG;
 
   for (int i = 0; i < (sizeof(gaLogConfigs) / sizeof(gaLogConfigs[0])); i++)
   {
@@ -256,24 +267,24 @@ void ktaLog_PrintBuffer
   if (xLevel >= moduleLogLevel)
   {
     snprintf(aBuffer, C_MAX_BUFFER_SIZE, "%s : [%d]\r\n", xpFmt, xSize);
-    printf(aBuffer);
+    salPrint(aBuffer);
 
     for (Index = 0; Index < xSize; Index++)
     {
       snprintf(aValue, C_MAX_VALUE_SIZE, "%02X ", xpBuffer[Index]);
-      printf(aValue);
+      salPrint(aValue);
       if ((Index % (int32_t)C_LOG_COL_SIZE) == (C_LOG_COL_SIZE - 1u))
       {
         /* Line full. */
-        printf("\r\n");
+        salPrint("\r\n");
       }
     }
     if ((xSize % (int32_t)C_LOG_COL_SIZE) != 0)
     {
       /* Last line not full. */
-      printf("\r\n");
+      salPrint("\r\n");
     }
-    printf("\r\n");
+    salPrint("\r\n");
   }
 }
 
@@ -288,26 +299,44 @@ void ktaLog_PrintBuffer
  * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
  * Not using the return value of snprintf
  */
-static void logPrepare
-(
-  logEvent* xpEv
-)
+static void logPrepare(logEvent* xpEv)
 {
-  char aBuffer[C_MAX_BUFFER_SIZE + 1] = {0};
+  const char * const gapLevelStrings[C_MAX_LOG_LEVELS] = {
+      "NONE",
+      "DEBUG",
+      "INFO",
+      "WARNING",
+      "ENTRY_EXIT",
+      "ERROR"
+  };
 
-  snprintf(aBuffer,
-           C_MAX_BUFFER_SIZE,
-           "[%s] [%s:%d] ",
-           gapLevelStrings[xpEv->level],
-           xpEv->pFunc,
-           xpEv->line);
-  if (strlen(aBuffer) < C_MAX_BUFFER_SIZE)
+  char aBuffer[C_MAX_BUFFER_SIZE + 1] = {0};
+  size_t buf_len;
+
+  /* Write prefix into the buffer */
+  (void)snprintf(aBuffer,
+                 C_MAX_BUFFER_SIZE,
+                 "[%s] [%s:%d] ",
+                 gapLevelStrings[xpEv->level],
+                 xpEv->pFunc,
+                 xpEv->line);
+
+  /* Now measure the current length */
+  buf_len = strlen(aBuffer);
+
+  if (buf_len < C_MAX_BUFFER_SIZE)
   {
-    vsnprintf(aBuffer + strlen(aBuffer),
-               C_MAX_BUFFER_SIZE - strlen(aBuffer),
-               xpEv->pFmt,
-               xpEv->ap);
+    va_list args;
+    va_copy(args, xpEv->ap);
+
+    (void)vsnprintf(&aBuffer[buf_len],
+                    C_MAX_BUFFER_SIZE - buf_len,
+                    xpEv->pFmt,
+                    args);
+
+    va_end(args);
   }
+
   salPrint(aBuffer);
   salPrint("\r\n");
 }

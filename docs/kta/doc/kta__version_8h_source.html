@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('kta__version_8h_source.html',''); init
 <a href="kta__version_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*******************************************************************************</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">*************************keySTREAM Trusted Agent (&quot;KTA&quot;)************************</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (c) 2023-2024 Nagravision Sàrl</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (c) 2023-2025 Nagravision Sàrl</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"></span> </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">* Subject to your compliance with these terms, you may use the Nagravision Sàrl</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">* Software and any derivatives exclusively with Nagravision&#39;s products. It is your</span></div>
@@ -131,49 +131,49 @@ $(document).ready(function(){initNavTree('kta__version_8h_source.html',''); init
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">/* CONSTANTS, TYPES, ENUM                                                                        */</span></div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="kta__version_8h.html#abb32a860c4e00238eef135ee19f104ee">   55</a></span>&#160;<span class="preprocessor">#define M_K_VERSION_INT_TO_STR(x_val) #x_val</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="kta__version_8h.html#afb1a61b4f8bbc3c92950916237677730">   58</a></span>&#160;<span class="preprocessor">#define M_K_VERSION_STR(x_major, x_minor, x_patch) \</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">  M_K_VERSION_INT_TO_STR(x_major)&quot;.&quot;M_K_VERSION_INT_TO_STR(x_minor)&quot;.&quot; \</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">  M_K_VERSION_INT_TO_STR(x_patch) \</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">  C_K_VERSION__HOT_FIX</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="kta__version_8h.html#a3812eceb4498592955581d44efee6d7c">   64</a></span>&#160;<span class="preprocessor">#define M_K_VERSION_GET_STR() \</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">  M_K_VERSION_STR(C_K_KTA__VERSION_MAJOR, C_K_KTA__VERSION_MINOR, C_K_KTA__VERSION_PATCH)</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="kta__version_8h.html#abb32a860c4e00238eef135ee19f104ee">   59</a></span>&#160;<span class="preprocessor">#define M_K_VERSION_INT_TO_STR(x_val) #x_val</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="kta__version_8h.html#afb1a61b4f8bbc3c92950916237677730">   62</a></span>&#160;<span class="preprocessor">#define M_K_VERSION_STR(x_major, x_minor, x_patch) \</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">  M_K_VERSION_INT_TO_STR(x_major)&quot;.&quot;M_K_VERSION_INT_TO_STR(x_minor)&quot;.&quot; \</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">  M_K_VERSION_INT_TO_STR(x_patch) \</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">  C_K_VERSION__HOT_FIX</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#define C_K_KTA__ENCODED_VERSION {((C_K_KTA__VERSION_MAJOR &lt;&lt; 4) | C_K_KTA__VERSION_MINOR), C_K_KTA__VERSION_PATCH}</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#define C_K_KTA__VERSION_STRING_BUFFER_SIZE (16u)</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">/* VARIABLES                                                                                     */</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="kta__version_8h.html#a3812eceb4498592955581d44efee6d7c">   68</a></span>&#160;<span class="preprocessor">#define M_K_VERSION_GET_STR() \</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">  M_K_VERSION_STR(C_K_KTA__VERSION_MAJOR, C_K_KTA__VERSION_MINOR, C_K_KTA__VERSION_PATCH)</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#define C_K_KTA__ENCODED_VERSION {((C_K_KTA__VERSION_MAJOR &lt;&lt; 4) | C_K_KTA__VERSION_MINOR), C_K_KTA__VERSION_PATCH}</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#define C_K_KTA__VERSION_STRING_BUFFER_SIZE (16u)</span></div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">/* FUNCTIONS                                                                                     */</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">/* VARIABLES                                                                                     */</span></div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;uint8_t* <a class="code" href="kta__version_8h.html#a3d6fe57bc2adce8ee7dbdec768031a73">ktaGetVersion</a></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;(</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <span class="keywordtype">void</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="kta__version_8h.html#a327cbc770d7f94b2c7b2265c036374a7">ktaGetDecodedVersionStr</a></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;(</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="keyword">const</span> uint8_t version[]</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">#endif // VERSION_H</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">/* FUNCTIONS                                                                                     */</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">/* --------------------------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="kta__version_8h.html#a16f589c83e0fc51d71f68a593803b663">ktaGetVersion</a></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;(</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keywordtype">void</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="kta__version_8h.html#a327cbc770d7f94b2c7b2265c036374a7">ktaGetDecodedVersionStr</a></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;(</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keyword">const</span> uint8_t version[]</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">#endif // VERSION_H</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="ak__version_8h_html"><div class="ttname"><a href="k__version_8h.html">k_version.h</a></div><div class="ttdoc">keySTREAM Trusted Agent - Version.</div></div>
-<div class="ttc" id="akta__version_8h_html_a327cbc770d7f94b2c7b2265c036374a7"><div class="ttname"><a href="kta__version_8h.html#a327cbc770d7f94b2c7b2265c036374a7">ktaGetDecodedVersionStr</a></div><div class="ttdeci">const char * ktaGetDecodedVersionStr(const uint8_t version[])</div><div class="ttdoc">Get the keySTREAM Trusted Agent software decoded version as string.</div><div class="ttdef"><b>Definition:</b> version.c:83</div></div>
-<div class="ttc" id="akta__version_8h_html_a3d6fe57bc2adce8ee7dbdec768031a73"><div class="ttname"><a href="kta__version_8h.html#a3d6fe57bc2adce8ee7dbdec768031a73">ktaGetVersion</a></div><div class="ttdeci">uint8_t * ktaGetVersion(void)</div><div class="ttdoc">Get the keySTREAM Trusted Agent software version as string.</div><div class="ttdef"><b>Definition:</b> version.c:71</div></div>
+<div class="ttc" id="akta__version_8h_html_a327cbc770d7f94b2c7b2265c036374a7"><div class="ttname"><a href="kta__version_8h.html#a327cbc770d7f94b2c7b2265c036374a7">ktaGetDecodedVersionStr</a></div><div class="ttdeci">const char * ktaGetDecodedVersionStr(const uint8_t version[])</div><div class="ttdoc">Get the keySTREAM Trusted Agent software decoded version as string.</div><div class="ttdef"><b>Definition:</b> version.c:95</div></div>
+<div class="ttc" id="akta__version_8h_html_a16f589c83e0fc51d71f68a593803b663"><div class="ttname"><a href="kta__version_8h.html#a16f589c83e0fc51d71f68a593803b663">ktaGetVersion</a></div><div class="ttdeci">const char * ktaGetVersion(void)</div><div class="ttdoc">Get the keySTREAM Trusted Agent software version as string.</div><div class="ttdef"><b>Definition:</b> version.c:76</div></div>
 <!-- HTML footer for doxygen 1.9.1-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

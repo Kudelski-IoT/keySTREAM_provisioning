@@ -16,6 +16,17 @@ It supports the following platforms:
 
 ---
 
+## Important Notes
+
+- **WINCS02 (SG41_X) Status:**  
+  If you do not see proper logs or if WiFi does not connect consistently on the SG41_X (WINCS02), please reset the board after opening both COM ports.  
+  ![WINCS02 Reset Screenshot](./images/two_port.png)
+
+- **SAME54_X Long Path Issue:**  
+  The generated project path for SAME54_X may exceed Windows' maximum path length. If you encounter errors, move your repository to a shorter path (e.g., `C:\Projects\keySTREAM_provisioning-main`).
+
+---
+
 ## Step-by-Step Instructions
 
 ### 1. Download or Clone the Repository
@@ -50,19 +61,26 @@ cd "path\to\your\keySTREAM_provisioning-main\PreConfigured-Examples"
 
 ### 4. Run the Configuration Script
 
-Set Execution context to RemoteSgned before running config.ps1
+**Description:**  
+`Config.ps1` is a PowerShell script that guides you through selecting your device and configuration options, then automatically updates project files and copies all required provisioning files for your selected platform.
+
+**Set Execution Policy for Current User:**  
+Before running the script, set the execution policy for the current user:
 ```powershell
-Set-ExecutionPolicy RemoteSigned
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 Execute the script:
 ```powershell
 .\Config.ps1
 ```
-Set Execution context to Restricted after running config.ps1
+After running the script, you may revert the execution policy if desired:
 ```powershell
-Set-ExecutionPolicy Restricted
+Set-ExecutionPolicy -Scope CurrentUser Restricted
 ```
-
+**If you are unable to run the script using the above method, please try the following command:**
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
 ### 5. Run the Provisioning Script
 
 The script will guide you through:
@@ -81,7 +99,14 @@ The KTA configuration file (`App_Config.h`) is used to set device-specific and f
 **Location:**  
 - For all devices:  
   `<TrustMANAGER>\<Device>\keystream_connect\App_Config.h`  
-  *(For `sg41_X`, the path may be: `<TrustMANAGER>\sg41_X\keystream_connect\App_Config.h`)*
+  *(For `sg41_X`, the path may be: `<TrustMANAGER>\sg41_X\keystream_connect\App_Config.h`)*\
+  
+**Path to ktaConfig.h:**  
+- **D21_X and SAME54_X:**  
+    `.\TrustMANAGER\<Device>\keystream_connect\firmware\common\kta_provisioning\SOURCE\include\ktaConfig.h`
+- **SG41_X (alternative path):**  
+    `\TrustMANAGER\<Device>\keystream_connect\src\config\default\library\kta_lib\SOURCE\include\ktaConfig.h`
+
 
 **Typical edits:**
 1. Set your device's public UID for fleet profile:
@@ -116,6 +141,23 @@ Update application-specific settings in the following files:
 - **What to update:**  
   - WiFi SSID and Password
 
+---
+
+#### SG41_X Dual-Port Usage
+
+The SG41_X device uses **two ports** for operation, and logs are available in two terminals:
+
+- **Debug Port:** For viewing debug logs.
+- **Application Port:** For application communication.
+
+**How to Use:**
+- Open two terminal/serial monitor windows, one for each port.
+- Once your WiFi is connected and the application starts, debug logs will appear on the Debug Port.
+
+**Important Notes:**
+- If you do not see any output on the serial monitor, or if WiFi does not connect consistently, try resetting the board after opening both COM ports. This is a known issue and is currently under investigation.
+-  
+  ![Dual Terminal Example](./images/two_port.png)
 ---
 
 ### 8. Open the MPLAB X Project

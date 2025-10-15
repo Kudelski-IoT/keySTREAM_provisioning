@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -56,9 +56,14 @@
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
 /* Module name used for logging. */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "KTACONFIG";
-
+#endif
 /* Static variable to hold configuration info. */
 static TKtaDeviceInfoConfig gKtaDeviceInfoConfig = {0};
 static TKtaContextInfoConfig gKtaContextInfoConfig = {0};
@@ -326,7 +331,7 @@ TKStatus ktaSetContextInfoConfig
     (void)memset(gKtaContextInfoConfig.ktaVersion, 0, C_KTA__VERSION_MAX_SIZE);
     (void)memcpy(gKtaContextInfoConfig.ktaVersion,
                   ktaGetVersion(),
-                  strnlen((char*)ktaGetVersion(), C_KTA__VERSION_MAX_SIZE));
+                  strnlen((const char*)ktaGetVersion(), C_KTA__VERSION_MAX_SIZE));
 
     (void)memcpy(gKtaContextInfoConfig.l1SegSeed, xpL1SegSeed, C_K__L1_SEGMENTATION_SEED_SIZE);
     gKtaContextInfoConfig.rotKeySetId = 0;
@@ -550,7 +555,7 @@ static TKStatus lReadDeviceAndContextInfo
     (void)memset(gKtaContextInfoConfig.ktaVersion, 0, C_KTA__VERSION_MAX_SIZE);
     (void)memcpy(gKtaContextInfoConfig.ktaVersion,
                   ktaGetVersion(),
-                  strnlen((char*)ktaGetVersion(), C_KTA__VERSION_MAX_SIZE));
+                  strnlen((const char*)ktaGetVersion(), C_KTA__VERSION_MAX_SIZE));
     ktaInfoLen += C_KTA__VERSION_MAX_SIZE;
 
     (void)memcpy(gKtaDeviceInfoConfig.deviceProfilePubUID[0],
@@ -571,7 +576,10 @@ static TKStatus lReadDeviceAndContextInfo
       (xState == E_LIFE_CYCLE_STATE_PROVISIONED) ||
       (xState == E_LIFE_CYCLE_STATE_CON_REQ))
   {
-    uint8_t aL1KeyMaterial[C_KEY_CONFIG__MATERIAL_MAX_SIZE] = {0x00};
+    uint8_t aL1KeyMaterial[C_KEY_CONFIG__MATERIAL_MAX_SIZE];
+
+    /* Added to supress the misra-c2012-9.3 msg="Arrays shall not be partially initialized" */
+    memset(aL1KeyMaterial , 0x00 , C_KEY_CONFIG__MATERIAL_MAX_SIZE);
 
     status = salStorageGetValue(C_K_KTA__L1_KEY_MATERIAL_DATA_ID,
                                 aL1KeyMaterial,

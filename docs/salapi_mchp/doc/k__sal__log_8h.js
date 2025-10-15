@@ -1,4 +1,4 @@
 var k__sal__log_8h =
 [
-    [ "salPrint", "group__g__sal__api.html#ga9f62339ddf6562d5f6aba9ab258f8c41", null ]
+    [ "salPrint", "group__g__sal__api.html#gaa5a40c22005e1846359a08deabef11a3", null ]
 ];

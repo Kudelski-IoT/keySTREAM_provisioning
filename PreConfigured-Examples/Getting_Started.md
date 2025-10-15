@@ -111,6 +111,63 @@ The keySTREAM portal allows creation a Fleet Profile and attach a configuration 
     <figure style="text-align: center;"><img src="images/2_tier_device_profile_list_tpds.png" style="width: 75%; display: block;" ><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Figure 17</figcaption></figure>
 
 ------------------------------------------------------------------------------------------------------------------------------------------
+## Device Claiming
+
+## Generatina Lite Manifest File 
+The keySTREAM portal supports two methods to associate ("claim") ECC608 TrustMANAGER devices with your tenant:
+
+1. Claim by Manifest (Lite Manifest file generated with Microchip TPDS)
+2. Autoclaim (automatic association when buying devices after configuring your account)
+
+Choose the approach that matches how you acquire devices.
+
+### Claiming Devices via Lite Manifest File
+
+Use this method if you already have ECC608 TrustMANAGER devices (loose units or on boards) and need to register them manually.
+
+#### Generate the Lite Manifest (TPDS)
+
+1. Download and install the latest Trust Platform Design Suite (TPDS):  
+  https://www.microchip.com/en-us/products/security/trust-platform/tpds
+2. Launch TPDS.
+3. Open: **Utilities > Package Manager**.
+4. Locate the package named: `tpds-extension-keystream-connect`.
+5. Select it and click **Install Selected Package**. Wait for compilation to finish.
+6. Restart your PC (recommended by Microchip after extension installation).
+7. Go to **Utilities > Manifest**.
+8. Configure the target device:
+  - Device: **ATECC608** (TrustMANAGER variant)
+  - Interface: **I2C**
+  - I2C Address: **0x70** (default for ECC608 TrustMANAGER)
+9. Click **Generate Manifest**.
+10. A Lite Manifest JSON file is produced. (compress/zip the JSON before upload.)
+
+<figure style="text-align: center;"><img src="images/tpds_install.png" style="width:70%; display:block;" /><figcaption style="font-weight: bold; text-align:center; clear:both; width:70%;">TPDS – Installing keySTREAM Connect Extension</figcaption></figure>
+
+<figure style="text-align: center;"><img src="images/Generate_manifest.png" style="width:70%; display:block;" /><figcaption style="font-weight: bold; text-align:center; clear:both; width:70%;">Generating the Lite Manifest in TPDS</figcaption></figure>
+
+Tips:
+- Ensure you picked the correct device variant in the dropdown before generating.
+- Regenerate if you later add more devices.
+
+#### Upload the Manifest to keySTREAM
+
+1. Log into the keySTREAM portal.
+2. In the left navigation, click **DEVICE OWNERSHIP**.
+3. Select **DEVICE CLAIMING**.
+4. Under the **Manifest** section, click **Choose File** and select the Lite Manifest JSON (or its ZIP).
+5. Click **IMPORT**.
+6. The devices listed in the manifest (identified by their ChipUID / Serial Number) will appear with status **Claimed**. They will transition to **Active** after successful in-field provisioning.
+
+<figure style="text-align: center;"><img src="images/device_Ownership.png" style="width:65%; display:block;" /><figcaption style="font-weight: bold; text-align:center; clear:both; width:65%;">Figure 18: Device Ownership Section</figcaption></figure>
+
+<figure style="text-align: center;"><img src="images/claim_devices.png" style="width:65%; display:block;" /><figcaption style="font-weight: bold; text-align:center; clear:both; width:65%;">Figure 19: Importing a Lite Manifest</figcaption></figure>
+
+Common issues:
+- File rejected: Verify JSON format was not altered by a text editor.
+- Missing devices: Ensure they were present/connected when generating the manifest in TPDS.
+
+
 ## Device claiming using the *Autoclaim* flow 
 
 - The Autoclaim flow applies only if you create the keySTREAM account AND enter your email address used to login into microchipdirect.com BEFORE you place a purchase of ECC608 TrustMANAGER following this specific [this link](https://www.microchipdirect.com/trust-platform).
@@ -237,43 +294,38 @@ Follow these steps to generate a pre-configured package for your desired device:
 
 ## Enabling KTA Debug Logs
 
-- While executing these steps mentioned below, you will enable KTA Debug Logs.
-    - STEP 1: Navigate to Projects tab, right click on the project you want to execute, and set as main project (see **Figure 28**).
-    <figure style="text-align: center;"><img src="images/project_tab.png" style="width: 75%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Figure 28</figcaption></figure>
+To enable KTA debug logs, please follow the steps below:
 
-    - STEP 2: Navigate to the menu bar, click on Files and then click on **Project Properties** (see **Figure 29**).
-    <figure style="text-align: center;"><img src="images/project_properties.png" style="width: 75%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Figure 29</figcaption></figure>
+1. Open the `KtaConfig.h` file in your project.
 
-    - STEP 3: Under Categories, navigate to XC32 (Global Options) and select **xc32-gcc** (see **Figure 30**).
-    <figure style="text-align: center;"><img src="images/categories.png" style="width: 75%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Figure 30</figcaption></figure>
+   <figure style="text-align: center;">
+     <img src="images/ktaLogs.png" style="width: 55%; display: block;" />
+     <figcaption style="font-weight: bold; text-align: center; clear: both; width: 55%;">Figure 028: KTA Debug Log Configuration</figcaption>
+   </figure>
 
-    - STEP 4: In Option categories dropdown, select **processing and message** (see **Figure 31**).
-    <figure style="text-align: center;"><img src="images/categories_options.png" style="width: 75%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Figure 31</figcaption></figure>
+2. Uncomment the following line to enable debug logs:
+   ```c
+   #define LOG_KTA_ENABLE
+   ```
 
-    - STEP 5: After selecting Preprocessing and messages, navigate to **Preprocessor macros** and click as shown (see **Figure 32**).
-    <figure style="text-align: center;"><img src="images/macros.png" style="width: 75%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Figure 32</figcaption></figure>
+3. Set the desired log level. For example, to enable debug-level logging, use:
+   ```c
+   #define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_DEBUG
+   ```
 
-    - The table below lists the different log levels:
-    <figure style="text-align: center;"><img src="images/Kta_logging.png" style="width: 75%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Table 1: KTA Logging Levels</figcaption></figure>
-
-    - STEP 6: After selecting Preprocessor macros options, enter the desired log level (e.g., LOG_KTA_ENABLE=1) in the **Enter string here** field and click OK (see **Figure 33**).
-    <figure style="text-align: center;"><img src="images/macros_options.png" style="width: 75%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Figure 33</figcaption></figure>
-
-    - STEP 7: Click **Apply** and **OK**, log will be enabled (see **Figure 34**).
-    <figure style="text-align: center;"><img src="images/applyandset.png" style="width: 75%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 75%;">Figure 34</figcaption></figure>
-
+4. Save your changes and rebuild the project.
 
 ---------------------------------------------------------------------------------
 ##  **Verify Device Connection to Cloud**
 
 **Example TeraTerm Logs after successfully executing embedded project:**
 
- - **keySTREAM log During Embedded run (figure #035).**
-  <figure style="text-align: center;"><img src="images/Activated_Message.png" style="width: 60%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 60%;">Figure 035</figcaption></figure>
+ - **keySTREAM log During Embedded run (figure #029).**
+  <figure style="text-align: center;"><img src="images/Activated_Message.png" style="width: 60%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 60%;">Figure 029</figcaption></figure>
 
- - **AWS log During Embedded run (figure #036).**
-  <figure style="text-align: center;"><img src="images/Provisioned_Message.png" style="width: 60%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 60%;">Figure 036</figcaption></figure>
+ - **AWS log During Embedded run (figure #030).**
+  <figure style="text-align: center;"><img src="images/Provisioned_Message.png" style="width: 60%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 60%;">Figure 030</figcaption></figure>
 
- - **Connecting to Cloud messages appear along with the led state (figure #037).**
-  <figure style="text-align: center;"><img src="images/aws_ttlog.png" style="width: 60%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 60%;">Figure 037</figcaption></figure>
+ - **Connecting to Cloud messages appear along with the led state (figure #031).**
+  <figure style="text-align: center;"><img src="images/aws_ttlog.png" style="width: 60%; display: block;" /><figcaption style="font-weight: bold; text-align: center; clear: both; width: 60%;">Figure 031</figcaption></figure>
 

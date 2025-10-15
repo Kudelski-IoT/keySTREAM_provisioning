@@ -56,6 +56,8 @@
 
 #include <string.h>
 
+/* Added for to supress the misra-c2012-2.5 */
+#include "k_sal.h"
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
@@ -105,15 +107,42 @@
 
 /** @brief Slot ID Defines */
 #define C_SAL_SLOT_6_KEY_ID                           (0x06u)
-#define MAX_MANAGED_SLOT_DATA_SIZE                    (32u)
-#define MAX_MANAGED_SLOT_MAC_SIZE                     (32u)
-#define MANAGED_SLOT_14_MAX_DATA_SIZE                 (128u)
-#define MANAGED_SLOT_5_MAX_DATA_SIZE                  (64u)
-#define C_KTA_MANAGED_SLOT_8                          (8U)
+
+/** @brief Slot ID for slot data */
+#define C_SAL_MAX_MANAGED_SLOT_DATA_SIZE              (32u)
+
+/** @brief Slot ID for slot MAC */
+#define C_SAL_MAX_MANAGED_SLOT_MAC_SIZE               (32u)
+
+/** @brief Slot ID for slot max data size */
+#define C_SAL_MANAGED_SLOT_14_MAX_DATA_SIZE           (128u)
+
+/** @brief Slot ID for slot 5 */
+#define C_SAL_MANAGED_SLOT_5_MAX_DATA_SIZE            (64u)
+
+/** @brief Slot 8 */
+#define C_SAL_MANAGED_SLOT_8                          (8U)
 
 /** @brief Slot Identifier */
-#define SERVER_IDENTIFIER                             (0x0100000Eu)
-#define SLOT_IDENTIFIER                               (14u)
+#define C_SAL_SERVER_IDENTIFIER                       (0x0100000Eu)
+
+/** @brief Slot Identifier */
+#define C_SAL_SLOT_IDENTIFIER                         (14u)
+
+/** @brief Slot ID for slot 14 */
+#define C_SAL_OBJECT_TYPE_MANAGED_SLOT_14             (14u)
+
+/** @brief Slot ID for slot 5 */
+#define C_SAL_OBJECT_TYPE_MANAGED_SLOT_5              (5u)
+
+/** @brief Slot ID for slot 8 */
+#define C_SAL_OBJECT_TYPE_MANAGED_SLOT_8              (8u)
+
+/** @brief Slot ID for slot 14 block 0 */
+#define C_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0          (0u)
+
+/** @brief Slot ID for slot 14 block 1 */
+#define C_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1          (1u)
 
 /** @brief Zone for doing an Encrypt Write */
 #define C_SAL_ENCRYPT_WRITE_ZONE (ATCA_ZONE_DATA|ATCA_ZONE_READWRITE_32|ATCA_ZONE_ENCRYPTED)
@@ -130,7 +159,9 @@
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "SALOBJECT";
+#endif
 static atca_temp_key_t gTempKey;
 static bool globalEncWriteFlag = 0;
 
@@ -278,8 +309,8 @@ K_SAL_API TKStatus salObjectSet
   ATCA_STATUS  cryptoStatus = ATCA_STATUS_UNKNOWN;
 
   // Convert KeySTREAM identifier to SLOT identifier
-  if (xIdentifier == SERVER_IDENTIFIER) {
-      xIdentifier = SLOT_IDENTIFIER;
+  if (xIdentifier == C_SAL_SERVER_IDENTIFIER) {
+      xIdentifier = C_SAL_SLOT_IDENTIFIER;
   }
 
   M_UNUSED(xpDataAttributes);
@@ -295,9 +326,9 @@ K_SAL_API TKStatus salObjectSet
   }
   else
   {
-    if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xIdentifier)
+    if (C_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xIdentifier)
     {
-      status = lsalEncryptWrite(E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14, xpObject->data, xpObject->dataLen, 0);
+      status = lsalEncryptWrite(C_SAL_OBJECT_TYPE_MANAGED_SLOT_14, xpObject->data, xpObject->dataLen, 0);
       if (E_K_STATUS_OK != status)
       {
         M_KTALOG__ERR("Encrypt Write to slot 14 failed.");
@@ -326,9 +357,9 @@ K_SAL_API TKStatus salObjectSet
 
       status = E_K_STATUS_OK;
     }
-    else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xIdentifier)
+    else if (C_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xIdentifier)
     {
-      status = lsalEncryptWrite(E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5, xpObject->data, xpObject->dataLen, 0);
+      status = lsalEncryptWrite(C_SAL_OBJECT_TYPE_MANAGED_SLOT_5, xpObject->data, xpObject->dataLen, 0);
       if (E_K_STATUS_OK != status)
       {
         M_KTALOG__ERR("Encrypt Write to slot 5 failed.");
@@ -357,7 +388,7 @@ K_SAL_API TKStatus salObjectSet
 
       status = E_K_STATUS_OK;
     }
-    else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8 == xIdentifier)
+    else if (C_SAL_OBJECT_TYPE_MANAGED_SLOT_8 == xIdentifier)
     {
       cryptoStatus = salStorageSetValue(C_K_KTA__CUSTOMER_DATA_ID,
                                         xpObject->data,
@@ -673,7 +704,7 @@ K_SAL_API TKStatus salGetChallenge
       goto end;
     }
 
-    (void)memcpy((void *)xpChallengeKey, (const void *)nonce_params.temp_key->value, MAX_MANAGED_SLOT_DATA_SIZE);
+    (void)memcpy((void *)xpChallengeKey, (const void *)nonce_params.temp_key->value, C_SAL_MAX_MANAGED_SLOT_DATA_SIZE);
 
     status = E_K_STATUS_OK;
   }
@@ -794,7 +825,7 @@ K_SAL_API TKStatus salObjectGet
   }
 
   /* Get data for managed slots */
-  if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xIdentifier)
+  if (C_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xIdentifier)
   {
     M_KTALOG__INFO("Fetching data for MANAGED_SLOT_14");
 
@@ -822,7 +853,7 @@ K_SAL_API TKStatus salObjectGet
       goto end;
     }
   }
-  else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xIdentifier)
+  else if (C_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xIdentifier)
   {
     M_KTALOG__INFO("Fetching data for MANAGED_SLOT_5");
 
@@ -842,7 +873,7 @@ K_SAL_API TKStatus salObjectGet
       goto end;
     }
   }
-  else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8 == xIdentifier)
+  else if (C_SAL_OBJECT_TYPE_MANAGED_SLOT_8 == xIdentifier)
   {
     M_KTALOG__INFO("Fetching data for MANAGED_SLOT_8");
 
@@ -909,8 +940,8 @@ TKStatus lsalEncryptWrite
   TKStatus     status         = E_K_STATUS_ERROR;
   ATCA_STATUS  cryptoStatus   = ATCA_STATUS_UNKNOWN;
   uint8_t      other_data[4]  = {0};
-  uint8_t      writeBuffData[MAX_MANAGED_SLOT_DATA_SIZE] = {0};
-  uint8_t      writeBuffMac[MAX_MANAGED_SLOT_DATA_SIZE] = {0};
+  uint8_t      writeBuffData[C_SAL_MAX_MANAGED_SLOT_DATA_SIZE] = {0};
+  uint8_t      writeBuffMac[C_SAL_MAX_MANAGED_SLOT_DATA_SIZE] = {0};
   uint8_t      slot_14_block = 0;
   uint8_t      aRandOut[32];
   uint8_t      aNumIn[20] = {0};
@@ -930,17 +961,17 @@ TKStatus lsalEncryptWrite
       goto end;
   }
   M_KTALOG__ERR("%d", xSlot);
-  if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xSlot)
+  if (C_SAL_OBJECT_TYPE_MANAGED_SLOT_5 == xSlot)
   {
-    cryptoStatus = atcab_get_addr(ATCA_ZONE_DATA, E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5, 0, 0, &slot_addr);
+    cryptoStatus = atcab_get_addr(ATCA_ZONE_DATA, C_SAL_OBJECT_TYPE_MANAGED_SLOT_5, 0, 0, &slot_addr);
     if (ATCA_SUCCESS != cryptoStatus)
     {
       M_KTALOG__ERR("Encrypt write failed to get addr for xSlot %d", xSlot);
       goto end;
     }
 
-    memcpy(writeBuffData, xpData, MAX_MANAGED_SLOT_DATA_SIZE);
-    memcpy(writeBuffMac, xpData+MAX_MANAGED_SLOT_DATA_SIZE, MAX_MANAGED_SLOT_DATA_SIZE);
+    memcpy(writeBuffData, xpData, C_SAL_MAX_MANAGED_SLOT_DATA_SIZE);
+    memcpy(writeBuffMac, xpData+C_SAL_MAX_MANAGED_SLOT_DATA_SIZE, C_SAL_MAX_MANAGED_SLOT_DATA_SIZE);
 
     cryptoStatus = atcab_write(C_SAL_ENCRYPT_WRITE_ZONE,
                              slot_addr,
@@ -962,17 +993,17 @@ TKStatus lsalEncryptWrite
       goto end;
     }
   }
-  else if (E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xSlot)
+  else if (C_SAL_OBJECT_TYPE_MANAGED_SLOT_14 == xSlot)
   {
     M_KTALOG__INFO("Processing Slot 14 with xIdentifier: %d", xSlot);
     if (globalEncWriteFlag == 0)
     {
-      slot_14_block = E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0;
+      slot_14_block = C_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0;
       M_KTALOG__INFO("globalEncWriteFlag is 0, setting slot_14_block to 0");
     }
     else
     {
-      slot_14_block = E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1;
+      slot_14_block = C_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1;
       M_KTALOG__INFO("globalEncWriteFlag is 1, setting slot_14_block to 1");
     }
     M_KTALOG__INFO("Current globalEncWriteFlag value: %d", globalEncWriteFlag);
@@ -984,8 +1015,8 @@ TKStatus lsalEncryptWrite
       goto end;
     }
 
-    memcpy(writeBuffData, xpData, MAX_MANAGED_SLOT_DATA_SIZE);
-    memcpy(writeBuffMac, xpData+MAX_MANAGED_SLOT_DATA_SIZE, MAX_MANAGED_SLOT_DATA_SIZE);
+    memcpy(writeBuffData, xpData, C_SAL_MAX_MANAGED_SLOT_DATA_SIZE);
+    memcpy(writeBuffMac, xpData+C_SAL_MAX_MANAGED_SLOT_DATA_SIZE, C_SAL_MAX_MANAGED_SLOT_DATA_SIZE);
 
     M_KTALOG__INFO("Attempting to write to slot %d with data and MAC\r\n", slot_addr);
 

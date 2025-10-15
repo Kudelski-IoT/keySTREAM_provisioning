@@ -105,12 +105,12 @@ def instantiateComponent(ktaComponent):
     Database.activateComponents(["stdio"])
     Database.activateComponents(["cryptoauthlib"])
 
-    comboValues = ["E_KTALOG_LEVEL_DEBUG", "E_KTALOG_LEVEL_INFO", "E_KTALOG_LEVEL_WARN",
-                   "E_KTALOG_LEVEL_ENTRY_EXIT", "E_KTALOG_LEVEL_ERROR", "E_KTALOG_LEVEL_NONE"]
+    comboValues = ["C_KTA_LOG_LEVEL_DEBUG", "C_KTA_LOG_LEVEL_INFO", "C_KTA_LOG_LEVEL_WARN",
+                   "C_KTA_LOG_LEVEL_ENTRY_EXIT", "C_KTA_LOG_LEVEL_ERROR", "C_KTA_LOG_LEVEL_NONE"]
     ktaLogDebugSymbol = ktaComponent.createComboSymbol("KTA_LOG_LEVEL", None, comboValues)
     ktaLogDebugSymbol.setLabel("KTA DEBUG LOG LEVEL")
     ktaLogDebugSymbol.setVisible(True)
-    ktaLogDebugSymbol.setDefaultValue("E_KTALOG_LEVEL_NONE")
+    ktaLogDebugSymbol.setDefaultValue("C_KTA_LOG_LEVEL_NONE")
 
     ktaSymbol = ktaComponent.createStringSymbol("KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID", None)
     ktaSymbol.setLabel("Enter Fleet Profile Public UID")
@@ -128,6 +128,6 @@ def instantiateComponent(ktaComponent):
     ktaSymbol = ktaComponent.createSettingSymbol("KTA_XC32_INCLUDE_DIRS", None)
     ktaSymbol.setCategory("C32")
     ktaSymbol.setKey("extra-include-directories")
-    ktaSymbol.setValue( '{0};{0}/../cryptoauthlib/atcacert;{0};{0}/COMMON/logmodule/include;{0}/COMMSTACK/http;{0}/COMMSTACK/http/include;{0}/SOURCE/include;{0}/SOURCE/kta/common/crypto/include;{0}/SOURCE/kta/common/general/include;{0}/SOURCE/kta/common/icpp_parser/include;{0}/SOURCE/kta/common/version/include;{0}/SOURCE/kta/modules/acthandler/include;{0}/SOURCE/kta/modules/cmdhandler/include;{0}/SOURCE/kta/modules/config/include;{0}/SOURCE/kta/modules/reghandler/include;{0}/SOURCE/salapi/include;{0}/fota_service/;'.format(includePath))
+    ktaSymbol.setValue( '{0};{0}/../cryptoauthlib/atcacert;{0};{0}/COMMON/logmodule/include;{0}/COMMSTACK/http;{0}/COMMSTACK/http/include;{0}/SOURCE/include;{0}/SOURCE/kta/common/crypto/include;{0}/SOURCE/kta/common/general/include;{0}/SOURCE/kta/common/icpp_parser/include;{0}/SOURCE/kta/common/version/include;{0}/SOURCE/kta/modules/acthandler/include;{0}/SOURCE/kta/modules/cmdhandler/include;{0}/SOURCE/kta/modules/config/include;{0}/SOURCE/kta/modules/reghandler/include;{0}/SOURCE/salapi/include;{0}/SOURCE/kta/modules/fotaservice/include;'.format(includePath))
     ktaSymbol.setAppend(True, ';')
 

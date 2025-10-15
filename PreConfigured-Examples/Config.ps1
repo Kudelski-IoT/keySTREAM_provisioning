@@ -88,6 +88,17 @@ if ($selectedSubFolder -eq "d21_X")
     # Copy all files from SOURCE (including ktaConfig.h)
     Copy-Item $sourcePath -Destination $destPath -Recurse -Force
 
+    # 1a. Copy COMMON folder to ...\firmware\common\kta_provisioning
+    $commonSourcePath = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\COMMON"
+    $commonDestPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\common\kta_provisioning\COMMON"
+
+    # Remove the destination COMMON folder if it already exists
+    if (Test-Path $commonDestPath) {
+        Remove-Item $commonDestPath -Recurse -Force
+    }
+    # Copy all files from COMMON
+    Copy-Item $commonSourcePath -Destination $commonDestPath -Recurse -Force
+
     # Overwrite ktaConfig.h with the latest version
     $srcKtaConfig = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\SOURCE\include\ktaConfig.h"
     $destKtaConfig = Join-Path $destPath "include\ktaConfig.h"
@@ -144,7 +155,6 @@ if ($selectedSubFolder -eq "d21_X")
         New-Item -ItemType Directory -Path $destCommon -Force | Out-Null
     }
 
-    Copy-Item "$ktaLibPath\fota_service"         -Destination $destCommon -Recurse -Force
     Copy-Item "$ktaLibPath\cust_def_device.c"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_device.h"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_signer.c"    -Destination $destCommon -Force
@@ -219,6 +229,17 @@ elseif ($selectedSubFolder -eq "same54_X")
     # Copy all files from SOURCE (including ktaConfig.h)
     Copy-Item $sourcePath -Destination $destPath -Recurse -Force
 
+    # 1a. Copy COMMON folder to ...\firmware\common\kta_provisioning
+    $commonSourcePath = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\COMMON"
+    $commonDestPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware\common\kta_provisioning\COMMON"
+
+    # Remove the destination COMMON folder if it already exists
+    if (Test-Path $commonDestPath) {
+        Remove-Item $commonDestPath -Recurse -Force
+    }
+    # Copy all files from COMMON
+    Copy-Item $commonSourcePath -Destination $commonDestPath -Recurse -Force
+
     # Overwrite ktaConfig.h with the latest version
     $srcKtaConfig = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\SOURCE\include\ktaConfig.h"
     $destKtaConfig = Join-Path $destPath "include\ktaConfig.h"
@@ -265,7 +286,6 @@ elseif ($selectedSubFolder -eq "same54_X")
         New-Item -ItemType Directory -Path $destCommon -Force | Out-Null
     }
 
-    Copy-Item "$ktaLibPath\fota_service"         -Destination $destCommon -Recurse -Force
     Copy-Item "$ktaLibPath\cust_def_device.c"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_device.h"    -Destination $destCommon -Force
     Copy-Item "$ktaLibPath\cust_def_signer.c"    -Destination $destCommon -Force
@@ -350,6 +370,19 @@ elseif ($selectedSubFolder -eq "sg41_X")
     # Copy all files from SOURCE (including ktaConfig.h)
     Copy-Item $sourcePath -Destination $destSourcePath -Recurse -Force
 
+
+    # 1a. Copy COMMON folder to ...\firmware\common\kta_provisioning
+    $commonSourcePath = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\COMMON"
+    $commonDestPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\src\config\default\library\kta_lib\COMMON"
+
+
+    # Remove the destination COMMON folder if it already exists
+    if (Test-Path $commonDestPath) {
+        Remove-Item $commonDestPath -Recurse -Force
+    }
+    # Copy all files from COMMON
+    Copy-Item $commonSourcePath -Destination $commonDestPath -Recurse -Force
+
     # Overwrite ktaConfig.h with the latest version
     $srcKtaConfig = Join-Path $preConfigRoot "apps\keystream_late_provisioning_app\src\config\default\library\kta_lib\SOURCE\include\ktaConfig.h"
     $destKtaConfig = Join-Path $destSourcePath "include\ktaConfig.h"
@@ -392,7 +425,6 @@ elseif ($selectedSubFolder -eq "sg41_X")
 
 
     $destcustdef = Join-Path $destSourcePath "..\"
-    Copy-Item (Join-Path $ktaLibPath "fota_service")           -Destination $destcustdef -Recurse -Force
     Copy-Item (Join-Path $ktaLibPath "cust_def_device.c")      -Destination $destcustdef -Force
     Copy-Item (Join-Path $ktaLibPath "cust_def_device.h")      -Destination $destcustdef -Force
     Copy-Item (Join-Path $ktaLibPath "cust_def_signer.c")      -Destination $destcustdef -Force
@@ -445,14 +477,15 @@ elseif ($selectedSubFolder -eq "sg41_X")
         (Get-Content $atcaConfigPath) -replace 'extern atca_plib_i2c_api_t sercom2_plib_i2c_api;', 'extern atca_plib_i2c_api_t sercom3_plib_i2c_api;' | Set-Content $atcaConfigPath
     }
 
+    Remove-Item (Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\firmware") -Recurse -Force -ErrorAction SilentlyContinue
 
     $xProjPath = Join-Path $trustManagerPath "$selectedSubFolder\keystream_connect\keystream_connect.X"
     Write-Host ""
-    Write-Host "====================================================================="
+    Write-Host "======================================================================================"
     Write-Host "Next Step:"
     Write-Host "Please open the following .X project file in MPLAB X IDE to continue:"
     Write-Host ""
     Write-Host "    $xProjPath"
     Write-Host ""
-    Write-Host "====================================================================="
+    Write-Host "====================================================================================="
 }

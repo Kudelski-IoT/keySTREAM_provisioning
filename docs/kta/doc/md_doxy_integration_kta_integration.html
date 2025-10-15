@@ -88,7 +88,7 @@ $(document).ready(function(){initNavTree('md_doxy_integration_kta_integration.ht
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>MPLAB® Harmony is a software development framework consisting of compatible and interoperable modules that include peripheral libraries (PLIBs), drivers, system services, middleware, and third-party libraries. The MPLAB Harmony Configurator (MHC) is a GUI-based tool that provides an easy way to enable and configure various MPLAB Harmony modules. The MHC is a plug-in to the MPLAB X Integrated Development Environment (IDE). More Details about MPLAB Harmony v3 can be found at <a href="https://www.microchip.com/harmony">MPLAB Harmony</a></p>
-<h1><a class="anchor" id="autotoc_md1"></a>
+<h1><a class="anchor" id="autotoc_md23"></a>
 Integration Steps:</h1>
 <p>1) Open MPLAB X IDE version 6.20 or greater.Click on Content Manager as shown below.</p>
 <div class="image">
@@ -173,7 +173,7 @@ Integration Steps:</h1>
 <p>22) Enable the following preprocessor macros as per your project requirements from the file path below:</p>
 <ul>
 <li><b>File Path:</b> <br  />
- Header Files\config\default\library\kta_lib\ktaConfig.h</li>
+ Header Files\config\default\library\kta_lib\SOURCE\include\ktaConfig.h</li>
 <li><b>NETWORK_STACK_AVAILABLE</b> <br  />
  Enable this macro once the network stack is implemented.</li>
 <li><b>FOTA_ENABLE</b> <br  />
@@ -183,24 +183,34 @@ Integration Steps:</h1>
 <p>To enable FOTA services, you must implement the following APIs in the specified source file:</p>
 <ul>
 <li><b>File Path:</b> <br  />
- Source Files\config\default\kta_lib\fota_service\Fota_Platform.c</li>
+ Source Files\config\default\kta_lib\fotaservice\fotaplatform.c</li>
 <li><b>Required APIs:</b><ul>
-<li><code>fotaPlatformGetComponents()</code></li>
+<li><code><a class="el" href="fotaplatform_8c.html#a611b15a0c977443a16322a66a23535c9" title="Fota Platform.">fotaPlatformGetComponents()</a></code></li>
 <li><code>fotaStartInstallation()</code></li>
 </ul>
 </li>
+<li><b>File Path:</b> <code>SOURCE\salapi\k_sal_fotastorage.c</code></li>
 </ul>
+<p><b>APIs to Implement:</b></p><ul>
+<li><code>salFotaStorageWrite()</code></li>
+<li><code>salFotaStorageRead()</code></li>
+</ul>
+<p><b>Header File:</b> <br  />
+ <code>SOURCE\salapi\include\k_sal_fotastorage.h</code></p>
+<p>see <a href="md_doxy_integration_kta_fota_integration.html"><code>FOTA INTEGRATION</code></a></p>
+<h1><a class="anchor" id="autotoc_md24"></a>
+FOTA API</h1>
 <p>23) Preconfigured example applications are also provided in the <b>PreConfigured-Examples</b> directory of our Git repository. These examples include an integrated communication stack and other supported features, as described below.</p>
 <p><b>NOTE:</b> The Getting Started Guide for the preconfigured examples is available in the <b>PreConfigured-Examples</b> directory of our Git repository.</p>
 <ul>
-<li><b>D21_X:</b> This preconfigured example includes both communication and application layers. The D21 application uses a Wi-Fi communication stack with the WINC1500 Wi-Fi module. Users must provide the Wi-Fi SSID, password, and device profile UID obtained from keySTREAM.</li>
-<li><b>SAME54_X:</b> This preconfigured example includes both communication and application layers. The SAME54 application uses an Ethernet communication stack. Users must provide the device profile UID obtained from keySTREAM.</li>
-<li><b>SG41_X:</b> This preconfigured example includes both communication and application layers. The SG41 application uses a Wi-Fi communication stack with the WINCS02 Wi-Fi module. Users must provide the Wi-Fi SSID, password, and device profile UID obtained from keySTREAM.</li>
+<li><b>D21_X:</b> This preconfigured example includes both communication and application layers. The D21 application uses a Wi-Fi communication stack with the WINC1500 Wi-Fi module. Users must provide the Wi-Fi SSID, password, fleet profile UID obtained from keySTREAM, and the AWS endpoint.</li>
+<li><b>SAME54_X:</b> This preconfigured example includes both communication and application layers. The SAME54 application uses an Ethernet communication stack. Users must provide the fleet profile UID obtained from keySTREAM, the AWS endpoint, and the AWS Thing Name.</li>
+<li><b>SG41_X:</b> This preconfigured example includes both communication and application layers. The SG41 application uses a Wi-Fi communication stack with the WINCS02 Wi-Fi module. Users must provide the Wi-Fi SSID, password, and fleet profile UID obtained from keySTREAM.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md2"></a>
+<h1><a class="anchor" id="autotoc_md25"></a>
 keySTREAM Trusted Agent Release Notes</h1>
 <p>see <a href="md_doxy_integration_release_notes.html"><code>Release Notes</code></a></p>
-<h1><a class="anchor" id="autotoc_md3"></a>
+<h1><a class="anchor" id="autotoc_md26"></a>
 keySTREAM Trusted Agent License</h1>
 <p>see <a href="md_doxy_integration_license.html"><code>LICENSE</code></a> </p>
 </div></div><!-- contents -->

@@ -145,7 +145,7 @@
                 <logicalFolder name="http" displayName="http" projectFiles="true">
                   <logicalFolder name="include" displayName="include" projectFiles="true">
                     <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/http.h</itemPath>
-                    <itemPath>../src/config/default/library/kta_lib/fota_services/Fota_Agent.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/fotaservices/Fota_Agent.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/http_if.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/comm_if.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/include/k_comm_defs.h</itemPath>
@@ -158,6 +158,7 @@
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/include/k_kta.h</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/include/k_version.h</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/include/k_defs.h</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/include/ktaConfig.h</itemPath>
                 </logicalFolder>
                 <logicalFolder name="kta" displayName="kta" projectFiles="true">
                   <logicalFolder name="common" displayName="common" projectFiles="true">
@@ -198,6 +199,13 @@
                         <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include/config.h</itemPath>
                       </logicalFolder>
                     </logicalFolder>
+                    <logicalFolder name="fotaservice" displayName="fotaservice" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../../D21_X/keystream_connect/firmware/common/kta_provisioning/SOURCE/kta/modules/fotaservice/include/fotaagent.h</itemPath>
+                        <itemPath>../../../D21_X/keystream_connect/firmware/common/kta_provisioning/SOURCE/kta/modules/fotaservice/include/fotaplatform.h</itemPath>
+                        <itemPath>../../../D21_X/keystream_connect/firmware/common/kta_provisioning/SOURCE/kta/modules/fotaservice/include/fotaprocess.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
                     <logicalFolder name="reghandler" displayName="reghandler" projectFiles="true">
                       <logicalFolder name="include" displayName="include" projectFiles="true">
                         <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include/reghandler.h</itemPath>
@@ -216,11 +224,11 @@
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/slotConfig.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/cryptoConfig.h</itemPath>
                     <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_crypto.h</itemPath>
+                    <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/include/k_sal_fotastorage.h</itemPath>
                   </logicalFolder>
                 </logicalFolder>
               </logicalFolder>
               <itemPath>../src/config/default/library/kta_lib/ktaFieldMgntHook.h</itemPath>
-              <itemPath>../src/config/default/library/kta_lib/ktaConfig.h</itemPath>
               <itemPath>../src/config/default/library/kta_lib/cust_def_device.h</itemPath>
               <itemPath>../src/config/default/library/kta_lib/cust_def_signer.h</itemPath>
             </logicalFolder>
@@ -653,13 +661,6 @@
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/k_sal_com.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
-              <logicalFolder name="fota_service"
-                             displayName="fota_service"
-                             projectFiles="true">
-                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Agent.c</itemPath>
-                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Platform.c</itemPath>
-                <itemPath>../src/config/default/library/kta_lib/fota_service/Fota_Process.c</itemPath>
-              </logicalFolder>
               <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
                 <logicalFolder name="include" displayName="include" projectFiles="true">
                 </logicalFolder>
@@ -705,6 +706,11 @@
                       </logicalFolder>
                       <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/config/config.c</itemPath>
                     </logicalFolder>
+                    <logicalFolder name="fotaservice" displayName="fotaservice" projectFiles="true">
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/fotaservice/fotaagent.c</itemPath>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/fotaservice/fotaplatform.c</itemPath>
+                      <itemPath>../src/config/default/library/kta_lib/SOURCE/kta/modules/fotaservice/fotaprocess.c</itemPath>
+                    </logicalFolder>
                     <logicalFolder name="reghandler" displayName="reghandler" projectFiles="true">
                       <logicalFolder name="include" displayName="include" projectFiles="true">
                       </logicalFolder>
@@ -719,6 +725,8 @@
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_fota.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_object.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_storage.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_fotastorage.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/SOURCE/salapi/k_sal_log.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
               <itemPath>../src/config/default/library/kta_lib/cust_def_device.c</itemPath>
@@ -827,6 +835,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../src/config/default/library/kta_lib</Elem>
+    <Elem>../../../D21_X/keystream_connect/firmware/common/kta_provisioning/SOURCE/kta/modules/fotaservice/include</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -836,7 +845,7 @@
         <targetDevice>PIC32CX1025SG41100</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>pkob4hybrid</platformTool>
+        <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.35</languageToolchainVersion>
         <platform>3</platform>
@@ -875,43 +884,23 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe" value=""/>
-        <property key="cast-align" value="false"/>
-        <property key="code-model" value="default"/>
-        <property key="const-model" value="default"/>
-        <property key="data-model" value="default"/>
-        <property key="disable-instruction-scheduling" value="false"/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
-        <property key="enable-procedural-abstraction" value="false"/>
-        <property key="enable-short-double" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
-        <property key="expand-pragma-config" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/default;../src/config/default/driver/wifi/wincs02/include/;../src/config/default/driver/wifi/wincs02/include/dev;../src/config/default/driver/wifi/wincs02/include/nc_driver;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/config/default/library/kta_lib/fota_services../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/PIC32CX1025SG41100_DFP;../src/third_party/rtos/FreeRTOS/Source/include;../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F;..\src\config\default\library\cryptoauthlib\atcacert;..\src\config\default\library\kta_lib\fota_service;../"/>
+                  value="../src;../src/config/default;../src/config/default/driver/wifi/wincs02/include/;../src/config/default/driver/wifi/wincs02/include/dev;../src/config/default/driver/wifi/wincs02/include/nc_driver;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/config/default/library/kta_lib/fotaservices../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/PIC32CX1025SG41100_DFP;../src/third_party/rtos/FreeRTOS/Source/include;../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F;..\src\config\default\library\cryptoauthlib\atcacert;..\src\config\default\library\kta_lib\fotaservice;../;..\src\config\default\library\kta_lib\SOURCE\kta\fotaservice\include;..\src\config\default\library\kta_lib\SOURCE\kta\modules\fotaservice\include;..\src\config\default\library\kta_lib\SOURCE\kta\modules\fotaservice\include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
-        <property key="keep-inline" value="false"/>
         <property key="make-warnings-into-errors" value="false"/>
-        <property key="oXC16gcc-errata" value=""/>
-        <property key="oXC16gcc-large-aggregate" value="false"/>
-        <property key="oXC16gcc-mpa-lvl" value=""/>
-        <property key="oXC16gcc-name-text-sec" value=""/>
-        <property key="oXC16gcc-near-chars" value="false"/>
-        <property key="oXC16gcc-no-isr-warn" value="false"/>
-        <property key="oXC16gcc-sfr-warn" value="false"/>
-        <property key="oXC16gcc-smar-io-lvl" value="1"/>
-        <property key="oXC16gcc-smart-io-fmt" value=""/>
         <property key="optimization-level" value="-O1"/>
         <property key="place-data-into-section" value="true"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
                   value="CLOUD_CONFIG_AWS;CLOUD_CONNECT_WITH_CUSTOM_CERTS"/>
-        <property key="scalar-model" value="default"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="tentative-definitions" value="-fno-common"/>
@@ -936,15 +925,12 @@
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="keep-locals" value="false"/>
         <property key="list-assembly" value="false"/>
-        <property key="list-section-info" value="false"/>
         <property key="list-source" value="false"/>
         <property key="list-symbols" value="false"/>
-        <property key="oXC16asm-extra-opts" value=""/>
         <property key="oXC32asm-list-to-file" value="false"/>
         <property key="omit-debug-dirs" value="false"/>
         <property key="omit-forms" value="false"/>
         <property key="preprocessor-macros" value=""/>
-        <property key="relax" value="false"/>
         <property key="warning-level" value=""/>
       </C32-AS>
       <C32-CO>
@@ -955,12 +941,9 @@
         <property key="additional-options-use-response-files" value="false"/>
         <property key="additional-options-write-sla" value="false"/>
         <property key="allocate-dinit" value="false"/>
-        <property key="appendMe" value=""/>
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
-        <property key="enable-data-init" value="true"/>
-        <property key="enable-default-isr" value="true"/>
         <property key="exclude-floating-point-library" value="false"/>
         <property key="exclude-standard-libraries" value="false"/>
         <property key="extra-lib-directories" value=""/>
@@ -981,11 +964,7 @@
         <property key="linker-symbols" value=""/>
         <property key="map-file" value="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"/>
         <property key="no-device-startup-code" value="true"/>
-        <property key="no-ivt" value="false"/>
         <property key="no-startup-files" value="false"/>
-        <property key="oXC16ld-force-link" value="false"/>
-        <property key="oXC16ld-no-smart-io" value="false"/>
-        <property key="oXC16ld-stackguard" value="16"/>
         <property key="oXC32ld-extra-opts" value=""/>
         <property key="optimization-level" value=""/>
         <property key="preprocessor-macros" value=""/>
@@ -1001,7 +980,6 @@
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe" value=""/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>
@@ -1030,21 +1008,13 @@
         <property key="use-indirect-calls" value="false"/>
       </C32CPP>
       <C32Global>
-        <property key="appendMe" value=""/>
-        <property key="combine-sourcefiles" value="false"/>
         <property key="common-include-directories" value=""/>
-        <property key="common-macros" value=""/>
-        <property key="dual-boot-partition" value="0"/>
-        <property key="generic-16-bit" value="false"/>
         <property key="gp-relative-option" value=""/>
         <property key="legacy-libc" value="false"/>
         <property key="mdtcm" value=""/>
         <property key="mitcm" value=""/>
-        <property key="mpreserve-all" value="false"/>
         <property key="mstacktcm" value="false"/>
         <property key="omit-pack-options" value="1"/>
-        <property key="preserve-all" value="false"/>
-        <property key="preserve-file" value=""/>
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
         <property key="stack-smashing" value=""/>
@@ -1143,8 +1113,6 @@
                   value="${memories.instruction.ram.ranges}"/>
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-47001fff"/>
-        <property key="programmerToGoFilePath"
-                  value="C:/Users/c41800/Desktop/sg41_trustplatform_board/0-Test/TEST_WINCSO2/WINCS02_Test.X/debug/default/WINCS02_Test_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.pgmentry.voltage" value="low"/>

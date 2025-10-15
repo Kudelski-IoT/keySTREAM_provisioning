@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -50,8 +50,14 @@
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
 /* Module name used for logging */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "KTAICPPPARSER";
+#endif
 
 /** @brief Max MAC size 16 bytes. */
 #define C_K_ICPP_PARSER_HMACSHA256_SIZE             (16u)
@@ -401,7 +407,7 @@ TKParserStatus ktaIcppParserSerializeMessage
     (NULL == xpMessageToSendSize) ||
     (0u == *xpMessageToSendSize) ||
     (*xpMessageToSendSize < C_K_ICPP_PARSER__HEADER_SIZE) ||
-    (E_K_ICPP_PARSER_MSG_TYPE_RESERVED <= xpIcppMessage->msgType) ||
+    (E_K_ICPP_PARSER_MSG_TYPE_RESERVED <= (uint32_t) xpIcppMessage->msgType) ||
     (C_K_ICPP_PARSER__MAX_COMMANDS_COUNT < xpIcppMessage->commandsCount))
   {
     M_KTALOG__ERR("Invalid parameters");
@@ -703,6 +709,7 @@ static TKParserStatus lIcppParserIsValidTag
       case E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE:
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID:
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA:
+      case E_K_ICPP_PARSER_FLD_TAG_KTA_NONCE:
 #ifdef FOTA_ENABLE
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA:
       case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA:
@@ -856,7 +863,7 @@ static TKParserStatus lIcppParserDeserializeFields
     }
 
     curPosition += C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES;
-    if (curPosition+tagLen > (uint32_t)xCommandLength)
+    if ( (curPosition+tagLen ) > (uint32_t)xCommandLength)
     {
       M_KTALOG__ERR("Error while parsing taglen");
       status = E_K_ICPP_PARSER_STATUS_ERROR;
@@ -872,9 +879,11 @@ static TKParserStatus lIcppParserDeserializeFields
       M_KTALOG__ERR("Error while parsing field length");
       status = E_K_ICPP_PARSER_STATUS_ERROR;
       break;
-    }
+    }  
+    /* To fix the misra-c2012-11.4-A conversion should not be performed between a pointer to object and an integer type*/
     /* Storing the received data pointer to the field value. */
-    pField->fieldValue = (uint8_t*)&xpMessage[curPosition];
+	  pField->fieldValue = (uint8_t*)&xpMessage[curPosition];
+
     curPosition += fieldLength;
     cmdLength -= (uint32_t)(fieldLength + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES + tagLen);
     ++fieldsCount;

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['network_5fstack_5favailable_521',['NETWORK_STACK_AVAILABLE',['../kta_config_8h.html#a706569a103c87eb60a3071b71ea68325',1,'ktaConfig.h']]]
+  ['k_5fsal_5fapi_566',['K_SAL_API',['../k__defs_8h.html#a1a8e84430e52400313049a4910d394ee',1,'k_defs.h']]]
 ];

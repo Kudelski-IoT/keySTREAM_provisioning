@@ -144,8 +144,14 @@ typedef struct
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
 /* Module name used for logging */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "SALCRYPTO";
+#endif
 
 static TKSalObjectIdMap gaSalObjectIdMapTable[] =
 {
@@ -184,7 +190,7 @@ static TKSalObjectIdMap gaSalObjectIdMapTable[] =
 static TKStatus lSetValueById
 (
   uint32_t  xObjectId,
-  uint8_t*  xpValue,
+  const uint8_t*  xpValue,
   size_t    xValueLen
 );
 
@@ -411,7 +417,8 @@ K_SAL_API TKStatus salRotKeyPairGeneration
       goto end;
     }
 
-    if (lSetValueById(C_K_KTA__VOLATILE_ID, &privateKeyId, 1) != E_K_STATUS_OK)
+    /* To Fix the Misra*/
+    if (lSetValueById(C_K_KTA__VOLATILE_ID, (const uint8_t*) &privateKeyId, 1) != E_K_STATUS_OK)
     {
       M_KTALOG__ERR("lSetValueById Failed");
       goto end;
@@ -490,7 +497,7 @@ K_SAL_API TKStatus salRotKeyAgreement
       M_KTALOG__HEX("Secret:", aSecret, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
 
       if (lSetValueById(xSharedSecretTarget,
-                        aSecret, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
+                        (const uint8_t*)aSecret, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
       {
         M_KTALOG__ERR("lSetValueById Failed");
         goto end;
@@ -638,7 +645,7 @@ K_SAL_API TKStatus salRotHkdfExtractAndExpand
         M_KTALOG__HEX("L1 Key:", aL1Key, l1KeySize);
 
         if (lSetValueById(C_K_KTA__VOLATILE_2_ID,
-                          aL1Key, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
+                          (const uint8_t*) aL1Key, C_SAL_CRYPTO_KEY_SIZE_32_BYTE) != E_K_STATUS_OK)
         {
           M_KTALOG__INFO("lSetValueById Failed");
           break;
@@ -883,7 +890,6 @@ K_SAL_API TKStatus salCryptoHmac
 {
   TKStatus          status = E_K_STATUS_ERROR;
   ATCA_STATUS       cryptoStatus = ATCA_STATUS_UNKNOWN;
-  uint8_t           aKeyBuff[C_SAL_CRYPTO_KEY_SIZE_32_BYTE] = { 0 };
   uint8_t           aMac[C_SAL_CRYPTO_KEY_SIZE_32_BYTE] = { 0 };
 
   M_KTALOG__START("Start");
@@ -898,8 +904,6 @@ K_SAL_API TKStatus salCryptoHmac
   }
   else
   {
-    M_KTALOG__INFO("L2 key for HMAC");
-    M_KTALOG__HEX("L2 Key:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
     M_KTALOG__HEX("InputData:", xpInputData, xInputDataLen);
 
     cryptoStatus = atcab_sha_hmac(xpInputData, xInputDataLen,
@@ -941,7 +945,6 @@ K_SAL_API TKStatus salCryptoHmacVerify
 {
   TKStatus          status = E_K_STATUS_ERROR;
   ATCA_STATUS       cryptoStatus = ATCA_STATUS_UNKNOWN;
-  uint8_t           aKeyBuff[C_SAL_CRYPTO_KEY_SIZE_32_BYTE] = { 0 };
   uint8_t           aMac[C_SAL_CRYPTO_KEY_SIZE_32_BYTE] = { 0 };
 
   M_KTALOG__START("Start");
@@ -956,9 +959,6 @@ K_SAL_API TKStatus salCryptoHmacVerify
   }
   else
   {
-    M_KTALOG__INFO("L2 key for HMAC verification");
-    M_KTALOG__HEX("L2 Key:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
-
     M_KTALOG__INFO("Input data for hmac verify ");
     M_KTALOG__HEX("Input Data:", xpInputData, xInputDataLen);
 
@@ -1008,7 +1008,6 @@ K_SAL_API TKStatus salCryptoAesEnc
 {
   TKStatus            status = E_K_STATUS_ERROR;
   ATCA_STATUS         cryptoStatus = ATCA_STATUS_UNKNOWN;
-  uint8_t             aKeyBuff[C_SAL_CRYPTO_KEY_SIZE_32_BYTE] = { 0 };
   uint16_t            dataBlock;
   atca_aes_cbc_ctx_t  ctx;
   uint8_t             aIV[] = C_SAL_CRYPTO_IV;
@@ -1026,7 +1025,6 @@ K_SAL_API TKStatus salCryptoAesEnc
   }
   else
   {
-    M_KTALOG__HEX("L2 key for HMAC verification:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
     M_KTALOG__HEX("Input Data for encryption :", xpInputData, xInputDataLen);
 
     cryptoStatus = atcab_aes_cbc_init(&ctx, SLOT_9, SLOT_9_BLOCK_2, aIV);
@@ -1079,7 +1077,6 @@ K_SAL_API TKStatus salCryptoAesDec
 {
   TKStatus            status = E_K_STATUS_ERROR;
   ATCA_STATUS         cryptoStatus = ATCA_STATUS_UNKNOWN;
-  uint8_t             aKeyBuff[C_SAL_CRYPTO_KEY_SIZE_32_BYTE] = { 0 };
   uint16_t            dataBlock;
   atca_aes_cbc_ctx_t  ctx;
   uint8_t             aIV[] = C_SAL_CRYPTO_IV;
@@ -1100,9 +1097,6 @@ K_SAL_API TKStatus salCryptoAesDec
       status = E_K_STATUS_PARAMETER;
       break;
     }
-
-    M_KTALOG__INFO("L2 key for AES dec");
-    M_KTALOG__HEX("L2 Key:", aKeyBuff, C_SAL_CRYPTO_KEY_SIZE_32_BYTE);
 
     M_KTALOG__HEX("Input Data:", xpInputData, xInputDataLen);
     cryptoStatus = atcab_aes_cbc_init(&ctx, SLOT_9, SLOT_9_BLOCK_2, aIV);
@@ -1232,7 +1226,7 @@ end:
 static TKStatus lSetValueById
 (
   uint32_t  xObjectId,
-  uint8_t* xpValue,
+  const uint8_t* xpValue,
   size_t    xValueLen
 )
 {

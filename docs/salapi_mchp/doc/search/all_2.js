@@ -1,15 +1,9 @@
 var searchData=
 [
-  ['k_5fsal_2eh_200',['k_sal.h',['../k__sal_8h.html',1,'']]],
-  ['k_5fsal_5fapi_201',['K_SAL_API',['../group__g__sal__api.html#ga1a8e84430e52400313049a4910d394ee',1,'K_SAL_API():&#160;k_sal_fota.h'],['../group__g__sal__api.html#ga1a8e84430e52400313049a4910d394ee',1,'K_SAL_API():&#160;k_sal_object.h']]],
-  ['k_5fsal_5fcrypto_2ec_202',['k_sal_crypto.c',['../k__sal__crypto_8c.html',1,'']]],
-  ['k_5fsal_5fcrypto_2eh_203',['k_sal_crypto.h',['../k__sal__crypto_8h.html',1,'']]],
-  ['k_5fsal_5flog_2ec_204',['k_sal_log.c',['../k__sal__log_8c.html',1,'']]],
-  ['k_5fsal_5flog_2eh_205',['k_sal_log.h',['../k__sal__log_8h.html',1,'']]],
-  ['k_5fsal_5fobject_2ec_206',['k_sal_object.c',['../k__sal__object_8c.html',1,'']]],
-  ['k_5fsal_5fobject_2eh_207',['k_sal_object.h',['../k__sal__object_8h.html',1,'']]],
-  ['k_5fsal_5fplatform_2eh_208',['k_sal_platform.h',['../k__sal__platform_8h.html',1,'']]],
-  ['k_5fsal_5frot_2eh_209',['k_sal_rot.h',['../k__sal__rot_8h.html',1,'']]],
-  ['k_5fsal_5fstorage_2ec_210',['k_sal_storage.c',['../k__sal__storage_8c.html',1,'']]],
-  ['k_5fsal_5fstorage_2eh_211',['k_sal_storage.h',['../k__sal__storage_8h.html',1,'']]]
+  ['fota_5fstorage_5finstalled_5fcomponent_5fid_207',['FOTA_STORAGE_INSTALLED_COMPONENT_ID',['../include_2k__sal__fotastorage_8h.html#a3772ee3d0ac18fc38f997f05a3da907a',1,'FOTA_STORAGE_INSTALLED_COMPONENT_ID():&#160;k_sal_fotastorage.h'],['../microchip_2include_2k__sal__fotastorage_8h.html#a3772ee3d0ac18fc38f997f05a3da907a',1,'FOTA_STORAGE_INSTALLED_COMPONENT_ID():&#160;k_sal_fotastorage.h']]],
+  ['fota_5fstorage_5fmetadata_5fid_208',['FOTA_STORAGE_METADATA_ID',['../include_2k__sal__fotastorage_8h.html#abe602b156688c073d70b29ef76c9f85e',1,'FOTA_STORAGE_METADATA_ID():&#160;k_sal_fotastorage.h'],['../microchip_2include_2k__sal__fotastorage_8h.html#abe602b156688c073d70b29ef76c9f85e',1,'FOTA_STORAGE_METADATA_ID():&#160;k_sal_fotastorage.h']]],
+  ['fota_5fstorage_5fname_5fid_209',['FOTA_STORAGE_NAME_ID',['../include_2k__sal__fotastorage_8h.html#aed5069df6656e3fe4df47922b9bd105e',1,'FOTA_STORAGE_NAME_ID():&#160;k_sal_fotastorage.h'],['../microchip_2include_2k__sal__fotastorage_8h.html#aed5069df6656e3fe4df47922b9bd105e',1,'FOTA_STORAGE_NAME_ID():&#160;k_sal_fotastorage.h']]],
+  ['fota_5fstorage_5fstate_5fid_210',['FOTA_STORAGE_STATE_ID',['../include_2k__sal__fotastorage_8h.html#a50aa210248359b2e94d8d232580e1a52',1,'FOTA_STORAGE_STATE_ID():&#160;k_sal_fotastorage.h'],['../microchip_2include_2k__sal__fotastorage_8h.html#a50aa210248359b2e94d8d232580e1a52',1,'FOTA_STORAGE_STATE_ID():&#160;k_sal_fotastorage.h']]],
+  ['fota_5fstorage_5ftarget_5fcomponent_5fid_211',['FOTA_STORAGE_TARGET_COMPONENT_ID',['../include_2k__sal__fotastorage_8h.html#a5f12b9e877231fc1e02909bede85e538',1,'FOTA_STORAGE_TARGET_COMPONENT_ID():&#160;k_sal_fotastorage.h'],['../microchip_2include_2k__sal__fotastorage_8h.html#a5f12b9e877231fc1e02909bede85e538',1,'FOTA_STORAGE_TARGET_COMPONENT_ID():&#160;k_sal_fotastorage.h']]],
+  ['fota_5fstorage_5furl_5fid_212',['FOTA_STORAGE_URL_ID',['../include_2k__sal__fotastorage_8h.html#a485b736c450557beb664d05646e95f6b',1,'FOTA_STORAGE_URL_ID():&#160;k_sal_fotastorage.h'],['../microchip_2include_2k__sal__fotastorage_8h.html#a485b736c450557beb664d05646e95f6b',1,'FOTA_STORAGE_URL_ID():&#160;k_sal_fotastorage.h']]]
 ];

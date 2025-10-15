@@ -1,9 +1,9 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2024 Nagravision S�? rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sàrl
+* Subject to your compliance with these terms, you may use the Nagravision S�? rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -53,7 +53,7 @@
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
 /* -------------------------------------------------------------------------- */
 /** @brief Maximal HTTP data length. */
-#define C_HTTP_MAX_DATA_LEN          (2096u)
+#define C_HTTP_MAX_DATA_LEN          (2560u)
 /** @brief HTTP read timeout in miliseconds. */
 #define C_HTTP_READ_TIMEOUT_IN_MS    (10000u)
 /** @brief HTTP connection timeout in miliseconds. */
@@ -66,6 +66,7 @@
 /******************************************************************************/
 /* LOCAL MACROS                                                               */
 /******************************************************************************/
+
 #ifdef DEBUG
 /** @brief Enable HTTP logs. */
 #define M_INTL_HTTP_DEBUG(__PRINT__)   do { \
@@ -196,6 +197,10 @@ static int httpPost
 /**
  * @brief  implement httpInit
  *
+ */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+ * Not using the return value of non-void functions
  */
 TCommIfStatus httpInit
 (
@@ -468,7 +473,11 @@ static int httpHeader
   }
   else if (lstrncasecmp(aT1, "set-cookie:", 11) == 0)
   {
-    (void)snprintf(xpHttpInfo->response.cookie, C_HTTP__HEADER_FIELD_SIZE, "%.63s", aT2);
+    /**
+     * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
+     * Not using the return value of snprintf
+     */
+    (void)snprintf(xpHttpInfo->response.cookie, C_HTTP__HEADER_FIELD_SIZE, "%s", aT2);
   }
   else if (lstrncasecmp(aT1, "location:", 9) == 0)
   {
@@ -906,290 +915,6 @@ static int httpPost
 end:
   return retVal;
 }
-
-// #define NUM_EXPERIMENTS 6
-// #define BUFFER_SIZE 3048  // Set your max expected size
-// #include <stdbool.h>
-
-// static int httpPost(TKHttpInfo* xpHttpInfo, const uint8_t* xpDir, const uint8_t* xpData, size_t xDataLen, uint8_t* xpResponse, size_t xSize) {
-//   TKCommStatus status = E_K_COMM_STATUS_ERROR;
-//   uint8_t aBuffer[C_HTTP_MAX_DATA_LEN] = {0};
-//   unsigned int len;
-//   int retVal = -1;
-
-//   M_INTL_HTTP_DEBUG(("Start of %s", __func__));
-
-
-//   if (NULL == xpHttpInfo) {
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   // Build the HTTP POST request header
-//   len = (unsigned int)snprintf((char *)aBuffer, C_HTTP_MAX_DATA_LEN,
-//                                "POST %s HTTP/1.1\r\n"
-//                                "Host: %s:%s\r\n"
-//                                "Connection: Keep-Alive\r\n"
-//                                "Content-Type: application/octet-stream\r\n"
-//                                "Content-Length: %d\r\n"
-//                                "Cookie: %s\r\n"
-//                                "\r\n",
-//                                (const char *)xpDir,
-//                                xpHttpInfo->url.host,
-//                                xpHttpInfo->url.port,
-//                                (int)xDataLen,
-//                                xpHttpInfo->request.cookie);
-
-//   M_INTL_HTTP_DEBUG(("Post Header len %d", len));
-
-//   if ((len + xDataLen) > C_HTTP_MAX_DATA_LEN) {
-//       M_INTL_HTTP_ERROR(("Buffer Overflow"));
-//       (void)salComTerm(xpHttpInfo->pTls);
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   memcpy(&aBuffer[len], xpData, xDataLen);
-//   len += xDataLen;
-
-//   // Send the HTTP POST request
-//   status = salComWrite(xpHttpInfo->pTls, aBuffer, len);
-//   if (E_K_COMM_STATUS_OK != status) {
-//       M_INTL_HTTP_ERROR(("salComWrite Failed"));
-//       (void)salComTerm(xpHttpInfo->pTls);
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   // Prepare for response
-//   xpHttpInfo->response.status = 0;
-//   xpHttpInfo->response.contentLength = 0;
-//   xpHttpInfo->response.close = C_HTTP__FALSE;
-
-//   xpHttpInfo->recvLen = sizeof(aBuffer);
-//   xpHttpInfo->headerEnd = C_HTTP__FALSE;
-//   xpHttpInfo->pRecvBuf = (char *)aBuffer;
-
-//   xpHttpInfo->body = xpResponse;
-//   xpHttpInfo->bodySize = (long)xSize;
-//   xpHttpInfo->bodyLen = 0;
-//   xpHttpInfo->body[0] = 0;
-
-//   // // Read initial response chunk
-//   // status = salComRead(xpHttpInfo->pTls, aBuffer, &xpHttpInfo->recvLen);
-//   // if (E_K_COMM_STATUS_OK != status) {
-//   //     M_INTL_HTTP_ERROR(("salComRead Failed"));
-//   //     (void)salComTerm(xpHttpInfo->pTls);
-//   //     retVal = -1;
-//   //     goto end;
-//   // }
-// size_t results[NUM_EXPERIMENTS];
-
-//   for (int i = 0; i < NUM_EXPERIMENTS; i++) {
-//     uint8_t buffer[BUFFER_SIZE] = {0};
-//     size_t bufferLen = BUFFER_SIZE;
-    
-//     TKCommStatus readStatus = salComRead(xpHttpInfo->pTls, buffer, &bufferLen);
-    
-//     results[i] = bufferLen;
-//     printf("Run %d: Status = %d, Bytes Received = %zu\n", i + 1, readStatus, bufferLen);
-// }
-
-
-//   if (httpParse(xpHttpInfo) != 0) {
-//       M_INTL_HTTP_ERROR(("httpHeader returned Error"));
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   // Loop to read the remaining body, if any
-//   size_t expectedLen = xpHttpInfo->response.contentLength;
-//   size_t totalReceived = xpHttpInfo->bodyLen;
-
-//   while (totalReceived < expectedLen) {
-//       size_t remaining = expectedLen - totalReceived;
-//       size_t tempLen = remaining > C_HTTP_MAX_DATA_LEN ? C_HTTP_MAX_DATA_LEN : remaining;
-//       size_t bytesRead = tempLen;
-
-//       status = salComRead(xpHttpInfo->pTls, aBuffer, &bytesRead);
-//       if (status != E_K_COMM_STATUS_OK || bytesRead == 0) {
-//           M_INTL_HTTP_ERROR(("Additional salComRead failed or no more data"));
-//           break;
-//       }
-
-//       if ((totalReceived + bytesRead) > xSize) {
-//           M_INTL_HTTP_ERROR(("Response buffer overflow"));
-//           break;
-//       }
-
-//       memcpy(&xpHttpInfo->body[totalReceived], aBuffer, bytesRead);
-//       totalReceived += bytesRead;
-//       xpHttpInfo->bodyLen = totalReceived;
-//   }
-
-//   // Close connection if needed
-//   if ((int)xpHttpInfo->response.close == 1) {
-//       (void)salComTerm(xpHttpInfo->pTls);
-//   }
-
-//   M_INTL_HTTP_DEBUG(("status  : %d", xpHttpInfo->response.status));
-//   M_INTL_HTTP_DEBUG(("cookie  : %s", xpHttpInfo->response.cookie));
-//   M_INTL_HTTP_DEBUG(("location: %s", xpHttpInfo->response.location));
-//   M_INTL_HTTP_DEBUG(("length  : %ld", xpHttpInfo->response.contentLength));
-//   M_INTL_HTTP_DEBUG(("body    : %ld", xpHttpInfo->bodyLen));
-
-//   retVal = xpHttpInfo->response.status;
-
-// end:
-//   return retVal;
-// }
-
-// static int httpPost(TKHttpInfo* xpHttpInfo, const uint8_t* xpDir, const uint8_t* xpData, size_t xDataLen, uint8_t* xpResponse, size_t xSize) {
-//   TKCommStatus status = E_K_COMM_STATUS_ERROR;
-//   uint8_t aBuffer[C_HTTP_MAX_DATA_LEN] = {0};
-//   unsigned int len;
-//   int retVal = -1;
-
-//   M_INTL_HTTP_DEBUG(("Start of %s", __func__));
-
-//   if (NULL == xpHttpInfo) {
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   // Build the HTTP POST request header
-//   len = (unsigned int)snprintf((char *)aBuffer, C_HTTP_MAX_DATA_LEN,
-//                                "POST %s HTTP/1.1\r\n"
-//                                "Host: %s:%s\r\n"
-//                                "Connection: Keep-Alive\r\n"
-//                                "Content-Type: application/octet-stream\r\n"
-//                                "Content-Length: %d\r\n"
-//                                "Cookie: %s\r\n"
-//                                "\r\n",
-//                                (const char *)xpDir,
-//                                xpHttpInfo->url.host,
-//                                xpHttpInfo->url.port,
-//                                (int)xDataLen,
-//                                xpHttpInfo->request.cookie);
-
-//   M_INTL_HTTP_DEBUG(("Post Header len %d", len));
-
-//   if ((len + xDataLen) > C_HTTP_MAX_DATA_LEN) {
-//       M_INTL_HTTP_ERROR(("Buffer Overflow"));
-//       (void)salComTerm(xpHttpInfo->pTls);
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   memcpy(&aBuffer[len], xpData, xDataLen);
-//   len += xDataLen;
-
-//   // Send the HTTP POST request
-//   status = salComWrite(xpHttpInfo->pTls, aBuffer, len);
-//   if (E_K_COMM_STATUS_OK != status) {
-//       M_INTL_HTTP_ERROR(("salComWrite Failed"));
-//       (void)salComTerm(xpHttpInfo->pTls);
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   // Prepare for response
-//   xpHttpInfo->response.status = 0;
-//   xpHttpInfo->response.contentLength = 0;
-//   xpHttpInfo->response.close = C_HTTP__FALSE;
-
-//   xpHttpInfo->recvLen = sizeof(aBuffer);
-//   xpHttpInfo->headerEnd = C_HTTP__FALSE;
-//   xpHttpInfo->pRecvBuf = (char *)aBuffer;
-
-//   xpHttpInfo->body = xpResponse;
-//   xpHttpInfo->bodySize = (long)xSize;
-//   xpHttpInfo->bodyLen = 0;
-//   xpHttpInfo->body[0] = 0;
-
-//   // Read initial response chunk
-//   status = salComRead(xpHttpInfo->pTls, aBuffer, &xpHttpInfo->recvLen);
-//   if (E_K_COMM_STATUS_OK != status) {
-//       M_INTL_HTTP_ERROR(("salComRead Failed"));
-//       (void)salComTerm(xpHttpInfo->pTls);
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   if (httpParse(xpHttpInfo) != 0) {
-//       M_INTL_HTTP_ERROR(("httpHeader returned Error"));
-//       retVal = -1;
-//       goto end;
-//   }
-
-//   // Experiment: perform the read multiple times and log the results
-//   size_t results[NUM_EXPERIMENTS];
-//   for (int i = 0; i < NUM_EXPERIMENTS; i++) {
-//       size_t bytesReceived = 0;
-
-//       // Perform the read
-//       status = salComRead(xpHttpInfo->pTls, aBuffer, &bytesReceived);
-//       results[i] = bytesReceived;
-
-//       M_INTL_HTTP_DEBUG(("Run %d: Bytes Received = %zu", i + 1, bytesReceived));
-
-//       // Accumulate the body data if the read is successful
-//       if (status == E_K_COMM_STATUS_OK && bytesReceived > 0) {
-//           memcpy(&xpHttpInfo->body[xpHttpInfo->bodyLen], aBuffer, bytesReceived);
-//           xpHttpInfo->bodyLen += bytesReceived;
-//       }
-//   }
-
-//   // Compare results to ensure consistency
-//   size_t expectedBytes = results[0];
-//   bool consistent = true;
-//   for (int i = 1; i < NUM_EXPERIMENTS; i++) {
-//       if (results[i] != expectedBytes) {
-//           M_INTL_HTTP_ERROR(("Inconsistent results: Run %d received %zu bytes, expected %zu", i + 1, results[i], expectedBytes));
-//           consistent = false;
-//           break;
-//       }
-//   }
-
-//   if (consistent) {
-//       M_INTL_HTTP_DEBUG(("Experiment consistent: All runs received %zu bytes.", expectedBytes));
-//   }
-
-//   // Loop to read the remaining body, if any
-//   size_t expectedLen = xpHttpInfo->response.contentLength;
-//   size_t totalReceived = xpHttpInfo->bodyLen;
-
-//   while (totalReceived < expectedLen) {
-//       size_t remaining = expectedLen - totalReceived;
-//       size_t tempLen = remaining > C_HTTP_MAX_DATA_LEN ? C_HTTP_MAX_DATA_LEN : remaining;
-//       size_t bytesRead = tempLen;
-
-//       status = salComRead(xpHttpInfo->pTls, aBuffer, &bytesRead);
-//       if (status != E_K_COMM_STATUS_OK || bytesRead == 0) {
-//           M_INTL_HTTP_ERROR(("Additional salComRead failed or no more data"));
-//           break;
-//       }
-
-//       if ((totalReceived + bytesRead) > xSize) {
-//           M_INTL_HTTP_ERROR(("Response buffer overflow"));
-//           break;
-//       }
-
-//       memcpy(&xpHttpInfo->body[totalReceived], aBuffer, bytesRead);
-//       totalReceived += bytesRead;
-//       xpHttpInfo->bodyLen = totalReceived;
-//   }
-
-//   // Close connection if needed
-//   if ((int)xpHttpInfo->response.close == 1) {
-//       (void)salComTerm(xpHttpInfo->pTls);
-//   }
-
-//   retVal = xpHttpInfo->response.status;
-
-// end:
-//   return retVal;
-// }
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */
