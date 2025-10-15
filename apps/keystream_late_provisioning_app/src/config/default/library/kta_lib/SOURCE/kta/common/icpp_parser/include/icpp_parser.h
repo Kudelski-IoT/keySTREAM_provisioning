@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -308,7 +308,11 @@ typedef enum
   /**
    * keySTREAM Trusted Agent Capability tag.
    */
-  E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY                    = 0xACu,
+  E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY          = 0xACu,
+  /**
+   * keySTREAM Third party nonce.
+   */
+  E_K_ICPP_PARSER_FLD_TAG_KTA_NONCE               = 0xAFu,
   /**
    * keySTREAM Trusted Agent context profile uid tag.
    */

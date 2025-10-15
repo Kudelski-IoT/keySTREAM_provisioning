@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('kta_config_8h_source.html',''); initRe
 <a href="kta_config_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*******************************************************************************</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">*************************keySTREAM Trusted Agent (&quot;KTA&quot;)************************</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (c) 2023-2024 Nagravision Sàrl</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (c) 2023-2025 Nagravision Sàrl</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"></span> </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">* Subject to your compliance with these terms, you may use the Nagravision Sàrl</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">* Software and any derivatives exclusively with Nagravision&#39;s products. It is your</span></div>
@@ -128,85 +128,88 @@ $(document).ready(function(){initNavTree('kta_config_8h_source.html',''); initRe
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#include &quot;tmg_conf.h&quot;</span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">/* CONSTANTS, TYPES, ENUM                                                     */</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#ifdef TMG_CONF_H</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       KEYSTREAM_COAP_URL</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       KEYSTREAM_HTTP_URL</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">/* CONSTANTS, TYPES, ENUM                                                     */</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#ifdef TMG_CONF_H</span></div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#define C_KTA_APP__DEVICE_PUBLIC_UID             KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a2c9d4056c1e80e5505bcaed457248403">   76</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)&quot;icpp.mss.iot.kudelski.com&quot;</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a52483d353f64a628effe8d39ee65efed">   79</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       (const uint8_t*)&quot;icph.mss.iot.kudelski.com&quot;</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       KEYSTREAM_COAP_URL</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       KEYSTREAM_HTTP_URL</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#define C_KTA_APP__DEVICE_PUBLIC_UID             KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="kta_config_8h.html#adb3b0384aaba8922d75fe8e9a09c463e">   82</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__DEVICE_PUBLIC_UID             KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a2c9d4056c1e80e5505bcaed457248403">   81</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_COAP_URL       (const uint8_t*)&quot;icpp.mss.iot.kudelski.com&quot;</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a52483d353f64a628effe8d39ee65efed">   84</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL       (const uint8_t*)&quot;icph.mss.iot.kudelski.com&quot;</span></div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a9fe5776715617c1b03bc8a5a4e01fc63">   87</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__L1_SEG_SEED_CIE          {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b,\</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">                                             0x73, 0xf0, 0x56, 0x1d, 0xc4, 0xe0, 0x54, 0x72}</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a9535b18cfb7eee87fdd45fe3025c971c">   91</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__L1_SEG_SEED              C_KTA_APP__L1_SEG_SEED_CIE</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">#ifdef TMG_CONF_H</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#define C_KTA_APP__LOG                      APP_DebugPrintf</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a62c816414881b0831bf158ac9bdbf534">  110</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__LOG                      printf</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">#endif // TMG_CONF_H</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">/* FOTA SERVICES                                                              */</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment">//#define FOTA_ENABLE</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">/* PLATFORM_PROCESS_FEATURE                                                   */</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="comment">//#define PLATFORM_PROCESS_FEATURE</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">#ifndef PLATFORM_PROCESS_FEATURE</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="kta_config_8h.html#adb3b0384aaba8922d75fe8e9a09c463e">   87</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__DEVICE_PUBLIC_UID             KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif        </span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a9535b18cfb7eee87fdd45fe3025c971c">   92</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__L1_SEG_SEED              {0x2b, 0x2b, 0x42, 0x6e, 0x10, 0x35, 0xad, 0x6b, 0x73, 0xf0, 0x56, 0x1d, 0xc4, 0xe0, 0x54, 0x72}</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#ifdef TMG_CONF_H</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">#define C_KTA_APP__LOG                      APP_DebugPrintf</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a62c816414881b0831bf158ac9bdbf534">  111</a></span>&#160;<span class="preprocessor">#define C_KTA_APP__LOG                      printf</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">#endif // TMG_CONF_H</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">/* LOG LEVEL CONFIGURATION - USER SECTION                                     */</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="comment">//  #define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_DEBUG  // &lt;--- USER: Set your desired log level here</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="comment">/* OBJECT_MANAGEMENT_FEATURE                                                  */</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="comment">/* FOTA SERVICES                                                              */</span></div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a2427a9ecc56233915257b7f1405d902c">  139</a></span>&#160;<span class="preprocessor">#define OBJECT_MANAGEMENT_FEATURE</span></div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="comment">/* NETWORK STACK AVAILABLE                                                    */</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a706569a103c87eb60a3071b71ea68325">  149</a></span>&#160;<span class="preprocessor">#define NETWORK_STACK_AVAILABLE</span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="comment">//#define FOTA_ENABLE</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="comment">/* PLATFORM_PROCESS_FEATURE                                                   */</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">//#define PLATFORM_PROCESS_FEATURE</span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="preprocessor">#ifndef PLATFORM_PROCESS_FEATURE</span></div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="comment">/* CHIP CERTIFICATE AVAILABLE                                                 */</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="comment">/* OBJECT_MANAGEMENT_FEATURE                                                  */</span></div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="kta_config_8h.html#ab5961f149bb05ea7f4440648ca869a38">  158</a></span>&#160;<span class="preprocessor">#define DEVICE_PROVIDES_CHIP_CERT</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment">/* VARIABLES                                                                  */</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a2427a9ecc56233915257b7f1405d902c">  158</a></span>&#160;<span class="preprocessor">#define OBJECT_MANAGEMENT_FEATURE</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment">/* NETWORK STACK AVAILABLE                                                    */</span></div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="comment">/* FUNCTIONS                                                                  */</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;}</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="preprocessor">#endif // K_KTA_CONFIG_H</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno"><a class="line" href="kta_config_8h.html#a706569a103c87eb60a3071b71ea68325">  168</a></span>&#160;<span class="preprocessor">#define NETWORK_STACK_AVAILABLE</span></div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">/* CHIP CERTIFICATE AVAILABLE                                                 */</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno"><a class="line" href="kta_config_8h.html#ab5961f149bb05ea7f4440648ca869a38">  177</a></span>&#160;<span class="preprocessor">#define DEVICE_PROVIDES_CHIP_CERT</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="comment">/* VARIABLES                                                                  */</span></div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="comment">/* FUNCTIONS                                                                  */</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;}</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* C++ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="preprocessor">#endif // K_KTA_CONFIG_H</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="comment">/* END OF FILE                                                                */</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.9.1-->

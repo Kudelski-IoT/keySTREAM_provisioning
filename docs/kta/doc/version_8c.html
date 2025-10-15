@@ -102,9 +102,9 @@ $(document).ready(function(){initNavTree('version_8c.html',''); initResizable();
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a3d6fe57bc2adce8ee7dbdec768031a73"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="version_8c.html#a3d6fe57bc2adce8ee7dbdec768031a73">ktaGetVersion</a> (void)</td></tr>
-<tr class="memdesc:a3d6fe57bc2adce8ee7dbdec768031a73"><td class="mdescLeft">&#160;</td><td class="mdescRight">keySTREAM Trusted Agent - version module.  <a href="version_8c.html#a3d6fe57bc2adce8ee7dbdec768031a73">More...</a><br /></td></tr>
-<tr class="separator:a3d6fe57bc2adce8ee7dbdec768031a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16f589c83e0fc51d71f68a593803b663"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="version_8c.html#a16f589c83e0fc51d71f68a593803b663">ktaGetVersion</a> (void)</td></tr>
+<tr class="memdesc:a16f589c83e0fc51d71f68a593803b663"><td class="mdescLeft">&#160;</td><td class="mdescRight">keySTREAM Trusted Agent - version module.  <a href="version_8c.html#a16f589c83e0fc51d71f68a593803b663">More...</a><br /></td></tr>
+<tr class="separator:a16f589c83e0fc51d71f68a593803b663"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a327cbc770d7f94b2c7b2265c036374a7"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="version_8c.html#a327cbc770d7f94b2c7b2265c036374a7">ktaGetDecodedVersionStr</a> (const uint8_t version[])</td></tr>
 <tr class="memdesc:a327cbc770d7f94b2c7b2265c036374a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">implement ktaGetDecodedVersionStr  <a href="version_8c.html#a327cbc770d7f94b2c7b2265c036374a7">More...</a><br /></td></tr>
 <tr class="separator:a327cbc770d7f94b2c7b2265c036374a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,14 +114,14 @@ Functions</h2></td></tr>
 <dl class="section author"><dt>Author</dt><dd>Kudelski IoT</dd></dl>
 <dl class="section date"><dt>Date</dt><dd>2023/06/12 </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a3d6fe57bc2adce8ee7dbdec768031a73"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d6fe57bc2adce8ee7dbdec768031a73">&#9670;&nbsp;</a></span>ktaGetVersion()</h2>
+<a id="a16f589c83e0fc51d71f68a593803b663"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16f589c83e0fc51d71f68a593803b663">&#9670;&nbsp;</a></span>ktaGetVersion()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t* ktaGetVersion </td>
+          <td class="memname">const char* ktaGetVersion </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -132,7 +132,7 @@ Functions</h2></td></tr>
 
 <p>keySTREAM Trusted Agent - version module. </p>
 <p>Get the keySTREAM Trusted Agent software version as string.</p>
-<p>implement ktaGetVersion </p>
+<p>implement ktaGetVersion SUPPRESS: MISRA_DEV_KTA_010 : misra_c2012_rule_8.7_violation Function ktaGetVersion is intended for external linkage and is used in multiple translation units. The MISRA tool may not detect all usages due to build or analysis configuration. </p>
 
 </div>
 </div>
@@ -153,7 +153,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>implement ktaGetDecodedVersionStr </p>
-<p>Get the keySTREAM Trusted Agent software decoded version as string. </p>
+<p>Get the keySTREAM Trusted Agent software decoded version as string.</p>
+<p>SUPPRESS: MISRA_DEV_KTA_010 : misra_c2012_rule_8.7_violation Function ktaGetVersion is intended for external linkage and is used in multiple translation units. The MISRA tool may not detect all usages due to build or analysis configuration. </p>
 <p>SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation Not using the return value of snprintf</p>
 
 </div>

@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -99,29 +99,9 @@ enum
    */
   E_K_SAL_OBJECT_TYPE_SEALED_DATA,
   /**
-   * Object Type Managed Slot 14
-   */
-  E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14 = 14u,
-    /**
-   * Object Type Managed Slot 5
-   */
-  E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5 = 5u,
-  /**
-   * Object Type Managed Slot 8
-   */
-  E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8 = 8u,
-  /**
-   * Object Type Managed Slot 14 block 0
-   */
-  E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0 = 0u,
-  /**
-   * Object Type Managed Slot 14 block 1
-   */
-  E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1 = 1u,
-  /**
    * Object type max num.
    */
-  E_K_SAL_OBJECT_TYPE_MAX_NUM
+  E_K_SAL_OBJECT_TYPE_MAX_NUM = 20
 };
 
 typedef uint32_t TKSalObjectType;

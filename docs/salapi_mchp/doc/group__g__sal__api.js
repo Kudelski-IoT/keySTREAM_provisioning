@@ -7,9 +7,9 @@ var group__g__sal__api =
       [ "fotaErrorCauseLen", "struct_s_fota_error.html#ac2c4864fa6ae9b79a995b45568ce6f97", null ]
     ] ],
     [ "SComponent", "struct_s_component.html", [
-      [ "componentName", "struct_s_component.html#ae670626d67d642a6680b0d7b41f3b0e5", null ],
+      [ "componentName", "struct_s_component.html#a5c4846c911b23c95106b03b9dd5005b5", null ],
       [ "componentNameLen", "struct_s_component.html#ac707641b98925629d861555fb108ed82", null ],
-      [ "componentVersion", "struct_s_component.html#ac02611d72bc9854bc1e1c8e98a7cc52d", null ],
+      [ "componentVersion", "struct_s_component.html#afe1e743240409eee4ba78988b6786a16", null ],
       [ "componentVersionLen", "struct_s_component.html#a2ba04b1c8bd4db27138db70674638f8a", null ]
     ] ],
     [ "STargetComponent", "struct_s_target_component.html", [
@@ -85,11 +85,6 @@ var group__g__sal__api =
       [ "E_K_SAL_OBJECT_TYPE_RFU_V2", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba5f1d383d30ea0e7cfea32c5da504bdd8", null ],
       [ "E_K_SAL_OBJECT_TYPE_CERTFICATE", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba22ab38b812278768f7775abe4cef39c2", null ],
       [ "E_K_SAL_OBJECT_TYPE_SEALED_DATA", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba7b1f31fdb2c02cb76b96b6a698d70984", null ],
-      [ "E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_14", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55baed881ab53473520d5a8e88def475ff9b", null ],
-      [ "E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_5", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba723881782e2f8fab0677869476ada0e3", null ],
-      [ "E_K_SAL_OBJECT_TYPE_MANAGED_SLOT_8", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55bac4eb51c234b51486c6b6094f2d2dbe84", null ],
-      [ "E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_0", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba843ca31410d45fb3486213ab305b733f", null ],
-      [ "E_K_SAL_OBJECT_MANAGED_SLOT_14_BLOCK_1", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55babb8d5fe5f219c3aa3f00639fc98c119a", null ],
       [ "E_K_SAL_OBJECT_TYPE_MAX_NUM", "group__g__sal__api.html#gga06fc87d81c62e9abb8790b6e5713c55ba78429ff6e7c812796f926a79b4692f7c", null ]
     ] ],
     [ "salCryptoHmac", "group__g__sal__api.html#gad7b9434208340145e6559c128e57ba14", null ],
@@ -98,10 +93,10 @@ var group__g__sal__api =
     [ "salCryptoAesDec", "group__g__sal__api.html#ga57735f423b4204965082737daa7c995f", null ],
     [ "salCryptoGetRandom", "group__g__sal__api.html#ga1327e3f7a16d4cac95a162c4d22b4087", null ],
     [ "salSignHash", "group__g__sal__api.html#ga29aa2382e87f2767c2465e9f5338d14d", null ],
-    [ "salFotaInstall", "group__g__sal__api.html#ga45489a4dc46959c0d5c0060f06ac3a7f", null ],
-    [ "salFotaGetStatus", "group__g__sal__api.html#gafd2aa649113b98e03c7955c4e6368584", null ],
-    [ "salDeviceGetInfo", "group__g__sal__api.html#ga78af293ca07a8ef5915fa66e003bd125", null ],
-    [ "salPrint", "group__g__sal__api.html#ga9f62339ddf6562d5f6aba9ab258f8c41", null ],
+    [ "salFotaInstall", "group__g__sal__api.html#gac8e8c3f196eb1e3ccb86ea7a29a53d52", null ],
+    [ "salFotaGetStatus", "group__g__sal__api.html#ga67f0d4b81c770d46745094d3f0812828", null ],
+    [ "salDeviceGetInfo", "group__g__sal__api.html#ga0fb291c0e02b4a9452ec4612f8d318e3", null ],
+    [ "salPrint", "group__g__sal__api.html#gaa5a40c22005e1846359a08deabef11a3", null ],
     [ "salObjectKeyGen", "group__g__sal__api.html#ga5288664b6464112f83047da3d855c2e5", null ],
     [ "salObjectSet", "group__g__sal__api.html#gabb221d8b1d53923abf687ff9f3c039fe", null ],
     [ "salObjectKeySet", "group__g__sal__api.html#gaf4fcd3a3ecd834b472c10aa5e23fa71d", null ],

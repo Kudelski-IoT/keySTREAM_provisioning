@@ -1,23 +1,41 @@
 ---
 title: "keySTREAM Trusted Agent Release Notes"
-date:  "2025.06.05"
+date:  "2025.10.15"
 author: "Kudelski IoT"
 ---
-# Release v1.3.1 (05/06/2025)
+# Release v1.4.1 (15/10/2025)
 
 ## New features/Changes in this version
-- Added PreConfigured Applications
+
+## Fixed issues
+- Fixed JIRA issues:
+  - LPM-33 : KeySTREAM FoTA Usecase - FoTA name mismatch fix
+  - LPM-32 : SG41 TPDS Eng release Feedback
+  - LPM-28 : KTA delivery/doc improvements
+  - LPM-17 : KTA - Coverity report
+  - LPM-4  : Slot8 issue after FOTA : KTA version was reading as 0 instead of correct version.
+
+## Features list
+| Feature                                                              | ATECC608 |
+| ---                                                                  | ---      |
+| Onboarding with certificate validation with basic key(E256)          |    1     |
+| Onboarding with certificate validation with advance key(E384,E521..) |    0     |
+| Onboarding without certificate validation                            |    0     |
+| Mutable Fleet Profile                                                |    1     |
+| Certificate renewal                                                  |    1     |
+| key renewal                                                          |    1     |
+| FOTA service                                                         |    1     |
 
 ## Compatibility
 - This version is compatible with
 - CAL Version       - 3.7.8
-- keySTREAM Version - 1.28
+- keySTREAM Version - 1.30
 
 ## Open source information
 - NA
 
 ## Identifier
-- Git Tag: v1.3.1
+- Git Tag: v1.4.1
 
 ---
 
@@ -41,7 +59,7 @@ author: "Kudelski IoT"
 ### Identifier
 - Git Tag: v1.3.0
 
-# Release v1.2.8 (09/03/2024)
+## Release v1.2.8 (09/03/2024)
 
 ## New features/Changes in this version
 

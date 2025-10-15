@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -56,7 +56,7 @@ extern "C" {
 #define C_K_KTA__VERSION_MAJOR     1
 
 /** @brief Minor Version. */
-#define C_K_KTA__VERSION_MINOR     3
+#define C_K_KTA__VERSION_MINOR     4
 
 /** @brief Patch Version. */
 #define C_K_KTA__VERSION_PATCH     1

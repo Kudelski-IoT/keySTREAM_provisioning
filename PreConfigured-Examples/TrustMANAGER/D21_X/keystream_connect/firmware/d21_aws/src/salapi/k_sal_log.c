@@ -75,7 +75,7 @@
  */
 void salPrint
 (
-  char* xpBuffer
+  const char* xpBuffer
 )
 {
   APP_DebugPrintf("%s", xpBuffer);

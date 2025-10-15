@@ -125,6 +125,125 @@
               </logicalFolder>
               <itemPath>../src/config/keystream_connect/library/cryptoauthlib/atca_config.h</itemPath>
             </logicalFolder>
+            <logicalFolder name="kta_provisioning"
+                           displayName="kta_provisioning"
+                           projectFiles="true">
+              <logicalFolder name="COMMON" displayName="COMMON" projectFiles="true">
+                <logicalFolder name="logmodule" displayName="logmodule" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                    <itemPath>../../common/kta_provisioning/COMMON/logmodule/include/KTALog.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="COMMSTACK" displayName="COMMSTACK" projectFiles="true">
+                <logicalFolder name="coap" displayName="coap" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                  </logicalFolder>
+                  <logicalFolder name="mbedCoap" displayName="mbedCoap" projectFiles="true">
+                    <logicalFolder name="mbed-coap" displayName="mbed-coap" projectFiles="true">
+                    </logicalFolder>
+                    <logicalFolder name="nanostack" displayName="nanostack" projectFiles="true">
+                      <logicalFolder name="mbed-client-libservice"
+                                     displayName="mbed-client-libservice"
+                                     projectFiles="true">
+                      </logicalFolder>
+                      <logicalFolder name="source" displayName="source" projectFiles="true">
+                        <logicalFolder name="libList" displayName="libList" projectFiles="true">
+                        </logicalFolder>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="source" displayName="source" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                      </logicalFolder>
+                    </logicalFolder>
+                  </logicalFolder>
+                </logicalFolder>
+                <logicalFolder name="http" displayName="http" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+              <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
+                <logicalFolder name="include" displayName="include" projectFiles="true">
+                  <itemPath>../../common/kta_provisioning/SOURCE/include/k_defs.h</itemPath>
+                  <itemPath>../../common/kta_provisioning/SOURCE/include/k_kta.h</itemPath>
+                  <itemPath>../../common/kta_provisioning/SOURCE/include/k_version.h</itemPath>
+                  <itemPath>../../common/kta_provisioning/SOURCE/include/ktaConfig.h</itemPath>
+                </logicalFolder>
+                <logicalFolder name="kta" displayName="kta" projectFiles="true">
+                  <logicalFolder name="common" displayName="common" projectFiles="true">
+                    <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/common/crypto/include/k_crypto.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="general" displayName="general" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/common/general/include/general.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="icpp_parser" displayName="icpp_parser" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/common/icpp_parser/include/icpp_parser.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="version" displayName="version" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/common/version/include/kta_version.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                  </logicalFolder>
+                  <logicalFolder name="ktamgr" displayName="ktamgr" projectFiles="true">
+                  </logicalFolder>
+                  <logicalFolder name="modules" displayName="modules" projectFiles="true">
+                    <logicalFolder name="acthandler" displayName="acthandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/acthandler/include/acthandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="cmdhandler" displayName="cmdhandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/cmdhandler/include/cmdhandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="config" displayName="config" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/config/include/config.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="fota_service"
+                                   displayName="fotaservice"
+                                   projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/fotaservice/include/fotaagent.h</itemPath>
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/fotaservice/include/fotaplatform.h</itemPath>
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/fotaservice/include/fotaprocess.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                    <logicalFolder name="reghandler" displayName="reghandler" projectFiles="true">
+                      <logicalFolder name="include" displayName="include" projectFiles="true">
+                        <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/reghandler/include/reghandler.h</itemPath>
+                      </logicalFolder>
+                    </logicalFolder>
+                  </logicalFolder>
+                </logicalFolder>
+                <logicalFolder name="salapi" displayName="salapi" projectFiles="true">
+                  <logicalFolder name="include" displayName="include" projectFiles="true">
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/cryptoConfig.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal_crypto.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal_fota.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal_fotastorage.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal_log.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal_object.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal_platform.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal_rot.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/k_sal_storage.h</itemPath>
+                    <itemPath>../../common/kta_provisioning/SOURCE/salapi/include/slotConfig.h</itemPath>
+                  </logicalFolder>
+                </logicalFolder>
+              </logicalFolder>
+            </logicalFolder>
           </logicalFolder>
           <logicalFolder name="f5" displayName="osal" projectFiles="true">
             <itemPath>../src/config/keystream_connect/osal/osal.h</itemPath>
@@ -612,13 +731,6 @@
           <itemPath>../src/config/keystream_connect/tasks.c</itemPath>
         </logicalFolder>
       </logicalFolder>
-      <logicalFolder name="fota_service"
-                     displayName="fota_service"
-                     projectFiles="true">
-        <itemPath>../../common/fota_service/Fota_Agent.c</itemPath>
-        <itemPath>../../common/fota_service/Fota_Process.c</itemPath>
-        <itemPath>../../common/fota_service/Fota_Platform.c</itemPath>
-      </logicalFolder>
       <logicalFolder name="kta_provisioning"
                      displayName="kta_provisioning"
                      projectFiles="true">
@@ -681,8 +793,6 @@
           </logicalFolder>
         </logicalFolder>
         <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
-          <logicalFolder name="include" displayName="include" projectFiles="true">
-          </logicalFolder>
           <logicalFolder name="kta" displayName="kta" projectFiles="true">
             <logicalFolder name="common" displayName="common" projectFiles="true">
               <logicalFolder name="crypto" displayName="crypto" projectFiles="true">
@@ -725,6 +835,13 @@
                 </logicalFolder>
                 <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/config/config.c</itemPath>
               </logicalFolder>
+              <logicalFolder name="fotaservice" displayName="fotaservice" projectFiles="true">
+                <logicalFolder name="include" displayName="include" projectFiles="true">
+                </logicalFolder>
+                <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/fotaservice/fotaagent.c</itemPath>
+                <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/fotaservice/fotaplatform.c</itemPath>
+                <itemPath>../../common/kta_provisioning/SOURCE/kta/modules/fotaservice/fotaprocess.c</itemPath>
+              </logicalFolder>
               <logicalFolder name="reghandler" displayName="reghandler" projectFiles="true">
                 <logicalFolder name="include" displayName="include" projectFiles="true">
                 </logicalFolder>
@@ -740,6 +857,7 @@
             <itemPath>../../common/kta_provisioning/SOURCE/salapi/k_sal_storage.c</itemPath>
             <itemPath>../src/salapi/k_sal_log.c</itemPath>
             <itemPath>../../common/kta_provisioning/SOURCE/salapi/k_sal_fota.c</itemPath>
+            <itemPath>../../common/kta_provisioning/SOURCE/salapi/k_sal_fotastorage.c</itemPath>
           </logicalFolder>
         </logicalFolder>
       </logicalFolder>
@@ -761,14 +879,14 @@
         <targetDevice>ATSAMD21E18A</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>nEdbgTool</platformTool>
+        <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.30</languageToolchainVersion>
+        <languageToolchainVersion>4.60</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="SAMD21_DFP" vendor="Microchip" version="3.1.71"/>
         <pack name="CMSIS" vendor="ARM" version="5.4.0"/>
+        <pack name="SAMD21_DFP" vendor="Microchip" version="3.1.71"/>
       </packs>
       <ScriptingSettings>
       </ScriptingSettings>
@@ -884,7 +1002,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/driver/winc/include/;../src/config/keystream_connect/driver/winc/include/dev;../src/config/keystream_connect/driver/winc/include/drv/bsp;../src/config/keystream_connect/driver/winc/include/drv/bsp/include;../src/config/keystream_connect/driver/winc/include/drv/common;../src/config/keystream_connect/driver/winc/include/drv/driver;../src/config/keystream_connect/driver/winc/include/drv/socket;../src/config/keystream_connect/driver/winc/include/drv/spi_flash;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\common;..\src\common\paho_mqtt_embedded_c\MQTTClient-C;..\src\common\paho_mqtt_embedded_c\MQTTPacket;..\src\common\paho_mqtt_embedded_c\platform;..\src\common\parson_json;..\src\common\utilities;..\..\;..\src\config\keystream_connect\library\cryptoauthlib\atcacert;..\..\common\kta_provisioning\COMMON\logmodule\include;..\..\common\kta_provisioning\COMMSTACK\coap\include;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\nanostack\mbed-client-libservice;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\source\include;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\mbed-coap;..\..\common\kta_provisioning\COMMSTACK\coap;..\src\commstack\coap\salapi\include;..\..\common\kta_provisioning\SOURCE\include;..\..\common\kta_provisioning\SOURCE\kta\common\crypto\include;..\..\common\kta_provisioning\SOURCE\kta\common\general\include;..\..\common\kta_provisioning\SOURCE\kta\common\icpp_parser\include;..\..\common\kta_provisioning\SOURCE\kta\common\version\include;..\..\common\kta_provisioning\SOURCE\kta\modules\acthandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\cmdhandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\config\include;..\..\common\kta_provisioning\SOURCE\kta\modules\reghandler\include;..\..\common\kta_provisioning\SOURCE\salapi\include;..\src\apps;..\src\common;..\src\apps;..\..\common;..\..\..\;..\..\common\fota_service"/>
+                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/driver/winc/include/;../src/config/keystream_connect/driver/winc/include/dev;../src/config/keystream_connect/driver/winc/include/drv/bsp;../src/config/keystream_connect/driver/winc/include/drv/bsp/include;../src/config/keystream_connect/driver/winc/include/drv/common;../src/config/keystream_connect/driver/winc/include/drv/driver;../src/config/keystream_connect/driver/winc/include/drv/socket;../src/config/keystream_connect/driver/winc/include/drv/spi_flash;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\common;..\src\common\paho_mqtt_embedded_c\MQTTClient-C;..\src\common\paho_mqtt_embedded_c\MQTTPacket;..\src\common\paho_mqtt_embedded_c\platform;..\src\common\parson_json;..\src\common\utilities;..\..\;..\src\config\keystream_connect\library\cryptoauthlib\atcacert;..\..\common\kta_provisioning\COMMON\logmodule\include;..\..\common\kta_provisioning\COMMSTACK\coap\include;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\nanostack\mbed-client-libservice;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\source\include;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\mbed-coap;..\..\common\kta_provisioning\COMMSTACK\coap;..\src\commstack\coap\salapi\include;..\..\common\kta_provisioning\SOURCE\include;..\..\common\kta_provisioning\SOURCE\kta\common\crypto\include;..\..\common\kta_provisioning\SOURCE\kta\common\general\include;..\..\common\kta_provisioning\SOURCE\kta\common\icpp_parser\include;..\..\common\kta_provisioning\SOURCE\kta\common\version\include;..\..\common\kta_provisioning\SOURCE\kta\modules\acthandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\cmdhandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\config\include;..\..\common\kta_provisioning\SOURCE\kta\modules\reghandler\include;..\..\common\kta_provisioning\SOURCE\salapi\include;..\src\apps;..\src\common;..\src\apps;..\..\common;..\..\..\;..\..\common\fota_service;..\..\common\kta_provisioning\SOURCE\kta\modules\fota_service\include;..\..\common\kta_provisioning\SOURCE\kta\fotaservice\include;..\..\common\kta_provisioning\SOURCE\kta\modules\fotaservice\include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -1499,6 +1617,7 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
         <property key="firmware.path"
@@ -2014,6 +2133,7 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
         <property key="firmware.path"
@@ -2037,8 +2157,6 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-9ffff"/>
         <property key="poweroptions.powerenable" value="false"/>
-        <property key="programmerToGoFilePath"
-                  value="../keystream_aws_d21.X/debug/keySTREAM_AWS_CONNECT/keystream_aws_coap_d21_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
@@ -2062,9 +2180,9 @@
         <targetDevice>ATSAMD21E18A</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>nEdbgTool</platformTool>
+        <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.30</languageToolchainVersion>
+        <languageToolchainVersion>4.60</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
@@ -2347,7 +2465,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/driver/winc/include/;../src/config/keystream_connect/driver/winc/include/dev;../src/config/keystream_connect/driver/winc/include/drv/bsp;../src/config/keystream_connect/driver/winc/include/drv/bsp/include;../src/config/keystream_connect/driver/winc/include/drv/common;../src/config/keystream_connect/driver/winc/include/drv/driver;../src/config/keystream_connect/driver/winc/include/drv/socket;../src/config/keystream_connect/driver/winc/include/drv/spi_flash;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\common;..\src\common\paho_mqtt_embedded_c\MQTTClient-C;..\src\common\paho_mqtt_embedded_c\MQTTPacket;..\src\common\paho_mqtt_embedded_c\platform;..\src\common\parson_json;..\src\common\utilities;..\..\;..\src\config\keystream_connect\library\cryptoauthlib\atcacert;..\..\common\kta_provisioning\COMMON\logmodule\include;..\src\commstack\http\salapi\include;..\..\common\kta_provisioning\COMMSTACK\http\include;..\..\common\kta_provisioning\SOURCE\include;..\..\common\kta_provisioning\SOURCE\kta\common\crypto\include;..\..\common\kta_provisioning\SOURCE\kta\common\general\include;..\..\common\kta_provisioning\SOURCE\kta\common\icpp_parser\include;..\..\common\kta_provisioning\SOURCE\kta\common\version\include;..\..\common\kta_provisioning\SOURCE\kta\modules\acthandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\cmdhandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\config\include;..\..\common\kta_provisioning\SOURCE\kta\modules\reghandler\include;..\..\common\kta_provisioning\SOURCE\salapi\include;..\src\apps;..\src\common;..\src\apps;..\..\common\;..\..\..\;..\..\common\fota_service"/>
+                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/driver/winc/include/;../src/config/keystream_connect/driver/winc/include/dev;../src/config/keystream_connect/driver/winc/include/drv/bsp;../src/config/keystream_connect/driver/winc/include/drv/bsp/include;../src/config/keystream_connect/driver/winc/include/drv/common;../src/config/keystream_connect/driver/winc/include/drv/driver;../src/config/keystream_connect/driver/winc/include/drv/socket;../src/config/keystream_connect/driver/winc/include/drv/spi_flash;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\common;..\src\common\paho_mqtt_embedded_c\MQTTClient-C;..\src\common\paho_mqtt_embedded_c\MQTTPacket;..\src\common\paho_mqtt_embedded_c\platform;..\src\common\parson_json;..\src\common\utilities;..\..\;..\src\config\keystream_connect\library\cryptoauthlib\atcacert;..\..\common\kta_provisioning\COMMON\logmodule\include;..\src\commstack\http\salapi\include;..\..\common\kta_provisioning\COMMSTACK\http\include;..\..\common\kta_provisioning\SOURCE\include;..\..\common\kta_provisioning\SOURCE\kta\common\crypto\include;..\..\common\kta_provisioning\SOURCE\kta\common\general\include;..\..\common\kta_provisioning\SOURCE\kta\common\icpp_parser\include;..\..\common\kta_provisioning\SOURCE\kta\common\version\include;..\..\common\kta_provisioning\SOURCE\kta\modules\acthandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\cmdhandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\config\include;..\..\common\kta_provisioning\SOURCE\kta\modules\reghandler\include;..\..\common\kta_provisioning\SOURCE\salapi\include;..\src\apps;..\src\common;..\src\apps;..\..\common\;..\..\..\;..\..\common\fota_service;..\..\common\kta_provisioning\SOURCE\kta\modules\fota_service\include;..\..\common\kta_provisioning\SOURCE\kta\fotaservice\include;..\..\common\kta_provisioning\SOURCE\kta\modules\fotaservice\include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -2357,7 +2475,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
-                  value="CLOUD_CONFIG_AWS;OBJECT_MANAGEMENT_FEATURE;MICROCHIP_CFG_3;DEVICE_PROVIDES_CHIP_CERT;SN_COAP_BLOCKWISE_ENABLED;SN_COAP_RESENDING_QUEUE_SIZE_MSGS=5;SN_COAP_DUPLICATION_MAX_MSGS_COUNT=5;DEBUG"/>
+                  value="CLOUD_CONFIG_AWS;MICROCHIP_CFG_3;SN_COAP_BLOCKWISE_ENABLED;SN_COAP_RESENDING_QUEUE_SIZE_MSGS=5;SN_COAP_DUPLICATION_MAX_MSGS_COUNT=5;DEBUG"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="tentative-definitions" value="-fno-common"/>
@@ -2962,6 +3080,7 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
         <property key="firmware.path"
@@ -3477,6 +3596,7 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="event.recorder.debugger.behavior" value="Running"/>
         <property key="event.recorder.enabled" value="false"/>
         <property key="event.recorder.scvd.files" value=""/>
         <property key="firmware.path"
@@ -3500,8 +3620,6 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-9ffff"/>
         <property key="poweroptions.powerenable" value="false"/>
-        <property key="programmerToGoFilePath"
-                  value="../keystream_aws_d21.X/debug/keySTREAM_AWS_CONNECT/keystream_aws_coap_d21_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"

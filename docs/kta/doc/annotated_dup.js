@@ -1,5 +1,6 @@
 var annotated_dup =
 [
+    [ "TFotaComponentStatus", "struct_t_fota_component_status.html", "struct_t_fota_component_status" ],
     [ "TKactreqPayload", "struct_t_kactreq_payload.html", "struct_t_kactreq_payload" ],
     [ "TKactRespFields", "struct_t_kact_resp_fields.html", "struct_t_kact_resp_fields" ],
     [ "TKactRespPayload", "struct_t_kact_resp_payload.html", "struct_t_kact_resp_payload" ],

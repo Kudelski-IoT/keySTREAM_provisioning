@@ -24,19 +24,12 @@
                         <file name="k_sal_com.c"/>
                     </dir>
                 </dir>
-                <dir name="fota_service">
-                     <file name="Fota_Agent.h"/>
-                     <file name="Fota_Process.h"/>
-                     <file name="Fota_Platform.h"/>
-                     <file name="Fota_Agent.c"/>
-                     <file name="Fota_Process.c"/>
-                     <file name="Fota_Platform.c"/>
-                </dir>
                 <dir name="SOURCE">
                     <dir name="include">
                         <file name="k_defs.h"/>
                         <file name="k_kta.h"/>
                         <file name="k_version.h"/>
+                        <file name="ktaConfig.h.ftl"/>
                     </dir>
                     <dir name="kta">
                         <dir name="common">
@@ -87,6 +80,16 @@
                                 </dir>
                                 <file name="config.c"/>
                             </dir>
+			    <dir name="fotaservice">
+                                <dir name="include">
+                                    <file name="fotaagent.h"/>
+			            <file name="fotaprocess.h"/>
+                                    <file name="fotaplatform.h"/>
+                                </dir>
+                                <file name="fotaagent.c"/>
+                                <file name="fotaprocess.c"/>
+                                <file name="fotaplatform.c"/>
+                            </dir>
                             <dir name="reghandler">
                                 <dir name="include">
                                     <file name="reghandler.h"/>
@@ -107,19 +110,21 @@
                             <file name="k_sal.h"/>
                             <file name="slotConfig.h"/>
 			    <file name="k_sal_fota.h"/>
+			    <file name="k_sal_fotastorage.h"/>
+
                         </dir>
                         <file name="k_sal_crypto.c"/>
                         <file name="k_sal_log.c"/>
                         <file name="k_sal_object.c"/>
                         <file name="k_sal_storage.c"/>
                         <file name="k_sal_fota.c"/>
+                        <file name="k_sal_fotastorage.c"/>
                     </dir>
                 </dir>
                 <file name="cust_def_device.c"/>
                 <file name="cust_def_device.h"/>
                 <file name="cust_def_signer.c"/>
                 <file name="cust_def_signer.h"/>
-                <file name="ktaConfig.h.ftl"/>
                 <file name="ktaFieldMgntHook.c"/>
                 <file name="ktaFieldMgntHook.h"/>
             </dir>

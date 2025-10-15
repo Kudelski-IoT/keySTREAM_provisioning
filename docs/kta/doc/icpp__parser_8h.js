@@ -71,6 +71,7 @@ var icpp__parser_8h =
       [ "E_K_ICPP_PARSER_FLD_TAG_CHIP_ATTEST_CERT", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a8f9a5f6cdfd79ca91f87f55ab9e4d87e", null ],
       [ "E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a1e7bac07565f10cbbdefbfca0eb6aabb", null ],
       [ "E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a73ade67187c047ca0954960ee694809b", null ],
+      [ "E_K_ICPP_PARSER_FLD_TAG_KTA_NONCE", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8aa0fb8edcf20c2dbe62281ed6ac3385db", null ],
       [ "E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a4886b89a3a3a7648c7dc380e826c60f9", null ],
       [ "E_K_ICPP_PARSER_FLD_TAG_KTA_CTX_SERIAL_NO", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8ab3184f93864a3f60fb4d8a5269ee6615", null ],
       [ "E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER", "icpp__parser_8h.html#aaa0759dedcca7979bff7e08a358b79e8a9ee7ed97e2b4eb2e09ae4ffb3830f986", null ],

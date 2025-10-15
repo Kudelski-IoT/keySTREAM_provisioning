@@ -26,9 +26,10 @@ extern "C" {
 /* CONSTANTS, TYPES, ENUM                                                     */
 /* -------------------------------------------------------------------------- */
 
-#define CURRENT_MAX_LENGTH                                              16
-#define COMPONENTS_MAX                                                  8
-#define ERROR_CODE_LEN                                                  1
+#define CURRENT_MAX_LENGTH                                              (16u)
+#define COMPONENTS_MAX                                                  (8u)
+#define ERROR_CODE_LEN                                                  (1u)
+#define FOTA_STATE_LEN                                                  (1u)
 
 /** @brief Structure holds the FOTA error information. */
 typedef struct SFotaError {
@@ -92,19 +93,19 @@ typedef enum {
 /**
  * @brief Initiate FOTA installation.
  *
- * @param[in] fota_name
+ * @param[in] xpFotaName
  *   Buffer containing the name of the FOTA campaign.
- * @param[in] fota_name_len
- *   Length of the 'fota_name' buffer (in Bytes).
- * @param[in] fota_metadata
+ * @param[in] xFotaNameLen
+ *   Length of the 'xpFotaName' buffer (in Bytes).
+ * @param[in] xpFotaMetadata
  *   Buffer containing customer-specific metadata.
- * @param[in] fota_metadata_len
- *   Length of the 'fota_metadata' buffer (in Bytes).
- * @param[in] target_components
+ * @param[in] xFotaMetadataLen
+ *   Length of the 'xpFotaMetadata' buffer (in Bytes).
+ * @param[in] xTargetComponents
  *   Array of target components to be installed.
- * @param[out] fota_error
+ * @param[out] xpFotaError
  *   Pointer to store errors related to the FOTA campaign.
- * @param[out] components
+ * @param[out] xComponents
  *   Array of currently installed components.
  *
  * @return TKFotaStatus
@@ -112,25 +113,25 @@ typedef enum {
  */
 K_SAL_API TKFotaStatus salFotaInstall
 (
-  const uint8_t          *xpfota_name,
-  const size_t           fota_name_len,
-  const uint8_t          *xpfota_metadata,
-  const size_t           fota_metadata_len,
-  const TTargetComponent target_components[COMPONENTS_MAX],
-  TFotaError           * xpfota_error,
-  TComponent             components[COMPONENTS_MAX]
+  const uint8_t          *xpFotaName,
+  const size_t           xFotaNameLen,
+  const uint8_t          *xpFotaMetadata,
+  const size_t           xFotaMetadataLen,
+  const TTargetComponent xTargetComponents[COMPONENTS_MAX],
+  TFotaError           * xpFotaError,
+  TComponent             xComponents[COMPONENTS_MAX]
 );
 
 /**
  * @brief Get the status of the FOTA campaign.
  *
- * @param[in] fota_name
+ * @param[in] xpFotaName
  *   Name of the FOTA campaign.
- * @param[in] fota_name_len
- *   Length of the 'fota_name' buffer (in Bytes).
- * @param[out] fota_error
+ * @param[in] xFotaNameLen
+ *   Length of the 'xpFotaName' buffer (in Bytes).
+ * @param[out] xpFotaError
  *   Pointer to store errors related to the FOTA campaign.
- * @param[out] components
+ * @param[out] xComponents
  *   Array of currently installed components.
  *
  * @return TKFotaStatus
@@ -138,16 +139,16 @@ K_SAL_API TKFotaStatus salFotaInstall
  */
 K_SAL_API TKFotaStatus salFotaGetStatus
 (
-  const uint8_t      *xpfota_name,
-  size_t             fota_name_len,
-  TFotaError       * xpfota_error,
-  TComponent         components[COMPONENTS_MAX]
+  const uint8_t        *xpFotaName,
+  size_t               xFotaNameLen,
+  TFotaError         * xpFotaError,
+  TComponent           xComponents[COMPONENTS_MAX]
 );
 
 /**
  * @brief Get device information.
  *
- * @param[out] components
+ * @param[out] xComponents
  *   Array of components.
  *
  * @return TKFotaStatus
@@ -155,7 +156,7 @@ K_SAL_API TKFotaStatus salFotaGetStatus
  */
 K_SAL_API TKFotaStatus salDeviceGetInfo
 (
-  TComponent components[COMPONENTS_MAX]
+  TComponent xComponents[COMPONENTS_MAX]
 );
 
 /** @} g_sal_api */

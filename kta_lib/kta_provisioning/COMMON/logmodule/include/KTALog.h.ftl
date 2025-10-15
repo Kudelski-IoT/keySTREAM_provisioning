@@ -1,7 +1,7 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2025 Nagravision Sàrl
 
 * Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -45,11 +45,25 @@ extern "C" {
 /* --------------------------------------------------------------------------------------------- */
 /* IMPORTS                                                                                       */
 /* --------------------------------------------------------------------------------------------- */
+
 #include <stdint.h>
 
 /* --------------------------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                                        */
 /* --------------------------------------------------------------------------------------------- */
+
+/** @brief Debug log level. */
+#define C_KTA_LOG_LEVEL_DEBUG                 (1u)
+/** @brief Info log level. */
+#define C_KTA_LOG_LEVEL_INFO                  (2u)
+/** @brief Warning log level. */
+#define C_KTA_LOG_LEVEL_WARN                  (3u)
+/** @brief Entry/Exit log level. */
+#define C_KTA_LOG_LEVEL_ENTRY_EXIT            (4u)
+/** @brief Error log level. */
+#define C_KTA_LOG_LEVEL_ERROR                 (5u)
+/** @brief No log level. */
+#define C_KTA_LOG_LEVEL_NONE                  (6u)
 
 /** @brief Set an argument/return value as unused */
 #define M_UNUSED(xArg)            (void)(xArg)
@@ -58,9 +72,14 @@ extern "C" {
 
 #if !defined(LOG_KTA_ENABLE)
 /** @brief keySTREAM Trusted Agent log level. */
-#define LOG_KTA_ENABLE E_KTALOG_LEVEL_NONE
+#define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_NONE
 #endif
 
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
+/**
+ * SUPPRESS: MISRA_DEV_KTA_007 : misra_c2012_rule_2.5_violation
+ * Macros are conditionally used for logging; no output if logging is disabled.
+ */
 /** @brief keySTREAM Trusted Agent log level start. */
 #define M_KTALOG__START(...)          \
     ktaLog_Fct(E_KTALOG_LEVEL_ENTRY_EXIT, gpModuleName, __FILE__, __func__, __LINE__, __VA_ARGS__)
@@ -83,23 +102,40 @@ extern "C" {
 #define M_KTALOG__HEX(format, x_buffer, size)  \
     ktaLog_PrintBuffer(E_KTALOG_LEVEL_DEBUG, gpModuleName, __FILE__, \
                    __func__, __LINE__, format, x_buffer, size)
+#else
+/** @brief keySTREAM Trusted Agent log level start. */
+#define M_KTALOG__START(...)          \
+/** @brief keySTREAM Trusted Agent log level end. */
+#define M_KTALOG__END(...)            \
+/** @brief keySTREAM Trusted Agent log level error. */
+#define M_KTALOG__ERR(...)             \
+/** @brief keySTREAM Trusted Agent log level warning. */
+#define M_KTALOG__WARN(...)              \
+/** @brief keySTREAM Trusted Agent log level info. */
+#define M_KTALOG__INFO(...)              \
+/** @brief keySTREAM Trusted Agent log level debug. */
+#define M_KTALOG__DEBUG(...)             \
+/** @brief keySTREAM Trusted Agent log in hex format. */
+#define M_KTALOG__HEX(format, x_buffer, size)  \
+
+#endif
 
 /* --------------------------------------------------------------------------------------------- */
 /* VARIABLES                                                                                     */
 /* --------------------------------------------------------------------------------------------- */
 /** @brief Supported log levels enum. */
 enum {
-  E_KTALOG_LEVEL_DEBUG = 1,
+  E_KTALOG_LEVEL_DEBUG          = C_KTA_LOG_LEVEL_DEBUG,
   /* Debug level prints */
-  E_KTALOG_LEVEL_INFO,
+  E_KTALOG_LEVEL_INFO           = C_KTA_LOG_LEVEL_INFO,
   /* Info level prints */
-  E_KTALOG_LEVEL_WARN,
+  E_KTALOG_LEVEL_WARN           = C_KTA_LOG_LEVEL_WARN,
   /* Warning level prints */
-  E_KTALOG_LEVEL_ENTRY_EXIT,
+  E_KTALOG_LEVEL_ENTRY_EXIT     = C_KTA_LOG_LEVEL_ENTRY_EXIT,
   /* Entry/Exit level prints */
-  E_KTALOG_LEVEL_ERROR,
+  E_KTALOG_LEVEL_ERROR          = C_KTA_LOG_LEVEL_ERROR,
   /* Error level prints */
-  E_KTALOG_LEVEL_NONE
+  E_KTALOG_LEVEL_NONE           = C_KTA_LOG_LEVEL_NONE
   /* No log prints */
 };
 

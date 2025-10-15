@@ -49,6 +49,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+/* Added for to supress the misra-c2012-2.5 */
+#include "k_sal.h"
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
 /* -------------------------------------------------------------------------- */
@@ -333,7 +336,13 @@ typedef enum
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "SALSTORAGE";
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -785,7 +794,6 @@ static TKStatus lstorageOperation
   }
   else
   {
-    M_KTALOG__HEX("", xpBuff, gaSalStorageRecord[xLoopIndex].storageLength);
     iteration = gaSalStorageRecord[xLoopIndex].storageLength / C_SAL_MCHP_MAX_DATA_SIZE;
     block = gaSalStorageRecord[xLoopIndex].block;
     offset = gaSalStorageRecord[xLoopIndex].offset;

@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -51,6 +51,10 @@ extern "C" {
 /* --------------------------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                                        */
 /* --------------------------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_008 : misra_c2012_rule_20.10_violation
+ * Macro is required for storing and representing the version; usage is intentional and necessary for version management.
+ */
 /** @brief Convert int to string. */
 #define M_K_VERSION_INT_TO_STR(x_val) #x_val
 
@@ -78,7 +82,8 @@ extern "C" {
  * @brief
  *   Get the keySTREAM Trusted Agent software version as string.
  */
-uint8_t* ktaGetVersion
+
+const char* ktaGetVersion
 (
   void
 );

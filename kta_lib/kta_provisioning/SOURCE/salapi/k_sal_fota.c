@@ -42,7 +42,7 @@
 /* -------------------------------------------------------------------------- */
 #include <string.h>
 #include <stdio.h>
-#include "Fota_Agent.h"
+#include "fotaagent.h"
 #include "k_sal_fota.h"
 #include "KTALog.h"
 
@@ -55,7 +55,13 @@
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "SALFOTA";
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* PUBLIC FUNCTIONS - IMPLEMENTATION                                          */
@@ -92,14 +98,15 @@ K_SAL_API TKFotaStatus salFotaInstall
                                xpFotaError,
                                xComponents);
   // If FOTA installation is in progress, exit
-  if (retStatus == E_K_FOTA_IN_PROGRESS)
+  if (E_K_FOTA_IN_PROGRESS == retStatus)
   {
     M_KTALOG__INFO("FOTA installation in progress.");
     goto end;
   }
 
   // Fetch components if installation was successful
-  if (retStatus == E_K_FOTA_SUCCESS && fotaAgentGetDeviceInfo(xComponents) != E_K_FOTA_SUCCESS)
+  if ((E_K_FOTA_SUCCESS == retStatus) &&
+      (E_K_FOTA_SUCCESS != fotaAgentGetDeviceInfo(xComponents)))
   {
     M_KTALOG__ERR("Unable to fetch components from platform.");
   }
@@ -125,9 +132,9 @@ K_SAL_API TKFotaStatus salFotaGetStatus
 
   M_KTALOG__START("Start");
   // Check for null or invalid parameters
-  if (NULL == xpFotaName ||
-      0 == xFotaNameLen ||
-      NULL == xpFotaError)
+  if ((NULL == xpFotaName) ||
+      (0 == xFotaNameLen)  ||
+      (NULL == xpFotaError))
   {
     M_KTALOG__ERR("Invalid parameters provided to salFotaGetStatus.");
    goto end;

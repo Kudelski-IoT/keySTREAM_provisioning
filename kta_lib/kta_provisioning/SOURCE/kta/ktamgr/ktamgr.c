@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -118,8 +118,14 @@ static const uint8_t gaKtaLifeCycleNVMVData[C_KTA_CONFIG__LIFE_CYCLE_MAX_STATE]
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
 /* Module name used for logging */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "KTAMGR";
+#endif
 
 static TKtaState gKtaState                              = E_KTA_STATE_INITIAL;
 static TKtaLifeCycleState gKtaLifeCycleState            = E_LIFE_CYCLE_STATE_INIT;
@@ -397,7 +403,8 @@ TKStatus ktaStartup
       // REQ RQ_M-KTA-LCST-FN-0050(1) : Power off in ACTIVATED|INITIALIZED state
       // REQ RQ_M-KTA-LCST-FN-0065(1) : Power off in PROVISIONED|INITIALIZED state
       if ((gKtaLifeCycleState == E_LIFE_CYCLE_STATE_ACTIVATED) ||
-          (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_PROVISIONED))
+          (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_PROVISIONED) ||
+          (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_CON_REQ))
       {
         M_KTALOG__DEBUG("gKtaLifeCycleState = [%d], deriving L2Keys", gKtaLifeCycleState);
         // REQ RQ_M-KTA-STRT-FN-0070(1) : Derive L2 Keys
@@ -512,7 +519,7 @@ TKStatus ktaSetDeviceInformation
                                           xpDeviceSerialNum,
                                           xDeviceSerialNumSize,
                                           gKtaLifeCycleState);
-        } /* No break, since need to execute below cases as well. */
+        } /* fall through */
         case E_LIFE_CYCLE_STATE_ACTIVATED:
         case E_LIFE_CYCLE_STATE_CON_REQ:
         {
@@ -1345,19 +1352,18 @@ static TKStatus lPrepareNoOpNotificationRequest
   size_t*   xpMessageToSendSize
 )
 {
-  TKStatus              status           = E_K_STATUS_ERROR;
-  size_t                transactionIDLen = C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES;
-  TKIcppProtocolMessage sendProtoMessage = {0};
-  size_t                rotPublicUidLen  = C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES;
-  size_t                ktaVersionLen    = C_KTA__VERSION_MAX_SIZE;
+  TKStatus              status                                     =  E_K_STATUS_ERROR;
+  size_t                transactionIDLen                           =  C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES;
+  TKIcppProtocolMessage sendProtoMessage                           =  {0};
+  size_t                rotPublicUidLen                            =  C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES;
 #ifndef FOTA_ENABLE
-  uint8_t               aSerializeBuffer[C_K__ICPP_MSG_MAX_SIZE] = {0};
+  uint8_t               aSerializeBuffer[C_K__ICPP_MSG_MAX_SIZE]   = {0};
   size_t                aSerializeBufferLen = C_K__ICPP_MSG_MAX_SIZE;
   TKParserStatus        parserStatus = E_K_ICPP_PARSER_STATUS_ERROR;
-  uint8_t               aComputedMac[C_KTA_ACT__HMACSHA256_SIZE] = {0};
+  uint8_t               aComputedMac[C_KTA_ACT__HMACSHA256_SIZE]   = {0};
 #else
-  size_t                startIndex       = 0;
-  uint32_t              fieldIndex       = 0;
+  size_t                startIndex                                 = 0;
+  uint32_t              fieldIndex                                 = 0;
 #endif // FOTA_ENABLE
 
   /**
@@ -1406,15 +1412,6 @@ static TKStatus lPrepareNoOpNotificationRequest
                   C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES);
   }
 
-  status = salStorageGetValue(C_K_KTA__VERSION_SLOT_ID,
-                              sendProtoMessage.aKtaVersion,
-                              &ktaVersionLen);
-  if (E_K_STATUS_OK != status)
-  {
-    M_KTALOG__DEBUG("Reading KTA Version failed with status:%d.\r\n", status);
-    goto end;
-  }
-
 #ifdef FOTA_ENABLE
   status = salDeviceGetInfo(sendProtoMessage.xComponents);
 
@@ -1422,7 +1419,7 @@ static TKStatus lPrepareNoOpNotificationRequest
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Reading component failed, status = [%d]", status);
-    return status;
+    goto end;
   }
 
   // Fill the xComponents array
@@ -1435,12 +1432,13 @@ static TKStatus lPrepareNoOpNotificationRequest
   sendProtoMessage.commandsCount = 1;
   sendProtoMessage.commands[0].commandTag = E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO;
 
+  const char* ktaVersion = (const char*)ktaGetVersion();
   sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldTag  =
   E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
   sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldLen  =
-  strnlen((char*)sendProtoMessage.aKtaVersion, C_KTA__VERSION_MAX_SIZE);
+  strlen(ktaVersion);
   sendProtoMessage.commands[0].data.fieldList.fields[fieldIndex].fieldValue =
-  sendProtoMessage.aKtaVersion;
+  (uint8_t*)ktaVersion;
   fieldIndex++;
 
   // Fill the FOTA component target and version fields in a loop.

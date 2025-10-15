@@ -54,6 +54,7 @@
 #include "ktaFieldMgntHook.h"
 #include "system/wifi/sys_wincs_wifi_service.h"
 #include "system/net/sys_wincs_net_service.h"
+#include "../../../../../../http_downloader.h"
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
 /* -------------------------------------------------------------------------- */
@@ -182,6 +183,8 @@ void APP_SOCKET_Callback
 {
     M_INTL_SAL_COM_DEBUG(("%d START SOCKET event\r\n", event));
     M_INTL_SAL_COM_DEBUG((TERM_CYAN"[SOCKET] : SOCKET ID: %d\r\n"TERM_RESET, (int)socket));
+    M_INTL_SAL_COM_DEBUG((TERM_CYAN"[SOCKET] : G_COM_SOCKET ID: %d\r\n"TERM_RESET, (int)gComInfo.socketId));
+    
     g_lastSocketEvent = event;
     
     switch(event)
@@ -342,7 +345,10 @@ K_SAL_API TKCommStatus salComConnect
 
     while (!g_socketEventComplete){
         /* Maintain Device Drivers */
-        WDRV_WINC_Tasks(sysObj.drvWifiWinc);        
+        WDRV_WINC_Tasks(sysObj.drvWifiWinc);     
+        USB_DEVICE_Tasks(sysObj.usbDevObject0);
+        DRV_USBFSV1_Tasks(sysObj.drvUSBFSV1Object);
+        SYS_CONSOLE_Tasks(SYS_CONSOLE_INDEX_0);        
     }
     g_socketEventComplete = false;
     
@@ -409,8 +415,10 @@ K_SAL_API TKCommStatus salComWrite
     while (!g_socketSendComplete)
     {
       /* Maintain Device Drivers */
-      WDRV_WINC_Tasks(sysObj.drvWifiWinc);
-      SYS_CONSOLE_Flush(sysObj.sysConsole0);
+        WDRV_WINC_Tasks(sysObj.drvWifiWinc);
+        USB_DEVICE_Tasks(sysObj.usbDevObject0);
+        DRV_USBFSV1_Tasks(sysObj.drvUSBFSV1Object);
+        SYS_CONSOLE_Tasks(SYS_CONSOLE_INDEX_0);
     }
     g_socketSendComplete = false;    
     
@@ -452,7 +460,10 @@ K_SAL_API TKCommStatus salComRead
     return E_K_COMM_STATUS_PARAMETER;
   }
 
-  WDRV_WINC_Tasks(sysObj.drvWifiWinc);
+    WDRV_WINC_Tasks(sysObj.drvWifiWinc);
+    USB_DEVICE_Tasks(sysObj.usbDevObject0);
+    DRV_USBFSV1_Tasks(sysObj.drvUSBFSV1Object);
+    SYS_CONSOLE_Tasks(SYS_CONSOLE_INDEX_0);
   if (0 == pComInfo->isConnected)
   {
     M_INTL_SAL_COM_DEBUG(("Socket Not Connected"));
@@ -466,7 +477,10 @@ K_SAL_API TKCommStatus salComRead
     // Wait for data availability
     while (!g_socketReadEvent)
     {
-      WDRV_WINC_Tasks(sysObj.drvWifiWinc);
+        WDRV_WINC_Tasks(sysObj.drvWifiWinc);
+        USB_DEVICE_Tasks(sysObj.usbDevObject0);
+        DRV_USBFSV1_Tasks(sysObj.drvUSBFSV1Object);
+        SYS_CONSOLE_Tasks(SYS_CONSOLE_INDEX_0);
       atca_delay_us(200);
       if (--currentTimeout < 1)
       {
@@ -551,10 +565,16 @@ K_SAL_API TKCommStatus salComTerm
 
     while (!g_socketEventComplete){
         /* Maintain Device Drivers */
-        WDRV_WINC_Tasks(sysObj.drvWifiWinc);        
+        WDRV_WINC_Tasks(sysObj.drvWifiWinc);
+        USB_DEVICE_Tasks(sysObj.usbDevObject0);
+        DRV_USBFSV1_Tasks(sysObj.drvUSBFSV1Object);
+        SYS_CONSOLE_Tasks(SYS_CONSOLE_INDEX_0);
     }
     
-    WDRV_WINC_Tasks(sysObj.drvWifiWinc);     
+    WDRV_WINC_Tasks(sysObj.drvWifiWinc);
+    USB_DEVICE_Tasks(sysObj.usbDevObject0);
+    DRV_USBFSV1_Tasks(sysObj.drvUSBFSV1Object);
+    SYS_CONSOLE_Tasks(SYS_CONSOLE_INDEX_0);
     g_socketEventComplete = false;    
     
     pComInfo->socketId = C_SAL_COM_SOCKET_INVALID;

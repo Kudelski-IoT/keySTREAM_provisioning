@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -67,18 +67,30 @@
  * @brief implement ktaGetVersion
  *
  */
-uint8_t* ktaGetVersion
+/**
+ * SUPPRESS: MISRA_DEV_KTA_010 : misra_c2012_rule_8.7_violation
+ * Function ktaGetVersion is intended for external linkage and is used in multiple translation units.
+ * The MISRA tool may not detect all usages due to build or analysis configuration.
+ */
+const char* ktaGetVersion
 (
   void
 )
 {
-  static uint8_t* pKtaVersion = (uint8_t*)M_K_VERSION_GET_STR();
-  return pKtaVersion;
+  /* To fix the misra-c2012-11.4-A conversion should not be performed between a pointer to object and an integer type*/
+  const char *version_str = M_K_VERSION_GET_STR();
+  
+  return version_str;
 }
 
 /**
  * @brief implement ktaGetDecodedVersionStr
  *
+ */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_010 : misra_c2012_rule_8.7_violation
+ * Function ktaGetVersion is intended for external linkage and is used in multiple translation units.
+ * The MISRA tool may not detect all usages due to build or analysis configuration.
  */
 const char* ktaGetDecodedVersionStr(const uint8_t version[])
 {

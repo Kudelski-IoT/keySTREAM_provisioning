@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -55,7 +55,8 @@
 #ifdef FOTA_ENABLE
 #include "k_sal_fota.h"
 #endif
-
+/* To Supress the misra-config Error*/
+#include "stddef.h"
 /* -------------------------------------------------------------------------- */
 /* LOCAL CONSTANTS, TYPES, ENUM                                               */
 /* -------------------------------------------------------------------------- */
@@ -101,8 +102,13 @@ typedef struct
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
-
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "KTAREGHANDLER";
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -295,7 +301,7 @@ static TKStatus lGetRegistrationInfo
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Reading context specific data from platform failed, status = [%d]", status);
-    return status;
+    goto end;
   }
 
   /* Fetch required info (Device info from config module). */
@@ -304,7 +310,7 @@ static TKStatus lGetRegistrationInfo
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Reading device info from config failed, status = [%d]", status);
-    return status;
+    goto end;
   }
 
   (void)memcpy(xpRegInfo->aAckSeqCnt, aAckSeqCnt, sizeof(aAckSeqCnt));
@@ -321,7 +327,7 @@ static TKStatus lGetRegistrationInfo
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Reading component failed, status = [%d]", status);
-    return status;
+    goto end;
   }
   // Copy the xComponents array to xpRegInfo->xComponents one by one
   for (startIndex = 0; startIndex < COMPONENTS_MAX; startIndex++)
@@ -333,7 +339,7 @@ static TKStatus lGetRegistrationInfo
   }
 
 #endif // FOTA_ENABLE
-
+  end:
   return status;
 }
 

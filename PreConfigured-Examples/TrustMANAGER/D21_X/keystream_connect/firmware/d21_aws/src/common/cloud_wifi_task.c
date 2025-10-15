@@ -40,8 +40,8 @@
 
 #ifdef FOTA_ENABLE
 #include "k_sal_fota.h"
-#include "Fota_Agent.h"
-#include "Fota_Process.h"
+#include "fotaagent.h"
+#include "fotaprocess.h"
 #endif
 
 #define MQTT_BUFFER_SIZE            (1024)
@@ -862,8 +862,6 @@ void Fota_Test()
     fotaError.fotaErrorCodeLen = 1;
     TComponent components[COMPONENTS_MAX] = {0};
     TKFotaStatus status = E_K_FOTA_ERROR;
-    
-    fotaAgentInit();
    
     APP_DebugPrintf("\r\nCalling salFotaInstall \r\n");
     status = salFotaInstall((uint8_t *)&FOTA_NAME,

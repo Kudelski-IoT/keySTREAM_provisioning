@@ -5,6 +5,8 @@ var files_dup =
     [ "k_sal_crypto.c", "k__sal__crypto_8c.html", "k__sal__crypto_8c" ],
     [ "k_sal_crypto.h", "k__sal__crypto_8h.html", "k__sal__crypto_8h" ],
     [ "k_sal_fota.h", "k__sal__fota_8h_source.html", null ],
+    [ "include/k_sal_fotastorage.h", "include_2k__sal__fotastorage_8h.html", "include_2k__sal__fotastorage_8h" ],
+    [ "microchip/include/k_sal_fotastorage.h", "microchip_2include_2k__sal__fotastorage_8h.html", "microchip_2include_2k__sal__fotastorage_8h" ],
     [ "k_sal_log.c", "k__sal__log_8c.html", "k__sal__log_8c" ],
     [ "k_sal_log.h", "k__sal__log_8h.html", "k__sal__log_8h" ],
     [ "k_sal_object.c", "k__sal__object_8c.html", "k__sal__object_8c" ],

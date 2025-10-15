@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision SÃ rl
+* (c) 2023-2025 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -95,7 +95,7 @@
 /** @brief Optional generate key pair fields. */
 #define C_K_CMD_GENKEYPAIR_FIELDS_OPTIONAL \
   ((E_K_CMD_FIELD_IDENTIFIER | E_K_CMD_FIELD_ATTRIBUTES \
-   | E_K_CMD_FIELD_OBJECT_OWNER))
+   | E_K_CMD_FIELD_OBJECT_OWNER | E_K_CMD_FIELD_NONCE))
 
 /** @brief Mandatory set object fields. */
 #define C_K_CMD_SETOBJ_FIELDS_MANDATORY \
@@ -206,7 +206,12 @@ typedef enum
   /**
    * Object owner field mask
    */
-  E_K_CMD_FIELD_OBJECT_OWNER = 0x80u
+  E_K_CMD_FIELD_OBJECT_OWNER = 0x80u,
+  /**
+   * Object owner field mask
+   */
+  E_K_CMD_FIELD_NONCE = 0x0100u
+          
 } TKcmdFieldTag;
 
 #endif
@@ -214,7 +219,13 @@ typedef enum
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
+/**
+ * SUPPRESS: MISRA_DEV_KTA_009 : misra_c2012_rule_5.9_violation
+ * The identifier gpModuleName is intentionally defined as a common global for logging purposes
+ */
+#if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
 static const char* gpModuleName = "KTACMDHANDLER";
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
@@ -505,7 +516,7 @@ TKStatus ktaCmdProcess
 {
   TKIcppProtocolMessage sendProtoMessage;
   TKStatus status           = E_K_STATUS_ERROR;
-#ifdef OBJECT_MANAGEMENT_FEATURE
+#ifdef OBJECT_MANAGEMENT_FEATURE  
   uint8_t aPlatformStatus[4] = {0};
   uint8_t aCmdResponse[C_K__ICPP_CMD_RESPONSE_SIZE_VENDOR_SPECIFIC] = {0};
   size_t  cmdResponseSize = sizeof(aCmdResponse);
@@ -855,6 +866,22 @@ static TKStatus   lKtaCmdValidateAndGetPayload
             xpCmdRespPayload->attributes.pValue = pFieldList->fields[fieldsLoop].fieldValue;
             xpCmdRespPayload->attributes.len = pFieldList->fields[fieldsLoop].fieldLen;
             fieldTagMask |= E_K_CMD_FIELD_ATTRIBUTES;
+          }
+          break;
+          case E_K_ICPP_PARSER_FLD_TAG_KTA_NONCE:
+          {
+            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
+            {
+              M_KTALOG__ERR("Invalid data attributes length");
+              isErrorOccured = 1u;
+              break;
+            }
+
+            memcpy(xpCmdRespPayload->attributes.pValue + 8, pFieldList->fields[fieldsLoop].fieldValue, pFieldList->fields[fieldsLoop].fieldLen);
+            xpCmdRespPayload->attributes.len += pFieldList->fields[fieldsLoop].fieldLen;
+			
+			M_KTALOG__HEX("NONCE-ATTRIBUTES",xpCmdRespPayload->attributes.pValue + 8 , xpCmdRespPayload->attributes.len );
+            fieldTagMask |= E_K_CMD_FIELD_NONCE;
           }
           break;
 

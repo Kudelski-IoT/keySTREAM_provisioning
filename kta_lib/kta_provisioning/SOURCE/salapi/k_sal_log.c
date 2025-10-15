@@ -80,7 +80,7 @@
  **/
 void salPrint
 (
-  char* xpBuffer
+  const char* xpBuffer
 )
 {
   printf("%s", xpBuffer);
