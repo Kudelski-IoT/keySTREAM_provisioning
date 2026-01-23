@@ -103,7 +103,7 @@ ATCA_STATUS atcab_init_ext(ATCADevice* device, ATCAIfaceCfg *cfg)
 #if defined(ATCA_ATECC608_SUPPORT) || ATCA_CA2_SUPPORT
         if (ATCA_SUCCESS == status)
         {
-    #ifdef ATCA_ATECC608_SUPPORT
+    #if defined(ATCA_ATECC608_SUPPORT) && defined(ATCA_NO_POLL)
             if (ATECC608 == cfg->devtype)
             {
                 if ((status = calib_read_bytes_zone(*device, ATCA_ZONE_CONFIG, 0, ATCA_CHIPMODE_OFFSET, &(*device)->clock_divider, 1)) != ATCA_SUCCESS)
@@ -3380,7 +3380,7 @@ ATCA_STATUS atcab_sha_write_context(const uint8_t* context, uint16_t context_siz
     else if (atcab_is_ta_device(dev_type))
     {
 #if ATCA_TA_SUPPORT
-        cal_buffer ctx_buf = CAL_BUF_INIT(context_size, context);
+        cal_buffer ctx_buf = cal_buf_init_const_ptr(context_size, context);
         status = talib_sha_write_context(g_atcab_device_ptr, TA_HANDLE_SHA_CONTEXT0, &ctx_buf);
 #endif
     }

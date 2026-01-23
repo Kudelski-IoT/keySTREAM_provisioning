@@ -8,5 +8,6 @@ var acthandler_8c =
     [ "M_ACT_RESP_IS_FIELD_AVAILABLE", "acthandler_8c.html#a46894e17ae2f154fcd549601a2349816", null ],
     [ "ktaActDeriveL2Keys", "acthandler_8c.html#a4cf850e8fbc806c3a24398dc798ce6ea", null ],
     [ "ktaActBuildActivationRequest", "acthandler_8c.html#a235d62935317bc1b2090f81d537c8315", null ],
-    [ "ktaActResponseBuildL1Keys", "acthandler_8c.html#a3ab839ac1f7abb8fbaa44764030d601e", null ]
+    [ "ktaActResponseBuildL1Keys", "acthandler_8c.html#a3ab839ac1f7abb8fbaa44764030d601e", null ],
+    [ "pValue", "acthandler_8c.html#a9ddff936ddacfc2b6285295cb2ef2c9e", null ]
 ];

@@ -210,7 +210,7 @@ TCommIfStatus httpInit
   const uint16_t           xPort
 )
 {
-  TKCommStatus status = E_COMM_IF_STATUS_ERROR;
+  TKCommStatus status = E_K_COMM_STATUS_ERROR;
   const uint8_t* pHost = NULL;
   int retVal;
 
@@ -220,7 +220,7 @@ TCommIfStatus httpInit
   if ((NULL == xpUri) || (NULL == xpHost) || (0U == xPort))
   {
     M_INTL_HTTP_ERROR(("Invalid Parameter"));
-    status = E_COMM_IF_STATUS_PARAMETER;
+    status = E_K_COMM_STATUS_PARAMETER;
   }
   else
   {
@@ -241,12 +241,13 @@ TCommIfStatus httpInit
     status = salComInit(C_HTTP_CONNECT_TIMEOUT_IN_MS,
                         C_HTTP_READ_TIMEOUT_IN_MS,
                         &gHttpInfo.pTls);
-    if (status == (TKCommStatus)E_COMM_IF_STATUS_OK)
+    if (status == E_K_COMM_STATUS_OK)
     {
       status = salComConnect(gHttpInfo.pTls, gHttpInfo.url.host, gHttpInfo.url.port);
-      if ((TKCommStatus)E_COMM_IF_STATUS_OK != status)
+      if (E_K_COMM_STATUS_OK != status)
       {
         M_INTL_HTTP_ERROR(("salComConnect Failed"));
+        (void)salComTerm(gHttpInfo.pTls);
       }
     }
   }
@@ -292,7 +293,7 @@ TCommIfStatus httpMsgExchange
     M_INTL_HTTP_DEBUG(("httpPost %d", ret));
     if (ret == C_HTTP_SUCCESS_STATUS_CODE)
     {
-      status = E_COMM_IF_STATUS_OK;
+      status = E_K_COMM_STATUS_OK;
       M_INTL_HTTP_DEBUG(("Received Data %ld", gHttpInfo.bodyLen));
       *xpRecvMsgBufferSize = (size_t)gHttpInfo.bodyLen;
     }
@@ -308,7 +309,7 @@ TCommIfStatus httpMsgExchange
  */
 TCommIfStatus httpTerm(void)
 {
-  TKCommStatus status = E_COMM_IF_STATUS_ERROR;
+  TKCommStatus status = E_K_COMM_STATUS_ERROR;
 
   M_INTL_HTTP_DEBUG(("Start of %s", __func__));
   status = salComTerm(gHttpInfo.pTls);
@@ -477,7 +478,8 @@ static int httpHeader
      * SUPPRESS: MISRA_DEV_KTA_002 : misra_c2012_rule_17.7_violation
      * Not using the return value of snprintf
      */
-    (void)snprintf(xpHttpInfo->response.cookie, C_HTTP__HEADER_FIELD_SIZE, "%s", aT2);
+    (void)snprintf(xpHttpInfo->response.cookie, C_HTTP__HEADER_FIELD_SIZE, "%.*s",
+                   (int)(C_HTTP__HEADER_FIELD_SIZE - 1), aT2);
   }
   else if (lstrncasecmp(aT1, "location:", 9) == 0)
   {

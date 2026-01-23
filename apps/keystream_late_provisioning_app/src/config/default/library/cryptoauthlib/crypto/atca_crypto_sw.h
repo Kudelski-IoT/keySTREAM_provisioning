@@ -64,6 +64,12 @@ typedef struct atcac_sha1_ctx
 struct atcac_sha1_ctx;
 #endif
 
+struct atcacert_def_s;
+
+#if ATCAC_CERT_ADD_EN && ATCACERT_COMPCERT_EN
+ATCA_STATUS atcac_sw_cert_add(void * cert, const struct atcacert_def_s * cert_def);
+#endif
+
 #if defined(ATCA_BUILD_SHARED_LIBS) || defined(ATCA_HEAP)
 struct atcac_sha1_ctx * atcac_sha1_ctx_new(void);
 void atcac_sha1_ctx_free(struct atcac_sha1_ctx * ctx);
@@ -235,7 +241,7 @@ ATCA_STATUS atcac_pk_init(struct atcac_pk_ctx* ctx, const uint8_t* buf, size_t b
 ATCA_STATUS atcac_pk_init_pem(struct atcac_pk_ctx* ctx, const uint8_t* buf, size_t buflen, bool pubkey);
 ATCA_STATUS atcac_pk_free(struct atcac_pk_ctx* ctx);
 ATCA_STATUS atcac_pk_public(struct atcac_pk_ctx* ctx, uint8_t* buf, size_t* buflen);
-ATCA_STATUS atcac_pk_sign(struct atcac_pk_ctx* ctx, const uint8_t* digest, size_t dig_len, uint8_t* signature, size_t* sig_len);
+ATCA_STATUS atcac_pk_sign(struct atcac_pk_ctx* ctx, const uint8_t* digest, size_t dig_len, uint8_t* signature, size_t sig_buf_size, size_t* sig_len);
 ATCA_STATUS atcac_pk_verify(struct atcac_pk_ctx* ctx, const uint8_t* digest, size_t dig_len, const uint8_t* signature, size_t sig_len);
 ATCA_STATUS atcac_pk_derive(struct atcac_pk_ctx* private_ctx, struct atcac_pk_ctx* public_ctx, uint8_t* buf, size_t* buflen);
 #endif /* ATCAC_PKEY_EN */

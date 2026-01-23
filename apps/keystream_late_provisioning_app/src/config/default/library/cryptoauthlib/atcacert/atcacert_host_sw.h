@@ -50,7 +50,7 @@ extern "C" {
 #if ATCAC_VERIFY_EN && ATCACERT_COMPCERT_EN
 /**
  * \brief Verify a certificate against its certificate authority's public key using software crypto
- *        functions.The function is currently not implemented.
+ *        functions.
  *
  * \param[in] cert_def       Certificate definition describing how to extract the TBS and signature
  *                           components from the certificate specified.
@@ -60,7 +60,9 @@ extern "C" {
  *                           authority that signed this certificate. Formatted as the X and Y integers 
  *                           concatenated together.                      
  *
- * \return ATCA_UNIMPLEMENTED , as the function is currently not implemented.
+ * \return ATCACERT_E_SUCCESS if the verify succeeds, ATCACERT_VERIFY_FAILED or ATCA_EXECUTION_ERROR if it fails to
+ *         verify. ATCA_EXECUTION_ERROR may occur when the public key is invalid and doesn't fall
+ *         on the P256/P384/P521 curve.
  */
 ATCA_STATUS atcacert_verify_cert_sw(const atcacert_def_t* cert_def,
                                     const uint8_t*        cert,
@@ -71,11 +73,11 @@ ATCA_STATUS atcacert_verify_cert_sw(const atcacert_def_t* cert_def,
 
 #if ATCAC_RANDOM_EN
 /**
- * \brief Generate a random challenge to be sent to the client using a software PRNG.The function is currently not implemented.
+ * \brief Generate a random challenge to be sent to the client using a software PRNG.
  *
  * \param[out] challenge  Random challenge is return in the buffer.
  *
- * \return ATCA_UNIMPLEMENTED , as the function is currently not implemented.
+ * \return ATCACERT_E_SUCCESS on success, otherwise an error code.
  */
 ATCA_STATUS atcacert_gen_challenge_sw(cal_buffer* challenge);
 #endif
@@ -83,7 +85,7 @@ ATCA_STATUS atcacert_gen_challenge_sw(cal_buffer* challenge);
 
 #if ATCAC_VERIFY_EN
 /**
- * \brief Verify a client's response to a challenge using software crypto functions.The function is currently not implemented.
+ * \brief Verify a client's response to a challenge using software crypto functions.
  *
  * The challenge-response protocol is an ECDSA Sign and Verify. This performs an ECDSA verify on the
  * response returned by the client, verifying the client has the private key counter-part to the
@@ -94,11 +96,23 @@ ATCA_STATUS atcacert_gen_challenge_sw(cal_buffer* challenge);
  * \param[in] challenge          Buffer pointing to the Challenge that was sent to the client.
  * \param[in] response           Response returned from the client to be verified is returned in the buffer.
  *
- * \return ATCA_UNIMPLEMENTED , as the function is currently not implemented.
+ * \return ATCACERT_E_SUCCESS if the verify succeeds, ATCACERT_VERIFY_FAILED or ATCA_EXECUTION_ERROR if it fails to
+ *         verify. ATCA_EXECUTION_ERROR may occur when the public key is invalid and doesn't fall
+ *         on the P256/P384/P521 curve.
  */
 ATCA_STATUS atcacert_verify_response_sw(const cal_buffer* device_public_key,
                                         const cal_buffer* challenge,
                                         const cal_buffer* response);
+#endif
+
+#if ATCAC_CERT_ADD_EN && ATCACERT_COMPCERT_EN
+/** \brief Rebuild a certificate from an atcacert_def_t structure, and then add
+ * it to an software host library cert chain.
+ * \param[in,out] cert sw host cert chain.
+ * \param[in] cert_def Certificate definition that will be rebuilt and added
+ * \return 0 on success, otherwise an error code.
+ */
+ATCA_STATUS atcacert_cert_add(void * cert, const struct atcacert_def_s * cert_def);
 #endif
 
 /** @} */

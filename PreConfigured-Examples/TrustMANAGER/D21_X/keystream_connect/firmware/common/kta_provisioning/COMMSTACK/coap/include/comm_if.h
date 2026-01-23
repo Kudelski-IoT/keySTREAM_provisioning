@@ -1,7 +1,7 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2025 Nagravision Sàrl
 
 * Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -48,6 +48,7 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
@@ -83,6 +84,12 @@ typedef enum
   /* The network connectivity is not available. */
   E_COMM_IF_STATUS_MEMORY,
   /* Failure on memory allocation. */
+  E_COMM_IF_STATUS_NO_CONNECTION,
+  /* Not connected - call commInit first. [NEW] */
+  E_COMM_IF_STATUS_STALE,
+  /* Connection is too old/stale. [NEW] */
+  E_COMM_IF_STATUS_RESOURCE,
+  /* Resource unavailable (e.g., socket limit). [NEW] */
   E_COMM_IF_NUM_STATUS
   /* Number of status values. */
 } TCommIfStatus;
@@ -98,6 +105,31 @@ typedef enum
   /* Number of supported IP protocols. */
 } TCommIfIpProtocol;
 
+/** @brief Communication statistics structure [NEW] */
+typedef struct
+{
+  uint32_t      connectAttempts;
+  /* Total number of connection attempts. */
+  uint32_t      connectSuccess;
+  /* Number of successful connections. */
+  uint32_t      connectFailures;
+  /* Number of failed connections. */
+  uint32_t      msgExchangeAttempts;
+  /* Total number of message exchange attempts. */
+  uint32_t      msgExchangeSuccess;
+  /* Number of successful message exchanges. */
+  uint32_t      msgExchangeFailures;
+  /* Number of failed message exchanges. */
+  uint32_t      termCalls;
+  /* Number of times commTerm() was called. */
+  TCommIfStatus lastError;
+  /* Last error code encountered. */
+  bool          isConnected;
+  /* Current connection state. */
+  uint32_t      connectionAgeSeconds;
+  /* Age of current connection in seconds (0 if not connected). */
+} TCommIfStatistics;
+
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -111,25 +143,22 @@ typedef enum
  *   Initialize communication stack.
  *
  * @param[in] xpHost
- *   IP address of keySTREAM, string encoded.
- *   Should not be NULL.
+ *   IP address of server; should not be NULL. It must have '\0' character at the end.
  * @param[in] xPort
- *   port to connect to keySTREAM, string encoded.
- *   Should not be NULL.
+ *   Port of the server listening to client requests.
  * @param[in] xpPath
- *   Server mount path;
- *   Should not be NULL.
+ *   Server path; should not be NULL. It must have '\0' character at the end.
  *
  * @return
- * - E_COMM_IF_STATUS_OK in case of success.
- * - E_COMM_IF_STATUS_PARAMETER for wrong input parameter(s).
- * - E_COMM_IF_STATUS_NETWORK if any network related issue.
+ * - E_COMM_IF_STATUS_OK or the error status, in particular.
+ * - E_COMM_IF_STATUS_PARAMETER if wrong parameters received.
+ * - E_COMM_IF_STATUS_NETWORK if any network issue.
  */
 TCommIfStatus commInit
 (
-  const uint8_t*  xpHost,
-  const uint16_t  xPort,
-  const uint8_t*  xpPath
+  const uint8_t* xpHost,
+  const uint16_t xPort,
+  const uint8_t* xpPath
 );
 
 /**
@@ -137,23 +166,23 @@ TCommIfStatus commInit
  *   Sends message to server and return the response received from server.
  *
  * @param[in] xpMsgToSend
- *   Message to send to keySTREAM.
- *   Should not be NULL.
+ *   Message to send to server; should not be NULL.
  * @param[in] xSendSize
- *   Size of the message, in bytes.
- * @param[in,out] xpRecvMsgBuffer
- *   [in] Pointer to recevie data buffer from keySTREAM.
- *   [out] Actual data received from keySTREAM.
+ *   size of the message, in bytes.
+ * @param[out] xpRecvMsgBuffer
+ *   Data buffer to fill; must point to *xpRecvMsgBufferSize bytes.
  *   Should not be NULL.
  * @param[in,out] xpRecvMsgBufferSize
- *   [in] Pointer to length for recevied data from keySTREAM.
- *   [out] Actual data length received from keySTREAM.
- *   Should not be NULL.
+ *   [in] Size of the data buffer, in bytes.
+ *   [out] Size of the received data, in bytes; this value may be larger than
+ *        the input value, but only the first bytes are copied to xpRecvMsgBuffer.
  *
  * @return
- * - E_COMM_IF_STATUS_OK in case of success.
- * - E_COMM_IF_STATUS_PARAMETER for wrong input parameter(s).
+ * - E_COMM_IF_STATUS_OK or the error status, in particular:
+ * - E_COMM_IF_STATUS_PARAMETER if wrong parameters received.
+ * - E_COMM_IF_STATUS_NO_CONNECTION if not connected (call commInit first).
  * - E_COMM_IF_STATUS_NETWORK if any network issue.
+ * - E_COMM_IF_STATUS_TIMEOUT if operation timed out.
  */
 TCommIfStatus commMsgExchange
 (
@@ -168,10 +197,50 @@ TCommIfStatus commMsgExchange
  *   Terminate communication stack.
  *
  * @return
- * - E_COMM_IF_STATUS_OK in case of success.
+ * - E_COMM_IF_STATUS_OK or the error status, in particular.
  * - E_COMM_IF_STATUS_ERROR if communication stack not initialized.
  */
 TCommIfStatus commTerm
+(
+  void
+);
+
+/**
+ * @brief
+ *   Get communication statistics. [NEW]
+ *
+ * @param[out] xpStats
+ *   Pointer to statistics structure to fill; should not be NULL.
+ *
+ * @return
+ * - E_COMM_IF_STATUS_OK on success.
+ * - E_COMM_IF_STATUS_PARAMETER if xpStats is NULL.
+ */
+TCommIfStatus commGetStatistics
+(
+  TCommIfStatistics* xpStats
+);
+
+/**
+ * @brief
+ *   Reset communication statistics counters. [NEW]
+ *   Note: Does not affect connection state.
+ */
+void commResetStatistics
+(
+  void
+);
+
+/**
+ * @brief
+ *   Check connection health status. [NEW]
+ *
+ * @return
+ * - E_COMM_IF_STATUS_OK if connection is healthy.
+ * - E_COMM_IF_STATUS_NO_CONNECTION if not connected.
+ * - E_COMM_IF_STATUS_STALE if connection is too old (>5 minutes).
+ */
+TCommIfStatus commCheckConnectionHealth
 (
   void
 );

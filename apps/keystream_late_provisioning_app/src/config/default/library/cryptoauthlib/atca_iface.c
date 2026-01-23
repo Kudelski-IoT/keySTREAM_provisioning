@@ -112,14 +112,25 @@ ATCA_STATUS atinit(ATCAIface ca_iface)
         {
             if ((NULL != ca_iface->phy->halinit) && (NULL != ca_iface->phy->halpostinit))
             {
-                if (ATCA_SUCCESS != (status = ca_iface->phy->halinit(ca_iface, ca_iface->mIfaceCFG)))
+                status = ca_iface->phy->halinit(ca_iface, ca_iface->mIfaceCFG);
+                if (ATCA_SUCCESS != status)
                 {
+                    if ((NULL != ca_iface->phy) && (NULL != ca_iface->phy->halrelease))
+                    {
+                        (void)ca_iface->phy->halrelease(ca_iface->hal_data);
+                    }
                     status = ATCA_TRACE(ATCA_BAD_PARAM, "phyinit");
                 }
                 else
                 {
-                    if (ATCA_SUCCESS != (status = ca_iface->phy->halpostinit(ca_iface)))
+                    status = ca_iface->phy->halpostinit(ca_iface);
+                    if (ATCA_SUCCESS != status)
                     {
+                        // If halpostinit fails, attempt to cleanup by calling phy->halrelease if available
+                        if ((NULL != ca_iface->phy) && (NULL != ca_iface->phy->halrelease))
+                        {
+                            (void)ca_iface->phy->halrelease(ca_iface->hal_data);
+                        }
                         status = ATCA_TRACE(ATCA_BAD_PARAM, "phypostinit");
                     }
                 }
@@ -135,15 +146,29 @@ ATCA_STATUS atinit(ATCAIface ca_iface)
         {
             if ((NULL != ca_iface->hal->halinit) && (NULL != ca_iface->hal->halpostinit))
             {
-                if (ATCA_SUCCESS != (status = ca_iface->hal->halinit(ca_iface, ca_iface->mIfaceCFG)))
+                status = ca_iface->hal->halinit(ca_iface, ca_iface->mIfaceCFG);
+                if (ATCA_SUCCESS != status)
                 {
                     status = ATCA_TRACE(ATCA_BAD_PARAM, "halinit");
+                    if ((NULL != ca_iface->phy) && (NULL != ca_iface->phy->halrelease))
+                    {
+                        (void)ca_iface->phy->halrelease(ca_iface->hal_data);
+                    }
                 }
                 else
                 {
-                    if (ATCA_SUCCESS != (status = ca_iface->hal->halpostinit(ca_iface)))
+                    status = ca_iface->hal->halpostinit(ca_iface);
+                    if (ATCA_SUCCESS != status)
                     {
                         status = ATCA_TRACE(ATCA_BAD_PARAM, "halpostinit");
+                        if ((NULL != ca_iface->hal) && (NULL != ca_iface->hal->halrelease))
+                        {
+                            (void)ca_iface->hal->halrelease(ca_iface->hal_data);
+                        }
+                        if ((NULL != ca_iface->phy) && (NULL != ca_iface->phy->halrelease))
+                        {
+                            (void)ca_iface->phy->halrelease(ca_iface->hal_data);
+                        }
                     }
                 }
             }

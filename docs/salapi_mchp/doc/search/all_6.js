@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['k_5fsal_5ffotastorage_2eh_227',['k_sal_fotastorage.h',['../microchip_2include_2k__sal__fotastorage_8h.html',1,'']]],
-  ['m_5fsal_5fcrypto_5fget_5fbit31_228',['M_SAL_CRYPTO_GET_BIT31',['../k__sal__crypto_8c.html#ad2387093611f3b0654937bf20ad586b7',1,'k_sal_crypto.c']]],
-  ['m_5funused_229',['M_UNUSED',['../k__sal__object_8c.html#acdb8f51e442153f3c44183fb7ee65379',1,'k_sal_object.c']]]
+  ['object_5ft_233',['object_t',['../structobject__t.html',1,'']]]
 ];

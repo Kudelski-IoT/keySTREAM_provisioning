@@ -433,7 +433,17 @@ int8_t ecc_transfer_certificates()
         }
         pem_cert_size = sizeof(pem_cert);
         atcacert_encode_pem_cert(signer_cert, signer_cert_size, pem_cert, &pem_cert_size);
-        APP_DebugPrintf("Signer Cert : \r\n%s\r\n", pem_cert);
+        APP_DebugPrintf("Signer Cert (%d bytes):\r\n", pem_cert_size);
+        // Print in chunks to avoid 512-byte buffer overflow
+        for (size_t i = 0; i < pem_cert_size; i += 400)
+        {
+            size_t chunk_size = (pem_cert_size - i) > 400 ? 400 : (pem_cert_size - i);
+            char chunk[401];
+            memcpy(chunk, pem_cert + i, chunk_size);
+            chunk[chunk_size] = '\0';
+            APP_DebugPrintf("%s", chunk);
+        }
+        APP_DebugPrintf("\r\n");
 
         // Get the signer's public key from its certificate
         if(ATCACERT_E_SUCCESS != (atca_status = atcacert_get_subj_public_key(&g_cert_def_1_signer, signer_cert,
@@ -448,11 +458,22 @@ int8_t ecc_transfer_certificates()
         if(ATCACERT_E_SUCCESS != (atca_status = atcacert_read_cert(&g_cert_def_3_device, &t_ca_cert_data,
                                         device_cert, &device_cert_size)))
         {
-            APP_DebugPrintf("Device Cert Read public_key failed with error: 0x%02x\r\n", atca_status);
+            APP_DebugPrintf("Device Cert Read failed with error: 0x%02x\r\n", atca_status);
             break;
         }
+        pem_cert_size = sizeof(pem_cert);
         atcacert_encode_pem_cert(device_cert, device_cert_size, pem_cert, &pem_cert_size);
-        APP_DebugPrintf("Device Cert : \r\n%s\r\n", pem_cert);
+        APP_DebugPrintf("Device Cert (%d bytes):\r\n", pem_cert_size);
+        // Print in chunks to avoid 512-byte buffer overflow
+        for (size_t i = 0; i < pem_cert_size; i += 400)
+        {
+            size_t chunk_size = (pem_cert_size - i) > 400 ? 400 : (pem_cert_size - i);
+            char chunk[401];
+            memcpy(chunk, pem_cert + i, chunk_size);
+            chunk[chunk_size] = '\0';
+            APP_DebugPrintf("%s", chunk);
+        }
+        APP_DebugPrintf("\r\n");
 
         if(ATCACERT_E_SUCCESS != (atca_status = atcacert_get_subj_key_id(&g_cert_def_3_device, device_cert,
                                         device_cert_size, subject_key_id)))

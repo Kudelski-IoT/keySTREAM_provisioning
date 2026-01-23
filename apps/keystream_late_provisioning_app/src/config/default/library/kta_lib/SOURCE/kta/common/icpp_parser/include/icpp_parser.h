@@ -73,8 +73,13 @@ extern "C" {
  */
 #define C_K_ICPP_PARSER__HEADER_SIZE                             (21u)
 
+#ifdef FOTA_ENABLE
+/** @brief Maximum ICPP fields in the command. */
+#define C_K_ICPP_PARSER__MAX_FIELDS_COUNT                        (30u)
+#else
 /** @brief Maximum ICPP fields in the command. */
 #define C_K_ICPP_PARSER__MAX_FIELDS_COUNT                        (12u)
+#endif
 
 /** @brief Maximum ICPP commands in the message. */
 #define C_K_ICPP_PARSER__MAX_COMMANDS_COUNT                      (8u)

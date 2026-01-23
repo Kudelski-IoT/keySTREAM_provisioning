@@ -133,6 +133,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a0c5e445504ea2b853e6e457286b67e4c"><td class="memItemLeft" align="right" valign="top">TKFotaStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fotaprocess_8c.html#a0c5e445504ea2b853e6e457286b67e4c">storeMetadata</a> (const uint8_t *xFotaName, size_t xFotaNameLen, const uint8_t *xFotaMetadata, size_t xFotaMetadataLen, TFotaError *xFotaError)</td></tr>
 <tr class="memdesc:a0c5e445504ea2b853e6e457286b67e4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">implement storeMetadata  <a href="fotaprocess_8c.html#a0c5e445504ea2b853e6e457286b67e4c">More...</a><br /></td></tr>
 <tr class="separator:a0c5e445504ea2b853e6e457286b67e4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b6c1741ffb674067f1a7cfd84816a52"><td class="memItemLeft" align="right" valign="top">TKFotaStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fotaprocess_8c.html#a9b6c1741ffb674067f1a7cfd84816a52">fotaGetTargetComponents</a> (TFotaComponentRecord *xpTargetComponents, uint8_t *xpNumComponents)</td></tr>
+<tr class="memdesc:a9b6c1741ffb674067f1a7cfd84816a52"><td class="mdescLeft">&#160;</td><td class="mdescRight">implement fotaGetTargetComponents  <a href="fotaprocess_8c.html#a9b6c1741ffb674067f1a7cfd84816a52">More...</a><br /></td></tr>
+<tr class="separator:a9b6c1741ffb674067f1a7cfd84816a52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ccb1533743f717e82374f6c19fcf6af"><td class="memItemLeft" align="right" valign="top">TKFotaStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fotaprocess_8c.html#a5ccb1533743f717e82374f6c19fcf6af">fotaGetComponentsStatus</a> (const uint8_t *xpFotaName, size_t fotaNameLen, TFotaError *xpFotaError, TComponent components[COMPONENTS_MAX])</td></tr>
 <tr class="memdesc:a5ccb1533743f717e82374f6c19fcf6af"><td class="mdescLeft">&#160;</td><td class="mdescRight">implement fotaGetComponentsStatus  <a href="fotaprocess_8c.html#a5ccb1533743f717e82374f6c19fcf6af">More...</a><br /></td></tr>
 <tr class="separator:a5ccb1533743f717e82374f6c19fcf6af"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -302,6 +305,37 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a9b6c1741ffb674067f1a7cfd84816a52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b6c1741ffb674067f1a7cfd84816a52">&#9670;&nbsp;</a></span>fotaGetTargetComponents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TKFotaStatus fotaGetTargetComponents </td>
+          <td>(</td>
+          <td class="paramtype">TFotaComponentRecord *&#160;</td>
+          <td class="paramname"><em>xpTargetComponents</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>xpNumComponents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>implement fotaGetTargetComponents </p>
+<p>Retrieves target component list from storage.</p>
+
+</div>
+</div>
 <a id="a5ccb1533743f717e82374f6c19fcf6af"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5ccb1533743f717e82374f6c19fcf6af">&#9670;&nbsp;</a></span>fotaGetComponentsStatus()</h2>
 
@@ -462,13 +496,6 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">  {{0x4D, 0x43, 0x48, 0x50, 0x2D, 0x43, 0x41, 0x4C}, 8, {0x31, 0x2E, 0x30, 0x2E, 0x30}, 5},</div>
-<div class="line">  { { }, 0, { }, 0 },</div>
-<div class="line">  { { }, 0, { }, 0 },</div>
-<div class="line">  { { }, 0, { }, 0 },</div>
-<div class="line">  { { }, 0, { }, 0 },</div>
-<div class="line">  { { }, 0, { }, 0 },</div>
-<div class="line">  { { }, 0, { }, 0 },</div>
 <div class="line">  { { }, 0, { }, 0 }</div>
 <div class="line">}</div>
 </div><!-- fragment -->

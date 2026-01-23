@@ -86,11 +86,10 @@ TKFotaStatus fotaAgentInstall
 )
 {
   TKFotaStatus retStatus = E_K_FOTA_ERROR;
+
   M_KTALOG__START("[INFO] fotaAgentInstall Start\r\n");
 
-  if ((NULL == xpFotaName) ||
-      (NULL == xpFotaMetadata) ||
-      (NULL == xTargetComponents))
+  if ((NULL == xpFotaName) || (NULL == xpFotaMetadata) || (NULL == xTargetComponents))
   {
     M_KTALOG__ERR("ERROR: Invalid input parameter\r\n");
     retStatus = E_K_FOTA_ERROR;

@@ -13,5 +13,6 @@ var fotaprocess_8h =
     [ "fotaDownloadAndInstall", "fotaprocess_8h.html#a6d1e2bfce63fe566d4dbe1d598d71f43", null ],
     [ "fotaGetComponentsStatus", "fotaprocess_8h.html#a5ccb1533743f717e82374f6c19fcf6af", null ],
     [ "fotaGetInstalledComponents", "fotaprocess_8h.html#a07e12b641beb845e797d2fbb4721095c", null ],
-    [ "fotaUpdateComponent", "fotaprocess_8h.html#aaf74514c84ad3f2286ad12f55e2007e2", null ]
+    [ "fotaUpdateComponent", "fotaprocess_8h.html#aaf74514c84ad3f2286ad12f55e2007e2", null ],
+    [ "fotaGetTargetComponents", "fotaprocess_8h.html#a9b6c1741ffb674067f1a7cfd84816a52", null ]
 ];

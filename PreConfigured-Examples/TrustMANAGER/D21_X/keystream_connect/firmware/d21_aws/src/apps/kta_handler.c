@@ -74,6 +74,7 @@ static bool gIsIPAvailable = false;
 
 enum wifi_status kta_gSockRecvStatus = WIFI_STATUS_UNKNOWN;
 enum wifi_status kta_gSockSendStatus = WIFI_STATUS_UNKNOWN;
+enum wifi_status kta_gSockConnectStatus = WIFI_STATUS_UNKNOWN;
 int32_t kta_gRxBufferLength = 0;
 uint32_t kta_gTxSize = 0;
 extern enum cloud_iot_state kta_gCloudWifiState;
@@ -225,7 +226,7 @@ uint8_t* kta_getHostByName
 
   while (gIsIPAvailable == false)
   {
-    atca_delay_ms(5);
+    atca_delay_ms(1);  /* Reduced from 5ms for faster DNS resolution */
     m2m_wifi_handle_events();
   }
 
@@ -264,7 +265,20 @@ static void ktaSocketCallbackHandler
     {
       case SOCKET_MSG_CONNECT:
       {
-        M_KTA_HANDLER_LOG(("Ignoring SOCKET_MSG_CONNECT %d", xSocket));
+        tstrSocketConnectMsg* pConnectMsg = (tstrSocketConnectMsg*)xpMessage;
+        M_KTA_HANDLER_LOG(("SOCKET_MSG_CONNECT socket[%d] error[%d]", xSocket, pConnectMsg ? pConnectMsg->s8Error : -1));
+        
+        if (pConnectMsg != NULL)
+        {
+          if (pConnectMsg->s8Error == SOCK_ERR_NO_ERROR)
+          {
+            kta_gSockConnectStatus = WIFI_STATUS_MESSAGE_RECEIVED;
+          }
+          else
+          {
+            kta_gSockConnectStatus = WIFI_STATUS_ERROR;
+          }
+        }
         break;
       }
 

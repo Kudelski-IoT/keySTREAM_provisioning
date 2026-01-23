@@ -64,25 +64,25 @@ typedef struct cal_buffer_s
         _Pragma("coverity compliance deviate 'CERT STR30-C'") \
         _Pragma("coverity compliance deviate 'MISRA C-2012 Rule 10.8'") \
         _Pragma("coverity compliance deviate 'MISRA C-2012 Rule 11.8'") \
-        (size_t)s, (uint8_t*)b, NULL }
+        (size_t)(s), (uint8_t*)(b), NULL }
     #define CAL_BUF_INIT_LINK(s, b, n)    { \
         _Pragma("coverity compliance deviate 'CERT EXP40-C'") \
         _Pragma("coverity compliance deviate 'CERT STR30-C'") \
         _Pragma("coverity compliance deviate 'MISRA C-2012 Rule 10.8'") \
         _Pragma("coverity compliance deviate 'MISRA C-2012 Rule 11.8'") \
-        (size_t)s, (uint8_t*)b, n }
+        (size_t)(s), (uint8_t*)(b), (n) }
     #else
     #define CAL_BUF_INIT(s, b)           { \
         _Pragma("coverity compliance deviate 'CERT EXP40-C'") \
         _Pragma("coverity compliance deviate 'CERT STR30-C'") \
         _Pragma("coverity compliance deviate 'MISRA C-2012 Rule 10.8'") \
         _Pragma("coverity compliance deviate 'MISRA C-2012 Rule 11.8'") \
-        (size_t)s, (uint8_t*)b }
+        (size_t)(s), (uint8_t*)(b) }
     #endif 
 #else
     #if MULTIPART_BUF_EN
     #define CAL_BUF_INIT(s, b)           { (size_t)(s), (uint8_t*)(b), NULL }
-    #define CAL_BUF_INIT_LINK(s, b, n)    { (size_t)(s), (uint8_t*)(b), n }
+    #define CAL_BUF_INIT_LINK(s, b, n)    { (size_t)(s), (uint8_t*)(b), (n) }
     #else
     #define CAL_BUF_INIT(s, b)           { (size_t)(s), (uint8_t*)(b) }
     #endif

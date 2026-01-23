@@ -1,9 +1,9 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sï¿½?Â rl
+* (c) 2023-2025 Nagravision SÃ rl
 
-* Subject to your compliance with these terms, you may use the Nagravision Sï¿½?Â rl
+* Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -61,18 +61,80 @@ extern "C" {
 /**
  * @brief Persistent Storage_Ids.
  */
-/** @brief Life cycle data ID. */
-#define FOTA_STORAGE_STATE_ID                                                      (0x2000u)
 /** @brief FOTA name ID. */
 #define FOTA_STORAGE_NAME_ID                                                       (0x2001u)
+
 /** @brief FOTA metadata ID. */
-#define FOTA_STORAGE_METADATA_ID                                                   (0x2002u)
-/** @brief FOTA component version ID. */
-#define FOTA_STORAGE_INSTALLED_COMPONENT_ID                                        (0x2003u)
-/** @brief FOTA target component ID. */
-#define FOTA_STORAGE_TARGET_COMPONENT_ID                                           (0x2004u)
-/** @brief FOTA URL ID. */
-#define FOTA_STORAGE_URL_ID                                                        (0x2005u)
+#define FOTA_STORAGE_METADATA_ID                                                   (0x2003u)
+
+/** @brief FOTA commit flag ID - used to validate campaign completion */
+#define FOTA_STORAGE_COMMIT_ID                                                     (0x2005u)
+
+/** @brief Magic number for validating FOTA component records */
+#define FOTA_RECORD_MAGIC                                                          (0xF07A1234u)
+
+/** @brief Magic number for validating FOTA commit record */
+#define FOTA_COMMIT_MAGIC                                                          (0xF07AC0DEu)
+
+/** @brief Commit flag states */
+#define FOTA_COMMIT_VALID                                                          (0xAAu)
+#define FOTA_COMMIT_INVALID                                                        (0xFFu)
+
+/** @brief Campaign state values */
+#define FOTA_CAMPAIGN_INIT                                                         (0x00u)  // Campaign initialized
+#define FOTA_CAMPAIGN_IN_PROGRESS                                                  (0x01u)  // Component updates in progress
+#define FOTA_CAMPAIGN_COMPLETE                                                     (0x02u)  // All components finished
+
+/** @brief Magic number for validating FOTA name record */
+#define FOTA_NAME_MAGIC                                                            (0xF07ACA3Eu)
+
+/** @brief Magic number for validating FOTA metadata record */
+#define FOTA_METADATA_MAGIC                                                        (0xF07ABE7Au)
+
+/** @brief FOTA name record with CRC protection */
+typedef struct {
+    uint32_t magic;            // Magic number for validity check (0xF07ANA3E)
+    uint8_t  nameLen;
+    uint8_t  name[27];         // Reduced from 32 to accommodate CRC
+    uint32_t crc32;            // CRC32 checksum of record (magic through name)
+} TFotaNameRecord;
+
+/** @brief FOTA metadata record with CRC protection */
+typedef struct {
+    uint32_t magic;            // Magic number for validity check (0xF07AME7A)
+    uint8_t  metadataLen;
+    uint8_t  metadata[59];     // Reduced from 64 to accommodate CRC
+    uint32_t crc32;            // CRC32 checksum of record (magic through metadata)
+} TFotaMetadataRecord;
+
+/** @brief FOTA commit record - written LAST to indicate campaign completion */
+typedef struct {
+    uint32_t magic;            // Magic number for validity check (0xF07AC0DE)
+    uint8_t  commitFlag;       // 0xAA = valid/complete, 0xFF = invalid/incomplete
+    uint8_t  numComponents;    // Number of components in this campaign
+    uint8_t  campaignState;    // 0=INIT, 1=IN_PROGRESS, 2=COMPLETE
+    uint8_t  reserved;         // Padding for alignment
+    uint32_t crc32;            // CRC32 checksum of record (magic through reserved)
+} TFotaCommitRecord;
+
+/** @brief FOTA component record structure for combined storage */
+typedef struct {
+    uint32_t magic;            // Magic number for validity check (0xF07A1234)
+    uint8_t componentNameLen;
+    uint8_t componentName[16];
+    uint8_t componentVersionLen;
+    uint8_t componentVersion[16];
+    uint8_t state;
+    uint8_t reserved1[3];      // Padding for alignment
+    uint16_t componentUrlLen;
+    uint8_t componentUrl[512];
+    uint32_t crc32;            // CRC32 checksum of record (magic through componentUrl)
+} TFotaComponentRecord;
+
+/** @brief FOTA component IDs (indexed 0-7) - stores name, version, and state together */
+#define FOTA_STORAGE_COMPONENT_ID_BASE                                             (0x2010u)
+#define FOTA_STORAGE_COMPONENT_ID(index)                                           (FOTA_STORAGE_COMPONENT_ID_BASE + (index))
+
 
 
 /* -------------------------------------------------------------------------- */
@@ -139,4 +201,3 @@ bool salFotaStorageRead
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */
 /* -------------------------------------------------------------------------- */
-

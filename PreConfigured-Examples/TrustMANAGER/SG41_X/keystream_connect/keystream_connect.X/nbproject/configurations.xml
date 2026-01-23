@@ -659,6 +659,7 @@
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/comm_if.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/http.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/k_sal_com.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/k_sal_os.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
               <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
@@ -836,6 +837,7 @@
   <sourceRootList>
     <Elem>../src/config/default/library/kta_lib</Elem>
     <Elem>../../../D21_X/keystream_connect/firmware/common/kta_provisioning/SOURCE/kta/modules/fotaservice/include</Elem>
+    <Elem>../../../D21_X/keystream_connect/firmware/common/kta_provisioning/COMMSTACK/http</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -847,7 +849,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>noID</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.35</languageToolchainVersion>
+        <languageToolchainVersion>4.60</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
@@ -890,7 +892,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/default;../src/config/default/driver/wifi/wincs02/include/;../src/config/default/driver/wifi/wincs02/include/dev;../src/config/default/driver/wifi/wincs02/include/nc_driver;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/config/default/library/kta_lib/fotaservices../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/PIC32CX1025SG41100_DFP;../src/third_party/rtos/FreeRTOS/Source/include;../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F;..\src\config\default\library\cryptoauthlib\atcacert;..\src\config\default\library\kta_lib\fotaservice;../;..\src\config\default\library\kta_lib\SOURCE\kta\fotaservice\include;..\src\config\default\library\kta_lib\SOURCE\kta\modules\fotaservice\include;..\src\config\default\library\kta_lib\SOURCE\kta\modules\fotaservice\include"/>
+                  value="../src;../src/config/default;../src/config/default/driver/wifi/wincs02/include/;../src/config/default/driver/wifi/wincs02/include/dev;../src/config/default/driver/wifi/wincs02/include/nc_driver;../src/config/default/library/cryptoauthlib;../src/config/default/library/cryptoauthlib/crypto;../src/config/default/library/cryptoauthlib/pkcs11;../src/config/default/library/kta_lib;../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/config/default/library/kta_lib/COMMON/logmodule/include;../src/config/default/library/kta_lib/COMMSTACK/http;../src/config/default/library/kta_lib/COMMSTACK/http/include;..\src\config\default\library\kta_lib\COMMSTACK\http\salapi\include;../src/config/default/library/kta_lib/SOURCE/include;../src/config/default/library/kta_lib/SOURCE/kta/common/crypto/include;../src/config/default/library/kta_lib/SOURCE/kta/common/general/include;../src/config/default/library/kta_lib/SOURCE/kta/common/icpp_parser/include;../src/config/default/library/kta_lib/SOURCE/kta/common/version/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/acthandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/cmdhandler/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/config/include;../src/config/default/library/kta_lib/SOURCE/kta/modules/reghandler/include;../src/config/default/library/kta_lib/SOURCE/salapi/include;../src/config/default/library/kta_lib/fotaservices../src/config/default/library/kta_lib/../cryptoauthlib/atcacert;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;../src/packs/PIC32CX1025SG41100_DFP;../src/third_party/rtos/FreeRTOS/Source/include;../src/third_party/rtos/FreeRTOS/Source/portable/GCC/SAM/ARM_CM4F;..\src\config\default\library\cryptoauthlib\atcacert;..\src\config\default\library\kta_lib\fotaservice;../;..\src\config\default\library\kta_lib\SOURCE\kta\fotaservice\include;..\src\config\default\library\kta_lib\SOURCE\kta\modules\fotaservice\include;..\src\config\default\library\kta_lib\SOURCE\kta\modules\fotaservice\include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>

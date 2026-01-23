@@ -87,7 +87,28 @@
 /** @brief Challenge size in bytes */
 #define C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE              (32u)
 
-#ifdef OBJECT_MANAGEMENT_FEATURE
+/** @brief Utility macro to validate field length */
+#define CHECK_FIELD_LEN(field, max) \
+  do { \
+    if ((field)->fieldLen > (max)) { \
+      M_KTALOG__ERR("Invalid field length for tag %d", (field)->fieldTag); \
+      return 1u; \
+    } \
+  } while (0)
+
+/** @brief Utility macro to suppress unused parameter warnings for FOTA indices */
+#ifdef FOTA_ENABLE
+#define UNUSED_FOTA_PARAMS() \
+  do { \
+    (void)xpTargetNameIndex; \
+    (void)xpTargetVersionIndex; \
+    (void)xpTargetUrlIndex; \
+  } while (0)
+#else
+#define UNUSED_FOTA_PARAMS() do {} while (0)
+#endif
+
+#if defined(OBJECT_MANAGEMENT_FEATURE) || defined(PLATFORM_PROCESS_FEATURE)
 /** @brief Mandatory generate key pair fields. */
 #define C_K_CMD_GENKEYPAIR_FIELDS_MANDATORY \
   (E_K_CMD_FIELD_IDENTIFIER)
@@ -137,7 +158,7 @@
 /** @brief  Command response fields structure. */
 typedef struct
 {
-  uint8_t*  pValue;
+  uint8_t *pValue;
   /* Response field value. */
   size_t    len;
   /* Response field length. */
@@ -211,8 +232,33 @@ typedef enum
    * Object owner field mask
    */
   E_K_CMD_FIELD_NONCE = 0x0100u
-          
+
 } TKcmdFieldTag;
+
+/**
+ * @brief Handler function signature for field processing
+ */
+typedef uint32_t (*FieldHandler)
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief Field tag lookup table entry
+ */
+typedef struct
+{
+  uint32_t tag;
+  FieldHandler handler;
+  uint32_t maskBit;
+} FieldTagEntry;
 
 #endif
 
@@ -224,12 +270,450 @@ typedef enum
  * The identifier gpModuleName is intentionally defined as a common global for logging purposes
  */
 #if LOG_KTA_ENABLE != C_KTA_LOG_LEVEL_NONE
-static const char* gpModuleName = "KTACMDHANDLER";
+static const char *gpModuleName = "KTACMDHANDLER";
 #endif
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * @brief
+ *   Handler for Object Type field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleObjectType
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t* xpTargetNameIndex,
+   uint32_t* xpTargetVersionIndex,
+   uint32_t* xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief
+ *   Handler for Identifier field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleIdentifier
+(
+  TKIcppField *xpField,
+  TKcmdRespPayload *xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t *xpTargetNameIndex,
+  uint32_t *xpTargetVersionIndex,
+  uint32_t *xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief
+ *   Handler for Attributes field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleAttributes
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief
+ *   Handler for Nonce field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleNonce
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief
+ *   Handler for Data field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleData
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief
+ *   Handler for Object UID field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleObjectUid
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief
+ *   Handler for Customer Metadata field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleCustomerMetadata
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief
+ *   Handler for Association Info field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleAssociationInfo
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+);
+
+/**
+ * @brief
+ *   Handler for Object Owner field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index (FOTA only).
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index (FOTA only).
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index (FOTA only).
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleObjectOwner
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  , uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+);
+
+#ifdef FOTA_ENABLE
+/**
+ * @brief
+ *   Handler for FOTA Name field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index.
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index.
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index.
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleFota
+(
+  TKIcppField *xpField,
+  TKcmdRespPayload *xpCmdRespPayload,
+  uint32_t *xpTargetNameIndex,
+  uint32_t *xpTargetVersionIndex,
+  uint32_t *xpTargetUrlIndex
+);
+
+/**
+ * @brief
+ *   Handler for FOTA Metadata field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index.
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index.
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index.
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleFotaMetadata
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+);
+
+/**
+ * @brief
+ *   Handler for FOTA Component Target field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index.
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index.
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index.
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleFotaComponentTarget
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+);
+
+/**
+ * @brief
+ *   Handler for FOTA Component Version field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index.
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index.
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index.
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleFotaComponentVersion
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+);
+
+/**
+ * @brief
+ *   Handler for FOTA Component URL field processing.
+ *
+ * @param[in] xpField
+ *   Pointer to the ICPP field.
+ * @param[in,out] xpCmdRespPayload
+ *   Pointer to command response payload.
+ * @param[in] xpTargetNameIndex
+ *   Pointer to target name index.
+ * @param[in] xpTargetVersionIndex
+ *   Pointer to target version index.
+ * @param[in] xpTargetUrlIndex
+ *   Pointer to target URL index.
+ *
+ * @return
+ * - 0 on success.
+ * - Non-zero on error.
+ */
+static uint32_t lHandleFotaComponentUrl
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+);
+#endif
+
+/**
+ * @brief Field tag lookup table
+ */
+static const FieldTagEntry kFieldTagTable[] =
+{
+#ifdef OBJECT_MANAGEMENT_FEATURE
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE,                 lHandleObjectType,            E_K_CMD_FIELD_OBJECT_TYPE },
+  { E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER,                    lHandleIdentifier,            E_K_CMD_FIELD_IDENTIFIER },
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES,                  lHandleAttributes,            E_K_CMD_FIELD_ATTRIBUTES },
+  { E_K_ICPP_PARSER_FLD_TAG_KTA_NONCE,                         lHandleNonce,                 E_K_CMD_FIELD_NONCE },
+  { E_K_ICPP_PARSER_FLD_TAG_CMD_DATA,                          lHandleData,                  E_K_CMD_FIELD_DATA },
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID,                  lHandleObjectUid,             E_K_CMD_FIELD_OBJECT_UID },
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA,           lHandleCustomerMetadata,      E_K_CMD_FIELD_CUSTOMER_METADATA },
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO,            lHandleAssociationInfo,       E_K_CMD_FIELD_ASSOCIATION_INFO },
+  { E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER,                    lHandleObjectOwner,           E_K_CMD_FIELD_OBJECT_OWNER },
+#endif
+#ifdef FOTA_ENABLE
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA,                         lHandleFota,                 E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA },
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA,                lHandleFotaMetadata,         E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA },
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET,        lHandleFotaComponentTarget,  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET },
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION,       lHandleFotaComponentVersion, E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION },
+  { E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL,           lHandleFotaComponentUrl,     E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL },
+#endif
+};
+
 #ifdef OBJECT_MANAGEMENT_FEATURE
 
 /**
@@ -275,6 +759,40 @@ static TKStatus lKtaCmdValidateAndGetPayload
   TKIcppProtocolMessage*   xpRecvMsg,
   TKcmdRespPayload*        xpCmdRespPayload,
   uint32_t                 xCmdCount
+);
+
+/**
+ * @brief
+ *   Helper function to process field tags in command validation.
+ *
+ * @param[in] xpField
+ *   Field to process.
+ * @param[out] xpCmdRespPayload
+ *   Response payload to fill.
+ * @param[in,out] xpFieldTagMask
+ *   Field tag mask to update.
+ * @param[in,out] xpTargetNameIndex
+ *   Target name index (FOTA only).
+ * @param[in,out] xpTargetVersionIndex
+ *   Target version index (FOTA only).
+ * @param[in,out] xpTargetUrlIndex
+ *   Target URL index (FOTA only).
+ *
+ * @return
+ * - 0 if successful.
+ * - 1 if error occurred.
+ */
+static uint32_t lProcessFieldTag
+(
+  TKIcppField*       xpField,
+  TKcmdRespPayload*  xpCmdRespPayload,
+  uint32_t*          xpFieldTagMask
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t*          xpTargetNameIndex,
+  uint32_t*          xpTargetVersionIndex,
+  uint32_t*          xpTargetUrlIndex
+#endif
 );
 
 /**
@@ -490,6 +1008,26 @@ static TKStatus lProcessCmdPrepareResponse
 #endif
 );
 
+/**
+ * @brief
+ *   Initialize send protocol message from received message.
+ */
+static inline void lInitSendProtoMessage
+(
+  const TKIcppProtocolMessage* xpRecvd,
+  TKIcppProtocolMessage*       xpSend
+)
+{
+  xpSend->msgType = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
+  xpSend->cryptoVersion = xpRecvd->cryptoVersion;
+  xpSend->encMode = xpRecvd->encMode;
+  (void)memcpy(xpSend->rotPublicUID, xpRecvd->rotPublicUID,
+               C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES);
+  (void)memcpy(xpSend->transactionId, xpRecvd->transactionId,
+               C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES);
+  xpSend->rotKeySetId = xpRecvd->rotKeySetId;
+}
+
 /* -------------------------------------------------------------------------- */
 /* PUBLIC VARIABLES                                                           */
 /* -------------------------------------------------------------------------- */
@@ -515,112 +1053,96 @@ TKStatus ktaCmdProcess
 )
 {
   TKIcppProtocolMessage sendProtoMessage;
-  TKStatus status           = E_K_STATUS_ERROR;
-#ifdef OBJECT_MANAGEMENT_FEATURE  
+  TKStatus status = E_K_STATUS_ERROR;
+  TKStatus cmdProcessStatus;
+  TKStatus genRespStatus;
+#ifdef OBJECT_MANAGEMENT_FEATURE
   uint8_t aPlatformStatus[4] = {0};
   uint8_t aCmdResponse[C_K__ICPP_CMD_RESPONSE_SIZE_VENDOR_SPECIFIC] = {0};
-  size_t  cmdResponseSize = sizeof(aCmdResponse);
+  size_t cmdResponseSize = sizeof(aCmdResponse);
 #else
   uint8_t aCmdResponse[C_K_ICPP_PARSER_MAX_COUNT_THIRDPARTY_ERROR_SIZE] = {0};
-  size_t  cmdResponseSize = C_K_ICPP_PARSER_MAX_COUNT_THIRDPARTY_ERROR_SIZE;
+  size_t cmdResponseSize = C_K_ICPP_PARSER_MAX_COUNT_THIRDPARTY_ERROR_SIZE;
 #endif
 
   M_KTALOG__START("Start");
 
   // REQ RQ_M-KTA-STRT-FN-0300(1) : Input Parameters Check.
-  if ((NULL == xpRecvdProtoMessage) || (NULL == xpMessageToSend) || (NULL == xpMessageToSendSize)
-      || (0u == *xpMessageToSendSize))
+  if ((NULL == xpRecvdProtoMessage) || (NULL == xpMessageToSend) || (NULL == xpMessageToSendSize) || (0u == *xpMessageToSendSize))
   {
-    status = E_K_STATUS_PARAMETER;
     M_KTALOG__ERR("Invalid parameter passed");
+    status = E_K_STATUS_PARAMETER;
+    goto end;
   }
-  else
+
+  if ((uint8_t)E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED != xpRecvdProtoMessage->cryptoVersion)
   {
-    /* keySTREAM should give activation response based on L2 key. */
-    if ((uint8_t)E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED != xpRecvdProtoMessage->cryptoVersion)
-    {
-      M_KTALOG__ERR("Invalid crypto version received from the server, cryptoVersion = [%d]",
-                    xpRecvdProtoMessage->cryptoVersion);
-      goto end;
-    }
+    M_KTALOG__ERR("Invalid crypto version received from the server, cryptoVersion = [%d]", xpRecvdProtoMessage->cryptoVersion);
+    goto end;
+  }
 
-    /* Fill the message type with "E_K_ICCP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
-       registration notification message type (client -> server). */
-    // REQ RQ_M-KTA-OBJM-FN-0100_03(1) : message type
-    // REQ RQ_M-KTA-TRDP-FN-0110_03(1) : Third Party Response message type
-    sendProtoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
-    // REQ RQ_M-KTA-OBJM-FN-0100_01(1) : crypto version
-    // REQ RQ_M-KTA-OBJM-FN-0080(1) : Crypto version from keySTEREAM in Generate key pair.
-    // REQ RQ_M-KTA-OBJM-FN-0280(1) : Crypto version from keySTEREAM in Set Object.
-    // REQ RQ_M-KTA-OBJM-FN-0580(1) : Crypto version from keySTEREAM in Delete Object.
-    // REQ RQ_M-KTA-OBJM-FN-0780(1) : Crypto version from keySTEREAM in
-    // Set Object With Association.
-    // REQ RQ_M-KTA-OBJM-FN-0980(2) : Crypto version from keySTEREAM in Delete Key Object */
-    // REQ RQ_M-KTA-TRDP-FN-0080(1) : Crypto version from keySTEREAM in Third Party.
-    // REQ RQ_M-KTA-TRDP-FN-0110_01(1) : Third Party Response crypto version.
-    sendProtoMessage.cryptoVersion = xpRecvdProtoMessage->cryptoVersion;
-    // REQ RQ_M-KTA-OBJM-FN-0100_02(1) : partial encryption mode
-    // REQ RQ_M-KTA-TRDP-FN-0110_02(1) : Third Party Response partial encryption mode
-    sendProtoMessage.encMode = xpRecvdProtoMessage->encMode;
-    // REQ RQ_M-KTA-OBJM-FN-0100_06(1) : rot public uid
-    // REQ RQ_M-KTA-TRDP-FN-0110_06(1) : Third Party Response rot public uid
-    (void)memcpy(sendProtoMessage.rotPublicUID,
-                 xpRecvdProtoMessage->rotPublicUID,
-                 C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES);
-    // REQ RQ_M-KTA-OBJM-FN-0100_04(1) : transaction id
-    // REQ RQ_M-KTA-TRDP-FN-0110_04(1) : Third Party Response transaction id
-    (void)memcpy(sendProtoMessage.transactionId, xpRecvdProtoMessage->transactionId,
-                 C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES);
-    // REQ RQ_M-KTA-OBJM-FN-0100_05(1) : rot key set id
-    // REQ RQ_M-KTA-TRDP-FN-0110_05(1) : Third Party Response rot key set id
-    sendProtoMessage.rotKeySetId = xpRecvdProtoMessage->rotKeySetId;
+  // REQ RQ_M-KTA-OBJM-FN-0100_03(1) : message type
+  // REQ RQ_M-KTA-TRDP-FN-0110_03(1) : Third Party Response message type
+  // REQ RQ_M-KTA-OBJM-FN-0100_01(1) : crypto version
+  // REQ RQ_M-KTA-OBJM-FN-0080(1) : Crypto version from keySTEREAM in Generate key pair.
+  // REQ RQ_M-KTA-OBJM-FN-0280(1) : Crypto version from keySTEREAM in Set Object.
+  // REQ RQ_M-KTA-OBJM-FN-0580(1) : Crypto version from keySTEREAM in Delete Object.
+  // REQ RQ_M-KTA-OBJM-FN-0780(1) : Crypto version from keySTEREAM in Set Object With Association.
+  // REQ RQ_M-KTA-OBJM-FN-0980(2) : Crypto version from keySTEREAM in Delete Key Object
+  // REQ RQ_M-KTA-TRDP-FN-0080(1) : Crypto version from keySTEREAM in Third Party.
+  // REQ RQ_M-KTA-TRDP-FN-0110_01(1) : Third Party Response crypto version.
+  // REQ RQ_M-KTA-OBJM-FN-0100_02(1) : partial encryption mode
+  // REQ RQ_M-KTA-TRDP-FN-0110_02(1) : Third Party Response partial encryption mode
+  // REQ RQ_M-KTA-OBJM-FN-0100_06(1) : rot public uid
+  // REQ RQ_M-KTA-TRDP-FN-0110_06(1) : Third Party Response rot public uid
+  // REQ RQ_M-KTA-OBJM-FN-0100_04(1) : transaction id
+  // REQ RQ_M-KTA-TRDP-FN-0110_04(1) : Third Party Response transaction id
+  // REQ RQ_M-KTA-OBJM-FN-0100_05(1) : rot key set id
+  // REQ RQ_M-KTA-TRDP-FN-0110_05(1) : Third Party Response rot key set id
+  lInitSendProtoMessage(xpRecvdProtoMessage, &sendProtoMessage);
 
-    status = lProcessCmdPrepareResponse(xpRecvdProtoMessage,
-                                        &sendProtoMessage,
-                                        aCmdResponse,
-                                        cmdResponseSize
+  status = lProcessCmdPrepareResponse(xpRecvdProtoMessage, &sendProtoMessage, aCmdResponse, cmdResponseSize
 #ifdef OBJECT_MANAGEMENT_FEATURE
-                                        , (uint8_t*)&aPlatformStatus
+                                      , (uint8_t*)&aPlatformStatus
 #endif
-                                       );
+                                     );
 
-#ifdef FOTA_ENABLE
-    // Check for command tags A0 and A1
-    bool fotaTagFound = false;
-
-    for (size_t i = 0; i < xpRecvdProtoMessage->commandsCount; i++)
+  if (E_K_STATUS_OK != status)
+  {
+    size_t i;
+    for (i = 0; i < xpRecvdProtoMessage->commandsCount; i++)
     {
       if ((xpRecvdProtoMessage->commands[i].commandTag == E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA) ||
           (xpRecvdProtoMessage->commands[i].commandTag == E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS))
       {
-        fotaTagFound = true;
+        status = E_K_STATUS_OK;
         break;
       }
     }
-
-    if (E_K_STATUS_OK != status && !fotaTagFound)
-    {
-      M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
-      goto end;
-    }
-#else
     if (E_K_STATUS_OK != status)
     {
       M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
-      goto end;
+      M_KTALOG__INFO("Command processing failed, but will still generate error response");
+      // Don't goto end - still need to generate error response
     }
-#endif // FOTA_ENABLE
+  }
 
-    status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
-                                  C_GEN__ENCRYPT | C_GEN__SIGNING),
-                                 &sendProtoMessage,
-                                 xpMessageToSend,
-                                 xpMessageToSendSize);
-
-    if (E_K_STATUS_OK != status)
+  M_KTALOG__INFO("Calling ktaGenerateResponse with %zu commands", sendProtoMessage.commandsCount);
+  cmdProcessStatus = status;  // Preserve the command processing status
+  genRespStatus = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING | C_GEN__ENCRYPT | C_GEN__SIGNING),
+                                      &sendProtoMessage, xpMessageToSend, xpMessageToSendSize);
+  if (E_K_STATUS_OK != genRespStatus)
+  {
+    M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", genRespStatus);
+    status = genRespStatus;  // Only update status if response generation failed
+  }
+  else
+  {
+    M_KTALOG__INFO("ktaGenerateResponse succeeded, response size = %zu", *xpMessageToSendSize);
+    // If command processing had an error, preserve it; otherwise keep OK status
+    if (E_K_STATUS_OK != cmdProcessStatus)
     {
-      M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", status);
-      goto end;
+      status = cmdProcessStatus;
     }
   }
 
@@ -633,6 +1155,385 @@ end:
 /* LOCAL FUNCTIONS - IMPLEMENTATION                                           */
 /* -------------------------------------------------------------------------- */
 #ifdef OBJECT_MANAGEMENT_FEATURE
+
+/**
+ * @brief Utility macro to read 32-bit big-endian value
+ */
+#define READ_U32_BE(p)  (((uint32_t)(p)[0] << 24) | \
+                         ((uint32_t)(p)[1] << 16) | \
+                         ((uint32_t)(p)[2] << 8) | \
+                         (uint32_t)(p)[3])
+
+/**
+ * @brief Handler for Object Type field
+ */
+static uint32_t lHandleObjectType
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  // REQ RQ_M-KTA-OBJM-FN-0270_01(1) : Object Type
+  // REQ RQ_M-KTA-OBJM-FN-0570_01(1) : Object Type
+  // REQ RQ_M-KTA-OBJM-FN-0770_01(1) : Object Type
+  xpCmdRespPayload->objectType = xpField->fieldValue[0];
+  return 0u;
+}
+
+/**
+ * @brief Handler for Identifier field
+ */
+static uint32_t lHandleIdentifier
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  // REQ RQ_M-KTA-OBJM-FN-0270_02(2) : Identifier
+  xpCmdRespPayload->identifier = READ_U32_BE(xpField->fieldValue);
+  return 0u;
+}
+
+/**
+ * @brief Handler for Attributes field
+ */
+static uint32_t lHandleAttributes
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  // REQ RQ_M-KTA-OBJM-FN-0270_03(2) : Attributes
+  xpCmdRespPayload->attributes.pValue = xpField->fieldValue;
+  xpCmdRespPayload->attributes.len = xpField->fieldLen;
+  return 0u;
+}
+
+/**
+ * @brief Handler for Nonce field
+ */
+static uint32_t lHandleNonce
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  memcpy(xpCmdRespPayload->attributes.pValue + 8, xpField->fieldValue, xpField->fieldLen);
+  xpCmdRespPayload->attributes.len += xpField->fieldLen;
+  M_KTALOG__HEX("NONCE-ATTRIBUTES", xpCmdRespPayload->attributes.pValue + 8, xpCmdRespPayload->attributes.len);
+  return 0u;
+}
+
+/**
+ * @brief Handler for Data field
+ */
+static uint32_t lHandleData
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  // REQ RQ_M-KTA-OBJM-FN-0270_04(1) : Data
+  xpCmdRespPayload->object.data = xpField->fieldValue;
+  xpCmdRespPayload->object.dataLen = xpField->fieldLen;
+  return 0u;
+}
+
+/**
+ * @brief Handler for Object UID field
+ */
+static uint32_t lHandleObjectUid
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  // REQ RQ_M-KTA-OBJM-FN-0270_05(2) : Object Uid
+  xpCmdRespPayload->object.objectUid = xpField->fieldValue;
+  xpCmdRespPayload->object.objectUidLen = xpField->fieldLen;
+  return 0u;
+}
+
+/**
+ * @brief Handler for Customer Metadata field
+ */
+static uint32_t lHandleCustomerMetadata
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  // REQ RQ_M-KTA-OBJM-FN-0270_06(1) : Customer Metadata
+  xpCmdRespPayload->object.customerMetadata = xpField->fieldValue;
+  xpCmdRespPayload->object.customerMetadataLen = xpField->fieldLen;
+  return 0u;
+}
+
+/**
+ * @brief Handler for Association Info field
+ */
+static uint32_t lHandleAssociationInfo
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  if (NULL == xpField->fieldValue)
+  {
+    return 1u;
+  }
+
+  uint8_t* v = xpField->fieldValue;
+  xpCmdRespPayload->associationInfo.associatedKeyId = READ_U32_BE(v);
+  xpCmdRespPayload->associationInfo.associatedKeyIdDeprecated = READ_U32_BE(v + 4);
+  xpCmdRespPayload->associationInfo.associatedObjectId = READ_U32_BE(v + 8);
+  xpCmdRespPayload->associationInfo.associatedObjectIdDeprecated = READ_U32_BE(v + 12);
+  xpCmdRespPayload->associationInfo.associatedObjectType = v[16];
+  return 0u;
+}
+
+/**
+ * @brief Handler for Object Owner field
+ */
+static uint32_t lHandleObjectOwner
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+#endif
+)
+{
+  UNUSED_FOTA_PARAMS();
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  xpCmdRespPayload->objectOwner = READ_U32_BE(xpField->fieldValue);
+  return 0u;
+}
+
+#ifdef FOTA_ENABLE
+/**
+ * @brief Handler for FOTA Name field
+ */
+static uint32_t lHandleFota
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+)
+{
+  (void)xpTargetNameIndex;
+  (void)xpTargetVersionIndex;
+  (void)xpTargetUrlIndex;
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  xpCmdRespPayload->fotaName = xpField->fieldValue;
+  xpCmdRespPayload->fotaNameLen = xpField->fieldLen;
+  return 0u;
+}
+
+/**
+ * @brief Handler for FOTA Metadata field
+ */
+static uint32_t lHandleFotaMetadata
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+)
+{
+  (void)xpTargetNameIndex;
+  (void)xpTargetVersionIndex;
+  (void)xpTargetUrlIndex;
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  xpCmdRespPayload->fotaMetadata = xpField->fieldValue;
+  xpCmdRespPayload->fotaMetadataLen = xpField->fieldLen;
+  return 0u;
+}
+
+/**
+ * @brief Handler for FOTA Component Target field
+ */
+static uint32_t lHandleFotaComponentTarget(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+)
+{
+  (void)xpTargetVersionIndex;
+  (void)xpTargetUrlIndex;
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  if (*xpTargetNameIndex < COMPONENTS_MAX)
+  {
+    xpCmdRespPayload->xTargetComponents[*xpTargetNameIndex].componentTargetName = xpField->fieldValue;
+    xpCmdRespPayload->xTargetComponents[*xpTargetNameIndex].componentTargetNameLen = xpField->fieldLen;
+  }
+  (*xpTargetNameIndex)++;
+  return 0u;
+}
+
+/**
+ * @brief Handler for FOTA Component Version field
+ */
+static uint32_t lHandleFotaComponentVersion(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+)
+{
+  (void)xpTargetNameIndex;
+  (void)xpTargetUrlIndex;
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  if (*xpTargetVersionIndex < COMPONENTS_MAX)
+  {
+    xpCmdRespPayload->xTargetComponents[*xpTargetVersionIndex].componentTargetVersion = xpField->fieldValue;
+    xpCmdRespPayload->xTargetComponents[*xpTargetVersionIndex].componentTargetVersionLen = xpField->fieldLen;
+  }
+  (*xpTargetVersionIndex)++;
+  return 0u;
+}
+
+/**
+ * @brief Handler for FOTA Component URL field
+ */
+static uint32_t lHandleFotaComponentUrl
+(
+  TKIcppField* xpField,
+  TKcmdRespPayload* xpCmdRespPayload,
+  uint32_t* xpTargetNameIndex,
+  uint32_t* xpTargetVersionIndex,
+  uint32_t* xpTargetUrlIndex
+)
+{
+  (void)xpTargetNameIndex;
+  (void)xpTargetVersionIndex;
+  CHECK_FIELD_LEN(xpField, C_K_KTA__CMD_FIELD_MAX_SIZE);
+  if (*xpTargetUrlIndex < COMPONENTS_MAX)
+  {
+    xpCmdRespPayload->xTargetComponents[*xpTargetUrlIndex].componentUrl = xpField->fieldValue;
+    xpCmdRespPayload->xTargetComponents[*xpTargetUrlIndex].componentUrlLen = xpField->fieldLen;
+  }
+  (*xpTargetUrlIndex)++;
+  return 0u;
+}
+#endif
+
+/**
+ * @implements lProcessFieldTag
+ *
+ */
+static uint32_t lProcessFieldTag
+(
+  TKIcppField*       xpField,
+  TKcmdRespPayload*  xpCmdRespPayload,
+  uint32_t*          xpFieldTagMask
+#ifdef FOTA_ENABLE
+  ,
+  uint32_t*          xpTargetNameIndex,
+  uint32_t*          xpTargetVersionIndex,
+  uint32_t*          xpTargetUrlIndex
+#endif
+)
+{
+  size_t i;
+  uint32_t tableSize = sizeof(kFieldTagTable) / sizeof(kFieldTagTable[0]);
+
+  for (i = 0; i < tableSize; ++i)
+  {
+    if (kFieldTagTable[i].tag == xpField->fieldTag)
+    {
+      uint32_t err = kFieldTagTable[i].handler(xpField, xpCmdRespPayload
+#ifdef FOTA_ENABLE
+                                                , xpTargetNameIndex,
+                                                xpTargetVersionIndex,
+                                                xpTargetUrlIndex
+#endif
+                                                );
+      if (0u == err)
+      {
+        *xpFieldTagMask |= kFieldTagTable[i].maskBit;
+      }
+      return err;
+    }
+  }
+
+  M_KTALOG__ERR("Unknown Field Tag %d", xpField->fieldTag);
+  return 1u;
+}
+
 /**
  * @implements lKtaCmdCheckFieldTag
  *
@@ -708,33 +1609,16 @@ static TKStatus lKtaCmdCheckFieldTag
     break;
 
     case E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE:
-    {
-      /* This command has no fields. Returning OK */
-      status = E_K_STATUS_OK;
-    }
-    break;
 #ifdef FOTA_ENABLE
     case E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA:
-    {
-      /* This command has no fields. Returning OK */
-      status = E_K_STATUS_OK;
-    }
-    break;
-
     case E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS:
-    {
-      /* This command has no fields. Returning OK */
-      status = E_K_STATUS_OK;
-    }
-    break;
-
     case E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO:
+#endif
     {
-      /* This command has no fields. Returning OK */
+      /* These commands have no fields. Returning OK */
       status = E_K_STATUS_OK;
     }
     break;
-#endif // FOTA_ENABLE
 
     default:
     {
@@ -757,7 +1641,6 @@ static TKStatus   lKtaCmdValidateAndGetPayload
   uint32_t               xCmdCount
 )
 {
-  TKStatus  status              = E_K_STATUS_ERROR;
   uint32_t  commandsLoop        = 0;
   uint32_t  fieldsLoop          = 0;
   uint32_t  isErrorOccured      = 0;
@@ -769,353 +1652,67 @@ static TKStatus   lKtaCmdValidateAndGetPayload
   uint32_t  targetUrlIndex      = 0;
 #endif
 
-  for (;;)
+  if (0u == xpRecvMsg->commandsCount)
   {
-    if (0u == xpRecvMsg->commandsCount)
-    {
-      M_KTALOG__ERR("Command Count is 0");
-      status = E_K_STATUS_PARAMETER;
-      break;
-    }
-
-    commandsLoop = xCmdCount;
-
-    for (; ((commandsLoop < xpRecvMsg->commandsCount) && (isErrorOccured == 0U)); commandsLoop++)
-    {
-      if ((E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR !=
-                xpRecvMsg->commands[commandsLoop].commandTag) &&
-                (E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT !=
-                xpRecvMsg->commands[commandsLoop].commandTag)  &&
-                (E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION !=
-                xpRecvMsg->commands[commandsLoop].commandTag)  &&
-                (E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT !=
-                xpRecvMsg->commands[commandsLoop].commandTag)  &&
-                (E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT !=
-                xpRecvMsg->commands[commandsLoop].commandTag) &&
-                (E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA !=
-                xpRecvMsg->commands[commandsLoop].commandTag) &&
-                (E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS !=
-                xpRecvMsg->commands[commandsLoop].commandTag))
-      {
-        M_KTALOG__ERR("Invalid command Tag %d", xpRecvMsg->commands[commandsLoop].commandTag);
-        break;
-      }
-
-      pFieldList = &xpRecvMsg->commands[commandsLoop].data.fieldList;
-
-      if (0u == pFieldList->fieldsCount)
-      {
-        M_KTALOG__ERR("Invalid fieldsCount : %d", pFieldList->fieldsCount);
-        break;
-      }
-
-      for (; (fieldsLoop < pFieldList->fieldsCount) && (isErrorOccured == 0u); fieldsLoop++)
-      {
-        switch (pFieldList->fields[fieldsLoop].fieldTag)
-        {
-          // REQ RQ_M-KTA-OBJM-FN-0270_01(1) : Object Type
-          // REQ RQ_M-KTA-OBJM-FN-0570_01(1) : Object Type
-          // REQ RQ_M-KTA-OBJM-FN-0770_01(1) : Object Type
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid obj length");
-              isErrorOccured = 1u;
-              break;
-            }
-
-            xpCmdRespPayload->objectType = pFieldList->fields[fieldsLoop].fieldValue[0];
-            fieldTagMask |= E_K_CMD_FIELD_OBJECT_TYPE;
-          }
-          break;
-
-          // REQ RQ_M-KTA-OBJM-FN-0070_01(1) : Key Id
-          // REQ RQ_M-KTA-OBJM-FN-0270_02(1) : Object Id
-          // REQ RQ_M-KTA-OBJM-FN-0570_02(1) : Object Id
-          // REQ RQ_M-KTA-OBJM-FN-0770_02(1) : Object Id
-          // REQ RQ_M-KTA-OBJM-FN-0970_01(2) : Key Id
-          case E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Identifier length");
-              isErrorOccured = 1u;
-              break;
-            }
-            xpCmdRespPayload->identifier = ((uint32_t)pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
-                                          ((uint32_t)pFieldList->fields[fieldsLoop].fieldValue[1] << 16) |
-                                          ((uint32_t)pFieldList->fields[fieldsLoop].fieldValue[2] << 8) |
-                                          (uint32_t)pFieldList->fields[fieldsLoop].fieldValue[3];
-            fieldTagMask |= E_K_CMD_FIELD_IDENTIFIER;
-          }
-          break;
-
-          // REQ RQ_M-KTA-OBJM-FN-0070_02(1) : Key Attributes
-          // REQ RQ_M-KTA-OBJM-FN-0270_03(1) : Data Attributes
-          // REQ RQ_M-KTA-OBJM-FN-0770_03(1) : Data Attributes
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid data attributes length");
-              isErrorOccured = 1u;
-              break;
-            }
-
-            xpCmdRespPayload->attributes.pValue = pFieldList->fields[fieldsLoop].fieldValue;
-            xpCmdRespPayload->attributes.len = pFieldList->fields[fieldsLoop].fieldLen;
-            fieldTagMask |= E_K_CMD_FIELD_ATTRIBUTES;
-          }
-          break;
-          case E_K_ICPP_PARSER_FLD_TAG_KTA_NONCE:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid data attributes length");
-              isErrorOccured = 1u;
-              break;
-            }
-
-            memcpy(xpCmdRespPayload->attributes.pValue + 8, pFieldList->fields[fieldsLoop].fieldValue, pFieldList->fields[fieldsLoop].fieldLen);
-            xpCmdRespPayload->attributes.len += pFieldList->fields[fieldsLoop].fieldLen;
-			
-			M_KTALOG__HEX("NONCE-ATTRIBUTES",xpCmdRespPayload->attributes.pValue + 8 , xpCmdRespPayload->attributes.len );
-            fieldTagMask |= E_K_CMD_FIELD_NONCE;
-          }
-          break;
-
-          // REQ RQ_M-KTA-OBJM-FN-0270_04(1) : Data
-          // REQ RQ_M-KTA-OBJM-FN-0770_04(1) : Data
-          case E_K_ICPP_PARSER_FLD_TAG_CMD_DATA:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1u;
-              break;
-            }
-
-            xpCmdRespPayload->object.data = pFieldList->fields[fieldsLoop].fieldValue;
-            xpCmdRespPayload->object.dataLen = pFieldList->fields[fieldsLoop].fieldLen;
-            fieldTagMask |= E_K_CMD_FIELD_DATA;
-          }
-          break;
-
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
-              break;
-            }
-
-            xpCmdRespPayload->object.objectUid = pFieldList->fields[fieldsLoop].fieldValue;
-            xpCmdRespPayload->object.objectUidLen = pFieldList->fields[fieldsLoop].fieldLen;
-            fieldTagMask |= E_K_CMD_FIELD_OBJECT_UID;
-          }
-          break;
-
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
-              break;
-            }
-
-            xpCmdRespPayload->object.customerMetadata = pFieldList->fields[fieldsLoop].fieldValue;
-            xpCmdRespPayload->object.customerMetadataLen = pFieldList->fields[fieldsLoop].fieldLen;
-            fieldTagMask |= E_K_CMD_FIELD_CUSTOMER_METADATA;
-          }
-          break;
-#ifdef FOTA_ENABLE
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
-              break;
-            }
-
-            xpCmdRespPayload->fotaName = pFieldList->fields[fieldsLoop].fieldValue;
-            xpCmdRespPayload->fotaNameLen = pFieldList->fields[fieldsLoop].fieldLen;
-            fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA;
-          }
-          break;
-
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-                M_KTALOG__ERR("Invalid Data length");
-                isErrorOccured = 1;
-                break;
-            }
-
-            xpCmdRespPayload->fotaMetadata = pFieldList->fields[fieldsLoop].fieldValue;
-            xpCmdRespPayload->fotaMetadataLen = pFieldList->fields[fieldsLoop].fieldLen;
-            fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA;
-          }
-          break;
-
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
-              break;
-            }
-
-            if (targetNameIndex < COMPONENTS_MAX)
-            {
-              xpCmdRespPayload->xTargetComponents[targetNameIndex].componentTargetName =
-              pFieldList->fields[fieldsLoop].fieldValue;
-              xpCmdRespPayload->xTargetComponents[targetNameIndex].componentTargetNameLen =
-              pFieldList->fields[fieldsLoop].fieldLen;
-              fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
-            }
-            targetNameIndex++;
-          }
-          break;
-
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
-              break;
-            }
-
-            if (targetVersionIndex < COMPONENTS_MAX)
-            {
-              xpCmdRespPayload->xTargetComponents[targetVersionIndex].componentTargetVersion =
-              pFieldList->fields[fieldsLoop].fieldValue;
-              xpCmdRespPayload->xTargetComponents[targetVersionIndex].componentTargetVersionLen =
-              pFieldList->fields[fieldsLoop].fieldLen;
-              fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
-            }
-            targetVersionIndex++;
-          }
-          break;
-
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1;
-              break;
-            }
-
-            if (targetUrlIndex < COMPONENTS_MAX)
-            {
-              xpCmdRespPayload->xTargetComponents[targetUrlIndex].componentUrl =
-              pFieldList->fields[fieldsLoop].fieldValue;
-              xpCmdRespPayload->xTargetComponents[targetUrlIndex].componentUrlLen =
-              pFieldList->fields[fieldsLoop].fieldLen;
-              fieldTagMask |= E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL;
-            }
-            targetUrlIndex++;
-          }
-          break;
-#endif // FOTA_ENABLE
-
-          // REQ RQ_M-KTA-OBJM-FN-0770_05(1) : Association Info
-          case E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Data length");
-              isErrorOccured = 1u;
-              break;
-            }
-
-            if (NULL != pFieldList->fields[fieldsLoop].fieldValue)
-            {
-              xpCmdRespPayload->associationInfo.associatedKeyId =
-                (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
-                (pFieldList->fields[fieldsLoop].fieldValue[1] << 16) |
-                (pFieldList->fields[fieldsLoop].fieldValue[2] << 8) |
-                pFieldList->fields[fieldsLoop].fieldValue[3]);
-              xpCmdRespPayload->associationInfo.associatedKeyIdDeprecated =
-                (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[4] << 24) |
-                (pFieldList->fields[fieldsLoop].fieldValue[5] << 16) |
-                (pFieldList->fields[fieldsLoop].fieldValue[6] << 8) |
-                pFieldList->fields[fieldsLoop].fieldValue[7]);
-              xpCmdRespPayload->associationInfo.associatedObjectId =
-                (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[8] << 24) |
-                (pFieldList->fields[fieldsLoop].fieldValue[9] << 16) |
-                (pFieldList->fields[fieldsLoop].fieldValue[10] << 8) |
-                pFieldList->fields[fieldsLoop].fieldValue[11]);
-              xpCmdRespPayload->associationInfo.associatedObjectIdDeprecated =
-                (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[12] << 24) |
-                (pFieldList->fields[fieldsLoop].fieldValue[13] << 16) |
-                (pFieldList->fields[fieldsLoop].fieldValue[14] << 8) |
-                pFieldList->fields[fieldsLoop].fieldValue[15]);
-              xpCmdRespPayload->associationInfo.associatedObjectType =
-                pFieldList->fields[fieldsLoop].fieldValue[16];
-            }
-
-            fieldTagMask |= E_K_CMD_FIELD_ASSOCIATION_INFO;
-          }
-          break;
-
-          // REQ RQ_M-KTA-OBJM-FN-0070_03(1) : Object Owner
-          // REQ RQ_M-KTA-OBJM-FN-0270_05(1) : Object Owner
-          // REQ RQ_M-KTA-OBJM-FN-0570_03(1) : Object Owner
-          case E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER:
-          {
-            if (C_K_KTA__CMD_FIELD_MAX_SIZE < pFieldList->fields[fieldsLoop].fieldLen)
-            {
-              M_KTALOG__ERR("Invalid Object Owner length");
-              isErrorOccured = 1u;
-              break;
-            }
-
-            xpCmdRespPayload->objectOwner = (uint32_t)((pFieldList->fields[fieldsLoop].fieldValue[0] << 24) |
-                                            (pFieldList->fields[fieldsLoop].fieldValue[1] << 16) |
-                                            (pFieldList->fields[fieldsLoop].fieldValue[2] << 8) |
-                                            pFieldList->fields[fieldsLoop].fieldValue[3]);
-            fieldTagMask |= E_K_CMD_FIELD_OBJECT_OWNER;
-          }
-          break;
-
-          default:
-          {
-            M_KTALOG__ERR("Unknown Field Tag %d", pFieldList->fields[fieldsLoop].fieldTag);
-            isErrorOccured = 1u;
-          }
-          break;
-        } /* switch. */
-      }
-
-      if (E_K_STATUS_OK != lKtaCmdCheckFieldTag(xpRecvMsg->commands[commandsLoop].commandTag,
-                                                fieldTagMask))
-      {
-        M_KTALOG__ERR("Command does not have all mandatory fields");
-        status = E_K_STATUS_ERROR;
-        break;
-      }
-
-      if (isErrorOccured == 0u)
-      {
-        status = E_K_STATUS_OK;
-        break;
-      }
-
-      M_KTALOG__ERR("Type %x Id %x", xpCmdRespPayload->objectType, xpCmdRespPayload->identifier);
-    }
-
-    break;
+    M_KTALOG__ERR("Command Count is 0");
+    return E_K_STATUS_PARAMETER;
   }
 
-  return status;
+  commandsLoop = xCmdCount;
+
+  for (; ((commandsLoop < xpRecvMsg->commandsCount) && (isErrorOccured == 0U)); commandsLoop++)
+  {
+    TKIcppCommandTag tag = xpRecvMsg->commands[commandsLoop].commandTag;
+    
+    if ((tag != E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR) &&
+        (tag != E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT) &&
+        (tag != E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION) &&
+        (tag != E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT) &&
+        (tag != E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT) &&
+        (tag != E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA) &&
+        (tag != E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS))
+    {
+      M_KTALOG__ERR("Invalid command Tag %d", tag);
+      return E_K_STATUS_ERROR;
+    }
+
+    pFieldList = &xpRecvMsg->commands[commandsLoop].data.fieldList;
+
+    if (0u == pFieldList->fieldsCount)
+    {
+      M_KTALOG__ERR("Invalid fieldsCount : %d", pFieldList->fieldsCount);
+      return E_K_STATUS_ERROR;
+    }
+
+    for (; (fieldsLoop < pFieldList->fieldsCount) && (isErrorOccured == 0u); fieldsLoop++)
+    {
+      isErrorOccured = lProcessFieldTag(&pFieldList->fields[fieldsLoop],
+                                        xpCmdRespPayload,
+                                        &fieldTagMask
+#ifdef FOTA_ENABLE
+                                        , &targetNameIndex,
+                                        &targetVersionIndex,
+                                        &targetUrlIndex
+#endif
+                                        );
+    }
+
+    if (E_K_STATUS_OK != lKtaCmdCheckFieldTag(tag, fieldTagMask))
+    {
+      M_KTALOG__ERR("Command does not have all mandatory fields");
+      return E_K_STATUS_ERROR;
+    }
+
+    if (isErrorOccured != 0u)
+    {
+      M_KTALOG__ERR("Type %x Id %x", xpCmdRespPayload->objectType, xpCmdRespPayload->identifier);
+      return E_K_STATUS_ERROR;
+    }
+
+    return E_K_STATUS_OK;
+  }
+
+  return E_K_STATUS_ERROR;
 }
 #endif /* OBJECT_MANAGEMENT_FEATURE */
 
@@ -1460,6 +2057,448 @@ static TKStatus lKtaGetChallenge
 
 #endif
 
+#ifdef FOTA_ENABLE
+/**
+ * @brief Helper function to convert LSB to MSB byte order for 32-bit value
+ */
+static uint32_t lSwapByteOrder(uint32_t xValue)
+{
+  return ((xValue & 0x000000FFu) << 24) |
+         ((xValue & 0x0000FF00u) << 8)  |
+         ((xValue & 0x00FF0000u) >> 8)  |
+         ((xValue & 0xFF000000u) >> 24);
+}
+
+/**
+ * @brief Helper function to add KTA version and components to field list
+ */
+static void lAddVersionAndComponents
+(
+  TKIcppFieldList* xpFieldList,
+  uint8_t* xpFieldIndex,
+  TComponent* xpComponents
+)
+{
+  const char* ktaVersion = (const char*)ktaGetVersion();
+
+  xpFieldList->fields[*xpFieldIndex].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
+  xpFieldList->fields[*xpFieldIndex].fieldValue = (uint8_t*)ktaVersion;
+  xpFieldList->fields[*xpFieldIndex].fieldLen = strlen(ktaVersion);
+  (*xpFieldIndex)++;
+
+  for (size_t i = 0; i < COMPONENTS_MAX; i++)
+  {
+    if ((xpComponents[i].componentNameLen > 0) && (xpComponents[i].componentVersionLen > 0))
+    {
+      xpFieldList->fields[*xpFieldIndex].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
+      xpFieldList->fields[*xpFieldIndex].fieldValue = (uint8_t*)xpComponents[i].componentName;
+      xpFieldList->fields[*xpFieldIndex].fieldLen = xpComponents[i].componentNameLen;
+      (*xpFieldIndex)++;
+
+      xpFieldList->fields[*xpFieldIndex].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
+      xpFieldList->fields[*xpFieldIndex].fieldValue = (uint8_t*)xpComponents[i].componentVersion;
+      xpFieldList->fields[*xpFieldIndex].fieldLen = xpComponents[i].componentVersionLen;
+      (*xpFieldIndex)++;
+    }
+  }
+}
+
+/**
+ * @brief Helper function to populate common FOTA response fields
+ */
+static void lPopulateFotaCommonFields
+(
+  TKIcppCommand* xpCommand,
+  uint8_t* xpFieldIndex,
+  uint32_t* xpPlatformStatusMSB,
+  uint8_t* xpFotaName,
+  uint8_t xFotaNameLen
+)
+{
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldLen = C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldValue = (uint8_t*)xpPlatformStatusMSB;
+  (*xpFieldIndex)++;
+
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA;
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldValue = xpFotaName;
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldLen = xFotaNameLen;
+  (*xpFieldIndex)++;
+}
+
+/**
+ * @brief Helper function to handle FOTA error response
+ */
+static void lHandleFotaErrorResponse
+(
+  TKIcppCommand *xpCommand,
+  uint8_t *xpFieldIndex,
+  TFotaError *xpFotaError,
+  TComponent *xpComponents,
+  uint32_t *xpErrorCodeMSB
+)
+{
+  *xpErrorCodeMSB = ((xpFotaError->fotaErrorCode[3] & 0x000000FFu) << 24) |
+                    ((xpFotaError->fotaErrorCode[2] & 0x000000FFu) << 16) |
+                    ((xpFotaError->fotaErrorCode[1] & 0x000000FFu) << 8)  |
+                    ((xpFotaError->fotaErrorCode[0] & 0x000000FFu));
+
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE;
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldValue = (uint8_t*)xpErrorCodeMSB;
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldLen = xpFotaError->fotaErrorCodeLen;
+  (*xpFieldIndex)++;
+
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE;
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldValue = (uint8_t*)xpFotaError->fotaErrorCause;
+  xpCommand->data.fieldList.fields[*xpFieldIndex].fieldLen = xpFotaError->fotaErrorCauseLen;
+  (*xpFieldIndex)++;
+
+  lAddVersionAndComponents(&xpCommand->data.fieldList, xpFieldIndex, xpComponents);
+}
+
+/**
+ * @brief Process FOTA install command
+ */
+static TKStatus lProcessInstallFotaCmd
+(
+  TKIcppProtocolMessage* xpRecvdProtoMessage,
+  TKIcppCommand* xpSendCommand,
+  uint8_t* xpFotaName,
+  uint8_t* xpFotaNameLen,
+  TComponent* xpComponents,
+  TFotaError* xpFotaError,
+  uint8_t* xpPlatformStatus
+)
+{
+  TKFotaStatus fotaStatus;
+  uint8_t fieldIndex = 0;
+  uint32_t platformStatusMSB;
+  uint32_t errorCodeMSB = 0;
+
+  fotaStatus = lktaInstallFota(xpRecvdProtoMessage, xpFotaName, xpFotaNameLen, xpComponents, xpFotaError, xpPlatformStatus);
+  platformStatusMSB = lSwapByteOrder(*((uint32_t*)xpPlatformStatus));
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA;
+  xpSendCommand->data.fieldList.fieldsCount = 2;
+
+  lPopulateFotaCommonFields(xpSendCommand, &fieldIndex, &platformStatusMSB, xpFotaName, *xpFotaNameLen);
+
+  if (E_K_FOTA_ERROR == fotaStatus)
+  {
+    lHandleFotaErrorResponse(xpSendCommand, &fieldIndex, xpFotaError, xpComponents, &errorCodeMSB);
+  }
+  else if (E_K_FOTA_SUCCESS == fotaStatus)
+  {
+    lAddVersionAndComponents(&xpSendCommand->data.fieldList, &fieldIndex, xpComponents);
+  }
+  else if (E_K_FOTA_IN_PROGRESS == fotaStatus)
+  {
+    M_KTALOG__INFO("FOTA IN PROGRESS\r\n");
+  }
+  else
+  {
+    M_KTALOG__ERR("Install FOTA command failed with status = [%d]\r\n", fotaStatus);
+  }
+
+  xpSendCommand->data.fieldList.fieldsCount = fieldIndex;
+  return E_K_STATUS_OK;
+}
+
+/**
+ * @brief Process FOTA get status command
+ */
+static TKStatus lProcessGetFotaStatusCmd
+(
+  TKIcppProtocolMessage* xpRecvdProtoMessage,
+  TKIcppCommand* xpSendCommand,
+  uint8_t* xpFotaName,
+  uint8_t* xpFotaNameLen,
+  TComponent* xpComponents,
+  TFotaError* xpFotaError,
+  uint8_t* xpPlatformStatus
+)
+{
+  TKFotaStatus fotaStatus;
+  uint8_t fieldIndex = 0;
+  uint32_t platformStatusMSB;
+  uint32_t errorCodeMSB = 0;
+
+  fotaStatus = lktasalfotagetstatus(xpRecvdProtoMessage, xpFotaName, xpFotaNameLen, xpFotaError, xpPlatformStatus, xpComponents);
+  platformStatusMSB = lSwapByteOrder(*((uint32_t*)xpPlatformStatus));
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS;
+  xpSendCommand->data.fieldList.fieldsCount = 2;
+
+  lPopulateFotaCommonFields(xpSendCommand, &fieldIndex, &platformStatusMSB, xpFotaName, *xpFotaNameLen);
+
+  if (E_K_FOTA_ERROR == fotaStatus)
+  {
+    lHandleFotaErrorResponse(xpSendCommand, &fieldIndex, xpFotaError, xpComponents, &errorCodeMSB);
+  }
+  else if (E_K_FOTA_SUCCESS == fotaStatus)
+  {
+    lAddVersionAndComponents(&xpSendCommand->data.fieldList, &fieldIndex, xpComponents);
+  }
+  else if (E_K_FOTA_IN_PROGRESS == fotaStatus)
+  {
+    M_KTALOG__INFO("FOTA IN PROGRESS\r\n");
+  }
+  else
+  {
+    M_KTALOG__ERR("Install FOTA command failed with status = [%d]\r\n", fotaStatus);
+  }
+
+  xpSendCommand->data.fieldList.fieldsCount = fieldIndex;
+  return E_K_STATUS_OK;
+}
+#endif /* FOTA_ENABLE */
+
+#ifdef PLATFORM_PROCESS_FEATURE
+/**
+ * @brief Process third party command
+ */
+static TKStatus lProcessThirdPartyCmd
+(
+  TKIcppProtocolMessage* xpRecvdProtoMessage,
+  TKIcppCommand* xpSendCommand,
+  size_t xCommandIndex,
+  uint8_t* xpCmdResponse,
+  uint32_t xCmdItemSize,
+  uint8_t** xppCmdResponse
+)
+{
+  TKStatus status;
+  size_t dataSize = xCmdItemSize;
+
+  status = lKtaSetThirdPartyData(
+             xpRecvdProtoMessage->commands[xCommandIndex].data.cmdInfo.cmdValue,
+             xpRecvdProtoMessage->commands[xCommandIndex].data.cmdInfo.cmdLen,
+             xpCmdResponse, &dataSize);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Setting 3rd party data failed, status = [%d]", status);
+    return status;
+  }
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_COMMAND_TAG_THIRD_PARTY;
+  xpSendCommand->data.cmdInfo.cmdValue = xpCmdResponse;
+  xpSendCommand->data.cmdInfo.cmdLen = dataSize;
+  *xppCmdResponse += dataSize;
+
+  return E_K_STATUS_OK;
+}
+#endif /* PLATFORM_PROCESS_FEATURE */
+
+#ifdef OBJECT_MANAGEMENT_FEATURE
+/**
+ * @brief Process generate key pair command
+ */
+static TKStatus lProcessGenerateKeyPairCmd
+(
+  TKIcppProtocolMessage* xpRecvdProtoMessage,
+  TKIcppCommand* xpSendCommand,
+  size_t xCommandIndex,
+  uint8_t* xpCmdResponse,
+  uint32_t xCmdItemSize,
+  uint8_t* xpPlatformStatus
+)
+{
+  TKStatus status;
+  size_t dataSize = xCmdItemSize;
+
+  status = lKtaGenerateKeyPair(xpRecvdProtoMessage, xpCmdResponse, &dataSize, xpPlatformStatus, (uint8_t)xCommandIndex);
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR;
+  xpSendCommand->data.fieldList.fields[0].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+  xpSendCommand->data.fieldList.fields[0].fieldLen = C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+  xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+
+  if (E_K_STATUS_OK == status)
+  {
+    xpSendCommand->data.fieldList.fieldsCount = 2;
+    xpSendCommand->data.fieldList.fields[1].fieldTag = (TKIcppFieldTag)C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC;
+    xpSendCommand->data.fieldList.fields[1].fieldLen = dataSize;
+    xpSendCommand->data.fieldList.fields[1].fieldValue = xpCmdResponse;
+  }
+  else
+  {
+    M_KTALOG__ERR("Generate Key Pair command failed with status : [%d], returning only platform status", status);
+    xpSendCommand->data.fieldList.fieldsCount = 1;
+  }
+
+  return status;
+}
+
+/**
+ * @brief Process set object command
+ */
+static TKStatus lProcessSetObjectCmd
+(
+  TKIcppProtocolMessage* xpRecvdProtoMessage,
+  TKIcppCommand* xpSendCommand,
+  uint8_t* xpPlatformStatus
+)
+{
+  TKStatus status;
+
+  M_KTALOG__INFO("lProcessSetObjectCmd: Processing SET_OBJECT command");
+  status = lKtaSetObject(xpRecvdProtoMessage, xpPlatformStatus);
+  M_KTALOG__INFO("lProcessSetObjectCmd: lKtaSetObject returned status=%d", status);
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT;
+  xpSendCommand->data.fieldList.fieldsCount = 1;
+  xpSendCommand->data.fieldList.fields[0].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+  xpSendCommand->data.fieldList.fields[0].fieldLen = C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+
+  if (E_K_STATUS_OK == status)
+  {
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+  }
+  else
+  {
+    M_KTALOG__ERR("Set object command failed with status = [%d]", status);
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+  }
+
+  return status;
+}
+
+/**
+ * @brief Process delete object command
+ */
+static TKStatus lProcessDeleteObjectCmd
+(
+  TKIcppProtocolMessage* xpRecvdProtoMessage,
+  TKIcppCommand* xpSendCommand,
+  size_t xCommandIndex,
+  uint8_t* xpPlatformStatus
+)
+{
+  TKStatus status;
+
+  status = lKtaDeleteObject(xpRecvdProtoMessage, xpPlatformStatus, xCommandIndex);
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT;
+  xpSendCommand->data.fieldList.fieldsCount = 1;
+  xpSendCommand->data.fieldList.fields[0].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+  xpSendCommand->data.fieldList.fields[0].fieldLen = C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+
+  if (E_K_STATUS_OK == status)
+  {
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+  }
+  else
+  {
+    M_KTALOG__ERR("Delete object command failed with status = [%d]", status);
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+  }
+
+  return status;
+}
+
+/**
+ * @brief Process delete key object command
+ */
+static TKStatus lProcessDeleteKeyObjectCmd
+(
+  TKIcppProtocolMessage* xpRecvdProtoMessage,
+  TKIcppCommand* xpSendCommand,
+  size_t xCommandIndex,
+  uint8_t* xpPlatformStatus
+)
+{
+  TKStatus status;
+
+  status = lKtaDeleteKeyObject(xpRecvdProtoMessage, xpPlatformStatus, xCommandIndex);
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT;
+  xpSendCommand->data.fieldList.fieldsCount = 1;
+  xpSendCommand->data.fieldList.fields[0].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+  xpSendCommand->data.fieldList.fields[0].fieldLen = C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+
+  if (E_K_STATUS_OK == status)
+  {
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+  }
+  else
+  {
+    M_KTALOG__ERR("Delete key object command failed with status = [%d]", status);
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+  }
+
+  return status;
+}
+
+/**
+ * @brief Process set object with association command
+ */
+static TKStatus lProcessSetObjWithAssociationCmd
+(
+  TKIcppProtocolMessage* xpRecvdProtoMessage,
+  TKIcppCommand* xpSendCommand,
+  uint8_t* xpPlatformStatus
+)
+{
+  TKStatus status;
+
+  status = lKtaSetObjWithAssociation(xpRecvdProtoMessage, xpPlatformStatus);
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION;
+  xpSendCommand->data.fieldList.fieldsCount = 1;
+  xpSendCommand->data.fieldList.fields[0].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+  xpSendCommand->data.fieldList.fields[0].fieldLen = C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+
+  if (E_K_STATUS_OK == status)
+  {
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+  }
+  else
+  {
+    M_KTALOG__ERR("Set object with association command failed with status = [%d]", status);
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+  }
+
+  return status;
+}
+
+/**
+ * @brief Process get challenge command
+ */
+static TKStatus lProcessGetChallengeCmd
+(
+  TKIcppCommand* xpSendCommand,
+  uint8_t* xpChallenge,
+  uint8_t* xpPlatformStatus
+)
+{
+  TKStatus status;
+
+  status = lKtaGetChallenge(xpChallenge, xpPlatformStatus);
+
+  xpSendCommand->commandTag = E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE;
+  xpSendCommand->data.fieldList.fieldsCount = 2;
+  xpSendCommand->data.fieldList.fields[0].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
+  xpSendCommand->data.fieldList.fields[0].fieldLen = C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
+  xpSendCommand->data.fieldList.fields[1].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE;
+  xpSendCommand->data.fieldList.fields[1].fieldLen = C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE;
+
+  if (E_K_STATUS_OK == status)
+  {
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+    xpSendCommand->data.fieldList.fields[1].fieldValue = (uint8_t*)xpChallenge;
+  }
+  else
+  {
+    M_KTALOG__ERR("Get Challenge command failed with status = [%d]", status);
+    xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
+    xpSendCommand->data.fieldList.fields[1].fieldValue = (uint8_t*)xpChallenge;
+  }
+
+  return status;
+}
+#endif /* OBJECT_MANAGEMENT_FEATURE */
+
 /**
  * @implements lProcessCmdPrepareResponse
  *
@@ -1475,575 +2514,153 @@ static TKStatus lProcessCmdPrepareResponse
 #endif
 )
 {
-  TKStatus status                                       = E_K_STATUS_ERROR;
-  size_t commandCount                                   = 0;
-  size_t dataSize                                       = 0;
+  TKStatus status = E_K_STATUS_ERROR;
+  size_t commandCount = 0;
   uint8_t challenge[C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE] = {0};
 #ifdef FOTA_ENABLE
-  TKFotaStatus fotaStatus                               = E_K_FOTA_ERROR;
-  uint8_t fotaNameLen                                   = 0;
-  uint8_t fieldIndex                                    = 0;
-  uint8_t errorCode                                     = 0;
-  uint8_t fotaErrorCause[CURRENT_MAX_LENGTH]            = {0};
-  TFotaError fotaError                                  = {0};
+  uint8_t errorCode = 0;
+  uint8_t fotaErrorCause[CURRENT_MAX_LENGTH] = {0};
+  TFotaError fotaError = {0};
+  TComponent components[COMPONENTS_MAX] = {0};
+  uint8_t fotaName[CURRENT_MAX_LENGTH] = {0};
+  uint8_t fotaNameLen = 0;
 
-  fotaError.fotaErrorCause                              = (uint8_t *)&fotaErrorCause;
-  fotaError.fotaErrorCauseLen                           = sizeof(fotaErrorCause);
-  fotaError.fotaErrorCode                               = (uint8_t *)&errorCode;
-  fotaError.fotaErrorCodeLen                            = ERROR_CODE_LEN;
-  TComponent components[COMPONENTS_MAX]                 = {0};
-  uint8_t fotaName[CURRENT_MAX_LENGTH]                  = {0};
-#endif // FOTA_ENABLE
+  fotaError.fotaErrorCause = (uint8_t*)&fotaErrorCause;
+  fotaError.fotaErrorCauseLen = sizeof(fotaErrorCause);
+  fotaError.fotaErrorCode = (uint8_t*)&errorCode;
+  fotaError.fotaErrorCodeLen = ERROR_CODE_LEN;
+#endif
 
+  /* Validate input parameters */
   if ((NULL == xpRecvdProtoMessage) || (NULL == xpSendProtoMessage) ||
       (NULL == xpCmdResponse) || (0u == xCmdItemSize)
 #ifdef OBJECT_MANAGEMENT_FEATURE
-      || (NULL == xpPlatformStatus))
-#else
-      )
+      || (NULL == xpPlatformStatus)
 #endif
+  )
   {
-    status = E_K_STATUS_PARAMETER;
+    return E_K_STATUS_PARAMETER;
   }
-  else
+
+  /* Initialize response buffer */
+  xpCmdResponse[0] = 0;
+  xpSendProtoMessage->commandsCount = xpRecvdProtoMessage->commandsCount;
+
+  /* Process each command */
+  for (commandCount = 0; commandCount < xpRecvdProtoMessage->commandsCount; commandCount++)
   {
-    xpCmdResponse[0] = 0;
-    xpSendProtoMessage->commandsCount = xpRecvdProtoMessage->commandsCount;
-    for (commandCount = 0; commandCount < xpRecvdProtoMessage->commandsCount; commandCount++)
+    status = E_K_STATUS_OK;
+
+    M_KTALOG__INFO("Processing command %zu: tag=0x%x (decimal %d)",
+                   commandCount,
+                   xpRecvdProtoMessage->commands[commandCount].commandTag,
+                   xpRecvdProtoMessage->commands[commandCount].commandTag);
+
+    switch (xpRecvdProtoMessage->commands[commandCount].commandTag)
     {
-      switch (xpRecvdProtoMessage->commands[commandCount].commandTag)
-      {
 #ifdef PLATFORM_PROCESS_FEATURE
-
-        // REQ RQ_M-KTA-TRDP-FN-0010(1) : Verify Third party Signature
-        // REQ RQ_M-KTA-TRDP-FN-0110(1) : Third party response ICPP Message
-        case E_K_ICPP_PARSER_COMMAND_TAG_THIRD_PARTY:
-        {
-          dataSize = xCmdItemSize;
-          // REQ RQ_M-KTA-TRDP-FN-0070(1) : Check third party data
-          status = lKtaSetThirdPartyData(
-                     xpRecvdProtoMessage->commands[commandCount].data.cmdInfo.cmdValue,
-                     xpRecvdProtoMessage->commands[commandCount].data.cmdInfo.cmdLen,
-                     xpCmdResponse, &dataSize);
-
-          if (E_K_STATUS_OK == status)
-          {
-            /**
-             * Set the command tag with "E_K_ICCP_PARSER_COMMAND_TAG_THIRD_PARTY_FIELD"
-             * to indicated the the command is for third party data.
-             */
-            // REQ RQ_M-KTA-TRDP-FN-0090(1) : Build Third party response
-            // REQ RQ_M-KTA-TRDP-FN-0100(1) : Third party response data order.
-            xpSendProtoMessage->commands[commandCount].commandTag =
-              E_K_ICPP_PARSER_COMMAND_TAG_THIRD_PARTY;
-            xpSendProtoMessage->commands[commandCount].data.cmdInfo.cmdValue = xpCmdResponse;
-            xpSendProtoMessage->commands[commandCount].data.cmdInfo.cmdLen = dataSize;
-            xpCmdResponse += dataSize;
-          }
-          else
-          {
-            M_KTALOG__ERR("Setting 3rd party data failed, status = [%d]", status);
-            break;
-          }
-        }
+      /* REQ RQ_M-KTA-TRDP-FN-0010(1) : Verify Third party Signature */
+      /* REQ RQ_M-KTA-TRDP-FN-0110(1) : Third party response ICPP Message */
+      case E_K_ICPP_PARSER_COMMAND_TAG_THIRD_PARTY:
+        /* REQ RQ_M-KTA-TRDP-FN-0070(1) : Check third party data */
+        /* REQ RQ_M-KTA-TRDP-FN-0090(1) : Build Third party response */
+        /* REQ RQ_M-KTA-TRDP-FN-0100(1) : Third party response data order */
+        status = lProcessThirdPartyCmd(xpRecvdProtoMessage,
+                                       &xpSendProtoMessage->commands[commandCount],
+                                       commandCount, xpCmdResponse, xCmdItemSize, &xpCmdResponse);
         break;
 #endif /* PLATFORM_PROCESS_FEATURE */
 
 #ifdef OBJECT_MANAGEMENT_FEATURE
-
-        // REQ RQ_M-KTA-OBJM-FN-0100(1) : Generate key pair ICPP Message
-        case E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR:
-        {
-          dataSize = xCmdItemSize;
-          // REQ RQ_M-KTA-OBJM-FN-0010(1) : Verify Generate Key Pair Signature
-          status = lKtaGenerateKeyPair(
-                     xpRecvdProtoMessage, xpCmdResponse,
-                     &dataSize, xpPlatformStatus, (uint8_t)commandCount);
-          /**
-           * Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR"
-           * to indicate that this command is to generate the key pair.
-           */
-          // REQ RQ_M-KTA-OBJM-FN-0090(1) : Build Generate key pair response
-          xpSendProtoMessage->commands[commandCount].commandTag =
-            E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 2;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldLen =
-            C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-          // REQ RQ_M-KTA-OBJM-FN-0090_01(1) : Command Processing Status
-          // REQ RQ_M-KTA-OBJM-FN-0290_01(1) : Command Processing Status
-          // REQ RQ_M-KTA-OBJM-FN-0590_01(1) : Command Processing Status
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
-            (uint8_t*)xpPlatformStatus;
-          // REQ RQ_M-KTA-OBJM-FN-0090_02(1) : Public Key
-          // REQ RQ_M-KTA-OBJM-FN-0090_03(1) : Signed public key
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldTag =
-            (TKIcppFieldTag)C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC;
-
-          if (E_K_STATUS_OK == status)
-          {
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldLen =
-              dataSize;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldValue =
-              xpCmdResponse;
-          }
-          else
-          {
-            M_KTALOG__ERR("Generate Key Pair command failed with status : [%d], setting field data to 0", status);
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldLen = 0;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldValue = NULL;
-          }
-        }
+      /* REQ RQ_M-KTA-OBJM-FN-0100(1) : Generate key pair ICPP Message */
+      case E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR:
+        /* REQ RQ_M-KTA-OBJM-FN-0010(1) : Verify Generate Key Pair Signature */
+        /* REQ RQ_M-KTA-OBJM-FN-0090(1) : Build Generate key pair response */
+        /* REQ RQ_M-KTA-OBJM-FN-0090_01(1) : Command Processing Status */
+        /* REQ RQ_M-KTA-OBJM-FN-0290_01(1) : Command Processing Status */
+        /* REQ RQ_M-KTA-OBJM-FN-0590_01(1) : Command Processing Status */
+        /* REQ RQ_M-KTA-OBJM-FN-0090_02(1) : Public Key */
+        /* REQ RQ_M-KTA-OBJM-FN-0090_03(1) : Signed public key */
+        status = lProcessGenerateKeyPairCmd(xpRecvdProtoMessage,
+                                            &xpSendProtoMessage->commands[commandCount],
+                                            commandCount, xpCmdResponse, xCmdItemSize, xpPlatformStatus);
         break;
 
-        // REQ RQ_M-KTA-OBJM-FN-0300(1) : Set Object ICPP Message
-        case E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT:
-        {
-          // REQ RQ_M-KTA-OBJM-FN-0210(1) : Verify Set Object Signature
-          status = lKtaSetObject(xpRecvdProtoMessage, xpPlatformStatus);
-
-          /**
-           * Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT"
-           * to indicate that this command is to set the data object.
-           */
-          // REQ RQ_M-KTA-OBJM-FN-0290(1) : Build Set Object response
-          xpSendProtoMessage->commands[commandCount].commandTag =
-            E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 1;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldLen =
-            C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-          if (E_K_STATUS_OK == status)
-          {
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
-            (uint8_t*)xpPlatformStatus;
-          }
-          else
-          {
-            M_KTALOG__ERR("Set object command failed with status = [%d]", status);
-          }
-        }
+      /* REQ RQ_M-KTA-OBJM-FN-0300(1) : Set Object ICPP Message */
+      case E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT:
+        M_KTALOG__INFO("Processing SET_OBJECT command (0x%x)", E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT);
+        /* REQ RQ_M-KTA-OBJM-FN-0210(1) : Verify Set Object Signature */
+        /* REQ RQ_M-KTA-OBJM-FN-0290(1) : Build Set Object response */
+        status = lProcessSetObjectCmd(xpRecvdProtoMessage,
+                                      &xpSendProtoMessage->commands[commandCount],
+                                      xpPlatformStatus);
+        M_KTALOG__INFO("SET_OBJECT command completed with status=%d", status);
         break;
 
-        // REQ RQ_M-KTA-OBJM-FN-0600(1) : Delete Object ICPP Message
-        case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT:
-        {
-          // REQ RQ_M-KTA-OBJM-FN-0510(1) : Verify Delete Object Signature
-          status = lKtaDeleteObject(xpRecvdProtoMessage, xpPlatformStatus, commandCount);
-
-          /**
-           * Set the command tag with "E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT"
-           * to indicate that this command is to delete the certificate object from device.
-           */
-          // REQ RQ_M-KTA-OBJM-FN-0590(1) : Build Delete Object response
-          xpSendProtoMessage->commands[commandCount].commandTag =
-            E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 1;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldLen =
-            C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-          // REQ RQ_M-KTA-OBJM-FN-0561_11(1) : Command Processing Status
-          if (E_K_STATUS_OK == status)
-          {
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
-            (uint8_t*)xpPlatformStatus;
-          }
-          else
-          {
-            M_KTALOG__ERR("Delete object command failed with status = [%d]", status);
-          }
-        }
+      /* REQ RQ_M-KTA-OBJM-FN-0600(1) : Delete Object ICPP Message */
+      case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT:
+        /* REQ RQ_M-KTA-OBJM-FN-0510(1) : Verify Delete Object Signature */
+        /* REQ RQ_M-KTA-OBJM-FN-0590(1) : Build Delete Object response */
+        /* REQ RQ_M-KTA-OBJM-FN-0561_11(1) : Command Processing Status */
+        status = lProcessDeleteObjectCmd(xpRecvdProtoMessage,
+                                         &xpSendProtoMessage->commands[commandCount],
+                                         commandCount, xpPlatformStatus);
         break;
 
-        // REQ RQ_M-KTA-OBJM-FN-1000(2) : Delete Key Object ICPP Message
-        case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
-        {
-          // REQ RQ_M-KTA-OBJM-FN-0910(2) : Verify Delete Key Object Signature
-          status = lKtaDeleteKeyObject(xpRecvdProtoMessage, xpPlatformStatus, commandCount);
-
-          /**
-           * Set the command tag with "E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT"
-           * to indicate that this command is to delete the key object from device.
-           */
-          // REQ RQ_M-KTA-OBJM-FN-0990(2) : Build Delete Key Object response
-          xpSendProtoMessage->commands[commandCount].commandTag =
-            E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 1;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldLen =
-            C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-          // REQ RQ_M-KTA-OBJM-FN-0990_01(2) : Command Processing Status
-          if (E_K_STATUS_OK == status)
-          {
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
-            (uint8_t*)xpPlatformStatus;
-          }
-          else
-          {
-            M_KTALOG__ERR("Delete key object command failed with status = [%d]", status);
-          }
-        }
+      /* REQ RQ_M-KTA-OBJM-FN-1000(2) : Delete Key Object ICPP Message */
+      case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
+        /* REQ RQ_M-KTA-OBJM-FN-0910(2) : Verify Delete Key Object Signature */
+        /* REQ RQ_M-KTA-OBJM-FN-0990(2) : Build Delete Key Object response */
+        /* REQ RQ_M-KTA-OBJM-FN-0990_01(2) : Command Processing Status */
+        status = lProcessDeleteKeyObjectCmd(xpRecvdProtoMessage,
+                                            &xpSendProtoMessage->commands[commandCount],
+                                            commandCount, xpPlatformStatus);
         break;
 
-        // REQ RQ_M-KTA-OBJM-FN-0800(1) : Set Object With Association ICPP Message
-        case E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION:
-        {
-          // REQ RQ_M-KTA-OBJM-FN-0710(1) : Verify Set Object with Association Signature
-          status = lKtaSetObjWithAssociation(xpRecvdProtoMessage, xpPlatformStatus);
-
-          /**
-           * Set the command tag with "E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION"
-           * to indicate that this command is for setting the association info data.
-           */
-          // REQ RQ_M-KTA-OBJM-FN-0790(1) : Build Set Object With Association response
-          xpSendProtoMessage->commands[commandCount].commandTag =
-            E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 1;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldLen =
-            C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-          // REQ RQ_M-KTA-OBJM-FN-0790_01(1) : Command Processing Status
-          if (E_K_STATUS_OK == status)
-          {
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
-            (uint8_t*)xpPlatformStatus;
-          }
-          else
-          {
-            M_KTALOG__ERR("Set object with association command failed with status = [%d]", status);
-          }
-        }
+      /* REQ RQ_M-KTA-OBJM-FN-0800(1) : Set Object With Association ICPP Message */
+      case E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION:
+        /* REQ RQ_M-KTA-OBJM-FN-0710(1) : Verify Set Object with Association Signature */
+        /* REQ RQ_M-KTA-OBJM-FN-0790(1) : Build Set Object With Association response */
+        /* REQ RQ_M-KTA-OBJM-FN-0790_01(1) : Command Processing Status */
+        status = lProcessSetObjWithAssociationCmd(xpRecvdProtoMessage,
+                                                  &xpSendProtoMessage->commands[commandCount],
+                                                  xpPlatformStatus);
         break;
 
-        // REQ RQ_M-KTA-OBJM-FN-0880(1) : Get challenge With ICPP Message
-        case E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE:
-        {
-          // REQ RQ_M-KTA-OBJM-FN-0850(1) : Verify Get challenge
-          status = lKtaGetChallenge(challenge, xpPlatformStatus);
-
-          /**
-           * Set the command tag with "E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE"
-           * to indicate that this command is for getting chalenge from device.
-           */
-          // REQ RQ_M-KTA-OBJM-FN-0890(1) : Build Get Challenege Response
-          xpSendProtoMessage->commands[commandCount].commandTag =
-            E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 2;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldLen =
-            C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldLen =
-            C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE;
-
-          // REQ RQ_M-KTA-OBJM-FN-0910_01(1) : Command Processing Status
-          if (E_K_STATUS_OK == status)
-          {
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[0].fieldValue =
-            (uint8_t*)xpPlatformStatus;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[1].fieldValue =
-            (uint8_t*)challenge;
-          }
-          else
-          {
-            M_KTALOG__ERR("Get Challenge command failed with status = [%d]", status);
-          }
-        }
+      /* REQ RQ_M-KTA-OBJM-FN-0880(1) : Get challenge With ICPP Message */
+      case E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE:
+        /* REQ RQ_M-KTA-OBJM-FN-0850(1) : Verify Get challenge */
+        /* REQ RQ_M-KTA-OBJM-FN-0890(1) : Build Get Challenege Response */
+        /* REQ RQ_M-KTA-OBJM-FN-0910_01(1) : Command Processing Status */
+        status = lProcessGetChallengeCmd(&xpSendProtoMessage->commands[commandCount],
+                                         challenge, xpPlatformStatus);
         break;
 
 #ifdef FOTA_ENABLE
-
-        case E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA:
-        {
-          fotaStatus = lktaInstallFota(xpRecvdProtoMessage, fotaName, &fotaNameLen, components, &fotaError, xpPlatformStatus);
-
-          uint32_t tempStatus = *((uint32_t *)xpPlatformStatus);
-
-          // Swap LSB to MSB
-          uint32_t platformStatusMSB = ((tempStatus & 0x000000FF) << 24) |
-                                       ((tempStatus & 0x0000FF00) << 8)  |
-                                       ((tempStatus & 0x00FF0000) >> 8)  |
-                                       ((tempStatus & 0xFF000000) >> 24);
-
-          xpSendProtoMessage->commands[commandCount].commandTag = E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 2;
-
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-              E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-              C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-              (uint8_t*)&platformStatusMSB;
-          fieldIndex++;
-
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-              E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-              fotaName;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-              fotaNameLen;
-          fieldIndex++;
-
-          if (E_K_FOTA_ERROR == fotaStatus)
-          {
-            uint32_t errorCodeMSB = ((fotaError.fotaErrorCode[3] & 0x000000FF) << 24) |
-                                    ((fotaError.fotaErrorCode[2] & 0x000000FF) << 16) |
-                                    ((fotaError.fotaErrorCode[1] & 0x000000FF) << 8)  |
-                                    ((fotaError.fotaErrorCode[0] & 0x000000FF));
-
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                (uint8_t*)&errorCodeMSB;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                sizeof(fotaError.fotaErrorCode);
-            fieldIndex++;
-
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                (uint8_t*)fotaError.fotaErrorCause;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                fotaError.fotaErrorCauseLen;
-            fieldIndex++;
-
-            const char* ktaVersion = (const char*)ktaGetVersion();
-
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                (uint8_t*)ktaVersion;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                strlen(ktaVersion);
-            fieldIndex++;
-
-            for (size_t i = 0; i < COMPONENTS_MAX; i++)
-            {
-              if ((components[i].componentNameLen > 0) && (components[i].componentVersionLen > 0))
-              {
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                    (uint8_t*)components[i].componentName;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                    components[i].componentNameLen;
-                fieldIndex++;
-
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                    (uint8_t*)components[i].componentVersion;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                    components[i].componentVersionLen;
-                fieldIndex++;
-              }
-            }
-            fotaStatus = status;
-          }
-          else if (E_K_FOTA_SUCCESS == fotaStatus)
-          {
-            const char* ktaVersion = (const char*)ktaGetVersion();
-
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                (uint8_t*)ktaVersion;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                strlen(ktaVersion);
-            fieldIndex++;
-
-            for (size_t i = 0; i < COMPONENTS_MAX; i++)
-            {
-              if ((components[i].componentNameLen > 0) && (components[i].componentVersionLen > 0))
-              {
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                    (uint8_t*)components[i].componentName;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                    components[i].componentNameLen;
-                fieldIndex++;
-
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                    (uint8_t*)components[i].componentVersion;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                    components[i].componentVersionLen;
-                fieldIndex++;
-              }
-            }
-            fotaStatus = status;
-          }
-          else if (E_K_FOTA_IN_PROGRESS == fotaStatus)
-          {
-            M_KTALOG__INFO("FOTA IN PROGRESS\r\n");
-            fotaStatus = status;
-          }
-          else
-          {
-            M_KTALOG__ERR("Install FOTA command failed with status = [%d]\r\n", status);
-          }
-
-          // Update the final field count
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = fieldIndex;
-        }
+      case E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA:
+        status = lProcessInstallFotaCmd(xpRecvdProtoMessage,
+                                        &xpSendProtoMessage->commands[commandCount],
+                                        fotaName, &fotaNameLen, components, &fotaError, xpPlatformStatus);
         break;
 
-        case E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS:
-        {
-          fotaStatus = lktasalfotagetstatus(xpRecvdProtoMessage, fotaName, &fotaNameLen, &fotaError, xpPlatformStatus, components);
-
-          uint32_t tempStatus = *((uint32_t *)xpPlatformStatus);
-
-          // Swap LSB to MSB
-          uint32_t platformStatusMSB = ((tempStatus & 0x000000FF) << 24) |
-                                       ((tempStatus & 0x0000FF00) << 8)  |
-                                       ((tempStatus & 0x00FF0000) >> 8)  |
-                                       ((tempStatus & 0xFF000000) >> 24);
-
-          xpSendProtoMessage->commands[commandCount].commandTag = E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = 2;
-
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-              E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-              C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-              (uint8_t*)&platformStatusMSB;
-          fieldIndex++;
-
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-              E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-              fotaName;
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-              fotaNameLen;
-          fieldIndex++;
-
-          if (E_K_FOTA_ERROR == fotaStatus)
-          {
-            uint32_t errorCodeMSB = ((fotaError.fotaErrorCode[3] & 0x000000FF) << 24) |
-                                    ((fotaError.fotaErrorCode[2] & 0x000000FF) << 16) |
-                                    ((fotaError.fotaErrorCode[1] & 0x000000FF) << 8)  |
-                                    ((fotaError.fotaErrorCode[0] & 0x000000FF));
-
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                (uint8_t*)&errorCodeMSB;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                fotaError.fotaErrorCodeLen;
-            fieldIndex++;
-
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-            E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                (uint8_t*)fotaError.fotaErrorCause;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                fotaError.fotaErrorCauseLen;
-            fieldIndex++;
-
-            const char* ktaVersion = (const char*)ktaGetVersion();
-
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                (uint8_t*)ktaVersion;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                strlen(ktaVersion);
-            fieldIndex++;
-
-            for (size_t i = 0; i < COMPONENTS_MAX; i++)
-            {
-              if ((components[i].componentNameLen > 0) && (components[i].componentVersionLen > 0))
-              {
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                    (uint8_t*)components[i].componentName;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                    components[i].componentNameLen;
-                fieldIndex++;
-
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                    (uint8_t*)components[i].componentVersion;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                    components[i].componentVersionLen;
-                fieldIndex++;
-              }
-            }
-            fotaStatus = status;
-          }
-          else if (E_K_FOTA_SUCCESS == fotaStatus)
-          {
-            const char* ktaVersion = (const char*)ktaGetVersion();
-
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                E_K_ICPP_PARSER_FIELD_TAG_KTA_VER;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                (uint8_t*)ktaVersion;
-            xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                strlen(ktaVersion);
-            fieldIndex++;
-
-            for (size_t i = 0; i < COMPONENTS_MAX; i++)
-            {
-              if ((components[i].componentNameLen > 0) && (components[i].componentVersionLen > 0))
-              {
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                    (uint8_t*)components[i].componentName;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                    components[i].componentNameLen;
-                fieldIndex++;
-
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldTag =
-                    E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldValue =
-                    (uint8_t*)components[i].componentVersion;
-                xpSendProtoMessage->commands[commandCount].data.fieldList.fields[fieldIndex].fieldLen =
-                    components[i].componentVersionLen;
-                fieldIndex++;
-              }
-            }
-            fotaStatus = status;
-          }
-          else if (E_K_FOTA_IN_PROGRESS == fotaStatus)
-          {
-            M_KTALOG__INFO("FOTA IN PROGRESS\r\n");
-            fotaStatus = status;
-          }
-          else
-          {
-            M_KTALOG__ERR("Install FOTA command failed with status = [%d]\r\n", fotaStatus);
-          }
-          // Update the final field count
-          xpSendProtoMessage->commands[commandCount].data.fieldList.fieldsCount = fieldIndex;
-        }
+      case E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS:
+        status = lProcessGetFotaStatusCmd(xpRecvdProtoMessage,
+                                          &xpSendProtoMessage->commands[commandCount],
+                                          fotaName, &fotaNameLen, components, &fotaError, xpPlatformStatus);
         break;
-
-#endif //FOTA_ENABLE
+#endif /* FOTA_ENABLE */
 #endif /* OBJECT_MANAGEMENT_FEATURE */
 
-        default:
-          M_KTALOG__ERR("Received invalid command tag, cmdTag = [%x]",
-                        xpRecvdProtoMessage->commands[commandCount].commandTag);
-          break;
-      }
+      default:
+        M_KTALOG__ERR("Received invalid command tag, cmdTag = 0x%x (decimal %d)",
+                      xpRecvdProtoMessage->commands[commandCount].commandTag,
+                      xpRecvdProtoMessage->commands[commandCount].commandTag);
+        M_KTALOG__ERR("Expected SET_OBJECT = 0x%x but feature may not be enabled", E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT);
+        status = E_K_STATUS_ERROR;
+        break;
     }
   }
+
   return status;
 }
 

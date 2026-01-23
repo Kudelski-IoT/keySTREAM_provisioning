@@ -30,8 +30,12 @@
 #include <stddef.h>
 #include <string.h>
 
+#ifndef LIBRARY_BUILD_EN
+#include "atca_config.h"
+#endif
+
 #if defined(ATCA_TESTS_ENABLED) || !defined(ATCA_PLATFORM_MALLOC)
-void*   hal_malloc(size_t size);
+void*   hal_malloc(size_t size); 
 void    hal_free(void* ptr);
 #else
 #define hal_malloc      ATCA_PLATFORM_MALLOC

@@ -113,15 +113,15 @@ static void hex_to_lowercase(char *buf, size_t length)
 }
 
 
-static void hex_to_uppercase(char *buffer, size_t length)
+static void hex_to_uppercase(char *buf, size_t length)
 {
     size_t index;
 
-    if ((buffer != NULL) && (length > 0u))
+    if ((buf != NULL) && (length > 0u))
     {
         for (index = 0u; index < length; index++)
         {
-            buffer[index] = lib_toupper(buffer[index]);
+            buf[index] = lib_toupper(buf[index]);
         }
     }
 }
@@ -438,7 +438,7 @@ ATCA_STATUS packHex(const char* ascii_hex, size_t ascii_hex_len, char* packed_he
  */
 ATCA_STATUS atcab_printbin_label(const char* label, uint8_t* binary, size_t bin_len)
 {
-    printf("%s", label);
+    (void)printf("%s", label);
     return atcab_printbin(binary, bin_len, true);
 }
 
@@ -470,7 +470,7 @@ ATCA_STATUS atcab_printbin(uint8_t* binary, size_t bin_len, bool add_space)
     }
 
     // Set the line length
-    line_len = add_space ? 16 : 32;
+    line_len = (size_t)(add_space ? 16u : 32u);
 
     // Print the bytes
     for (i = 0; i < bin_len; i++)
@@ -478,21 +478,21 @@ ATCA_STATUS atcab_printbin(uint8_t* binary, size_t bin_len, bool add_space)
         // Print the byte
         if (add_space)
         {
-            printf("%02X ", binary[i]);
+            (void)printf("%02X ", binary[i]);
         }
         else
         {
-            printf("%02X", binary[i]);
+            (void)printf("%02X", binary[i]);
         }
 
         // Break at the line_len
-        if ((i + 1) % line_len == 0)
+        if ((i + 1u) % line_len == 0u)
         {
-            printf("\r\n");
+            (void)printf("\r\n");
         }
     }
     // Print the last carriage return
-    printf("\r\n");
+    (void)printf("\r\n");
 
     return ATCA_SUCCESS;
 }
@@ -783,6 +783,7 @@ ATCA_STATUS atcab_base64encode_(
             else
             {
                 size_t nl_char_count = (b64_len / rules[3]) * 2u;
+                /* coverity[misra_c_2012_rule_10_4_violation] maximum size defenition is platform dependent */
                 if ((SIZE_MAX - b64_len) < nl_char_count)
                 {
                     status = ATCA_TRACE(ATCA_BAD_PARAM, "Input data_size is too great to be encoded using the provided rules");
@@ -845,7 +846,7 @@ ATCA_STATUS atcab_base64encode_(
         }
 
         // Strip any trailing nulls
-        while (b64_idx > 1u && encoded[b64_idx - 1u] == (char)('\0'))
+        while (b64_idx > 1u && (encoded[b64_idx - 1u] == (char)('\0')))
         {
             b64_idx--;
         }

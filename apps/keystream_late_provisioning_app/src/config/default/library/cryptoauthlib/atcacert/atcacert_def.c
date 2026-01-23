@@ -1125,7 +1125,7 @@ ATCA_STATUS atcacert_get_issue_date(const atcacert_def_t*   cert_def,
                                     atcacert_tm_utc_t*      timestamp)
 {
     ATCA_STATUS status = ATCACERT_E_BAD_PARAMS;
-    uint8_t formatted_date[DATEFMT_MAX_SIZE] = { 0x00 };
+    uint8_t formatted_date[DATEFMT_MAX_SIZE] = {0};
     size_t formatted_date_size = 0;
     atcacert_date_format_t date_format = 0;
 
@@ -1234,7 +1234,7 @@ ATCA_STATUS atcacert_get_expire_date(const atcacert_def_t*  cert_def,
                                      atcacert_tm_utc_t*     timestamp)
 {
     ATCA_STATUS status = ATCACERT_E_BAD_PARAMS;
-    uint8_t formatted_date[DATEFMT_MAX_SIZE] = { 0x00 };
+    uint8_t formatted_date[DATEFMT_MAX_SIZE] = {0};
     size_t formatted_date_size = 0;
     atcacert_date_format_t date_format = 0;
 

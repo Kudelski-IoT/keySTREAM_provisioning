@@ -45,8 +45,9 @@
 #include "ktaConfig.h"
 #include "comm_if.h"
 #include "cryptoConfig.h"
-
+#include "k_sal_os.h"
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* -------------------------------------------------------------------------- */
@@ -66,6 +67,12 @@
 
 /** @brief Boolean True */
 #define L_POLL_TRUE 1
+
+/** @brief Maximum retry attempts for connection */
+#define C_KTA_COMM_MAX_RETRIES         (3u)
+
+/** @brief Delay between retry attempts in milliseconds */
+#define C_KTA_COMM_RETRY_DELAY_MS      (500u)  /* Reduced from 2000ms for faster retries */
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL VARIABLES                                                            */
@@ -115,20 +122,6 @@ static TKStatus lsetDeviceInfo
 
 /**
  * @brief
- *   Initialize communication stack.
- *
- * @return
- * - E_K_STATUS_OK in case of success.
- * - E_K_STATUS_PARAMETER for wrong input values.
- * - E_K_STATUS_ERROR for other errors.
- */
-static TKStatus lcommInit
-(
-  void
-);
-
-/**
- * @brief
  *   Poll for keySTREAM updates.
  *
  * @return
@@ -156,6 +149,36 @@ static void lprintData
   size_t    xLen
 );
 
+#ifdef NETWORK_STACK_AVAILABLE
+/**
+ * @brief
+ *   Initialize communication stack.
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_PARAMETER for wrong input values.
+ * - E_K_STATUS_ERROR for other errors.
+ */
+static TKStatus lcommInit
+(
+  void
+);
+
+/**
+ * @brief
+ *   Check if communication error is retryable.
+ *
+ * @param[in] xStatus
+ *   Communication status to check.
+ * @return
+ * - true if error is retryable.
+ * - false if error is not retryable.
+ */
+static bool lIsRetryableError
+(
+  TCommIfStatus xStatus
+);
+#endif /* NETWORK_STACK_AVAILABLE */
 /* -------------------------------------------------------------------------- */
 /* PUBLIC VARIABLES                                                           */
 /* -------------------------------------------------------------------------- */
@@ -376,6 +399,7 @@ static TKStatus lsetDeviceInfo
   return retStatus;
 }
 
+#ifdef NETWORK_STACK_AVAILABLE
 /**
  * @implements lcommInit
  *
@@ -394,6 +418,7 @@ static TKStatus lcommInit
 
   return (TKStatus)retStatus;
 }
+#endif /* NETWORK_STACK_AVAILABLE */
 
 /**
  * @implements lPollKeyStream
@@ -411,84 +436,184 @@ static TKStatus lPollKeyStream
 {
   static uint8_t  aRot2KsMsg[C_K__ICPP_MSG_MAX_SIZE] = { 0 };
   TKStatus        retStatus = E_K_STATUS_ERROR;
-#ifdef NETWORK_STACK_AVAILABLE
-  TCommIfStatus   commStatus = E_COMM_IF_STATUS_ERROR;
-#endif
   uint8_t*        pKs2RotMsg = aRot2KsMsg;
   size_t          rot2ksMsgSize = 0;
   size_t          ks2rotMsgSize = 0;
+  bool            messageExchangeComplete = false;
+  
+#ifdef NETWORK_STACK_AVAILABLE
+  TCommIfStatus  commStatus = E_COMM_IF_STATUS_ERROR;
+  uint8_t        retry = 0;
+#endif /* NETWORK_STACK_AVAILABLE */
 
-  /* Initialize the communication stack to communicate with the keySTREAM. */
-  retStatus = lcommInit();
+  C_KTA_APP__LOG("[INFO] Starting KeyStream polling cycle\r\n");
 
-  if (retStatus != E_K_STATUS_OK)
+  /* Main message exchange loop - continues until no more messages to exchange */
+  while (!messageExchangeComplete)
   {
-    C_KTA_APP__LOG("ERROR: lcommInit failed, status:%d\r\n", retStatus);
-    return retStatus;
-  }
-
-  while(L_POLL_TRUE)
-  {
+    /* Call ktaExchangeMessage to get message to send (CALLED ONLY ONCE PER MESSAGE) */
     C_KTA_APP__LOG("[INFO] Calling ktaExchangeMessage...\r\n");
-
     rot2ksMsgSize = C_K__ICPP_MSG_MAX_SIZE;
     retStatus = ktaExchangeMessage(pKs2RotMsg, ks2rotMsgSize, aRot2KsMsg, &rot2ksMsgSize);
 
     if (E_K_STATUS_OK != retStatus)
     {
-      C_KTA_APP__LOG("[ERROR] ktaExchangeMessage Failed Status[%d]", retStatus);
-      goto end;
+      C_KTA_APP__LOG("[ERROR] ktaExchangeMessage failed, Status[%d]\r\n", retStatus);
+      break;
     }
 
     if (0U == rot2ksMsgSize)
     {
-      C_KTA_APP__LOG("[INFO] There is no message to send to keySTREAM.\r\n");
-      goto end;
+      C_KTA_APP__LOG("[INFO] No message to send to keySTREAM, exchange complete\r\n");
+      retStatus = E_K_STATUS_OK;
+      break;
     }
 
-    C_KTA_APP__LOG("[INFO] KTA msg generated successfully.\r\n");
-    C_KTA_APP__LOG("[INFO] Sending [%d] bytes to KS\r\n", rot2ksMsgSize);
+    C_KTA_APP__LOG("[INFO] KTA message generated successfully [%zu bytes]\r\n", rot2ksMsgSize);
     lprintData(aRot2KsMsg, rot2ksMsgSize);
 
 /**********************************************************************************/
 /*                  Below code requires network stack integration                 */
 /**********************************************************************************/
+
 #ifdef NETWORK_STACK_AVAILABLE
-    ks2rotMsgSize = C_K__ICPP_MSG_MAX_SIZE;
-    commStatus = commMsgExchange(aRot2KsMsg, rot2ksMsgSize, pKs2RotMsg, &ks2rotMsgSize);
-
-    if (commStatus == E_COMM_IF_STATUS_OK)
+    /* Retry loop for network communication ONLY */
+    for (retry = 0; retry < C_KTA_COMM_MAX_RETRIES; retry++)
     {
-      C_KTA_APP__LOG("[INFO] KS Resp MSG Length :[%zu]\r\n", ks2rotMsgSize);
-
-      if (ks2rotMsgSize != 0U)
+      if (retry > 0)
       {
-        C_KTA_APP__LOG("[INFO] Received from KS :\r\n");
-        lprintData(pKs2RotMsg, ks2rotMsgSize);
+        C_KTA_APP__LOG("[WARN] Retry attempt %d/%d after %d ms delay\r\n", 
+                       retry + 1, C_KTA_COMM_MAX_RETRIES, C_KTA_COMM_RETRY_DELAY_MS);
+        
+        salTimeMilliSleep(C_KTA_COMM_RETRY_DELAY_MS);
+      }
+
+      /* Initialize connection */
+      if (retry > 0)
+      {
+        C_KTA_APP__LOG("[INFO] Retry Connection Retry connection:%d/%d...\r\n",
+                       retry + 1, C_KTA_COMM_MAX_RETRIES);
       }
       else
       {
-        C_KTA_APP__LOG("[ERROR] KS_Resp msg length is = [%zu]\r\n", ks2rotMsgSize);
+        C_KTA_APP__LOG("[INFO] Establishing connection to keySTREAM server...\r\n");
+      }
+      
+      retStatus = lcommInit();
+      
+      if (retStatus != E_K_STATUS_OK)
+      {
+        C_KTA_APP__LOG("[ERROR] lcommInit failed:%d (retry %d/%d)\r\n", 
+                       retStatus, retry + 1, C_KTA_COMM_MAX_RETRIES);
+        
+        /* Retry transient errors */
+        if (retry < C_KTA_COMM_MAX_RETRIES - 1)
+        {
+          continue;
+        }
+        else
+        {
+          C_KTA_APP__LOG("[ERROR] Max connection retries exceeded\r\n");
+          messageExchangeComplete = true;
+          break;
+        }
+      }
+      else
+      {
+        if (retry > 0)
+        {
+          C_KTA_APP__LOG("[INFO] Connection established successfully:%d/%d\r\n",
+                         retry + 1, C_KTA_COMM_MAX_RETRIES);
+        }
+      }
+
+      /* Exchange message with server (RETRY ONLY THIS PART) */
+      if (retry > 0)
+      {
+        C_KTA_APP__LOG("[INFO] Sending message to keySTREAM [%zu bytes]-[%d/%d]\r\n",
+                       rot2ksMsgSize, retry + 1, C_KTA_COMM_MAX_RETRIES);
+      }
+      else
+      {
+        C_KTA_APP__LOG("[INFO] Sending message to keySTREAM [%zu bytes]...\r\n", rot2ksMsgSize);
+      }
+      
+      ks2rotMsgSize = C_K__ICPP_MSG_MAX_SIZE;
+      commStatus = commMsgExchange(aRot2KsMsg, rot2ksMsgSize, pKs2RotMsg, &ks2rotMsgSize);
+
+      /* Always terminate connection after exchange (success or failure) */
+      C_KTA_APP__LOG("[INFO] Closing connection...\r\n");
+      (void)commTerm();
+
+      if (commStatus == E_COMM_IF_STATUS_OK)
+      {
+        /* Success! */
+        C_KTA_APP__LOG("[INFO] KeyStream response received [%zu bytes]\r\n", ks2rotMsgSize);
+
+        if (ks2rotMsgSize != 0U)
+        {
+          C_KTA_APP__LOG("[INFO] Response content:\r\n");
+          lprintData(pKs2RotMsg, ks2rotMsgSize);
+          
+          /* Success - exit retry loop and continue outer loop to process response */
+          retStatus = E_K_STATUS_OK;
+          break;
+        }
+        else
+        {
+          C_KTA_APP__LOG("[ERROR] Empty response from keySTREAM\r\n");
+          retStatus = E_K_STATUS_ERROR;
+          messageExchangeComplete = true;
+          break;
+        }
+      }
+      else
+      {
+        /* Exchange failed */
+        C_KTA_APP__LOG("[ERROR] commMsgExchange failed, status[%d]-(%d/%d)\r\n", 
+                       commStatus, retry + 1, C_KTA_COMM_MAX_RETRIES);
+        
         retStatus = E_K_STATUS_ERROR;
-        goto end;
+
+        /* Check if error is retryable */
+        if ((retry < C_KTA_COMM_MAX_RETRIES - 1) && lIsRetryableError(commStatus))
+        {
+          C_KTA_APP__LOG("[INFO] Error is retryable, will retry...\r\n");
+          continue;  /* Retry commMsgExchange with same message */
+        }
+        else
+        {
+          if (!lIsRetryableError(commStatus))
+          {
+            C_KTA_APP__LOG("[INFO] Non-retryable error, aborting\r\n");
+          }
+          else
+          {
+            C_KTA_APP__LOG("[ERROR] Max exchange retries exceeded\r\n");
+          }
+          
+          messageExchangeComplete = true;
+          break;
+        }
       }
     }
-    else
+
+    /* Check if we should continue the outer loop */
+    if (messageExchangeComplete || (retStatus != E_K_STATUS_OK))
     {
-      C_KTA_APP__LOG("[FAIL] commMsgExchange failed.\r\n");
-      retStatus = E_K_STATUS_ERROR;
-      goto end;
+      break;
     }
 #else
-    break; // To be removed when network stack is integrated.
-#endif
+    /* Without network stack, exit after first message generation */
+    break;
+#endif /* NETWORK_STACK_AVAILABLE */
   }
-end:
-  if (E_COMM_IF_STATUS_OK != commTerm())
+
+  if (retStatus != E_K_STATUS_OK)
   {
-    C_KTA_APP__LOG("[FAIL] Communication Stack Termination failed \r\n");
-    retStatus = E_K_STATUS_ERROR;
+    C_KTA_APP__LOG("[ERROR] ======== KTA KeyStream Poll Cycle FAILED ========\r\n");
   }
+
   return retStatus;
 }
 
@@ -511,6 +636,23 @@ static void lprintData
 
   C_KTA_APP__LOG("\r\n");
 }
+
+#ifdef NETWORK_STACK_AVAILABLE
+static bool lIsRetryableError
+(
+  TCommIfStatus xStatus
+)
+{
+  /* Network, timeout, communication errors, and data errors are typically transient and retryable */
+  /* DATA errors can occur due to incomplete reception, fragmentation issues - should retry */
+  return ((xStatus == E_COMM_IF_STATUS_NETWORK) ||
+          (xStatus == E_COMM_IF_STATUS_TIMEOUT) ||
+          (xStatus == E_COMM_IF_STATUS_RESOURCE) ||
+          (xStatus == E_COMM_IF_STATUS_DATA) ||
+          (xStatus == E_COMM_IF_STATUS_ERROR));
+}
+#endif /* NETWORK_STACK_AVAILABLE */
+
 
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */

@@ -80,7 +80,8 @@ ATCA_STATUS calib_mac(ATCADevice device, uint8_t mode, uint16_t key_id, const ui
         {
             if (challenge == NULL)
             {
-                return ATCA_TRACE(ATCA_BAD_PARAM, "NULL pointer received");
+                status = ATCA_TRACE(ATCA_BAD_PARAM, "NULL pointer received");
+                break;
             }
 
             #if (CA_MAX_PACKET_SIZE < (ATCA_CMD_SIZE_MIN + MAC_CHALLENGE_SIZE))

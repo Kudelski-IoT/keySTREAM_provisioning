@@ -1,7 +1,7 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2025 Nagravision Sàrl
 
 * Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -47,8 +47,6 @@
 /* Next one is needed for outgoing block-wise - prepare_blockwise_message(). */
 #include "sn_coap_protocol_internal.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 /* -------------------------------------------------------------------------- */
@@ -65,7 +63,7 @@
 #define C_COMM_INTERFACE_COAP_RESENDING_INTERVAL_IN_SECS     (2u)
 
 /** @brief Wait for next CoAP response from server in ms. */
-#define C_COMM_INTERFACE_COAP_WAIT_FOR_RESPONSE              (200u)
+#define C_COMM_INTERFACE_COAP_WAIT_FOR_RESPONSE              (50u)  /* Reduced from 200ms for faster communication */
 
 /** @brief Max retransmission if no response from server. */
 #define C_COMM_INTERFACE_COAP_MAX_RESENDING_RETRIES          (20u)
@@ -509,12 +507,7 @@ TCommIfStatus commInitProtocol
 )
 {
   TCommIfStatus   status = E_COMM_IF_STATUS_ERROR;
-  TKCommStatus    commStatus = E_K_COMM_STATUS_ERROR;
-  TBoolean        isValidAdd = E_FALSE;
-  size_t          mtuSize = 0;
-  uint16_t        uriLength = 0;
   uint8_t         aIpAddress[C_COMM_INTERFACE_MAX_IP_ADDRESS_LENGTH] = { 0 };
-  uint8_t         ipAddressLength = 0;
 
   M_COMM__API_START();
 
@@ -524,13 +517,19 @@ TCommIfStatus commInitProtocol
       (NULL == xpHost) ||
       (0U == xPort) ||
       ((E_COMM_IF_IP_PROTOCOL_V4 != xIpProtocol) && (E_COMM_IF_IP_PROTOCOL_V6 != xIpProtocol)) ||
-      (E_TRUE == gCommInterfaceObj.isInitialized) ||
       (NULL == xpUri)
     )
     {
-      M_COMM__ERROR(("Invalid parameters or already initialized"));
+      M_COMM__ERROR(("Invalid parameters"));
       status = E_COMM_IF_STATUS_PARAMETER;
       break;
+    }
+
+    /* If already initialized, clean up first to allow re-initialization */
+    if (E_TRUE == gCommInterfaceObj.isInitialized)
+    {
+      M_COMM__ERROR(("Already initialized - cleaning up first"));
+      terminateCoapProtocol();
     }
 
     status = lgetIPAddress(xpHost, aIpAddress);
@@ -540,9 +539,6 @@ TCommIfStatus commInitProtocol
       M_COMM__ERROR(("lgetIPAddress failed %d", status));
       break;
     }
-
-    ipAddressLength = strlen((char*)aIpAddress);
-    uriLength = strlen((const char*)xpUri);
 
     gCommInterfaceObj.isInitialized = E_FALSE;
     gCommInterfaceObj.pCoapHandle = sn_coap_protocol_init(pCommCoapMalloc,
@@ -556,19 +552,20 @@ TCommIfStatus commInitProtocol
       break;
     }
 
-    gCommInterfaceObj.pCoapUri = M_COMM_INTERFACE_MALLOC(uriLength);
+    gCommInterfaceObj.coapUriLength = strlen((const char*)xpUri);
+    gCommInterfaceObj.pCoapUri = M_COMM_INTERFACE_MALLOC(gCommInterfaceObj.coapUriLength);
 
     if (NULL == gCommInterfaceObj.pCoapUri)
     {
       terminateCoapProtocol();
-      M_COMM__ERROR(("Memory Allocation failed Size[%d]", uriLength));
+      M_COMM__ERROR(("Memory Allocation failed Size[%d]", gCommInterfaceObj.coapUriLength));
       status = E_COMM_IF_STATUS_MEMORY;
       break;
     }
 
-    (void)memcpy(gCommInterfaceObj.pCoapUri, xpUri, uriLength);
-    gCommInterfaceObj.coapUriLength = uriLength;
+    (void)memcpy(gCommInterfaceObj.pCoapUri, xpUri, gCommInterfaceObj.coapUriLength);
 
+    uint8_t ipAddressLength = strlen((char*)aIpAddress);
     gCommInterfaceObj.pServerIp = M_COMM_INTERFACE_MALLOC(ipAddressLength);
 
     if (NULL == gCommInterfaceObj.pServerIp)
@@ -583,20 +580,16 @@ TCommIfStatus commInitProtocol
     gCommInterfaceObj.serverPort = xPort;
 
     /* Creating the socket. */
-    commStatus = salSocketCreate(E_SAL_SOCKET_TYPE_UDP, &gCommInterfaceObj.pSocket);
-
-    if (E_K_COMM_STATUS_OK != commStatus)
+    if (E_K_COMM_STATUS_OK != salSocketCreate(E_SAL_SOCKET_TYPE_UDP, &gCommInterfaceObj.pSocket))
     {
-      M_COMM__ERROR(("salSocketCreate failed Status[%d]", commStatus));
+      M_COMM__ERROR(("salSocketCreate failed"));
       terminateCoapProtocol();
       break;
     }
 
     if (E_COMM_IF_IP_PROTOCOL_V4 == xIpProtocol)
     {
-      isValidAdd = commUtilConvertSocketIp(aIpAddress, &gCommInterfaceObj.socketIP);
-
-      if (E_TRUE != isValidAdd)
+      if (E_TRUE != commUtilConvertSocketIp(aIpAddress, &gCommInterfaceObj.socketIP))
       {
         status = E_COMM_IF_STATUS_PARAMETER;
         M_COMM__ERROR(("Invalid ip4 socket IP[%s]", aIpAddress));
@@ -620,34 +613,29 @@ TCommIfStatus commInitProtocol
     gCommInterfaceObj.dstAddress.addr_len = ipAddressLength;
     gCommInterfaceObj.dstAddress.port = gCommInterfaceObj.serverPort;
 
-    commStatus = sn_coap_protocol_set_retransmission_parameters(gCommInterfaceObj.pCoapHandle,
-                                                                getCoapResendingCount(),
-                                                                getCoapResendingInterval());
-
-    if (0 != commStatus)
+    if (0 != sn_coap_protocol_set_retransmission_parameters(gCommInterfaceObj.pCoapHandle,
+                                                            getCoapResendingCount(),
+                                                            getCoapResendingInterval()))
     {
-      M_COMM__ERROR(("sn_coap_protocol_set_retransmission_parameters failed Status[%d]",
-                     TKCommStatus));
+      M_COMM__ERROR(("sn_coap_protocol_set_retransmission_parameters failed"));
       terminateCoapProtocol();
       break;
     }
 
-    mtuSize = getMtuSize();
-    gCommInterfaceObj.coapBlockSize = getCoapBlockSizeUsingMtu(mtuSize);
+    gCommInterfaceObj.mtuSize = getMtuSize();
+    gCommInterfaceObj.coapBlockSize = getCoapBlockSizeUsingMtu(gCommInterfaceObj.mtuSize);
 
-    gCommInterfaceObj.pResponseBuffer = (uint8_t*)M_COMM_INTERFACE_MALLOC(mtuSize);
+    gCommInterfaceObj.pResponseBuffer = (uint8_t*)M_COMM_INTERFACE_MALLOC(gCommInterfaceObj.mtuSize);
 
     if (NULL == gCommInterfaceObj.pResponseBuffer)
     {
-      M_COMM__ERROR(("Memory Allocation failed Size[%ld]", mtuSize));
+      M_COMM__ERROR(("Memory Allocation failed Size[%ld]", gCommInterfaceObj.mtuSize));
       status = E_COMM_IF_STATUS_MEMORY;
       terminateCoapProtocol();
       break;
     }
 
-    gCommInterfaceObj.mtuSize = mtuSize;
-
-    (void)memset(gCommInterfaceObj.pResponseBuffer, 0, mtuSize);
+    (void)memset(gCommInterfaceObj.pResponseBuffer, 0, gCommInterfaceObj.mtuSize);
 
     status = E_COMM_IF_STATUS_OK;
     gCommInterfaceObj.isInitialized = E_TRUE;
@@ -680,8 +668,7 @@ TCommIfStatus commTerminateProtocol
 /**
  * @brief  implement commMessageExchange
  *
- */
-TCommIfStatus commMessageExchange
+ */TCommIfStatus commMessageExchange
 (
   const  uint8_t*  xpMessageToSend,
   const  size_t    xSendSize,
@@ -690,9 +677,7 @@ TCommIfStatus commMessageExchange
 )
 {
   TCommIfStatus   commStatus = E_COMM_IF_STATUS_ERROR;
-  TKCommStatus    status = E_K_COMM_STATUS_OK;
   TKSocketIp      ip = {0};
-  size_t          responseBufferLength = 0;
   TBoolean        isPayloadFreeRequired = E_FALSE;
 
   M_COMM__API_START();
@@ -716,12 +701,10 @@ TCommIfStatus commMessageExchange
     gCommInterfaceObj.maxRetries = C_COMM_INTERFACE_COAP_MAX_RESENDING_RETRIES;
     gCommInterfaceObj.lastRecivedMessageId = 0;
 
-    status = commCoapBuildAndSendMessage(xpMessageToSend, xSendSize);
-
-    if (E_K_COMM_STATUS_OK != status)
+    if (E_K_COMM_STATUS_OK != commCoapBuildAndSendMessage(xpMessageToSend, xSendSize))
     {
-      M_COMM__ERROR(("commCoapBuildAndSendMessage Failed %d", status));
-      commStatus = commConvertError(status);
+      M_COMM__ERROR(("commCoapBuildAndSendMessage Failed"));
+      commStatus = commConvertError(E_K_COMM_STATUS_ERROR);
       break;
     }
 
@@ -730,14 +713,14 @@ TCommIfStatus commMessageExchange
 
     do
     {
-      responseBufferLength = gCommInterfaceObj.mtuSize;
       gCommInterfaceObj.exchangeStatus = E_K_COMM_STATUS_ERROR;
-      status = salSocketReceiveFrom(gCommInterfaceObj.pSocket,
-                                    gCommInterfaceObj.pResponseBuffer,
-                                    &responseBufferLength,
-                                    &ip);
+      size_t responseBufferLength = gCommInterfaceObj.mtuSize;
+      TKCommStatus recvStatus = salSocketReceiveFrom(gCommInterfaceObj.pSocket,
+                                                     gCommInterfaceObj.pResponseBuffer,
+                                                     &responseBufferLength,
+                                                     &ip);
 
-      switch (status)
+      switch (recvStatus)
       {
         case E_K_COMM_STATUS_OK:
         {
@@ -776,14 +759,14 @@ TCommIfStatus commMessageExchange
             M_COMM__ERROR(("Max Retry Count reached%d Stopping.", gCommInterfaceObj.maxRetries));
           }
 
-          M_COMM__INFO(("sn_coap_protocol_exec %d", status));
+          M_COMM__INFO(("sn_coap_protocol_exec %d", recvStatus));
         }
         break;
 
         case E_K_COMM_STATUS_ERROR:
         default:
         {
-          M_COMM__ERROR(("Unknow status code %d", status));
+          M_COMM__ERROR(("Unknow status code %d", recvStatus));
           gCommInterfaceObj.isExchangeTerminated = E_TRUE;
           gCommInterfaceObj.exchangeStatus = E_K_COMM_STATUS_DATA;
         }
@@ -980,7 +963,7 @@ static void terminateCoapProtocol
 
   if (NULL != gCommInterfaceObj.pCoapHandle)
   {
-    sn_coap_protocol_destroy(gCommInterfaceObj.pCoapHandle);
+    (void)sn_coap_protocol_destroy(gCommInterfaceObj.pCoapHandle);
     gCommInterfaceObj.pCoapHandle = NULL;
   }
 
@@ -1068,7 +1051,7 @@ static sn_coap_hdr_s* pGetDefaultCoapHeader
     pCoapHeader->content_format = COAP_CT_OCTET_STREAM;     /* CoAP content type. */
     pCoapHeader->payload_len = xPayloadLen;                 /* Body length. */
     pCoapHeader->payload_ptr = (uint8_t*)xpPayload;         /* Body pointer. */
-    pCoapHeader->options_list_ptr = 0;                      /* Optional: options list. */
+    pCoapHeader->options_list_ptr = NULL;                   /* Optional: options list. */
     pCoapHeader->token_len = sizeof(coapToken);
     pCoapHeader->token_ptr = M_COMM_INTERFACE_MALLOC(pCoapHeader->token_len);
 
@@ -1078,7 +1061,7 @@ static sn_coap_hdr_s* pGetDefaultCoapHeader
       break;
     }
 
-    (void)memcpy(pCoapHeader->token_ptr, &coapToken, pCoapHeader->token_len);
+    (void)memcpy(pCoapHeader->token_ptr, (const uint8_t*)&coapToken, pCoapHeader->token_len);
 
     /* Message ID is used to track request->response patterns, because we're
      * using UDP (so everything is unconfirmed).
@@ -1140,13 +1123,13 @@ static uint16_t getCoapBlockSizeUsingMtu
 {
   /* valid CoAP block sizes are 16, 32, 64, 128, 256, 512 and 1024. */
   uint16_t aBlockSizeArray[] = {16, 32, 64, 128, 256, 512, 1024};
-  uint32_t blockIndex = 0;
+  uint32_t blockIndex;
   uint32_t blockEndIndex = sizeof(aBlockSizeArray) / sizeof(aBlockSizeArray[0]) - 1U;
 
   M_COMM__API_START();
 
   /* Pick the nearest coap block size for the received MTU size. */
-  for (blockIndex = blockEndIndex; blockIndex >= 0U; --blockIndex)
+  for (blockIndex = blockEndIndex; blockIndex > 0U; --blockIndex)
   {
     if (xMtuValue >= aBlockSizeArray[blockIndex])
     {
@@ -1154,7 +1137,7 @@ static uint16_t getCoapBlockSizeUsingMtu
     }
   }
 
-  M_COMM__INFO(("Block Size %d", aBlockSizeArray[blockIndex]));
+  M_COMM__INFO(("Block Size %u", aBlockSizeArray[blockIndex]));
   M_COMM__API_END();
 
   /* Default block size is 16. */
@@ -1222,9 +1205,6 @@ static TKCommStatus commCoapBuildAndSendMessage
   TKCommStatus    status = E_K_COMM_STATUS_ERROR;
   sn_coap_hdr_s*  pCoapResponsePtr = NULL;
   uint8_t*        pTxMessageBuffer = NULL;
-  uint16_t        txBufferSize = 0;
-  int16_t         lengthAndStatus = -1;
-  int8_t          coapStatus = -1;
 
   M_COMM__API_START();
 
@@ -1241,27 +1221,23 @@ static TKCommStatus commCoapBuildAndSendMessage
       break;
     }
 
-    coapStatus = sn_coap_protocol_set_block_size(gCommInterfaceObj.pCoapHandle,
-                                                 gCommInterfaceObj.coapBlockSize);
-
-    if (0 != coapStatus)
+    if (0 != sn_coap_protocol_set_block_size(gCommInterfaceObj.pCoapHandle,
+                                             gCommInterfaceObj.coapBlockSize))
     {
-      M_COMM__ERROR(("sn_coap_protocol_set_block_size Failed status[%d]", coapStatus));
+      M_COMM__ERROR(("sn_coap_protocol_set_block_size Failed"));
       status = E_K_COMM_STATUS_DATA;
       break;
     }
 
-    coapStatus = prepare_blockwise_message(gCommInterfaceObj.pCoapHandle, pCoapResponsePtr);
-
-    if (0 != coapStatus)
+    if (0 != prepare_blockwise_message(gCommInterfaceObj.pCoapHandle, pCoapResponsePtr))
     {
-      M_COMM__ERROR(("prepare_blockwise_message Failed status[%d]", coapStatus));
+      M_COMM__ERROR(("prepare_blockwise_message Failed"));
       status = E_K_COMM_STATUS_DATA;
       break;
     }
 
-    txBufferSize = sn_coap_builder_calc_needed_packet_data_size_2(pCoapResponsePtr,
-                   gCommInterfaceObj.coapBlockSize);
+    uint16_t txBufferSize = sn_coap_builder_calc_needed_packet_data_size_2(pCoapResponsePtr,
+                       gCommInterfaceObj.coapBlockSize);
 
     if (0U == txBufferSize)
     {
@@ -1281,12 +1257,12 @@ static TKCommStatus commCoapBuildAndSendMessage
 
     (void)memset(pTxMessageBuffer, 0, txBufferSize);
 
-    lengthAndStatus = sn_coap_protocol_build(gCommInterfaceObj.pCoapHandle,
-                                             &gCommInterfaceObj.dstAddress,
-                                             pTxMessageBuffer,
-                                             pCoapResponsePtr,
-                                             NULL,
-                                             getRelativeTimeInSec());
+    int16_t lengthAndStatus = sn_coap_protocol_build(gCommInterfaceObj.pCoapHandle,
+                                                     &gCommInterfaceObj.dstAddress,
+                                                     pTxMessageBuffer,
+                                                     pCoapResponsePtr,
+                                                     NULL,
+                                                     getRelativeTimeInSec());
 
     if (lengthAndStatus <= 0x00)
     {
@@ -1318,15 +1294,10 @@ static TKCommStatus commCoapPrepareAndSendBlock2Message
   const int32_t  xBlock2
 )
 {
-  TKCommStatus             status = E_K_COMM_STATUS_ERROR;
-  uint8_t*                 pTxMessageBuffer = NULL;
-  sn_coap_hdr_s*           pCoapResponsePtr = NULL;
-  sn_coap_options_list_s*  pOptionList = NULL;
-  uint32_t                 blockNumber = 0;
-  uint16_t                 txBufferSize = 0;
-  int16_t                  coapStatus = 0;
-  int16_t                  lengthAndStatus = -1;
-  uint8_t                  blockTemp = 0;
+  TKCommStatus status = E_K_COMM_STATUS_ERROR;
+  uint8_t* pTxMessageBuffer = NULL;
+  sn_coap_hdr_s* pCoapResponsePtr = NULL;
+  sn_coap_options_list_s* pOptionList = NULL;
 
   M_COMM__API_START();
 
@@ -1341,11 +1312,9 @@ static TKCommStatus commCoapPrepareAndSendBlock2Message
       break;
     }
 
-    coapStatus = prepare_blockwise_message(gCommInterfaceObj.pCoapHandle, pCoapResponsePtr);
-
-    if (0 != coapStatus)
+    if (0 != prepare_blockwise_message(gCommInterfaceObj.pCoapHandle, pCoapResponsePtr))
     {
-      M_COMM__ERROR(("prepare_blockwise_message Failed status[%d]", coapStatus));
+      M_COMM__ERROR(("prepare_blockwise_message Failed"));
       status = E_K_COMM_STATUS_DATA;
       break;
     }
@@ -1359,14 +1328,11 @@ static TKCommStatus commCoapPrepareAndSendBlock2Message
       break;
     }
 
-    blockTemp = ((uint8_t)xBlock2 & 0x07u);
-    blockNumber = ((uint32_t)xBlock2 >> 4u);
-    blockNumber++;
-    pOptionList->block2 = (blockNumber << 4) | blockTemp;
+    pOptionList->block2 = (((((uint32_t)xBlock2 >> 4u) + 1) << 4) | ((uint8_t)xBlock2 & 0x07u));
 
-    txBufferSize = sn_coap_builder_calc_needed_packet_data_size_2(
-                     pCoapResponsePtr,
-                     gCommInterfaceObj.coapBlockSize);
+    uint16_t txBufferSize = sn_coap_builder_calc_needed_packet_data_size_2(
+      pCoapResponsePtr,
+      gCommInterfaceObj.coapBlockSize);
 
     if (0U == txBufferSize)
     {
@@ -1386,14 +1352,14 @@ static TKCommStatus commCoapPrepareAndSendBlock2Message
 
     (void)memset(pTxMessageBuffer, 0, txBufferSize);
 
-    lengthAndStatus = sn_coap_protocol_build(gCommInterfaceObj.pCoapHandle,
-                                             &gCommInterfaceObj.dstAddress,
-                                             pTxMessageBuffer,
-                                             pCoapResponsePtr,
-                                             NULL,
-                                             getRelativeTimeInSec());
+    int16_t lengthAndStatus = sn_coap_protocol_build(gCommInterfaceObj.pCoapHandle,
+      &gCommInterfaceObj.dstAddress,
+      pTxMessageBuffer,
+      pCoapResponsePtr,
+      NULL,
+      getRelativeTimeInSec());
 
-    if (0x00 >= lengthAndStatus)
+    if (lengthAndStatus <= 0x00)
     {
       M_COMM__ERROR(("sn_coap_protocol_build Failed"));
       status = E_K_COMM_STATUS_DATA;
@@ -1495,15 +1461,11 @@ static void commCoapWaitForData
   struct coap_s*  xpCoapHandle
 )
 {
-  uint32_t  currentTime = 0;
-  int8_t    execStatus = -1;
-
   M_COMM__API_START();
 
   if ((NULL != xpCoapHandle) && (E_TRUE == gCommInterfaceObj.isInitialized))
   {
-    currentTime = getRelativeTimeInSec();
-    execStatus = sn_coap_protocol_exec(xpCoapHandle, currentTime);
+    int8_t execStatus = sn_coap_protocol_exec(xpCoapHandle, getRelativeTimeInSec());
 
     if (0 == execStatus)
     {

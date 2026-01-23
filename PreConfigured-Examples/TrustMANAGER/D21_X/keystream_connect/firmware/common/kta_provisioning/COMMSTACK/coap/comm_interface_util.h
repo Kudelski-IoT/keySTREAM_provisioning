@@ -1,7 +1,7 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2025 Nagravision Sàrl
 
 * Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -50,8 +50,6 @@ extern "C" {
 #include "k_sal_socket.h"
 #include "k_sal_os.h"
 #include "k_sal_random.h"
-
-#include <stdio.h>
 
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */

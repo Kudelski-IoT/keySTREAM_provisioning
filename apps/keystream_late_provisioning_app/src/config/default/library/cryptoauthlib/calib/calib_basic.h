@@ -244,7 +244,7 @@ typedef struct atca_sha256_ctx
 {
     uint32_t total_msg_size;                    //!< Total number of message bytes processed
     uint32_t block_size;                        //!< Number of bytes in current block
-    uint8_t  block[ATCA_SHA256_BLOCK_SIZE * 2]; //!< Unprocessed message storage
+    uint8_t  block[ATCA_SHA256_BLOCK_SIZE * 2u];//!< Unprocessed message storage
 } atca_sha256_ctx_t;
 
 typedef atca_sha256_ctx_t atca_hmac_sha256_ctx_t;

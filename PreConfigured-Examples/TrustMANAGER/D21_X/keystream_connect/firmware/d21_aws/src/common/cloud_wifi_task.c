@@ -37,6 +37,8 @@
 #include <stdint.h>
 #include "ecc_types.h"
 #include "kta_handler.h"
+#include "k_version.h"
+#include "atca_version.h"
 
 #ifdef FOTA_ENABLE
 #include "k_sal_fota.h"
@@ -771,6 +773,12 @@ int cloud_wifi_init(DRV_HANDLE handle)
         APP_DebugPrintf("Driver Ver: %u.%u.%u\r\n", M2M_RELEASE_VERSION_MAJOR_NO, M2M_RELEASE_VERSION_MINOR_NO, M2M_RELEASE_VERSION_PATCH_NO);
         APP_DebugPrintf("Driver Built at %s Time %s\r\n\r\n", __DATE__, __TIME__);
 
+        APP_DebugPrintf("########################################\r\n");
+        APP_DebugPrintf("   Built: %s %s\r\n", __DATE__, __TIME__);
+        APP_DebugPrintf("   KTA Version: %d.%d.%d\r\n", C_K_KTA__VERSION_MAJOR, C_K_KTA__VERSION_MINOR, C_K_KTA__VERSION_PATCH);
+        APP_DebugPrintf("   CAL Version: %d.%d.%d\r\n", ATCA_LIBRARY_VERSION_MAJOR, ATCA_LIBRARY_VERSION_MINOR, ATCA_LIBRARY_VERSION_BUILD);
+        APP_DebugPrintf("########################################\r\n\r\n");
+
         APP_DebugPrintf("Secure Element Address: 0x%02X \r\n", SECURE_ELEMENT_ADDRESS);
         APP_DebugPrintf("Cloud Endpoint: %s \r\n", CLOUD_ENDPOINT);
     #ifdef CLOUD_CONNECT_WITH_CUSTOM_CERTS
@@ -795,115 +803,12 @@ int cloud_wifi_init(DRV_HANDLE handle)
         MQTTClientInit(&g_mqtt_client, &g_mqtt_network, MQTT_COMMAND_TIMEOUT_MS,
                        g_mqtt_tx_buffer, sizeof(g_mqtt_tx_buffer),
                        g_mqtt_rx_buffer, sizeof(g_mqtt_rx_buffer));
-
     }
     while (0);
 
 
     return status;
 }
-
-#ifdef FOTA_ENABLE
-void printFotaStatus(TKFotaStatus status)
-{
-    switch (status)
-    {
-        case E_K_FOTA_SUCCESS:
-            APP_DebugPrintf("FOTA status E_K_FOTA_SUCCESS.\r\n");
-            break;
-        case E_K_FOTA_ERROR:
-            APP_DebugPrintf("FOTA status E_K_FOTA_ERROR. \r\n");
-            break;
-        case E_K_FOTA_IN_PROGRESS:
-            APP_DebugPrintf("FOTA status E_K_FOTA_IN_PROGRESS.\r\n");
-            break;
-        default:
-            break;
-    }
-}
-void Fota_Test()
-{
-
-    APP_DebugPrintf("\r\nFota_Test start \r\n\r\n");
-
-    uint8_t ComponentName1[] = {0x63, 0x61, 0x6C};
-    uint8_t ComponentName2[] = {0x4b, 0x54, 0x41};
-    uint8_t ComponentVersion1[] ={0x33, 0x2E, 0x32, 0x2E, 0x30};
-    uint8_t ComponentVersion2[] ={0x33, 0x2E, 0x32, 0x2E, 0x30};
-
-    uint8_t Url[] = {0x68, 0x74, 0x74, 0x70, 0x3a, 0x2f, 0x2f, 0x65, \
-                     0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63, \
-                     0x6f, 0x6d, 0x2f, 0x63, 0x61, 0x6c};
-    uint8_t FOTA_NAME[] = {0x46, 0x4F, 0x54, 0x41, 0x5F, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45}; // "FOTA_UPDATE" in HEX
-    uint8_t FOTA_METADATA[] = {0x4D, 0x45, 0x54, 0x41, 0x44, 0x41, 0x54, 0x41}; // "METADATA" in HEX
-    uint8_t errorCode = 0;
-    uint8_t FOTA_Error_Cause[16] = {0};
-    TTargetComponent targetComponents[COMPONENTS_MAX] = {0};
- 
-    targetComponents[0].componentTargetName = (uint8_t *)&ComponentName1;
-    targetComponents[0].componentTargetNameLen = sizeof(ComponentName1);
-    targetComponents[0].componentTargetVersion = (uint8_t *)&ComponentVersion1;
-    targetComponents[0].componentTargetVersionLen = sizeof(ComponentVersion1);
-    targetComponents[0].componentUrl = (uint8_t *)&Url;
-    targetComponents[0].componentUrlLen = sizeof(Url);
-
-    targetComponents[1].componentTargetName = (uint8_t *)&ComponentName2;
-    targetComponents[1].componentTargetNameLen = sizeof(ComponentName2);
-    targetComponents[1].componentTargetVersion = (uint8_t *)&ComponentVersion2;
-    targetComponents[1].componentTargetVersionLen = sizeof(ComponentVersion2);
-    targetComponents[1].componentUrl = (uint8_t *)&Url;
-    targetComponents[1].componentUrlLen = sizeof(Url);
-    
-    TFotaError fotaError = {0};
-    fotaError.fotaErrorCause = (uint8_t *)&FOTA_Error_Cause;
-    fotaError.fotaErrorCauseLen = sizeof(FOTA_Error_Cause);
-    
-    fotaError.fotaErrorCode = (uint8_t *)&errorCode;
-    fotaError.fotaErrorCodeLen = 1;
-    TComponent components[COMPONENTS_MAX] = {0};
-    TKFotaStatus status = E_K_FOTA_ERROR;
-   
-    APP_DebugPrintf("\r\nCalling salFotaInstall \r\n");
-    status = salFotaInstall((uint8_t *)&FOTA_NAME,
-                                         sizeof(FOTA_NAME),
-                                         (uint8_t *)&FOTA_METADATA,
-                                         sizeof(FOTA_METADATA),
-                                         targetComponents,
-                                         &fotaError,
-                                         components);
-    APP_DebugPrintf("salFotaInstall returned %d\r\n", status);
-    printFotaStatus(status);
-
-    /* Updating Component status to SUCCESS for testing */
-    APP_DebugPrintf("\r\nCalling fotaUpdateComponent to set E_FOTA_STATE_SUCCESS \r\n");
-    fotaUpdateComponent(ComponentName1, 3, ComponentVersion1, 5, E_FOTA_STATE_SUCCESS);
-    fotaUpdateComponent(ComponentName2, 3, ComponentVersion2, 5, E_FOTA_STATE_SUCCESS);
-    
-    APP_DebugPrintf("\r\nCalling salFotaGetStatus \r\n");
-    status = salFotaGetStatus((uint8_t*)&FOTA_NAME, sizeof(FOTA_NAME), &fotaError, components);
-    APP_DebugPrintf("salFotaGetStatus returned %d\r\n", status);
-    printFotaStatus(status);
-
-
-    APP_DebugPrintf("\r\nCalling salDeviceGetInfo \r\n");
-    status = salDeviceGetInfo(components);
-    APP_DebugPrintf("SalDeviceGetInfo returned %d\r\n", status);
-    printFotaStatus(status);
-    if(E_K_FOTA_SUCCESS == status)
-    {
-        for (size_t i = 0; i < COMPONENTS_MAX; i++) {
-            if (components[i].componentNameLen > 0) {
-                APP_DebugPrintf("Component: %s \t Version: %s\r\n",
-                                 components[i].componentName,
-                                 components[i].componentVersion);
-            }
-        }
-    }
-
-    APP_DebugPrintf("\r\nFota Test End.\r\n\r\n");
-
-}
-#endif // FOTA_ENABLE
 
 void APP_ExampleTasks(DRV_HANDLE handle)
 {
@@ -1002,11 +907,6 @@ void APP_ExampleTasks(DRV_HANDLE handle)
 
             if (isReadOnce)
                 return;  // Exit if already executed.
-
-#ifdef FOTA_ENABLE
-            // Test Fota usecase
-            Fota_Test();
-#endif
 
             // Local buffers for data, metadata, and UID
             uint8_t dataBuffer[MAX_DATA_SIZE];

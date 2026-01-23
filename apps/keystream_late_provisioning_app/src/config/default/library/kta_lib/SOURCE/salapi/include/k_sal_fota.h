@@ -27,7 +27,7 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 
 #define CURRENT_MAX_LENGTH                                              (16u)
-#define COMPONENTS_MAX                                                  (8u)
+#define COMPONENTS_MAX                                                  (1u)
 #define ERROR_CODE_LEN                                                  (1u)
 #define FOTA_STATE_LEN                                                  (1u)
 

@@ -1,19 +1,21 @@
 ---
 title: "keySTREAM Trusted Agent Release Notes"
-date:  "2025.10.15"
+date:  "2026.01.23"
 author: "Kudelski IoT"
 ---
-# Release v1.4.1 (15/10/2025)
+
+# Release v1.4.4 (23/01/2026)
 
 ## New features/Changes in this version
+- TPDS FOTA app updated to support with and without smart EEPROM.
+- Improved communication stack code updated to handle retries.
+- Updated kta wrapper file with new commstack changes.
 
 ## Fixed issues
-- Fixed JIRA issues:
-  - LPM-33 : KeySTREAM FoTA Usecase - FoTA name mismatch fix
-  - LPM-32 : SG41 TPDS Eng release Feedback
-  - LPM-28 : KTA delivery/doc improvements
-  - LPM-17 : KTA - Coverity report
-  - LPM-4  : Slot8 issue after FOTA : KTA version was reading as 0 instead of correct version.
+- N/A
+
+## Known Issues
+- N/A
 
 ## Features list
 | Feature                                                              | ATECC608 |
@@ -24,22 +26,131 @@ author: "Kudelski IoT"
 | Mutable Fleet Profile                                                |    1     |
 | Certificate renewal                                                  |    1     |
 | key renewal                                                          |    1     |
+| Symmetric key service                                                |    1     |
+| Signing public key service                                           |    1     |
 | FOTA service                                                         |    1     |
 
 ## Compatibility
 - This version is compatible with
-- CAL Version       - 3.7.8
-- keySTREAM Version - 1.30
+- CAL Version       - 3.7.9
+- keySTREAM Version - 1.30.3
 
 ## Open source information
 - NA
 
 ## Identifier
-- Git Tag: v1.4.1
+- Git Tag: v1.4.4
 
 ---
 
 # History
+
+## Release v1.4.3 (06/01/2026)
+
+### New features/Changes in this version
+- FOTA code refined to support storage
+- TPDS fota application updated with FOTA storage with EEPROM on SG41
+
+### Fixed issues
+- N/A
+
+### Known Issues
+- N/A
+
+### Features list
+| Feature                                                              | ATECC608 |
+| ---                                                                  | ---      |
+| Onboarding with certificate validation with basic key(E256)          |    1     |
+| Onboarding with certificate validation with advance key(E384,E521..) |    0     |
+| Onboarding without certificate validation                            |    0     |
+| Mutable Fleet Profile                                                |    1     |
+| Certificate renewal                                                  |    1     |
+| key renewal                                                          |    1     |
+| Symmetric key service                                                |    1     |
+| Signing public key service                                           |    1     |
+| FOTA service                                                         |    1     |
+
+### Compatibility
+- This version is compatible with
+- CAL Version       - 3.7.9
+- keySTREAM Version - 1.30.3
+
+### Open source information
+- NA
+
+### Identifier
+- Git Tag: v1.4.3
+
+## Release v1.4.2 (02/12/2025)
+
+### New features/Changes in this version
+- KTA code refined to reduce footprint.
+- An application is now available wiht KTA integrated for ESP32 + ATECC608 Trust Manager
+  - Usecases supported : Onboarding, renewal certificate, renewal key, refurbsh and remove device
+
+### Fixed issues
+- N/A
+
+### Known Issues
+- Symmetric key/ Signing public key provisioning not working
+
+### Features list
+| Feature                                                              | ATECC608 |
+| ---                                                                  | ---      |
+| Onboarding with certificate validation with basic key(E256)          |    1     |
+| Onboarding with certificate validation with advance key(E384,E521..) |    0     |
+| Onboarding without certificate validation                            |    0     |
+| Mutable Fleet Profile                                                |    1     |
+| Certificate renewal                                                  |    1     |
+| key renewal                                                          |    1     |
+| Symmetric key service                                                |    1     |
+| Signing public key service                                           |    1     |
+| FOTA service                                                         |    1     |
+
+### Compatibility
+- This version is compatible with
+- CAL Version       - 3.7.9
+- keySTREAM Version - 1.30.3
+
+### Open source information
+- NA
+
+### Identifier
+- Git Tag: v1.4.2
+
+## Release v1.4.1 (15/10/2025)
+
+### New features/Changes in this version
+
+### Fixed issues
+- Fixed JIRA issues:
+  - LPM-33 : KeySTREAM FoTA Usecase - FoTA name mismatch fix
+  - LPM-32 : SG41 TPDS Eng release Feedback
+  - LPM-28 : KTA delivery/doc improvements
+  - LPM-17 : KTA - Coverity report
+  - LPM-4  : Slot8 issue after FOTA : KTA version was reading as 0 instead of correct version.
+
+### Features list
+| Feature                                                              | ATECC608 |
+| ---                                                                  | ---      |
+| Onboarding with certificate validation with basic key(E256)          |    1     |
+| Onboarding with certificate validation with advance key(E384,E521..) |    0     |
+| Onboarding without certificate validation                            |    0     |
+| Mutable Fleet Profile                                                |    1     |
+| Certificate renewal                                                  |    1     |
+| key renewal                                                          |    1     |
+| FOTA service                                                         |    1     |
+
+### Compatibility
+- This version is compatible with
+- CAL Version       - 3.7.8
+- keySTREAM Version - 1.30
+
+### Open source information
+- NA
+
+### Identifier
+- Git Tag: v1.4.1
 
 ## Release v1.3.0 (22/05/2025)
 

@@ -87,7 +87,7 @@ void calib_packet_free(ATCAPacket* packet)
     {
         if (&calib_packet_cache[i].packet_pool == packet) 
         {
-            memset(&calib_packet_cache[i].packet_pool, 0x00, sizeof(ATCAPacket)); 
+            (void)memset(&calib_packet_cache[i].packet_pool, 0x00, sizeof(ATCAPacket)); 
             calib_packet_cache[i].used = false; 
             break;
         }

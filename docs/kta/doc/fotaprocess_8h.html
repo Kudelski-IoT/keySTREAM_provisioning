@@ -155,6 +155,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aaf74514c84ad3f2286ad12f55e2007e2"><td class="memItemLeft" align="right" valign="top">TKFotaStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fotaprocess_8h.html#aaf74514c84ad3f2286ad12f55e2007e2">fotaUpdateComponent</a> (const uint8_t *componentName, const size_t componentNameLen, const uint8_t *componentVersion, const size_t componentVersionLen, <a class="el" href="fotaprocess_8h.html#a0dc923906125cbf02c78ba17293c13bc">TFotaState</a> state)</td></tr>
 <tr class="memdesc:aaf74514c84ad3f2286ad12f55e2007e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the information of a specific component in the FOTA process.  <a href="fotaprocess_8h.html#aaf74514c84ad3f2286ad12f55e2007e2">More...</a><br /></td></tr>
 <tr class="separator:aaf74514c84ad3f2286ad12f55e2007e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b6c1741ffb674067f1a7cfd84816a52"><td class="memItemLeft" align="right" valign="top">TKFotaStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fotaprocess_8h.html#a9b6c1741ffb674067f1a7cfd84816a52">fotaGetTargetComponents</a> (TFotaComponentRecord *xpTargetComponents, uint8_t *xpNumComponents)</td></tr>
+<tr class="memdesc:a9b6c1741ffb674067f1a7cfd84816a52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves target component list from storage.  <a href="fotaprocess_8h.html#a9b6c1741ffb674067f1a7cfd84816a52">More...</a><br /></td></tr>
+<tr class="separator:a9b6c1741ffb674067f1a7cfd84816a52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Fota Agent Process. </p>
@@ -539,6 +542,50 @@ Functions</h2></td></tr>
 </ul>
 </dd></dl>
 <p>Updates the information of a specific component in the FOTA process. </p>
+
+</div>
+</div>
+<a id="a9b6c1741ffb674067f1a7cfd84816a52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b6c1741ffb674067f1a7cfd84816a52">&#9670;&nbsp;</a></span>fotaGetTargetComponents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TKFotaStatus fotaGetTargetComponents </td>
+          <td>(</td>
+          <td class="paramtype">TFotaComponentRecord *&#160;</td>
+          <td class="paramname"><em>xpTargetComponents</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>xpNumComponents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves target component list from storage. </p>
+<p>This function reads the target component information (name, version, state, and URL) from storage for all components. Application can call this API to get the list of target components that were stored during FOTA download and installation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">xpTargetComponents</td><td>Pointer to array to store target component records. Should be allocated for COMPONENTS_MAX entries. Should not be NULL. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">xpNumComponents</td><td>Pointer to store the number of valid components found. Should not be NULL.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>TKFotaStatus indicating the status of the operation.<ul>
+<li>E_K_FOTA_SUCCESS: Successfully retrieved target components from storage.</li>
+<li>E_K_FOTA_ERROR: Failed to retrieve target components.</li>
+</ul>
+</dd></dl>
+<p>Retrieves target component list from storage. </p>
 
 </div>
 </div>
