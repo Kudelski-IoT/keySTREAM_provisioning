@@ -60,19 +60,20 @@
  */
 ATCA_STATUS calib_write(ATCADevice device, uint8_t zone, uint16_t address, const uint8_t *value, const uint8_t *mac)
 {
-    ATCAPacket * packet = calib_packet_alloc();
+    ATCAPacket * packet = NULL;
     ATCA_STATUS status;
     bool require_mac = false;
-
-    if(NULL == packet)
-    {
-        (void)ATCA_TRACE(ATCA_ALLOC_FAILURE, "calib_packet_alloc - failed");
-        return ATCA_ALLOC_FAILURE;
-    }
 
     if ((device == NULL) || (value == NULL))
     {
         return ATCA_TRACE(ATCA_BAD_PARAM, "NULL pointer received");
+    }
+    
+    packet = calib_packet_alloc();
+    if(NULL == packet)
+    {
+        (void)ATCA_TRACE(ATCA_ALLOC_FAILURE, "calib_packet_alloc - failed");
+        return ATCA_ALLOC_FAILURE;
     }
 
     #if (CA_MAX_PACKET_SIZE < (ATCA_CMD_SIZE_MIN + 32u + MAC_SIZE))
@@ -768,7 +769,7 @@ ATCA_STATUS calib_ca2_write_config_counter(ATCADevice device, uint8_t counter_id
     bin_a = (uint16_t)(counter_value / 96u);
     bin_b = (counter_value >= 48u) ? ((uint16_t)((counter_value - 48u) / 96u)) : 0u;
     /* coverity[misra_c_2012_rule_12_2_violation] Shifting more than 63 bits doesnot harm the functonality */
-    lin_a = (uint64_t)(0xFFFFFFFFFFFFu >> (counter_value % 96u));
+    lin_a = (uint64_t)(0xFFFFFFFFFFFFULL >> (counter_value % 96u));
     lin_b = (uint64_t)(0xFFFFFFFFFFFFu >> ((counter_value >= 48u) ? (counter_value - 48u) % 96u : 0u));
 
     bin_a = ATCA_UINT16_HOST_TO_BE(bin_a);

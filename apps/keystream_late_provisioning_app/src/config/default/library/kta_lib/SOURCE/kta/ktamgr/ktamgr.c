@@ -289,6 +289,220 @@ static TKStatus lCheckKs2KtaMessage
   TKParserStatus*         xpParserStatus
 );
 
+/**
+ * @brief
+ *   Handle INIT lifecycle state for device information setup.
+ *
+ * @param[in] xpDeviceProfilePublicUid
+ *   Device profile public UID
+ * @param[in] xDeviceProfilePublicUidSize
+ *   Size of device profile public UID
+ * @param[in] xpDeviceSerialNum
+ *   Device serial number
+ * @param[in] xDeviceSerialNumSize
+ *   Size of device serial number
+ * @param[out] xpConnectionRequest
+ *   Connection request flag
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_ERROR for other errors.
+ */
+static TKStatus lHandleInitLifeCycleState
+(
+  const uint8_t*  xpDeviceProfilePublicUid,
+  size_t          xDeviceProfilePublicUidSize,
+  const uint8_t*  xpDeviceSerialNum,
+  size_t          xDeviceSerialNumSize,
+  uint8_t*        xpConnectionRequest
+);
+
+/**
+ * @brief
+ *   Handle PROVISIONED lifecycle state version comparison.
+ *
+ * @param[out] xpConnectionRequest
+ *   Connection request flag based on version comparison
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ */
+static TKStatus lHandleProvisionedLifeCycleState
+(
+  uint8_t*  xpConnectionRequest
+);
+
+
+
+/**
+ * @brief
+ *   Process NoOp lifecycle state transitions.
+ *
+ * @param[in] xpRecvdProtoMessage
+ *   Received protocol message
+ * @param[in,out] xpKta2ksMsgLen
+ *   [in] Buffer size
+ *   [out] Response message length (set to 0 on error)
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_ERROR for other errors.
+ */
+static TKStatus lProcessNoOpLifecycleTransition
+(
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  size_t*                 xpKta2ksMsgLen
+);
+
+/**
+ * @brief
+ *   Process activation request for sealed state with no incoming message.
+ *
+ * @param[in,out] xpKta2ksMsg
+ *   [in] Buffer to store activation request
+ *   [out] Filled activation request message
+ * @param[in,out] xpKta2ksMsgLen
+ *   [in] Buffer size
+ *   [out] Actual message length
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_ERROR for other errors.
+ */
+static TKStatus lProcessSealedStateActivationRequest
+(
+  uint8_t*  xpKta2ksMsg,
+  size_t*   xpKta2ksMsgLen
+);
+
+/**
+ * @brief
+ *   Process pre-activated state handling.
+ *
+ * @param[in] xpRecvdProtoMessage
+ *   Received protocol message
+ * @param[in,out] xpKta2ksMsg
+ *   [in] Buffer to store response
+ *   [out] Filled response message
+ * @param[in,out] xpKta2ksMsgLen
+ *   [in] Buffer size
+ *   [out] Actual message length
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_ERROR for other errors.
+ */
+static TKStatus lProcessPreActivatedState
+(
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  uint8_t*                xpKta2ksMsg,
+  size_t*                 xpKta2ksMsgLen
+);
+
+/**
+ * @brief
+ *   Process first activation (not pre-activated).
+ *
+ * @param[in] xpRecvdProtoMessage
+ *   Received protocol message
+ * @param[in,out] xpKta2ksMsg
+ *   [in] Buffer to store response
+ *   [out] Filled response message
+ * @param[in,out] xpKta2ksMsgLen
+ *   [in] Buffer size
+ *   [out] Actual message length
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_ERROR for other errors.
+ */
+static TKStatus lProcessFirstActivation
+(
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  uint8_t*                xpKta2ksMsg,
+  size_t*                 xpKta2ksMsgLen
+);
+
+/**
+ * @brief
+ *   Process sealed state with incoming message.
+ *
+ * @param[in] xpKs2ktaMsg
+ *   Message from server
+ * @param[in] xKs2ktaMsgLen
+ *   Message length
+ * @param[in,out] xpKta2ksMsg
+ *   [in] Buffer to store response
+ *   [out] Filled response message
+ * @param[in,out] xpKta2ksMsgLen
+ *   [in] Buffer size
+ *   [out] Actual message length
+ * @param[in] xpClearMsg
+ *   Clear message buffer
+ * @param[in] xClearMsgLen
+ *   Clear message buffer size
+ * @param[in,out] xpRecvdProtoMessage
+ *   [in] Protocol message structure
+ *   [out] Filled protocol message
+ * @param[in,out] xpParserStatus
+ *   [in,out] Parser status
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_ERROR for other errors.
+ */
+static TKStatus lProcessSealedStateMessage
+(
+  const uint8_t*          xpKs2ktaMsg,
+  size_t                  xKs2ktaMsgLen,
+  uint8_t*                xpKta2ksMsg,
+  size_t*                 xpKta2ksMsgLen,
+  uint8_t*                xpClearMsg,
+  size_t                  xClearMsgLen,
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  TKParserStatus*         xpParserStatus
+);
+
+/**
+ * @brief
+ *   Process activated/provisioned state handling.
+ *
+ * @param[in] xpKs2ktaMsg
+ *   Message from server
+ * @param[in] xKs2ktaMsgLen
+ *   Message length
+ * @param[in,out] xpKta2ksMsg
+ *   [in] Buffer to store response
+ *   [out] Filled response message
+ * @param[in,out] xpKta2ksMsgLen
+ *   [in] Buffer size
+ *   [out] Actual message length
+ * @param[in] xpClearMsg
+ *   Clear message buffer
+ * @param[in] xClearMsgLen
+ *   Clear message buffer size
+ * @param[in,out] xpRecvdProtoMessage
+ *   [in] Protocol message structure
+ *   [out] Filled protocol message
+ * @param[in,out] xpParserStatus
+ *   [in,out] Parser status
+ *
+ * @return
+ * - E_K_STATUS_OK in case of success.
+ * - E_K_STATUS_ERROR for other errors.
+ */
+static TKStatus lProcessActivatedState
+(
+  const uint8_t*          xpKs2ktaMsg,
+  size_t                  xKs2ktaMsgLen,
+  uint8_t*                xpKta2ksMsg,
+  size_t*                 xpKta2ksMsgLen,
+  uint8_t*                xpClearMsg,
+  size_t                  xClearMsgLen,
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  TKParserStatus*         xpParserStatus
+);
+
 /* -------------------------------------------------------------------------- */
 /* PUBLIC VARIABLES                                                           */
 /* -------------------------------------------------------------------------- */
@@ -362,66 +576,71 @@ TKStatus ktaStartup
   {
     status = E_K_STATUS_PARAMETER;
     M_KTALOG__ERR("Invalid parameter passed");
+    M_KTALOG__END("End, status : %d", status);
+    return status;
   }
-  else
+
+  // REQ RQ_M-KTA-STRT-FN-0002(1) : Check KTA State
+  if (E_KTA_STATE_INITIALIZED != gKtaState)
   {
-    // REQ RQ_M-KTA-STRT-FN-0002(1) : Check KTA State
-    if (E_KTA_STATE_INITIALIZED == gKtaState)
+    M_KTALOG__END("End, status : %d", status);
+    return status;
+  }
+
+  M_KTALOG__DEBUG("Reading life cycle state from NVM...");
+  // REQ RQ_M-KTA-LCST-FN-0020(1) : Power off in INIT|INITIALIZED state
+  // REQ RQ_M-KTA-LCST-FN-0025(1) : Power off in INIT|STARTED state
+  status = lgetNVMLifeCycleState(&lifeCycleStateLen);
+  status = salStorageGetValue(C_K_KTA__VERSION_SLOT_ID, gaKtaVersion, &ktaVersionLen);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__DEBUG("Reading KTA Version failed with status:%d.\r\n", status);
+    goto end;
+  }
+
+  M_KTALOG__DEBUG("KTA Version in device is: %s\r\n", ktaGetDecodedVersionStr(gaKtaVersion));
+
+  if ((E_K_STATUS_OK != status) || (0U == lifeCycleStateLen))
+  {
+    M_KTALOG__ERR("Reading life cycle state from NVM failed, status = [%d]", status);
+    goto end;
+  }
+
+  M_KTALOG__DEBUG("Setting kta context configuration data to the platform");
+  // REQ RQ_M-KTA-STRT-FN-0050(1) : Set Context Information
+  // REQ RQ_M-KTA-STRT-FN-0060(1) : Set L1 Segmentaion Seed
+  status = ktaSetContextInfoConfig(xpL1SegSeed, xpKtaContextProfileUid,
+                                    xKtaContextProfileUidLen, xpKtaContexSerialNumber,
+                                    xKtaContexSerialNumberLen, xpKtaContextVersion,
+                                    xKtaContextVersionLen, gKtaLifeCycleState);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Setting kta context config data, status = [%d]", status);
+    goto end;
+  }
+
+  // REQ RQ_M-KTA-LCST-FN-0050(1) : Power off in ACTIVATED|INITIALIZED state
+  // REQ RQ_M-KTA-LCST-FN-0065(1) : Power off in PROVISIONED|INITIALIZED state
+  if ((gKtaLifeCycleState == E_LIFE_CYCLE_STATE_ACTIVATED) ||
+      (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_PROVISIONED) ||
+      (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_CON_REQ))
+  {
+    M_KTALOG__DEBUG("gKtaLifeCycleState = [%d], deriving L2Keys", gKtaLifeCycleState);
+    // REQ RQ_M-KTA-STRT-FN-0070(1) : Derive L2 Keys
+    status = ktaActDeriveL2Keys();
+
+    if (status != E_K_STATUS_OK)
     {
-      M_KTALOG__DEBUG("Reading life cycle state from NVM...");
-      // REQ RQ_M-KTA-LCST-FN-0020(1) : Power off in INIT|INITIALIZED state
-      // REQ RQ_M-KTA-LCST-FN-0025(1) : Power off in INIT|STARTED state
-      status = lgetNVMLifeCycleState(&lifeCycleStateLen);
-      status = salStorageGetValue(C_K_KTA__VERSION_SLOT_ID, gaKtaVersion, &ktaVersionLen);
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__DEBUG("Reading KTA Version failed with status:%d.\r\n", status);
-        goto end;
-      }
-      M_KTALOG__DEBUG("KTA Version in device is: %s\r\n", ktaGetDecodedVersionStr(gaKtaVersion));
-
-      if ((E_K_STATUS_OK != status) || (0U == lifeCycleStateLen))
-      {
-        M_KTALOG__ERR("Reading life cycle state from NVM failed, status = [%d]", status);
-        goto end;
-      }
-
-      M_KTALOG__DEBUG("Setting kta context configuration data to the platform");
-      // REQ RQ_M-KTA-STRT-FN-0050(1) : Set Context Information
-      // REQ RQ_M-KTA-STRT-FN-0060(1) : Set L1 Segmentaion Seed
-      status = ktaSetContextInfoConfig(xpL1SegSeed, xpKtaContextProfileUid,
-                                      xKtaContextProfileUidLen, xpKtaContexSerialNumber,
-                                      xKtaContexSerialNumberLen, xpKtaContextVersion,
-                                      xKtaContextVersionLen, gKtaLifeCycleState);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR("Setting kta context config data, status = [%d]", status);
-        goto end;
-      }
-
-      // REQ RQ_M-KTA-LCST-FN-0050(1) : Power off in ACTIVATED|INITIALIZED state
-      // REQ RQ_M-KTA-LCST-FN-0065(1) : Power off in PROVISIONED|INITIALIZED state
-      if ((gKtaLifeCycleState == E_LIFE_CYCLE_STATE_ACTIVATED) ||
-          (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_PROVISIONED) ||
-          (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_CON_REQ))
-      {
-        M_KTALOG__DEBUG("gKtaLifeCycleState = [%d], deriving L2Keys", gKtaLifeCycleState);
-        // REQ RQ_M-KTA-STRT-FN-0070(1) : Derive L2 Keys
-        status = ktaActDeriveL2Keys();
-
-        if (status != E_K_STATUS_OK)
-        {
-          M_KTALOG__ERR("Deriving L2 key got failed, status = [%d]", status);
-          goto end;
-        }
-      }
-
-      // REQ RQ_M-KTA-STRT-FN-0003(1) : Set KTA State
-      gKtaState = E_KTA_STATE_STARTED;
-      M_KTALOG__DEBUG("KTA reached to STARTED state");
+      M_KTALOG__ERR("Deriving L2 key got failed, status = [%d]", status);
+      goto end;
     }
   }
+
+  // REQ RQ_M-KTA-STRT-FN-0003(1) : Set KTA State
+  gKtaState = E_KTA_STATE_STARTED;
+  M_KTALOG__DEBUG("KTA reached to STARTED state");
 
 end:
   M_KTALOG__END("End, status : %d", status);
@@ -447,7 +666,6 @@ TKStatus ktaSetDeviceInformation
 )
 {
   TKStatus status = E_K_STATUS_ERROR;
-  uint8_t  aKtaVersion[C_K__VERSION_STORAGE_LENGTH] = C_K_KTA__ENCODED_VERSION;
 
   M_KTALOG__START("Start");
 
@@ -462,116 +680,484 @@ TKStatus ktaSetDeviceInformation
   {
     status = E_K_STATUS_PARAMETER;
     M_KTALOG__ERR("Invalid parameter passed");
+    M_KTALOG__END("End, status : %d", status);
+    return status;
+  }
+
+  // REQ RQ_M-KTA-STRT-FN-0040(1) : Invalid KTA State
+  // REQ RQ_M-KTA-STRT-FN-0120(1) : Invalid KTA State
+  if (E_KTA_STATE_STARTED != gKtaState)
+  {
+    M_KTALOG__ERR("Device in a bad state, gKtaState = [%d]", gKtaState);
+    M_KTALOG__END("End, status : %d", status);
+    return status;
+  }
+
+  switch (gKtaLifeCycleState)
+  {
+    case E_LIFE_CYCLE_STATE_INIT:
+      status = lHandleInitLifeCycleState(xpDeviceProfilePublicUid,
+                                         xDeviceProfilePublicUidSize,
+                                         xpDeviceSerialNum,
+                                         xDeviceSerialNumSize,
+                                         xpConnectionRequest);
+      break;
+
+    // REQ RQ_M-KTA-LCST-FN-0040(1) : Power off in SEALED|STARTED state
+    // REQ RQ_M-KTA-LCST-FN-0055(1) : Power off in ACTIVATED|STARTED state
+    // REQ RQ_M-KTA-LCST-FN-0085(1) : Power off in CON_REQ|STARTED state
+    case E_LIFE_CYCLE_STATE_SEALED:
+      status = ktaSetDeviceInfoConfig(xpDeviceProfilePublicUid,
+                                      xDeviceProfilePublicUidSize,
+                                      xpDeviceSerialNum,
+                                      xDeviceSerialNumSize,
+                                      gKtaLifeCycleState);
+      /* fall through */
+    case E_LIFE_CYCLE_STATE_ACTIVATED:
+    case E_LIFE_CYCLE_STATE_CON_REQ:
+      M_KTALOG__DEBUG("Connection Request1 set to TRUE");
+      *xpConnectionRequest = 1;
+      status = E_K_STATUS_OK;
+      break;
+
+    // REQ RQ_M-KTA-LCST-FN-0070(1) : Power off in PROVISIONED|STARTED state
+    case E_LIFE_CYCLE_STATE_PROVISIONED:
+      status = lHandleProvisionedLifeCycleState(xpConnectionRequest);
+      break;
+
+    default:
+      M_KTALOG__ERR("Invalid state, gKtaLifeCycleState = [%d]",
+                    gKtaLifeCycleState);
+      *xpConnectionRequest = 0;
+      break;
+  }
+
+  // REQ RQ_M-KTA-STRT-FN-0080(1) : Set KTA State
+  // REQ RQ_M-KTA-STRT-FN-0140(1) : Set KTA State
+  if (status == E_K_STATUS_OK)
+  {
+    gKtaState = E_KTA_STATE_RUNNING;
+    M_KTALOG__DEBUG("KTA reached to RUNNING state");
+  }
+
+  M_KTALOG__END("End, status : %d", status);
+  return status;
+}
+
+/* -------------------------------------------------------------------------- */
+/* LOCAL FUNCTIONS - HELPER FOR ktaSetDeviceInformation                      */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * @implements lHandleInitLifeCycleState
+ *
+ */
+static TKStatus lHandleInitLifeCycleState
+(
+  const uint8_t*  xpDeviceProfilePublicUid,
+  size_t          xDeviceProfilePublicUidSize,
+  const uint8_t*  xpDeviceSerialNum,
+  size_t          xDeviceSerialNumSize,
+  uint8_t*        xpConnectionRequest
+)
+{
+  TKStatus status;
+
+  M_KTALOG__DEBUG("Setting the Device info configuration data to the platform");
+  // REQ RQ_M-KTA-STRT-FN-0130(1) : Update the device info
+  status = ktaSetDeviceInfoConfig(xpDeviceProfilePublicUid,
+                                  xDeviceProfilePublicUidSize,
+                                  xpDeviceSerialNum,
+                                  xDeviceSerialNumSize,
+                                  gKtaLifeCycleState);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Setting Device info config data failed, status = [%d]", status);
+    return status;
+  }
+
+  M_KTALOG__DEBUG("Life cycle state reached to SEALED state, storing in persistent memory");
+  // REQ RQ_M-KTA-LCST-FN-0040(1) : Power off in SEALED|STARTED state
+  // REQ RQ_M-KTA-LCST-FN-0035(1) : Power off in SEALED|INITIALIZED state
+  // REQ RQ_M-KTA-LCST-FN-0085(1) : Power off in CON_REQ|STARTED state
+  // REQ RQ_M-KTA-LCST-FN-0080(1) : Power off in CON_REQ|INITIALIZED state
+  status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                              gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_SEALED],
+                              C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("SAL API failed while storing life cycle state, status = [%d]", status);
+    return status;
+  }
+
+  gKtaLifeCycleState = E_LIFE_CYCLE_STATE_SEALED;
+  M_KTALOG__INFO("Setting life cycle state to SEALED state, gKtaLifeCycleState = [%d]",
+                  gKtaLifeCycleState);
+  *xpConnectionRequest = 1;
+  M_KTALOG__DEBUG("Connection Request set to TRUE");
+
+  return E_K_STATUS_OK;
+}
+
+/**
+ * @implements lHandleProvisionedLifeCycleState
+ *
+ */
+static TKStatus lHandleProvisionedLifeCycleState
+(
+  uint8_t*  xpConnectionRequest
+)
+{
+  uint8_t aKtaVersion[C_K__VERSION_STORAGE_LENGTH] = C_K_KTA__ENCODED_VERSION;
+
+  if (memcmp(gaKtaVersion, aKtaVersion, C_K__VERSION_STORAGE_LENGTH) < 0)
+  {
+    M_KTALOG__DEBUG("Connection Request set to TRUE");
+    *xpConnectionRequest = 1;
+    return E_K_STATUS_OK;
+  }
+
+  M_KTALOG__DEBUG("Connection Request set to FALSE");
+  *xpConnectionRequest = 0;
+  return E_K_STATUS_OK;
+}
+
+/* -------------------------------------------------------------------------- */
+/* LOCAL FUNCTIONS - HELPER FOR ktaExchangeMessage                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * @implements lProcessSealedStateActivationRequest
+ *
+ */
+static TKStatus lProcessSealedStateActivationRequest
+(
+  uint8_t*  xpKta2ksMsg,
+  size_t*   xpKta2ksMsgLen
+)
+{
+  TKStatus status = E_K_STATUS_ERROR;
+
+  M_KTALOG__DEBUG("Preparing the activation request...");
+  // REQ RQ_M-KTA-ACTV-FN-0005(1) :
+  // Build Activation Request
+  // REQ RQ_M-KTA-STRT-FN-0200(1) : Prepare the activation msg
+  gKtaIsPreActivated = 0u;
+  status = ktaActBuildActivationRequest(xpKta2ksMsg, xpKta2ksMsgLen);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("Preparing the activation request got failed, status = [%d]", status);
   }
   else
   {
-    if (E_KTA_STATE_STARTED == gKtaState)
+    M_KTALOG__INFO("Sending Activation Request");
+  }
+
+  return status;
+}
+
+/**
+ * @implements lProcessPreActivatedState
+ *
+ */
+static TKStatus lProcessPreActivatedState
+(
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  uint8_t*                xpKta2ksMsg,
+  size_t*                 xpKta2ksMsgLen
+)
+{
+  TKStatus status = E_K_STATUS_ERROR;
+  uint8_t  aL1KeyMaterial[C_KEY_CONFIG__MATERIAL_MAX_SIZE] = {0};
+
+  M_KTALOG__DEBUG("KTA in PreActivated state, generating aL1KeyMaterial");
+  status = ktaGetL1SegSeed(aL1KeyMaterial);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("Getting L1 SegSeed got failed, status = [%d]", status);
+    return status;
+  }
+
+  aL1KeyMaterial[C_K__L1_SEGMENTATION_SEED_SIZE] = xpRecvdProtoMessage->rotKeySetId;
+  status = ktaSetRotKeySetId(xpRecvdProtoMessage->rotKeySetId);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("ktaSetRotKeySetId failed, status = [%d]", status);
+    return status;
+  }
+
+  M_KTALOG__DEBUG("Storing the received aL1KeyMaterial into persistent memory");
+  status = salStorageSetValue(C_K_KTA__L1_KEY_MATERIAL_DATA_ID,
+                              aL1KeyMaterial, C_KEY_CONFIG__MATERIAL_MAX_SIZE);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("SAL API failed while storing the L1 key material, status = [%d]", status);
+    return status;
+  }
+
+  M_KTALOG__DEBUG("Life cycle state reached to ACTIVATED state, storing in persist memory");
+  // REQ RQ_M-KTA-STRT-FN-0240(1) : Change LifeCycleState to Activated
+  // after receiving the thirdParty Or Object Managment Commands
+  // REQ RQ_M-KTA-LCST-FN-0050(1) : Power off in ACTIVATED|INITIALIZED state
+  // REQ RQ_M-KTA-LCST-FN-0055(1) : Power off in ACTIVATED|STARTED state
+  // REQ RQ_M-KTA-LCST-FN-0045(1) : Power off in ACTIVATED|RUNNING state
+  status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                              gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_ACTIVATED],
+                              C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("SAL API failed while storing the life cycle state, status = [%d]", status);
+    return status;
+  }
+
+  gKtaLifeCycleState = E_LIFE_CYCLE_STATE_ACTIVATED;
+  M_KTALOG__INFO("Setting KTA Lifecycle state to Activated, state = [%d]",
+                 gKtaLifeCycleState);
+  gKtaIsPreActivated = 0u;
+
+  M_KTALOG__DEBUG("Processing 3rd party commands...");
+  // REQ RQ_M-KTA-STRT-FN-0290(1) :
+  /** Process the received commands.
+   */
+  // REQ RQ_M-KTA-OBJM-FN-0800(1) : Set Object With Association ICPP Message
+  status = ktaCmdProcess(xpRecvdProtoMessage, xpKta2ksMsg, xpKta2ksMsgLen);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("Processing of 3rd party command got failed, status = [%d]", status);
+  }
+
+  return status;
+}
+
+/**
+ * @implements lProcessFirstActivation
+ *
+ */
+static TKStatus lProcessFirstActivation
+(
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  uint8_t*                xpKta2ksMsg,
+  size_t*                 xpKta2ksMsgLen
+)
+{
+  TKStatus status = E_K_STATUS_ERROR;
+
+  M_KTALOG__DEBUG("Deriving L1 field key...");
+  // REQ RQ_M-KTA-STRT-FN-0210(1) : Process the activation response msg
+  status = ktaActResponseBuildL1Keys(xpRecvdProtoMessage);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("Deriving L1 field key failed, status = [%d]", status);
+    return status;
+  }
+
+  M_KTALOG__DEBUG("BuildL1Keys success, deriving L2 Keys...");
+  status = ktaActDeriveL2Keys();
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("Deriving L2 key got failed, status = [%d]", status);
+    return status;
+  }
+
+  M_KTALOG__DEBUG("Building registration request...");
+  // REQ RQ_M-KTA-REGT-FN-0011(1) : Build Registeration Info Request
+  // REQ RQ_M-KTA-STRT-FN-0220(1) :
+  /* Prepare Reg Info msg after processing activation response msg. */
+  status = ktaregBuildRegistrationRequest(xpRecvdProtoMessage, xpKta2ksMsg, xpKta2ksMsgLen);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("Building registration request got failed, status = [%d]", status);
+    return status;
+  }
+
+  M_KTALOG__INFO("Sending Registration Request");
+  gKtaIsPreActivated = 1u;
+
+  return status;
+}
+
+/**
+ * @implements lProcessSealedStateMessage
+ *
+ */
+static TKStatus lProcessSealedStateMessage
+(
+  const uint8_t*          xpKs2ktaMsg,
+  size_t                  xKs2ktaMsgLen,
+  uint8_t*                xpKta2ksMsg,
+  size_t*                 xpKta2ksMsgLen,
+  uint8_t*                xpClearMsg,
+  size_t                  xClearMsgLen,
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  TKParserStatus*         xpParserStatus
+)
+{
+  TKStatus status = E_K_STATUS_ERROR;
+
+  M_KTALOG__DEBUG("Validating the msg received from the server...");
+  status = lCheckKs2KtaMessage(xpKs2ktaMsg, xKs2ktaMsgLen,
+                                xpKta2ksMsg, xpKta2ksMsgLen,
+                                xpClearMsg, xClearMsgLen,
+                                xpRecvdProtoMessage, xpParserStatus);
+
+  if ((status != E_K_STATUS_OK) || (*xpParserStatus != E_K_ICPP_PARSER_STATUS_OK))
+  {
+    M_KTALOG__ERR("Msg validation received from the server got failed,");
+    M_KTALOG__ERR("status = [%d], parserStatus = [%d]", status, *xpParserStatus);
+    return status;
+  }
+
+  if (gKtaIsPreActivated != (uint8_t)0)
+  {
+    status = lProcessPreActivatedState(xpRecvdProtoMessage, xpKta2ksMsg, xpKta2ksMsgLen);
+  }
+  else
+  {
+    status = lProcessFirstActivation(xpRecvdProtoMessage, xpKta2ksMsg, xpKta2ksMsgLen);
+  }
+
+  return status;
+}
+
+/**
+ * @implements lProcessActivatedState
+ *
+ */
+static TKStatus lProcessActivatedState
+(
+  const uint8_t*          xpKs2ktaMsg,
+  size_t                  xKs2ktaMsgLen,
+  uint8_t*                xpKta2ksMsg,
+  size_t*                 xpKta2ksMsgLen,
+  uint8_t*                xpClearMsg,
+  size_t                  xClearMsgLen,
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  TKParserStatus*         xpParserStatus
+)
+{
+  TKStatus status = E_K_STATUS_ERROR;
+
+  /* Handle NoOp request when no message from server */
+  if (xKs2ktaMsgLen == 0U)
+  {
+    M_KTALOG__DEBUG("Preparing NoOp notification request...");
+    // REQ RQ_M-KTA-NOOP-FN-0050(1) : Build NoOP message Message
+    // REQ RQ_M-KTA-RENW-FN-0010(1) : NoOP Message
+    // REQ RQ_M-KTA-RFSH-FN-0010(1) : NoOP Message from KTA
+    // REQ RQ_M-KTA-STRT-FN-0280(1) : Prepare NoOP Message
+    status = lPrepareNoOpNotificationRequest(xpKta2ksMsg, xpKta2ksMsgLen);
+
+    if (E_K_STATUS_OK != status)
     {
-      switch (gKtaLifeCycleState)
-      {
-        case E_LIFE_CYCLE_STATE_INIT:
-        {
-          M_KTALOG__DEBUG("Setting the Device info configuration data to the platform");
-          // REQ RQ_M-KTA-STRT-FN-0130(1) : Update the device info
-          status = ktaSetDeviceInfoConfig(xpDeviceProfilePublicUid,
-                                          xDeviceProfilePublicUidSize,
-                                          xpDeviceSerialNum,
-                                          xDeviceSerialNumSize,
-                                          gKtaLifeCycleState);
-
-          if (E_K_STATUS_OK != status)
-          {
-            M_KTALOG__ERR("Setting Device info config data failed, status = [%d]", status);
-            goto end;
-          }
-
-          M_KTALOG__DEBUG("Life cycle state reached to SEALED state, storing in persistent memory");
-          // REQ RQ_M-KTA-LCST-FN-0040(1) : Power off in SEALED|STARTED state
-          // REQ RQ_M-KTA-LCST-FN-0035(1) : Power off in SEALED|INITIALIZED state
-          // REQ RQ_M-KTA-LCST-FN-0085(1) : Power off in CON_REQ|STARTED state
-          // REQ RQ_M-KTA-LCST-FN-0080(1) : Power off in CON_REQ|INITIALIZED state
-          status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                      gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_SEALED],
-                                      C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-          if (E_K_STATUS_OK != status)
-          {
-            M_KTALOG__ERR("SAL API failed while storing life cycle state, status = [%d]", status);
-            goto end;
-          }
-
-          gKtaLifeCycleState = E_LIFE_CYCLE_STATE_SEALED;
-          M_KTALOG__INFO("Setting life cycle state to SEALED state, gKtaLifeCycleState = [%d]",
-                          gKtaLifeCycleState);
-          *xpConnectionRequest = 1;
-          M_KTALOG__DEBUG("Connection Request set to TRUE");
-          status = E_K_STATUS_OK;
-        }
-        break;
-
-        // REQ RQ_M-KTA-LCST-FN-0040(1) : Power off in SEALED|STARTED state
-        // REQ RQ_M-KTA-LCST-FN-0055(1) : Power off in ACTIVATED|STARTED state
-        // REQ RQ_M-KTA-LCST-FN-0085(1) : Power off in CON_REQ|STARTED state
-        case E_LIFE_CYCLE_STATE_SEALED:
-        {
-          status = ktaSetDeviceInfoConfig(xpDeviceProfilePublicUid,
-                                          xDeviceProfilePublicUidSize,
-                                          xpDeviceSerialNum,
-                                          xDeviceSerialNumSize,
-                                          gKtaLifeCycleState);
-        } /* fall through */
-        case E_LIFE_CYCLE_STATE_ACTIVATED:
-        case E_LIFE_CYCLE_STATE_CON_REQ:
-        {
-          M_KTALOG__DEBUG("Connection Request1 set to TRUE");
-          *xpConnectionRequest = 1;
-          status = E_K_STATUS_OK;
-        }
-        break;
-
-        // REQ RQ_M-KTA-LCST-FN-0070(1) : Power off in PROVISIONED|STARTED state
-        case E_LIFE_CYCLE_STATE_PROVISIONED:
-        {
-          if (memcmp(gaKtaVersion, aKtaVersion, C_K__VERSION_STORAGE_LENGTH) < 0)
-          {
-              M_KTALOG__DEBUG("Connection Request set to TRUE");
-              *xpConnectionRequest = 1;
-              status = E_K_STATUS_OK;
-              break;
-          }
-          M_KTALOG__DEBUG("Connection Request set to FALSE");
-          *xpConnectionRequest = 0;
-          status = E_K_STATUS_OK;
-        }
-        break;
-
-        default:
-        {
-          M_KTALOG__ERR("Invalid state, gKtaLifeCycleState = [%d]",
-                        gKtaLifeCycleState);
-          *xpConnectionRequest = 0;
-        }
-        break;
-      }
-
-      // REQ RQ_M-KTA-STRT-FN-0080(1) : Set KTA State
-      // REQ RQ_M-KTA-STRT-FN-0140(1) : Set KTA State
-      if (status == E_K_STATUS_OK)
-      {
-        gKtaState = E_KTA_STATE_RUNNING;
-        M_KTALOG__DEBUG("KTA reached to RUNNING state");
-      }
+      *xpKta2ksMsgLen = 0;
+      M_KTALOG__ERR("Preparation of NoOp notification request got failed, status = [%d]",
+                    status);
     }
-    // REQ RQ_M-KTA-STRT-FN-0040(1) : Invalid KTA State
-    // REQ RQ_M-KTA-STRT-FN-0120(1) : Invalid KTA State
+
+    return status;
+  }
+
+  /* Handle lifecycle state transition from PROVISIONED to CON_REQ */
+  if (E_LIFE_CYCLE_STATE_PROVISIONED == gKtaLifeCycleState)
+  {
+    M_KTALOG__DEBUG("Life cycle state reached to CON_REQ state, storing in persistent memory");
+    status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_CON_REQ],
+                                C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR("SAL API failed while storing life cycle state, status = [%d]", status);
+      *xpKta2ksMsgLen = 0;
+      return status;
+    }
+
+    gKtaLifeCycleState = E_LIFE_CYCLE_STATE_CON_REQ;
+  }
+
+  /* Validate incoming message */
+  M_KTALOG__DEBUG("Validating the msg received from the server...");
+  status = lCheckKs2KtaMessage(xpKs2ktaMsg, xKs2ktaMsgLen,
+                                xpKta2ksMsg, xpKta2ksMsgLen,
+                                xpClearMsg, xClearMsgLen,
+                                xpRecvdProtoMessage, xpParserStatus);
+
+  if ((status != E_K_STATUS_OK) || (*xpParserStatus != E_K_ICPP_PARSER_STATUS_OK))
+  {
+    if (*xpParserStatus != E_K_ICPP_PARSER_STATUS_NO_OPERATION)
+    {
+      M_KTALOG__ERR("Validation of the msg received from the server failed,");
+      M_KTALOG__ERR("status = [%d], parserStatus = [%d]", status, *xpParserStatus);
+    }
+
+    if (*xpParserStatus == E_K_ICPP_PARSER_STATUS_ERROR)
+    {
+      status = E_K_STATUS_OK;
+    }
     else
     {
-      M_KTALOG__ERR("Device in a bad state, gKtaState = [%d]", gKtaState);
+      *xpKta2ksMsgLen = 0;
+    }
+
+    return status;
+  }
+
+  /* Get and update ROT key set ID */
+  M_KTALOG__DEBUG("Reading rotKeySetId from NVM...");
+  // REQ RQ_M-KTA-STRT-FN-0230(1) : Update rot key set Id
+  // REQ RQ_M-KTA-STRT-FN-0250(1) : Update the rot key set id in the after
+  // deserialize the received message.
+  status = ktaGetRotKeySetId(&xpRecvdProtoMessage->rotKeySetId);
+
+  if (E_K_STATUS_OK != status)
+  {
+    *xpKta2ksMsgLen = 0;
+    M_KTALOG__ERR("Reading of rotKeySetId from NVM got failed, status = [%d]", status);
+    return status;
+  }
+
+  /* Process third party command */
+  M_KTALOG__DEBUG("Processing 3rd party command...");
+  // REQ RQ_M-KTA-STRT-FN-0260(1) : Process the ThirdParty/Object Commands.
+  status = ktaCmdProcess(xpRecvdProtoMessage, xpKta2ksMsg, xpKta2ksMsgLen);
+
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Processing of 3rd party command failed, status = [%d]", status);
+    M_KTALOG__INFO("Response length after error = %zu", *xpKta2ksMsgLen);
+
+    // Only zero out response if no error response was generated
+    if (*xpKta2ksMsgLen == 0)
+    {
+      M_KTALOG__ERR("No error response generated, cannot send response to KeyStream");
+    }
+    else
+    {
+      M_KTALOG__INFO("Error response generated, will send to KeyStream");
+      status = E_K_STATUS_OK; // Allow response to be sent
     }
   }
 
-end:
-  M_KTALOG__END("End, status : %d", status);
   return status;
 }
 
@@ -587,296 +1173,54 @@ TKStatus ktaExchangeMessage
   size_t*         xpKta2ksMsgLen
 )
 {
-
   TKIcppProtocolMessage recvdProtoMessage = {0};
-  TKStatus              status = E_K_STATUS_ERROR;
-  TKParserStatus        parserStatus = E_K_ICPP_PARSER_STATUS_ERROR;
-  uint8_t               aClearMsg[C_K__ICPP_MSG_MAX_SIZE] = {0};
+  TKStatus status = E_K_STATUS_ERROR;
+  TKParserStatus parserStatus;
+  uint8_t aClearMsg[C_K__ICPP_MSG_MAX_SIZE] = {0};
 
   M_KTALOG__START("Start");
 
   // REQ RQ_M-KTA-STRT-FN-0150(1) : Input Parameters Check
   // REQ RQ_M-KTA-STRT-CF-0160(1) : ICPP Message Max Size
-  if (
-      (NULL == xpKs2ktaMsg)     ||
-      (NULL == xpKta2ksMsg)     ||
-      (NULL == xpKta2ksMsgLen) ||
-      (0u == *xpKta2ksMsgLen) ||
-      (C_K__ICPP_MSG_MAX_SIZE < xKs2ktaMsgLen)
-
-      )
+  if ((NULL == xpKs2ktaMsg) || (NULL == xpKta2ksMsg) || (NULL == xpKta2ksMsgLen) ||
+      (0u == *xpKta2ksMsgLen) || (C_K__ICPP_MSG_MAX_SIZE < xKs2ktaMsgLen))
   {
-    status = E_K_STATUS_PARAMETER;
     M_KTALOG__ERR("Invalid parameter passed");
+    status = E_K_STATUS_PARAMETER;
+    goto end;
   }
-  else
+
+  // REQ RQ_M-KTA-STRT-FN-0170(1) : Invalid KTA State
+  if (E_KTA_STATE_RUNNING != gKtaState)
   {
-    // REQ RQ_M-KTA-STRT-FN-0170(1) : Invalid KTA State
-    if (E_KTA_STATE_RUNNING != gKtaState)
-    {
-      M_KTALOG__ERR("Invalid KTA State");
-    }
-    else
-    {
-      switch (gKtaLifeCycleState)
-      {
-        // REQ RQ_M-KTA-LCST-FN-0030(1) : Power off in SEALED|RUNNING state
-        case E_LIFE_CYCLE_STATE_SEALED:
-          if (xKs2ktaMsgLen == 0u)
-          {
-            M_KTALOG__DEBUG("Preparing the activation request...");
-            // REQ RQ_M-KTA-ACTV-FN-0005(1) :
-            // Build Activation Request
-            // REQ RQ_M-KTA-STRT-FN-0200(1) : Prepare the activation msg
-            status = ktaActBuildActivationRequest(xpKta2ksMsg, xpKta2ksMsgLen);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("Preparing the activation request got failed, status = [%d]",
-                            status);
-              break;
-            }
-            M_KTALOG__INFO("Sending Activation Request");
-          break;
-          }
-
-          M_KTALOG__DEBUG("Validating the msg received from the server...");
-          status = lCheckKs2KtaMessage(xpKs2ktaMsg, xKs2ktaMsgLen,
-                                        xpKta2ksMsg, xpKta2ksMsgLen,
-                                        aClearMsg, sizeof(aClearMsg),
-                                        &recvdProtoMessage, &parserStatus);
-
-          if ((status != E_K_STATUS_OK) || (parserStatus != E_K_ICPP_PARSER_STATUS_OK))
-          {
-            M_KTALOG__ERR("Msg validation received from the server got failed,");
-            M_KTALOG__ERR("status = [%d], parserStatus = [%d]", status, parserStatus);
-            break;
-          }
-
-          if (gKtaIsPreActivated != (uint8_t)0)
-          {
-            uint8_t aL1KeyMaterial[C_KEY_CONFIG__MATERIAL_MAX_SIZE] = {0};
-
-            M_KTALOG__DEBUG("KTA in PreActivated state, generating aL1KeyMaterial");
-            status = ktaGetL1SegSeed(aL1KeyMaterial);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("Getting L1 SegSeed got failed, status = [%d]", status);
-              break;
-            }
-
-            aL1KeyMaterial[C_K__L1_SEGMENTATION_SEED_SIZE] = recvdProtoMessage.rotKeySetId;
-            status = ktaSetRotKeySetId(recvdProtoMessage.rotKeySetId);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("ktaSetRotKeySetId failed, status = [%d]", status);
-              break;
-            }
-
-            M_KTALOG__DEBUG("Storing the received aL1KeyMaterial into persistent memory");
-            status = salStorageSetValue(C_K_KTA__L1_KEY_MATERIAL_DATA_ID,
-                                        aL1KeyMaterial, C_KEY_CONFIG__MATERIAL_MAX_SIZE);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("SAL API failed while storing the L1 key material, status = [%d]",
-                            status);
-              break;
-            }
-
-            M_KTALOG__DEBUG("Life cycle state reached to ACTIVATED state, "
-                            "storing in persist memory");
-            // REQ RQ_M-KTA-STRT-FN-0240(1) : Change LifeCycleState to Activated
-            // after receiving the thirdParty Or Object Managment Commands
-
-            // REQ RQ_M-KTA-LCST-FN-0050(1) : Power off in ACTIVATED|INITIALIZED state
-            // REQ RQ_M-KTA-LCST-FN-0055(1) : Power off in ACTIVATED|STARTED state
-            // REQ RQ_M-KTA-LCST-FN-0045(1) : Power off in ACTIVATED|RUNNING state
-            status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                        gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_ACTIVATED],
-                                        C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("SAL API failed while storing the life cycle state, status = [%d]",
-                            status);
-              break;
-            }
-
-            gKtaLifeCycleState = E_LIFE_CYCLE_STATE_ACTIVATED;
-            M_KTALOG__INFO("Setting KTA Lifecycle state to Activated, state = [%d]", gKtaLifeCycleState);
-            gKtaIsPreActivated = 0u;
-            M_KTALOG__DEBUG("Processing 3rd party commands...");
-            // REQ RQ_M-KTA-STRT-FN-0290(1) :
-            /** Process the received commands.
-             */
-            // REQ RQ_M-KTA-OBJM-FN-0800(1) : Set Object With Association ICPP Message
-            status = ktaCmdProcess(&recvdProtoMessage,
-                                    xpKta2ksMsg,
-                                    xpKta2ksMsgLen);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("Processing of 3rd party command got failed, status = [%d]",
-                            status);
-              break;
-            }
-
-            break;
-          }
-          else
-          {
-            M_KTALOG__DEBUG("Deriving L1 field key...");
-            // REQ RQ_M-KTA-STRT-FN-0210(1) : Process the activation response msg
-            status = ktaActResponseBuildL1Keys(&recvdProtoMessage);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("Deriving L1 field key failed, status = [%d]", status);
-              break;
-            }
-
-            M_KTALOG__DEBUG("BuildL1Keys success, deriving L2 Keys...");
-            status = ktaActDeriveL2Keys();
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("Deriving L2 key got failed, status = [%d]", status);
-              break;
-            }
-
-            M_KTALOG__DEBUG("Building registration request...");
-            // REQ RQ_M-KTA-REGT-FN-0011(1) : Build Registeration Info Request
-            // REQ RQ_M-KTA-STRT-FN-0220(1) :
-            /* Prepare Reg Info msg after processing activation response msg. */
-            status = ktaregBuildRegistrationRequest(&recvdProtoMessage,
-                                                    xpKta2ksMsg,
-                                                    xpKta2ksMsgLen);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("Building registration request got failed, status = [%d]", status);
-              break;
-            }
-            M_KTALOG__INFO("Sending Registration Request");
-
-            gKtaIsPreActivated = 1u;
-          }
-
-          break;
-
-        case E_LIFE_CYCLE_STATE_ACTIVATED:
-        case E_LIFE_CYCLE_STATE_PROVISIONED:
-        case E_LIFE_CYCLE_STATE_CON_REQ:
-          if (xKs2ktaMsgLen == 0U)
-          {
-            M_KTALOG__DEBUG("Preparing NoOp notification request...");
-            // REQ RQ_M-KTA-NOOP-FN-0050(1) : Build NoOP message Message
-            // REQ RQ_M-KTA-RENW-FN-0010(1) : NoOP Message
-            // REQ RQ_M-KTA-RFSH-FN-0010(1) : NoOP Message from KTA
-            // REQ RQ_M-KTA-STRT-FN-0280(1) : Prepare NoOP Message
-            status = lPrepareNoOpNotificationRequest(xpKta2ksMsg, xpKta2ksMsgLen);
-
-            if (E_K_STATUS_OK != status)
-            {
-              *xpKta2ksMsgLen = 0;
-              M_KTALOG__ERR("Preparation of NoOp notification request got failed, status = [%d]",
-                            status);
-            }
-
-            break;
-          }
-
-          if (E_LIFE_CYCLE_STATE_PROVISIONED == gKtaLifeCycleState)
-          {
-            /* Setting the state to connection request. */
-            M_KTALOG__DEBUG("Life cycle state reached to CON_REQ state, "
-                            "storing in persistent memory");
-            status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                        gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_CON_REQ],
-                                        C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-            if (E_K_STATUS_OK != status)
-            {
-              M_KTALOG__ERR("SAL API failed while storing life cycle state, status = [%d]", status);
-              *xpKta2ksMsgLen = 0;
-              break;
-            }
-
-            gKtaLifeCycleState = E_LIFE_CYCLE_STATE_CON_REQ;
-          }
-
-          M_KTALOG__DEBUG("Validating the msg received from the server...");
-          status = lCheckKs2KtaMessage(xpKs2ktaMsg, xKs2ktaMsgLen,
-                                        xpKta2ksMsg, xpKta2ksMsgLen,
-                                        aClearMsg, sizeof(aClearMsg),
-                                        &recvdProtoMessage, &parserStatus);
-
-          if ((status != E_K_STATUS_OK) || (parserStatus != E_K_ICPP_PARSER_STATUS_OK))
-          {
-
-            if (parserStatus != E_K_ICPP_PARSER_STATUS_NO_OPERATION)
-            {
-              M_KTALOG__ERR("Validation of the msg received from the server failed,");
-              M_KTALOG__ERR("status = [%d], parserStatus = [%d]", status, parserStatus);
-            }
-            if (parserStatus == E_K_ICPP_PARSER_STATUS_ERROR)
-            {
-              status = E_K_STATUS_OK;
-            }
-            else
-            {
-              (*xpKta2ksMsgLen) = 0;
-            }
-            break;
-          }
-
-          M_KTALOG__DEBUG("Reading rotKeySetId from NVM...");
-          // REQ RQ_M-KTA-STRT-FN-0230(1) : Update rot key set Id
-          // REQ RQ_M-KTA-STRT-FN-0250(1) : Update the rot key set id in the after
-          // deserialize the received message.
-          status = ktaGetRotKeySetId(&recvdProtoMessage.rotKeySetId);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Reading of rotKeySetId from NVM got failed, status = [%d]",
-                          status);
-            break;
-          }
-
-          M_KTALOG__DEBUG("Processing 3rd party command...");
-          // REQ RQ_M-KTA-STRT-FN-0260(1) : Process the ThirdParty/Object Commands.
-          status = ktaCmdProcess(&recvdProtoMessage, xpKta2ksMsg, xpKta2ksMsgLen);
-
-          if (E_K_STATUS_OK != status)
-          {
-            *xpKta2ksMsgLen = 0;
-            M_KTALOG__ERR("Processing of 3rd party command failed, status = [%d]", status);
-            break;
-          }
-
-          break;
-
-        default:
-          *xpKta2ksMsgLen = 0;
-          M_KTALOG__ERR("Invalid life cycle state, [%d]", gKtaLifeCycleState);
-          break;
-      }
-    }
+    M_KTALOG__ERR("Invalid KTA State");
+    goto end;
   }
 
+  switch (gKtaLifeCycleState)
+  {
+    case E_LIFE_CYCLE_STATE_SEALED:
+      // REQ RQ_M-KTA-LCST-FN-0030(1) : Power off in SEALED|RUNNING state
+      status = (xKs2ktaMsgLen == 0u) ?
+               lProcessSealedStateActivationRequest(xpKta2ksMsg, xpKta2ksMsgLen) :
+               lProcessSealedStateMessage(xpKs2ktaMsg, xKs2ktaMsgLen, xpKta2ksMsg, xpKta2ksMsgLen,
+                                          aClearMsg, sizeof(aClearMsg), &recvdProtoMessage, &parserStatus);
+      break;
+
+    case E_LIFE_CYCLE_STATE_ACTIVATED:
+    case E_LIFE_CYCLE_STATE_PROVISIONED:
+    case E_LIFE_CYCLE_STATE_CON_REQ:
+      status = lProcessActivatedState(xpKs2ktaMsg, xKs2ktaMsgLen, xpKta2ksMsg, xpKta2ksMsgLen,
+                                      aClearMsg, sizeof(aClearMsg), &recvdProtoMessage, &parserStatus);
+      break;
+
+    default:
+      *xpKta2ksMsgLen = 0;
+      M_KTALOG__ERR("Invalid life cycle state, [%d]", gKtaLifeCycleState);
+      break;
+  }
+
+end:
   M_KTALOG__END("End, status : %d", status);
   return status;
 }
@@ -1519,6 +1863,129 @@ end:
 }
 
 /**
+ * @implements lProcessNoOpLifecycleTransition
+ *
+ */
+static TKStatus lProcessNoOpLifecycleTransition
+(
+  TKIcppProtocolMessage*  xpRecvdProtoMessage,
+  size_t*                 xpKta2ksMsgLen
+)
+{
+  TKStatus status = E_K_STATUS_ERROR;
+  // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
+  size_t lifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
+  uint8_t aKtaVersion[C_K__VERSION_STORAGE_LENGTH] = C_K_KTA__ENCODED_VERSION;
+
+  if (xpRecvdProtoMessage->cryptoVersion != (unsigned int)E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED)
+  {
+    M_KTALOG__ERR("Invalid Cryto Version [%d]", xpRecvdProtoMessage->cryptoVersion);
+    return E_K_STATUS_ERROR;
+  }
+
+  M_KTALOG__DEBUG("Received NoOp, reading life cycle state from NVM...");
+  status = lgetNVMLifeCycleState(&lifeCycleStateLen);
+
+  if ((E_K_STATUS_OK != status) || (0U == lifeCycleStateLen))
+  {
+    M_KTALOG__ERR("Reading life cycle status from NVM failed, status = [%d]", status);
+    return status;
+  }
+
+  if (E_LIFE_CYCLE_STATE_INIT == gKtaLifeCycleState)
+  {
+    M_KTALOG__ERR("Device received refurbish command");
+    gCommandStatus = E_K_KTA_KS_STATUS_REFURBISH;
+    /* Reset the globals to inital value after refurbish. */
+    gKtaState = E_KTA_STATE_INITIAL;
+    gKtaIsPreActivated = 0;
+    M_KTALOG__DEBUG("Life cycle state reached to SEALED state, "
+                    "storing in persistent memory");
+    status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_SEALED],
+                                C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR("Storing life cycle state failed, status = [%d]", status);
+      *xpKta2ksMsgLen = 0;
+      return status;
+    }
+
+    gKtaLifeCycleState = E_LIFE_CYCLE_STATE_SEALED;
+    M_KTALOG__INFO("Setting KTA Lifecycle state to SEALED, state = [%d]", gKtaLifeCycleState);
+    return E_K_STATUS_OK;
+  }
+
+  if (E_LIFE_CYCLE_STATE_CON_REQ == gKtaLifeCycleState)
+  {
+    /* Setting the state to connection request. */
+    M_KTALOG__DEBUG("Life cycle state reached to PROVISIONED state, "
+                    "storing in persistent memory");
+    // REQ RQ_M-KTA-LCST-FN-0035(1) : Power off in SEALED|INITIALIZED state
+    // REQ RQ_M-KTA-LCST-FN-0040(1) : Power off in SEALED|STARTED state
+    // REQ RQ_M-KTA-LCST-FN-0030(1) : Power off in SEALED|RUNNING state
+    // REQ RQ_M-KTA-LCST-FN-0075(1) : Power off in CON_REQ|RUNNING state
+    status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_PROVISIONED],
+                                C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR("Storing life cycle state failed, status = [%d]", status);
+      *xpKta2ksMsgLen = 0;
+      return status;
+    }
+
+    gKtaLifeCycleState = E_LIFE_CYCLE_STATE_PROVISIONED;
+    M_KTALOG__INFO("Setting KTA Lifecycle state to PROVISIONED, state = [%d]", gKtaLifeCycleState);
+    return E_K_STATUS_OK;
+  }
+
+  /* Break the chain no communication is needed. */
+  if (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_ACTIVATED)
+  {
+    M_KTALOG__DEBUG("Life cycle state reached to PROVISIONED state, "
+                    "storing in persist memory");
+    // REQ RQ_M-KTA-LCST-FN-0065(1) : Power off in PROVISIONED|INITIALIZED state
+    // REQ RQ_M-KTA-LCST-FN-0070(1) : Power off in PROVISIONED|STARTED state
+    // REQ RQ_M-KTA-LCST-FN-0060(1) : Power off in PROVISIONED|RUNNING state
+    status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
+                                gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_PROVISIONED],
+                                C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
+
+    if (E_K_STATUS_OK != status)
+    {
+      M_KTALOG__ERR("Setting life cycle state failed, status = [%d]", status);
+      return status;
+    }
+
+    if (memcmp(gaKtaVersion, aKtaVersion, C_K__VERSION_STORAGE_LENGTH) < 0)
+    {
+      // REQ RQ_M-KTA-LCST-FN-0086(1) : Store KTA Version to device
+      status = salStorageSetValue(C_K_KTA__VERSION_SLOT_ID,
+                                  aKtaVersion,
+                                  C_K__VERSION_STORAGE_LENGTH);
+
+      if (E_K_STATUS_OK != status)
+      {
+        M_KTALOG__ERR("Storing KTA Version Failed, status = [%d]", status);
+        return status;
+      }
+
+      M_KTALOG__DEBUG("KTA Version [%s] Stored Successfully in device.\r\n",
+                      ktaGetDecodedVersionStr(aKtaVersion));
+    }
+
+    gKtaLifeCycleState = E_LIFE_CYCLE_STATE_PROVISIONED;
+    gCommandStatus = E_K_KTA_KS_STATUS_NO_OPERATION;
+    M_KTALOG__DEBUG("Lifecycle provised and E_K_KTA_KS_STATUS_NO_OPERATION");
+  }
+
+  return E_K_STATUS_OK;
+}
+
+/**
  * @implements lCheckKs2KtaMessage
  *
  */
@@ -1539,26 +2006,21 @@ static TKStatus lCheckKs2KtaMessage
   TKParserStatus*         xpParserStatus
 )
 {
-  TKStatus  status = E_K_STATUS_ERROR;
-  uint8_t   aKs2ktaMsgUpdatedHeaderLenBuffer[C_K_ICPP_PARSER__HEADER_SIZE] = {0};
-  uint32_t  macOffset = 0;
-  size_t    lenWithoutMACandPadding = 0;
-  size_t    clearMsgLength = xClearMsgLen;
-  uint8_t   aKtaVersion[C_K__VERSION_STORAGE_LENGTH] = C_K_KTA__ENCODED_VERSION;
+  TKStatus status = E_K_STATUS_ERROR;
+  uint8_t aKs2ktaMsgUpdatedHeaderLenBuffer[C_K_ICPP_PARSER__HEADER_SIZE] = {0};
+  uint32_t macOffset = xKs2ktaMsgLen - C_K_KTA__HMAC_MAX_SIZE;
+  size_t lenWithoutMACandPadding = 0;
+  size_t clearMsgLength = xClearMsgLen;
 
-  macOffset = xKs2ktaMsgLen - C_K_KTA__HMAC_MAX_SIZE;
-  /* Verify the signature. */
   M_KTALOG__DEBUG("KTA cipher signature validation...");
   // REQ RQ_M-KTA-ACTV-FN-0055(1) : Verify Activation Response Signature
-  status = ktacipherVerifySignedMsg(xpKs2ktaMsg,
-                                    macOffset,
-                                    &xpKs2ktaMsg[macOffset]);
-
+  status = ktacipherVerifySignedMsg(xpKs2ktaMsg, macOffset, &xpKs2ktaMsg[macOffset]);
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("KTA cipher signature validation failed, status = [%d]", status);
     goto end;
   }
+
   (void)memcpy(aKs2ktaMsgUpdatedHeaderLenBuffer, xpKs2ktaMsg, C_K_ICPP_PARSER__HEADER_SIZE);
 
   /* We have no operation command(command with payload as 0). */
@@ -1596,12 +2058,14 @@ static TKStatus lCheckKs2KtaMessage
       /* Prepare error in case of decryption or remove padding error. */
       // REQ RQ_M-KTA-TRDP-FN-0040(1) :
       /* Prepare error in case of decryption or remove padding error. */
-      status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
+      (void)lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
                                               xKs2ktaMsgLen,
                                               C_MSG_AUTH_DEC_ERROR,
                                               xpKta2ksMsg,
                                               xpKta2ksMsgLen);
       M_KTALOG__ERR("Processing status RespMsg failed, status = [%d]", status);
+      *xpParserStatus = E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR;
+      status = E_K_STATUS_OK;
       goto end;
     }
 
@@ -1630,12 +2094,14 @@ static TKStatus lCheckKs2KtaMessage
       // error.
       // REQ RQ_M-KTA-TRDP-FN-0040(1) : Prepare error in case of decryption or remove padding
       // error.
-      status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
+      (void)lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
                                               xKs2ktaMsgLen,
                                               C_MSG_AUTH_DEC_ERROR,
                                               xpKta2ksMsg,
                                               xpKta2ksMsgLen);
       M_KTALOG__ERR("Processing status RespMsg failed, status = [%d]", status);
+      *xpParserStatus = E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR;
+      status = E_K_STATUS_OK;
       goto end;
     }
 
@@ -1646,199 +2112,59 @@ static TKStatus lCheckKs2KtaMessage
   else
   {
     lenWithoutMACandPadding = C_K_KTA__HMAC_MAX_SIZE;
-    (void)ktaIcppParserUpdateHeaderLength(aKs2ktaMsgUpdatedHeaderLenBuffer, lenWithoutMACandPadding);
-    (void)memcpy(xpClearMsg, aKs2ktaMsgUpdatedHeaderLenBuffer, xKs2ktaMsgLen);
+    ktaIcppParserUpdateHeaderLength(aKs2ktaMsgUpdatedHeaderLenBuffer, lenWithoutMACandPadding);
+    memcpy(xpClearMsg, aKs2ktaMsgUpdatedHeaderLenBuffer, xKs2ktaMsgLen);
     clearMsgLength = macOffset;
   }
 
-  /* Send the info to deserialize message. */
   // REQ RQ_M-KTA-ACTV-FN-0070(1) : Deserialize the decrypted activation response data.
   // REQ RQ_M-KTA-ICPP-FN-0180(1) : Deserialize the message
-  // REQ RQ_M-KTA-OBJM-FN-0050(1) :
-  /* Deserialize the decrypted generate key pair data. */
-  // REQ RQ_M-KTA-OBJM-FN-0250(1) :
-  /* Deserialize the decrypted set object data. */
-  // REQ RQ_M-KTA-OBJM-FN-0550(1) :
-  /* Deserialize the decrypted delete object data. */
-  // REQ RQ_M-KTA-OBJM-FN-0750(1) :
-  /* Deserialize the decrypted set object with association data. */
-  // REQ RQ_M-KTA-OBJM-FN-0950(2) :
-  /* Deserialize the decrypted key object data */
-  // REQ RQ_M-KTA-TRDP-FN-0050(1) :
-  /* Deserialize the decrypted Third party data. */
-  // REQ RQ_M-KTA-OBJM-FN-0870(1):
-  /* Desrialize the Get Challenge command. */
-  *xpParserStatus = ktaIcppParserDeserializeMessage(xpClearMsg,
-                                                    clearMsgLength,
-                                                    xpRecvdProtoMessage);
+  // REQ RQ_M-KTA-OBJM-FN-0050(1) : Deserialize the decrypted generate key pair data.
+  // REQ RQ_M-KTA-OBJM-FN-0250(1) : Deserialize the decrypted set object data.
+  // REQ RQ_M-KTA-OBJM-FN-0550(1) : Deserialize the decrypted delete object data.
+  // REQ RQ_M-KTA-OBJM-FN-0750(1) : Deserialize the decrypted set object with association data.
+  // REQ RQ_M-KTA-OBJM-FN-0950(2) : Deserialize the decrypted key object data
+  // REQ RQ_M-KTA-TRDP-FN-0050(1) : Deserialize the decrypted Third party data.
+  // REQ RQ_M-KTA-OBJM-FN-0870(1): Desrialize the Get Challenge command.
+  *xpParserStatus = ktaIcppParserDeserializeMessage(xpClearMsg, clearMsgLength, xpRecvdProtoMessage);
 
   switch (*xpParserStatus)
   {
-    // REQ RQ_M-KTA-STRT-FN-0270(1) : Process the NoOP Message received after
-    // ThirdParty/Object Commands.
     case E_K_ICPP_PARSER_STATUS_NO_OPERATION:
-    {
-      // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
-      size_t  lifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
-
-      if (xpRecvdProtoMessage->cryptoVersion != (unsigned int)E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED)
-      {
-        M_KTALOG__ERR("Invalid Cryto Version [%d]", xpRecvdProtoMessage->cryptoVersion);
-        status = E_K_STATUS_ERROR;
-        break;
-      }
-
-      M_KTALOG__DEBUG("Received NoOp, reading life cycle state from NVM...");
-      status = lgetNVMLifeCycleState(&lifeCycleStateLen);
-
-      if ((E_K_STATUS_OK != status) || (0U == lifeCycleStateLen))
-      {
-        M_KTALOG__ERR("Reading life cycle status from NVM failed, status = [%d]", status);
-        break;
-      }
-
-      if (E_LIFE_CYCLE_STATE_INIT == gKtaLifeCycleState)
-      {
-        M_KTALOG__ERR("Device received refurbish command");
-        gCommandStatus = E_K_KTA_KS_STATUS_REFURBISH;
-        /* Reset the globals to inital value after refurbish. */
-        gKtaState = E_KTA_STATE_INITIAL;
-        gKtaIsPreActivated = 0;
-        M_KTALOG__DEBUG("Life cycle state reached to SEALED state, "
-                        "storing in persistent memory");
-        status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                    gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_SEALED],
-                                    C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-        if (E_K_STATUS_OK != status)
-        {
-          M_KTALOG__ERR("Storing life cycle state failed, status = [%d]", status);
-          *xpKta2ksMsgLen = 0;
-          break;
-        }
-
-        gKtaLifeCycleState = E_LIFE_CYCLE_STATE_SEALED;
-        M_KTALOG__INFO("Setting KTA Lifecycle state to SEALED, state = [%d]", gKtaLifeCycleState);
-      }
-      else if (E_LIFE_CYCLE_STATE_CON_REQ == gKtaLifeCycleState)
-      {
-        /* Setting the state to connection request. */
-        M_KTALOG__DEBUG("Life cycle state reached to PROVISIONED state, "
-                        "storing in persistent memory");
-        // REQ RQ_M-KTA-LCST-FN-0035(1) : Power off in SEALED|INITIALIZED state
-        // REQ RQ_M-KTA-LCST-FN-0040(1) : Power off in SEALED|STARTED state
-        // REQ RQ_M-KTA-LCST-FN-0030(1) : Power off in SEALED|RUNNING state
-        // REQ RQ_M-KTA-LCST-FN-0075(1) : Power off in CON_REQ|RUNNING state
-        status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                    gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_PROVISIONED],
-                                    C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-        if (E_K_STATUS_OK != status)
-        {
-          M_KTALOG__ERR("Storing life cycle state failed, status = [%d]", status);
-          *xpKta2ksMsgLen = 0;
-          break;
-        }
-
-        gKtaLifeCycleState = E_LIFE_CYCLE_STATE_PROVISIONED;
-        M_KTALOG__INFO("Setting KTA Lifecycle state to PROVISIONED, state = [%d]", gKtaLifeCycleState);
-      }
-
-      /* Break the chain no communication is needed. */
-      else if (gKtaLifeCycleState == E_LIFE_CYCLE_STATE_ACTIVATED)
-      {
-        M_KTALOG__DEBUG("Life cycle state reached to PROVISIONED state, "
-                        "storing in persist memory");
-        // REQ RQ_M-KTA-LCST-FN-0065(1) : Power off in PROVISIONED|INITIALIZED state
-        // REQ RQ_M-KTA-LCST-FN-0070(1) : Power off in PROVISIONED|STARTED state
-        // REQ RQ_M-KTA-LCST-FN-0060(1) : Power off in PROVISIONED|RUNNING state
-        status = salStorageSetValue(C_K_KTA__LIFE_CYCLE_STATE_STORAGE_ID,
-                                    gaKtaLifeCycleNVMVData[E_LIFE_CYCLE_STATE_PROVISIONED],
-                                    C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE);
-
-        if (E_K_STATUS_OK != status)
-        {
-          M_KTALOG__ERR("Setting life cycle state failed, status = [%d]", status);
-          break;
-        }
-
-          if (memcmp(gaKtaVersion, aKtaVersion, C_K__VERSION_STORAGE_LENGTH) < 0)
-          {
-              status = salStorageSetValue(C_K_KTA__VERSION_SLOT_ID,
-                                          aKtaVersion,
-                                          C_K__VERSION_STORAGE_LENGTH);
-              if (E_K_STATUS_OK != status)
-              {
-                M_KTALOG__ERR("Storing KTA Version Failed, status = [%d]", status);
-                break;
-              }
-              M_KTALOG__DEBUG("KTA Version [%s] Stored Successfully in device.\r\n",
-                              ktaGetDecodedVersionStr(aKtaVersion));
-          }
-
-          gKtaLifeCycleState = E_LIFE_CYCLE_STATE_PROVISIONED;
-          gCommandStatus = E_K_KTA_KS_STATUS_NO_OPERATION;
-          M_KTALOG__DEBUG("Lifecycle provised and E_K_KTA_KS_STATUS_NO_OPERATION");
-        }
-        else
-        {
-          /* Do nothing. */
-        }
-
-      status = E_K_STATUS_OK;
-    }
-    break;
+      // REQ RQ_M-KTA-STRT-FN-0270(1) : Process the NoOP Message received after ThirdParty/Object Commands.
+      status = lProcessNoOpLifecycleTransition(xpRecvdProtoMessage, xpKta2ksMsgLen);
+      break;
 
     case E_K_ICPP_PARSER_STATUS_ERROR:
-    {
       M_KTALOG__ERR("ICPP Parse Error");
-      // REQ RQ_M-KTA-ACTV-FN-0075(1) :
-      /* Error in Deserialization. */
-      // REQ RQ_M-KTA-OBJM-FN-0060(1) :
-      /* Error in Deserialization. */
-      // REQ RQ_M-KTA-OBJM-FN-0260(1) :
-      /* Error in Deserialization. */
-      // REQ RQ_M-KTA-OBJM-FN-0560(1) :
-      /* Error in Deserialization. */
-      // REQ RQ_M-KTA-OBJM-FN-0760(1) :
-      /* Error in Deserialization. */
-      // REQ RQ_M-KTA-OBJM-FN-0960(2) :
-      /* Error in Deserialization */
-      // REQ RQ_M-KTA-TRDP-FN-0060(1) :
-      /* Error in Deserialization. */
-      status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg,
-                                              xKs2ktaMsgLen,
-                                              C_MSG_FORMAT_ERROR,
-                                              xpKta2ksMsg,
-                                              xpKta2ksMsgLen);
-    }
-    break;
+      // REQ RQ_M-KTA-ACTV-FN-0075(1) : Error in Deserialization.
+      // REQ RQ_M-KTA-OBJM-FN-0060(1) : Error in Deserialization.
+      // REQ RQ_M-KTA-OBJM-FN-0260(1) : Error in Deserialization.
+      // REQ RQ_M-KTA-OBJM-FN-0560(1) : Error in Deserialization.
+      // REQ RQ_M-KTA-OBJM-FN-0760(1) : Error in Deserialization.
+      // REQ RQ_M-KTA-OBJM-FN-0960(2) : Error in Deserialization
+      // REQ RQ_M-KTA-TRDP-FN-0060(1) : Error in Deserialization.
+      status = lBuildProcessingStatusRespMsg(xpKs2ktaMsg, xKs2ktaMsgLen, C_MSG_FORMAT_ERROR,
+                                              xpKta2ksMsg, xpKta2ksMsgLen);
+      break;
 
     case E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR:
-    {
       M_KTALOG__ERR("Received E_K_ICPP_PARSER_STATUS_NOTIFICATION_CPERROR from the parser");
       status = E_K_STATUS_ERROR;
-    }
-    break;
+      break;
 
     case E_K_ICPP_PARSER_STATUS_OK:
-    {
       M_KTALOG__DEBUG("Received E_K_ICPP_PARSER_STATUS_OK");
-
       if (E_LIFE_CYCLE_STATE_CON_REQ == gKtaLifeCycleState)
       {
         gCommandStatus = E_K_KTA_KS_STATUS_RENEW;
       }
-
       status = E_K_STATUS_OK;
-    }
-    break;
+      break;
 
     default:
-    {
       M_KTALOG__ERR("Received invalid status from the parser[%d]", *xpParserStatus);
-    }
-    break;
+      break;
   }
 
 end:

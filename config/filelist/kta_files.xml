@@ -18,10 +18,12 @@
                             <file name="http.h"/>
                             <file name="k_comm_defs.h"/>
                             <file name="k_sal_com.h"/>
+                            <file name="k_sal_os.h"/>
                         </dir>
                         <file name="comm_if.c"/>
                         <file name="http.c"/>
                         <file name="k_sal_com.c"/>
+                        <file name="k_sal_os.c"/>
                     </dir>
                 </dir>
                 <dir name="SOURCE">

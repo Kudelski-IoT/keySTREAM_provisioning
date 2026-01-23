@@ -131,7 +131,7 @@ typedef struct {
  */
 static void logPrepare
 (
-  logEvent *xpEv
+  logEvent * xpEv
 );
 
 /**
@@ -145,7 +145,7 @@ static void logPrepare
  */
 static void initEvent
 (
-  logEvent *xpEvent
+  logEvent * xpEvent
 );
 
 /* -------------------------------------------------------------------------- */
@@ -179,12 +179,12 @@ void ktaLog_Fct
   /* To fix the misra-c2012-15.5-A function should have a single point of exit at the end*/
   bool bretvalue = true;
 
-  if ((xLevel < 0) || (xLevel > 5)) 
+  if ((xLevel < 0) || (xLevel > 5))
   {
     bretvalue = false;
   }
 
-  if ( bretvalue )
+  if (bretvalue)
   {
       logEvent ev = {
       .pFmt   = xpFmt,
@@ -327,6 +327,7 @@ static void logPrepare(logEvent* xpEv)
   if (buf_len < C_MAX_BUFFER_SIZE)
   {
     va_list args;
+
     va_copy(args, xpEv->ap);
 
     (void)vsnprintf(&aBuffer[buf_len],

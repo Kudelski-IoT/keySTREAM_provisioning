@@ -27,7 +27,7 @@ Documentation for this library can be found in following path within this reposi
 To enable FOTA Services, user needs to implement the following APIs in the specified source file:
 
 - **File Path:**  
-  Source Files\config\default\kta_lib\fota_service\Fota_Platform.c
+  Source Files\config\default\kta_lib\fotaservice\fotaplatform.c
 
 - **Required APIs:**  
   - fotaPlatformGetComponents()
@@ -74,6 +74,6 @@ Please refer the following page for release notes. [Release Notes](./release_not
 | apps       | Example application to demonstrate usage of KTA_LIB with Harmony           |
 | config     | KTA_LIB module configuration files                                          |
 | docs       | KTA_LIB help documentation                                                  |
-| PreConfigured-Examples       | Pre integrated application to demonstrate usage of KTA_LIB, More details available in [README](./PreConfigured-Examples/Readme.md)
+| PreConfigured-Examples       | Pre integrated application to demonstrate usage of KTA_LIB, More details available in [README](./PreConfigured-Examples/README.md)
 |
 

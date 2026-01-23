@@ -1,7 +1,7 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2025 Nagravision Sàrl
 
 * Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -78,7 +78,6 @@ TBoolean commUtilConvertSocketIp
   size_t value = 0;
   uint32_t address = 0;
   uint8_t numDots = 0;
-  size_t index = 0;
   TBoolean isPort = E_FALSE;
   TBoolean isEnd = E_FALSE;
   TBoolean isValid = E_FALSE;
@@ -87,7 +86,7 @@ TBoolean commUtilConvertSocketIp
   {
     isValid = E_TRUE;
 
-    for (index = 0; isValid && !isEnd; index++)
+    for (size_t index = 0; (isValid && !isEnd); index++)
     {
       switch (xpAddress[index])
       {

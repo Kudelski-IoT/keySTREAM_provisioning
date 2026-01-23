@@ -79,7 +79,7 @@ const char* ktaGetVersion
 {
   /* To fix the misra-c2012-11.4-A conversion should not be performed between a pointer to object and an integer type*/
   const char *version_str = M_K_VERSION_GET_STR();
-  
+
   return version_str;
 }
 

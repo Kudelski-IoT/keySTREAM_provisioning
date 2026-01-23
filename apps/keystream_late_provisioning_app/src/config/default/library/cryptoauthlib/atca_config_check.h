@@ -790,4 +790,15 @@
 #define ATCAC_SIGN_EN                       ATCA_HOSTLIB_EN
 #endif
 
+/** \def ATCAC_CERT_ADD_EN
+ *
+ * Requires: ATCA_HOSTLIB_EN
+ *
+ * Enable ATCAC_CERT_ADD_EN to use the host's cert add functions. Generally assumed
+ * to come from the host's cryptographic library or peripheral driver.
+ */
+#ifndef ATCAC_CERT_ADD_EN
+#define ATCAC_CERT_ADD_EN                   ATCA_HOSTLIB_EN
+#endif
+
 #endif /* ATCA_CONFIG_CHECK_H */

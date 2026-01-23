@@ -45,6 +45,7 @@
 /* -------------------------------------------------------------------------- */
 #include "fotaagent.h"
 #include "k_sal_fota.h"
+#include "k_sal_fotastorage.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -242,6 +243,29 @@ TKFotaStatus fotaUpdateComponent
     const uint8_t *componentVersion,
     const size_t componentVersionLen,
     TFotaState state
+);
+
+/**
+ * @brief Retrieves target component list from storage.
+ *
+ * This function reads the target component information (name, version, state, and URL)
+ * from storage for all components. Application can call this API to get the list
+ * of target components that were stored during FOTA download and installation.
+ *
+ * @param [out] xpTargetComponents Pointer to array to store target component records.
+ *                                 Should be allocated for COMPONENTS_MAX entries.
+ *                                 Should not be NULL.
+ * @param [out] xpNumComponents Pointer to store the number of valid components found.
+ *                              Should not be NULL.
+ *
+ * @return TKFotaStatus indicating the status of the operation.
+ *         - E_K_FOTA_SUCCESS: Successfully retrieved target components from storage.
+ *         - E_K_FOTA_ERROR: Failed to retrieve target components.
+ */
+TKFotaStatus fotaGetTargetComponents
+(
+  TFotaComponentRecord *xpTargetComponents,
+  uint8_t *xpNumComponents
 );
 #endif // FOTA_PROCESS_H
 

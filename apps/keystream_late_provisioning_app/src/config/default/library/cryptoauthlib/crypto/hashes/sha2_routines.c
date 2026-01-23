@@ -87,7 +87,7 @@ static ATCA_STATUS sw_sha256_process(sw_sha256_ctx* ctx, const uint8_t* blocks, 
         uint32_t s0, s1 = 0U;
         uint32_t t1, t2 = 0U;
         uint32_t maj, ch = 0U;
-        uint32_t rotate_register[8] = {0U};
+        uint32_t rotate_register[8] = {0};
         const uint8_t* cur_msg_block = &blocks[block * SHA256_BLOCK_SIZE];
 
         // Swap word bytes
@@ -219,7 +219,7 @@ static ATCA_STATUS sw_sha512_process(sw_sha512_ctx* ctx, const uint8_t* blocks, 
          uint64_t s0, s1 = 0U;
          uint64_t t1, t2 = 0U;
          uint64_t maj, ch = 0U ;
-         uint64_t rotate_register[8] = {0U};
+         uint64_t rotate_register[8] = {0};
          const uint8_t* cur_msg_block = &blocks[block * SHA512_BLOCK_SIZE];
 
          // Swap word bytes
@@ -760,7 +760,7 @@ ATCA_STATUS sw_sha384_update(sw_sha512_ctx* ctx, const uint8_t* msg, uint32_t ms
 ATCA_STATUS sw_sha384_final(sw_sha512_ctx* ctx, uint8_t digest[SHA384_DIGEST_SIZE])
 {
    ATCA_STATUS status;
-   uint8_t tmp_dgst[SHA512_DIGEST_SIZE] = {0u};
+   uint8_t tmp_dgst[SHA512_DIGEST_SIZE] = {0};
 
    status = sw_sha512_final(ctx, tmp_dgst);
    // For SHA384 copy only 48 bytes to O/P digest

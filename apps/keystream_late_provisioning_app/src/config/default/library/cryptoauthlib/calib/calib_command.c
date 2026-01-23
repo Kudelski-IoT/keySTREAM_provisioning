@@ -707,7 +707,7 @@ void atCRC(size_t length, const uint8_t *data, uint8_t *crc_le)
 {
     size_t counter;
     uint16_t crc_register = 0;
-    uint16_t polynom = 0x8005;
+    uint16_t polynom = 0x8005u;
     uint8_t shift_register;
     uint8_t data_bit, crc_bit;
 

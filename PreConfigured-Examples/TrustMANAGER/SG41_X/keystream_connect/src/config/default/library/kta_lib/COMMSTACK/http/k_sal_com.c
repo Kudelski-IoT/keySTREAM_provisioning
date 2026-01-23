@@ -1,9 +1,9 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision S�rl
+* (c) 2023-2024 Nagravision S?rl
 
-* Subject to your compliance with these terms, you may use the Nagravision S�rl
+* Subject to your compliance with these terms, you may use the Nagravision S?rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
 * responsibility to comply with third party license terms applicable to your
 * use of third party software (including open source software) that may accompany
@@ -300,8 +300,8 @@ K_SAL_API TKCommStatus salComConnect
 {
   TKComInfo*          pComInfo = (TKComInfo *)xpComInfo;
   TKCommStatus        status = E_K_COMM_STATUS_ERROR;
-  uint16_t            port = 0;
   uint32_t            retVal = 0;
+  uint16_t            port = 0;
   char*               pEnd = NULL;
 
   M_INTL_SAL_COM_DEBUG(("Start of %s", __func__));
@@ -335,7 +335,6 @@ K_SAL_API TKCommStatus salComConnect
     if (C_SAL_COM_SOCKET_INVALID == pComInfo->socketId)
     {
       M_INTL_SAL_COM_DEBUG(("Connecting to IP: %s", g_KTA_socketAddressIp));      
-      M_INTL_SAL_COM_DEBUG(("Connecting to PORT: %d", port));      
       /* Create socket. */
       // Create a TCP socket
       if (SYS_WINCS_FAIL == SYS_WINCS_NET_SockSrvCtrl(SYS_WINCS_NET_SOCK_TCP_OPEN, &g_tcpClientSocket))

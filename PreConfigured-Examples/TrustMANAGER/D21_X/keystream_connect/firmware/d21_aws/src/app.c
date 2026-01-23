@@ -58,7 +58,7 @@
 void APP_ExampleInitialize(DRV_HANDLE handle);
 void APP_ExampleTasks(DRV_HANDLE handle);
 
-#define APP_PRINT_BUFFER_SIZ    2048
+#define APP_PRINT_BUFFER_SIZ    512
 
 
 // *****************************************************************************

@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdbool.h>
 
 /** Library Configuration File - All build attributes should be included in
     atca_config.h */

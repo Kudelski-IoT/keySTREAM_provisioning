@@ -198,6 +198,76 @@ typedef enum
 /* LOCAL VARIABLES                                                            */
 /* -------------------------------------------------------------------------- */
 
+/* Compact lookup table for valid command tags - saves .rodata vs switch */
+static const uint8_t gCommandTags[] = {
+  E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT,
+  E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT,
+  E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE,
+  E_K_ICPP_PARSER_COMMAND_TAG_PROCESSING_STATUS,
+  E_K_ICPP_PARSER_COMMAND_TAG_CMD_PROCESSING_ERROR,
+  E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION,
+  E_K_ICPP_PARSER_COMMAND_TAG_REGISTERATION_INFO,
+  E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO,
+  E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR,
+  E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT,
+  E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION,
+#ifdef FOTA_ENABLE
+  E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA,
+  E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS,
+#endif
+  E_K_ICPP_PARSER_COMMAND_TAG_THIRD_PARTY
+};
+
+#define C_COMMAND_TAGS_COUNT (sizeof(gCommandTags) / sizeof(gCommandTags[0]))
+
+/* Compact lookup table for 1-byte field tags */
+static const uint8_t gField1ByteTags[] = {
+  E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT,
+  E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID,
+  E_K_ICPP_PARSER_FIELD_TAG_MUTABLE_DEVPROFUID,
+  E_K_ICPP_PARSER_FIELD_TAG_KTA_VER,
+  E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO,
+  E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER,
+  E_K_ICPP_PARSER_FLD_TAG_KTA_CTX_SERIAL_NO,
+  E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID,
+  E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER,
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_SOL_ID,
+  E_K_ICPP_PARSER_FIELD_TAG_CHIP_UID,
+  E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY,
+  E_K_ICPP_PARSER_FLD_TAG_KTA_NONCE,
+  E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA,
+  E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE,
+#ifdef FOTA_ENABLE
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE,
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE,
+#endif
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS,
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_PUBLIC_UID
+};
+
+/* Compact lookup table for 2-byte field tags */
+static const uint8_t gField2ByteTags[] = {
+  E_K_ICPP_PARSER_FLD_TAG_CHIP_CERT,
+  E_K_ICPP_PARSER_FIELD_TAG_ROT_E_PK,
+  E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK,
+  E_K_ICPP_PARSER_FIELD_TAG_SIGNED_PUB_KEY,
+  E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY,
+  E_K_ICPP_PARSER_FLD_TAG_CMD_DATA,
+  E_K_ICPP_PARSER_FLD_TAG_CHIP_ATTEST_CERT,
+#ifdef FOTA_ENABLE
+  E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL
+#endif
+};
+
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - PROTOTYPE                                                */
 /* -------------------------------------------------------------------------- */
@@ -634,6 +704,71 @@ TKParserStatus ktaIcppParserSetHeaderLength
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - IMPLEMENTATION                                           */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * @brief Check if tag exists in command tag table
+ */
+static TKParserStatus lCheckCommandTag
+(
+  const uint32_t  xTag,
+  uint32_t*       xpTagLen
+)
+{
+  /* Linear search through command tag table - much smaller than switch lookup table */
+  for (uint32_t i = 0; i < C_COMMAND_TAGS_COUNT; i++)
+  {
+    if (gCommandTags[i] == (uint8_t)xTag)
+    {
+      if (xpTagLen != NULL)
+      {
+        *xpTagLen = (uint32_t)(M_K_ICPP_PARSER_GET_COMMAND_LENGTH(xTag));
+      }
+      return E_K_ICPP_PARSER_STATUS_OK;
+    }
+  }
+  M_KTALOG__ERR("Unknown command xTag %u", xTag);
+  return E_K_ICPP_PARSER_STATUS_PARAMETER;
+}
+
+/**
+ * @brief Check if tag exists in field tag tables
+ */
+static TKParserStatus lCheckFieldTag
+(
+  const uint32_t  xTag,
+  uint32_t*       xpTagLen
+)
+{
+  /* Check 1-byte field tags */
+  for (uint32_t i = 0; i < sizeof(gField1ByteTags); i++)
+  {
+    if (gField1ByteTags[i] == (uint8_t)xTag)
+    {
+      if (xpTagLen != NULL)
+      {
+        *xpTagLen = M_K_ICPP_PARSER_GET_1_BYTE_FIELD_LENGTH(xTag);
+      }
+      return E_K_ICPP_PARSER_STATUS_OK;
+    }
+  }
+
+  /* Check 2-byte field tags */
+  for (uint32_t i = 0; i < sizeof(gField2ByteTags); i++)
+  {
+    if (gField2ByteTags[i] == (uint8_t)xTag)
+    {
+      if (xpTagLen != NULL)
+      {
+        *xpTagLen = M_K_ICPP_PARSER_GET_2_BYTE_FIELD_LENGTH(xTag);
+      }
+      return E_K_ICPP_PARSER_STATUS_OK;
+    }
+  }
+
+  M_KTALOG__ERR("Unknown field xTag %u", xTag);
+  return E_K_ICPP_PARSER_STATUS_PARAMETER;
+}
+
 /**
  * @implements lIcppParserIsValidTag
  *
@@ -645,122 +780,21 @@ static TKParserStatus lIcppParserIsValidTag
   uint32_t*             xpTagLen
 )
 {
-  TKParserStatus  status = E_K_ICPP_PARSER_STATUS_ERROR;
-
+  /* Handle command tag type */
   if (E_ICPP_PARSER_TAG_TYPE_COMMAND == xTagType)
   {
-    switch (xTag)
-    {
-      case E_K_ICPP_PARSER_COMMAND_TAG_ACTIVATION:
-      case E_K_ICPP_PARSER_COMMAND_TAG_REGISTERATION_INFO:
-      case E_K_ICPP_PARSER_COMMAND_TAG_THIRD_PARTY:
-      case E_K_ICPP_PARSER_COMMAND_TAG_PROCESSING_STATUS:
-      case E_K_ICPP_PARSER_COMMAND_TAG_CMD_PROCESSING_ERROR:
-      case E_K_ICPP_PARSER_COMMAND_TAG_GENERATE_KEY_PAIR:
-      case E_K_ICPP_PARSER_COMMAND_TAG_SET_OBJECT:
-      case E_K_ICPP_PARSER_CMD_TAG_SET_OBJ_WITH_ASSOCIATION:
-      case E_K_ICPP_PARSER_COMMAND_TAG_DELETE_OBJECT:
-      case E_K_ICPP_PARSER_CMD_TAG_DELETE_KEY_OBJECT:
-      case E_K_ICPP_PARSER_CMD_TAG_GET_CHALLENGE:
-#ifdef FOTA_ENABLE
-      case E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA:
-      case E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS:
-      case E_K_ICPP_PARSER_COMMAND_TAG_DEVICE_INFO:
-#endif // FOTA_ENABLE
-      {
-        if (xpTagLen != NULL)
-        {
-          *xpTagLen = (uint32_t)(M_K_ICPP_PARSER_GET_COMMAND_LENGTH(xTag));
-        }
-      }
-      status = E_K_ICPP_PARSER_STATUS_OK;
-      break;
-
-      default:
-      {
-        M_KTALOG__ERR("Unknown command xTag %u", xTag);
-        status = E_K_ICPP_PARSER_STATUS_PARAMETER;
-      }
-      break;
-    }
+    return lCheckCommandTag(xTag, xpTagLen);
   }
-  else if (E_ICPP_PARSER_TAG_TYPE_FIELD == xTagType)
+
+  /* Handle field tag type */
+  if (E_ICPP_PARSER_TAG_TYPE_FIELD == xTagType)
   {
-    switch (xTag)
-    {
-      case E_K_ICPP_PARSER_FIELD_TAG_DEVPROFUID:
-      case E_K_ICPP_PARSER_FIELD_TAG_MUTABLE_DEVPROFUID:
-      case E_K_ICPP_PARSER_FIELD_TAG_CHIP_UID:
-      case E_K_ICPP_PARSER_FIELD_TAG_ROT_SOL_ID:
-      case E_K_ICPP_PARSER_FIELD_TAG_ROT_PUBLIC_UID:
-      case E_K_ICPP_PARSER_FIELD_TAG_ACK_SEQ_CNT:
-      case E_K_ICPP_PARSER_FLD_TAG_KTA_CAPABILITY:
-      case E_K_ICPP_PARSER_FIELD_TAG_KTA_CTX_PRO_UID:
-      case E_K_ICPP_PARSER_FLD_TAG_KTA_CTX_SERIAL_NO:
-      case E_K_ICPP_PRSR_FLD_TAG_KTA_CTX_VER:
-      case E_K_ICPP_PARSER_FIELD_TAG_KTA_VER:
-      case E_K_ICPP_PARSER_FIELD_TAG_DEV_SERIAL_NO:
-      case E_K_ICPP_PARSER_FLD_TAG_CMD_IDENTIFIER:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_TYPE:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_ATTRIBUTES:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_ASSOCIATION_INFO:
-      case E_K_ICPP_PRSR_FLD_TAG_CMD_OBJECT_OWNER:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS:
-      case E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_OBJECT_UID:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_CUSTOMER_METADATA:
-      case E_K_ICPP_PARSER_FLD_TAG_KTA_NONCE:
-#ifdef FOTA_ENABLE
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_METADATA:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_TARGET:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_VERSION:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CODE:
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_ERROR_CAUSE:
-#endif // FOTA_ENABLE
-      {
-        if (xpTagLen != NULL)
-        {
-          *xpTagLen = M_K_ICPP_PARSER_GET_1_BYTE_FIELD_LENGTH(xTag);
-        }
-      }
-      status = E_K_ICPP_PARSER_STATUS_OK;
-      break;
-
-      case E_K_ICPP_PARSER_FIELD_TAG_ROT_E_PK:
-      case E_K_ICPP_PARSER_FLD_TAG_CHIP_CERT:
-      case E_K_ICPP_PARSER_FLD_TAG_CHIP_ATTEST_CERT:
-      case E_K_ICPP_PARSER_FIELD_TAG_SIGNED_PUB_KEY:
-      case E_K_ICPP_PARSER_FIELD_TAG_KS_E_PK:
-      case E_K_ICPP_PARSER_FLD_TAG_CMD_PUBLIC_KEY:
-      case E_K_ICPP_PARSER_FLD_TAG_CMD_DATA:
-#ifdef FOTA_ENABLE
-      case E_K_ICPP_PARSER_FIELD_TAG_CMD_FOTA_COMPONENT_URL:
-#endif //FOTA_ENABLE
-      {
-        if (xpTagLen != NULL)
-        {
-          *xpTagLen = M_K_ICPP_PARSER_GET_2_BYTE_FIELD_LENGTH(xTag);
-        }
-      }
-      status = E_K_ICPP_PARSER_STATUS_OK;
-      break;
-
-      default:
-      {
-        M_KTALOG__ERR("Unknown field xTag %u", xTag);
-        status = E_K_ICPP_PARSER_STATUS_PARAMETER;
-      }
-      break;
-    }
-  }
-  else
-  {
-    M_KTALOG__ERR("Unknown  xTagType %u", xTagType);
-    status = E_K_ICPP_PARSER_STATUS_PARAMETER;
+    return lCheckFieldTag(xTag, xpTagLen);
   }
 
-  return status;
+  /* Unknown tag type */
+  M_KTALOG__ERR("Unknown  xTagType %u", xTagType);
+  return E_K_ICPP_PARSER_STATUS_PARAMETER;
 }
 
 /**
@@ -863,7 +897,7 @@ static TKParserStatus lIcppParserDeserializeFields
     }
 
     curPosition += C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES;
-    if ( (curPosition+tagLen ) > (uint32_t)xCommandLength)
+    if ((curPosition+tagLen) > (uint32_t)xCommandLength)
     {
       M_KTALOG__ERR("Error while parsing taglen");
       status = E_K_ICPP_PARSER_STATUS_ERROR;
@@ -879,7 +913,7 @@ static TKParserStatus lIcppParserDeserializeFields
       M_KTALOG__ERR("Error while parsing field length");
       status = E_K_ICPP_PARSER_STATUS_ERROR;
       break;
-    }  
+    }
     /* To fix the misra-c2012-11.4-A conversion should not be performed between a pointer to object and an integer type*/
     /* Storing the received data pointer to the field value. */
 	  pField->fieldValue = (uint8_t*)&xpMessage[curPosition];
@@ -1097,6 +1131,101 @@ end:
 }
 
 /**
+ * @brief Helper function to serialize a command with fields
+ *
+ * @param[in]     pCommand              Pointer to command structure
+ * @param[in,out] xpMessageCommand      Pointer to output buffer
+ * @param[in]     curPosition           Current position in buffer
+ * @param[in,out] bufferSize            Available buffer size
+ * @param[out]    commandsLength        Pointer to store commands length
+ *
+ * @return TKParserStatus Status code
+ */
+static TKParserStatus lSerializeCommandWithFields
+(
+  const TKIcppCommand*  pCommand,
+  uint8_t*              xpMessageCommand,
+  uint32_t              curPosition,
+  size_t*               bufferSize,
+  uint32_t*             commandsLength
+)
+{
+  TKParserStatus status;
+
+  /* Check the max field limit. */
+  if ((C_K_ICPP_PARSER__MAX_FIELDS_COUNT < pCommand->data.fieldList.fieldsCount) ||
+      (0u == pCommand->data.fieldList.fieldsCount))
+  {
+    M_KTALOG__ERR("Invalid field count %ld", pCommand->data.fieldList.fieldsCount);
+    return E_K_ICPP_PARSER_STATUS_ERROR;
+  }
+
+  *commandsLength = *bufferSize;
+
+  /* Adding the fields data to the buffer. */
+  // REQ RQ_M-KTA-ICPP-FN-0060(1) : Serialize Fileds in Commands
+  status = lIcppParserSerializeFields(&pCommand->data.fieldList,
+                                      &xpMessageCommand[curPosition],
+                                      commandsLength);
+
+  if (E_K_ICPP_PARSER_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Serialization of fields got Failed %d", status);
+    return status;
+  }
+
+  *bufferSize -= *commandsLength;
+
+  return E_K_ICPP_PARSER_STATUS_OK;
+}
+
+/**
+ * @brief Helper function to serialize a command without fields
+ *
+ * @param[in]     pCommand              Pointer to command structure
+ * @param[in,out] xpMessageCommand      Pointer to output buffer
+ * @param[in]     curPosition           Current position in buffer
+ * @param[in,out] bufferSize            Available buffer size
+ * @param[out]    commandsLength        Pointer to store commands length
+ *
+ * @return TKParserStatus Status code
+ */
+static TKParserStatus lSerializeCommandWithoutFields
+(
+  const TKIcppCommand*  pCommand,
+  uint8_t*              xpMessageCommand,
+  uint32_t              curPosition,
+  size_t*               bufferSize,
+  uint32_t*             commandsLength
+)
+{
+  if (0u == pCommand->data.cmdInfo.cmdLen)
+  {
+    M_KTALOG__ERR("Invalid command length %ld", pCommand->data.cmdInfo.cmdLen);
+    return E_K_ICPP_PARSER_STATUS_ERROR;
+  }
+
+  /**
+   * Some command has the data directly instead of field tag and length
+   * So that we can save 2 bytes.
+   */
+  if (*bufferSize < pCommand->data.cmdInfo.cmdLen)
+  {
+    M_KTALOG__ERR("Size is less than required command len %d", *bufferSize);
+    return E_K_ICPP_PARSER_STATUS_ERROR;
+  }
+
+  *bufferSize -= pCommand->data.cmdInfo.cmdLen;
+  (void)memcpy(&xpMessageCommand[curPosition],
+               pCommand->data.cmdInfo.cmdValue,
+               pCommand->data.cmdInfo.cmdLen);
+  *commandsLength = pCommand->data.cmdInfo.cmdLen;
+  M_KTALOG__DEBUG("Command without fields %u", pCommand->commandTag);
+
+  return E_K_ICPP_PARSER_STATUS_OK;
+}
+
+/**
  * @implements lIcppParserSerializeCommands
  *
  */
@@ -1124,102 +1253,63 @@ static TKParserStatus lIcppParserSerializeCommands
   {
     M_KTALOG__ERR("Invalid parameters");
     status = E_K_ICPP_PARSER_STATUS_PARAMETER;
+    goto end;
   }
-  else
+
+  bufferSize = *xpMessageCommandSize;
+
+  /* Adding commands data to the buffer. */
+  for (uint32_t commandLoop = 0; commandLoop < xpIcppMessage->commandsCount; commandLoop++)
   {
-    bufferSize = *xpMessageCommandSize;
+    pCommand = &xpIcppMessage->commands[commandLoop];
 
-    /* Adding commands data to the buffer. */
-    for (uint32_t commandLoop = 0; commandLoop < xpIcppMessage->commandsCount; commandLoop++)
+    // REQ RQ_M-KTA-ICPP-FN-0030(1) : Check Commands in message
+    if (E_K_ICPP_PARSER_STATUS_OK != lIcppParserIsValidTag(E_ICPP_PARSER_TAG_TYPE_COMMAND,
+                                                           (uint32_t)pCommand->commandTag,
+                                                           &tagLen))
     {
-      pCommand = &xpIcppMessage->commands[commandLoop];
-
-      // REQ RQ_M-KTA-ICPP-FN-0030(1) : Check Commands in message
-      if (E_K_ICPP_PARSER_STATUS_OK != lIcppParserIsValidTag(E_ICPP_PARSER_TAG_TYPE_COMMAND,
-                                                             (uint32_t)pCommand->commandTag,
-                                                             &tagLen))
-      {
-        M_KTALOG__ERR("Invalid Command Tag %d", pCommand->commandTag);
-        status = E_K_ICPP_PARSER_STATUS_ERROR;
-        goto end;
-      }
-
-      if (bufferSize < (tagLen + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES))
-      {
-        M_KTALOG__ERR("Size is less than required command %d", bufferSize);
-        status = E_K_ICPP_PARSER_STATUS_ERROR;
-        goto end;
-      }
-
-      bufferSize -= tagLen + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES;
-      xpMessageCommand[curPosition] = (uint8_t)pCommand->commandTag;
-      /**
-       * Reserved for command length. Storing the command length address in pointer.
-       * Will update the length later.
-       */
-      pCmdLengthOffset = &xpMessageCommand[curPosition + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES];
-      curPosition += tagLen + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES;
-      if ((int)M_K_ICPP_PARSER__COMMAND_TAG_HAS_FIELDS(pCommand->commandTag) != 0)
-      {
-        /* Check the max field limit. */
-        if (
-          (C_K_ICPP_PARSER__MAX_FIELDS_COUNT < pCommand->data.fieldList.fieldsCount) ||
-          (0u == pCommand->data.fieldList.fieldsCount)
-        )
-        {
-          M_KTALOG__ERR("Invalid field count %ld", pCommand->data.fieldList.fieldsCount);
-          status = E_K_ICPP_PARSER_STATUS_ERROR;
-          goto end;
-        }
-
-        commandsLength = bufferSize;
-        /* Adding the fields data to the buffer. */
-        // REQ RQ_M-KTA-ICPP-FN-0060(1) : Serialize Fileds in Commands
-        status = lIcppParserSerializeFields(&pCommand->data.fieldList,
-                                            &xpMessageCommand[curPosition],
-                                            &commandsLength);
-
-        if (E_K_ICPP_PARSER_STATUS_OK != status)
-        {
-          M_KTALOG__ERR("Serialization of fields got Failed %d", status);
-          goto end;
-        }
-
-        bufferSize -= commandsLength;
-        curPosition += commandsLength;
-      }
-      else
-      {
-        if (0u == pCommand->data.cmdInfo.cmdLen)
-        {
-          M_KTALOG__ERR("Invalid command length %ld", pCommand->data.cmdInfo.cmdLen);
-          status = E_K_ICPP_PARSER_STATUS_ERROR;
-          goto end;
-        }
-
-        /**
-         * Some command has the data directly instead of field tag and length
-         * So that we can save 2 bytes.
-         */
-        if (bufferSize < pCommand->data.cmdInfo.cmdLen)
-        {
-          M_KTALOG__ERR("Size is less than required command len %d", bufferSize);
-          status = E_K_ICPP_PARSER_STATUS_ERROR;
-          goto end;
-        }
-
-        bufferSize -= pCommand->data.cmdInfo.cmdLen;
-        (void)memcpy(&xpMessageCommand[curPosition],
-                     pCommand->data.cmdInfo.cmdValue,
-                     pCommand->data.cmdInfo.cmdLen);
-        curPosition += pCommand->data.cmdInfo.cmdLen;
-        commandsLength = pCommand->data.cmdInfo.cmdLen;
-        M_KTALOG__DEBUG("Command without fields %u #%u", pCommand->commandTag, commandLoop);
-      }
-
-      /* Update the command length. */
-      lIcppParserSetTagLength(pCmdLengthOffset, tagLen, commandsLength);
+      M_KTALOG__ERR("Invalid Command Tag %d", pCommand->commandTag);
+      status = E_K_ICPP_PARSER_STATUS_ERROR;
+      goto end;
     }
+
+    if (bufferSize < (tagLen + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES))
+    {
+      M_KTALOG__ERR("Size is less than required command %d", bufferSize);
+      status = E_K_ICPP_PARSER_STATUS_ERROR;
+      goto end;
+    }
+
+    bufferSize -= tagLen + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES;
+    xpMessageCommand[curPosition] = (uint8_t)pCommand->commandTag;
+    /**
+     * Reserved for command length. Storing the command length address in pointer.
+     * Will update the length later.
+     */
+    pCmdLengthOffset = &xpMessageCommand[curPosition + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES];
+    curPosition += tagLen + C_K_ICPP_PARSER_TAG_SIZE_IN_BYTES;
+
+    if ((int)M_K_ICPP_PARSER__COMMAND_TAG_HAS_FIELDS(pCommand->commandTag) != 0)
+    {
+      status = lSerializeCommandWithFields(pCommand, xpMessageCommand, curPosition, &bufferSize, &commandsLength);
+      if (E_K_ICPP_PARSER_STATUS_OK != status)
+      {
+        goto end;
+      }
+      curPosition += commandsLength;
+    }
+    else
+    {
+      status = lSerializeCommandWithoutFields(pCommand, xpMessageCommand, curPosition, &bufferSize, &commandsLength);
+      if (E_K_ICPP_PARSER_STATUS_OK != status)
+      {
+        goto end;
+      }
+      curPosition += commandsLength;
+    }
+
+    /* Update the command length. */
+    lIcppParserSetTagLength(pCmdLengthOffset, tagLen, commandsLength);
   }
 
 end:

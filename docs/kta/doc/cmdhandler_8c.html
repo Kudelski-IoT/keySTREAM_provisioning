@@ -124,6 +124,12 @@ Macros</h2></td></tr>
 <tr class="memitem:a17bf7d01288e5ef8e26e81b6e6b3917f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmdhandler_8c.html#a17bf7d01288e5ef8e26e81b6e6b3917f">C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE</a>&#160;&#160;&#160;(32u)</td></tr>
 <tr class="memdesc:a17bf7d01288e5ef8e26e81b6e6b3917f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Challenge size in bytes.  <a href="cmdhandler_8c.html#a17bf7d01288e5ef8e26e81b6e6b3917f">More...</a><br /></td></tr>
 <tr class="separator:a17bf7d01288e5ef8e26e81b6e6b3917f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97237cc3e3e98067ac7fcf0b23d2c055"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmdhandler_8c.html#a97237cc3e3e98067ac7fcf0b23d2c055">CHECK_FIELD_LEN</a>(field,  max)</td></tr>
+<tr class="memdesc:a97237cc3e3e98067ac7fcf0b23d2c055"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utility macro to validate field length.  <a href="cmdhandler_8c.html#a97237cc3e3e98067ac7fcf0b23d2c055">More...</a><br /></td></tr>
+<tr class="separator:a97237cc3e3e98067ac7fcf0b23d2c055"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a135632e3058143c8db19aad6e1603913"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmdhandler_8c.html#a135632e3058143c8db19aad6e1603913">UNUSED_FOTA_PARAMS</a>()&#160;&#160;&#160;do {} while (0)</td></tr>
+<tr class="memdesc:a135632e3058143c8db19aad6e1603913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utility macro to suppress unused parameter warnings for FOTA indices.  <a href="cmdhandler_8c.html#a135632e3058143c8db19aad6e1603913">More...</a><br /></td></tr>
+<tr class="separator:a135632e3058143c8db19aad6e1603913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -246,6 +252,61 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Challenge size in bytes. </p>
+
+</div>
+</div>
+<a id="a97237cc3e3e98067ac7fcf0b23d2c055"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97237cc3e3e98067ac7fcf0b23d2c055">&#9670;&nbsp;</a></span>CHECK_FIELD_LEN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CHECK_FIELD_LEN</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">field, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">max&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">  <span class="keywordflow">do</span> { \</div>
+<div class="line">    if ((field)-&gt;fieldLen &gt; (max)) { \</div>
+<div class="line">      M_KTALOG__ERR(<span class="stringliteral">&quot;Invalid field length for tag %d&quot;</span>, (field)-&gt;fieldTag); \</div>
+<div class="line">      return 1u; \</div>
+<div class="line">    } \</div>
+<div class="line">  } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+<p>Utility macro to validate field length. </p>
+
+</div>
+</div>
+<a id="a135632e3058143c8db19aad6e1603913"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a135632e3058143c8db19aad6e1603913">&#9670;&nbsp;</a></span>UNUSED_FOTA_PARAMS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UNUSED_FOTA_PARAMS</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td>&#160;&#160;&#160;do {} while (0)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Utility macro to suppress unused parameter warnings for FOTA indices. </p>
 
 </div>
 </div>

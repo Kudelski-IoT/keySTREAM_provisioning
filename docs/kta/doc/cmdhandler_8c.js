@@ -7,5 +7,7 @@ var cmdhandler_8c =
     [ "C_K_PUBLIC_KEY_LENGTH", "cmdhandler_8c.html#a70a03eec8f1856f0f16b5e47eb48658a", null ],
     [ "C_K_CMD_FIELD_MAX_SIZE", "cmdhandler_8c.html#a763c5818c2b1319192941ae6ad208f5e", null ],
     [ "C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE", "cmdhandler_8c.html#a17bf7d01288e5ef8e26e81b6e6b3917f", null ],
+    [ "CHECK_FIELD_LEN", "cmdhandler_8c.html#a97237cc3e3e98067ac7fcf0b23d2c055", null ],
+    [ "UNUSED_FOTA_PARAMS", "cmdhandler_8c.html#a135632e3058143c8db19aad6e1603913", null ],
     [ "ktaCmdProcess", "cmdhandler_8c.html#afdb8110332b8460f860f38f761cdf772", null ]
 ];

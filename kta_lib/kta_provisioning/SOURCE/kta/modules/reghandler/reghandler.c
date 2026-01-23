@@ -178,92 +178,68 @@ TKStatus ktaregBuildRegistrationRequest
 )
 {
   TKIcppProtocolMessage protoMessage = {0};
-  TKStatus              status = E_K_STATUS_ERROR;
-  size_t                rotPublicUidLen = C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES;
-  TKRegInfoPayload      xpRegInfo = {0};
+  TKStatus status = E_K_STATUS_ERROR;
+  size_t rotPublicUidLen = C_K_ICPP_PARSER__ROT_PUBLIC_UID_SIZE_IN_BYTES;
+  TKRegInfoPayload xpRegInfo = {0};
 
   M_KTALOG__START("Start");
 
-  if ((NULL == xpRecvdProtoMessage) ||
-      (NULL == xpMessageToSend) ||
-      (NULL == xpMessageToSendSize) ||
-      (C_K__ICPP_MSG_MAX_SIZE > *xpMessageToSendSize))
+  if ((NULL == xpRecvdProtoMessage) || (NULL == xpMessageToSend) ||
+      (NULL == xpMessageToSendSize) || (C_K__ICPP_MSG_MAX_SIZE > *xpMessageToSendSize))
   {
-    status = E_K_STATUS_PARAMETER;
     M_KTALOG__ERR("Invalid parameter passed");
+    status = E_K_STATUS_PARAMETER;
+    goto end;
   }
-  else
+
+  if (E_K_ICPP_PARSER_CRYPTO_TYPE_DOS_BASED != xpRecvdProtoMessage->cryptoVersion)
   {
-    /* keySTREAM should give activation response based on dos key. */
-    if (E_K_ICPP_PARSER_CRYPTO_TYPE_DOS_BASED != xpRecvdProtoMessage->cryptoVersion)
-    {
-      M_KTALOG__ERR("Received wrong crypto version from the server, cryptoVersion = [%d]",
-                    xpRecvdProtoMessage->cryptoVersion);
-    }
-    else
-    {
-      /* Fill the crypto version to use (for activation request dos based encryption is used). */
-      // REQ RQ_M-KTA-REGT-FN-0010(1) : Check crypto version
-      // REQ RQ_M-KTA-REGT-FN-0020_01(1) : Registeration Info crypto version
-      protoMessage.cryptoVersion  = E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED;
-      /* Fill the mode of encryption (for activation request partial encryption is used). */
-      // REQ RQ_M-KTA-REGT-FN-0020_02(1) : Registeration Info partial encryption mode
-      protoMessage.encMode  = E_K_ICPP_PARSER_FULL_ENC_MODE;
+    M_KTALOG__ERR("Received wrong crypto version from the server, cryptoVersion = [%d]",
+                  xpRecvdProtoMessage->cryptoVersion);
+    goto end;
+  }
 
-      /* Fill the message type with "E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE" to indicate it is
-        registration notification response (client -> server). */
-      // REQ RQ_M-KTA-REGT-FN-0020_03(1) : Registeration Info message type
-      protoMessage.msgType  = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
-      /* Fill transaction ID. */
-      // REQ RQ_M-KTA-REGT-FN-0020_04(1) : Registeration Info transaction id
-      (void)memcpy(protoMessage.transactionId,
-                  xpRecvdProtoMessage->transactionId,
-                  C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES);
-      /* Fill rotKeySetId as it is which is received from keyStream. */
-      // REQ RQ_M-KTA-REGT-FN-0020_05(1) : Registeration Info rot key set id
-      protoMessage.rotKeySetId = xpRecvdProtoMessage->rotKeySetId;
-      // REQ RQ_M-KTA-REGT-FN-0020_06(1) : Registeration Info rot public uid
-      status = salStorageGetValue(C_K_KTA__ROT_PUBLIC_UID_STORAGE_ID,
-                                  protoMessage.rotPublicUID,
-                                  &rotPublicUidLen);
+  // REQ RQ_M-KTA-REGT-FN-0010(1) : Check crypto version
+  // REQ RQ_M-KTA-REGT-FN-0020_01(1) : Registeration Info crypto version
+  protoMessage.cryptoVersion = E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED;
+  // REQ RQ_M-KTA-REGT-FN-0020_02(1) : Registeration Info partial encryption mode
+  protoMessage.encMode = E_K_ICPP_PARSER_FULL_ENC_MODE;
+  // REQ RQ_M-KTA-REGT-FN-0020_03(1) : Registeration Info message type
+  protoMessage.msgType = E_K_ICPP_PARSER_MESSAGE_TYPE_RESPONSE;
+  // REQ RQ_M-KTA-REGT-FN-0020_04(1) : Registeration Info transaction id
+  memcpy(protoMessage.transactionId, xpRecvdProtoMessage->transactionId,
+         C_K_ICPP_PARSER__TRANSACTION_ID_SIZE_IN_BYTES);
+  // REQ RQ_M-KTA-REGT-FN-0020_05(1) : Registeration Info rot key set id
+  protoMessage.rotKeySetId = xpRecvdProtoMessage->rotKeySetId;
 
-      if ((E_K_STATUS_OK != status) || (0u == rotPublicUidLen))
-      {
-        M_KTALOG__ERR("SAL API failed while reading rotPublicUID, status = [%d]", status);
-        goto end;
-      }
+  // REQ RQ_M-KTA-REGT-FN-0020_06(1) : Registeration Info rot public uid
+  status = salStorageGetValue(C_K_KTA__ROT_PUBLIC_UID_STORAGE_ID, protoMessage.rotPublicUID, &rotPublicUidLen);
+  if ((E_K_STATUS_OK != status) || (0u == rotPublicUidLen))
+  {
+    M_KTALOG__ERR("SAL API failed while reading rotPublicUID, status = [%d]", status);
+    goto end;
+  }
 
-      /* Get registration information. */
-      status = lGetRegistrationInfo(&xpRegInfo);
+  status = lGetRegistrationInfo(&xpRegInfo);
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Collecting registration info failed, status = [%d]", status);
+    goto end;
+  }
 
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR("Collecting registration info failed, status = [%d]", status);
-        goto end;
-      }
+  // REQ RQ_M-KTA-REGT-FN-0020(1) : Registeration Info ICPP Message
+  status = lPrepareNotificationMsg(&protoMessage, &xpRegInfo);
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("Preparing registration response message failed, status = [%d]", status);
+    goto end;
+  }
 
-      /* Prepare registration response message. */
-      // REQ RQ_M-KTA-REGT-FN-0020(1) : Registeration Info ICPP Message
-      status = lPrepareNotificationMsg(&protoMessage, &xpRegInfo);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR("Preparing registration response message failed, status = [%d]", status);
-        goto end;
-      }
-
-      status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING |
-                                    C_GEN__ENCRYPT | C_GEN__SIGNING),
-                                  &protoMessage,
-                                  xpMessageToSend,
-                                  xpMessageToSendSize);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", status);
-        goto end;
-      }
-    }
+  status = ktaGenerateResponse((C_GEN__SERIALIZE | C_GEN__PADDING | C_GEN__ENCRYPT | C_GEN__SIGNING),
+                               &protoMessage, xpMessageToSend, xpMessageToSendSize);
+  if (E_K_STATUS_OK != status)
+  {
+    M_KTALOG__ERR("ktaGenerateResponse failed, status = [%d]", status);
   }
 
 end:
@@ -278,68 +254,43 @@ end:
 /**
  * @implements lGetRegistrationInfo
  *
- *//**
- * @implements lGetRegistrationInfo
- *
  */
 static TKStatus lGetRegistrationInfo
 (
   TKRegInfoPayload* xpRegInfo
 )
 {
-  TKStatus status                                = E_K_STATUS_ERROR;
-  uint8_t aAckSeqCnt[C_ACK_SEQ_CNT_SIZE]         = {0x00, 0x00, 0x00};
-  uint8_t aKtaCapability[C_KTA_CAPABILITY_SIZE]  = C_KTA_CAPABILITY;
+  TKStatus status;
+  static const uint8_t aAckSeqCnt[C_ACK_SEQ_CNT_SIZE] = {0x00, 0x00, 0x00};
+  static const uint8_t aKtaCapability[C_KTA_CAPABILITY_SIZE] = C_KTA_CAPABILITY;
 
-#ifdef FOTA_ENABLE
-  TComponent xComponents[COMPONENTS_MAX]         = {0};
-  uint8_t startIndex = 0;
-#endif
-
-  status = ktaGetContextInfoConfig(&(xpRegInfo->contextInfo));
-
+  status = ktaGetContextInfoConfig(&xpRegInfo->contextInfo);
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Reading context specific data from platform failed, status = [%d]", status);
     goto end;
   }
 
-  /* Fetch required info (Device info from config module). */
-  status = ktaGetDeviceInfoConfig(&(xpRegInfo->deviceInfo));
-
+  status = ktaGetDeviceInfoConfig(&xpRegInfo->deviceInfo);
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Reading device info from config failed, status = [%d]", status);
     goto end;
   }
 
-  (void)memcpy(xpRegInfo->aAckSeqCnt, aAckSeqCnt, sizeof(aAckSeqCnt));
-  (void)memcpy(xpRegInfo->aKtaCapability, aKtaCapability, sizeof(aKtaCapability));
-  (void)memcpy(xpRegInfo->aKtaVersion,
-               xpRegInfo->contextInfo.ktaVersion,
-               C_KTA__VERSION_MAX_SIZE);
+  memcpy(xpRegInfo->aAckSeqCnt, aAckSeqCnt, sizeof(aAckSeqCnt));
+  memcpy(xpRegInfo->aKtaCapability, aKtaCapability, sizeof(aKtaCapability));
+  memcpy(xpRegInfo->aKtaVersion, xpRegInfo->contextInfo.ktaVersion, C_KTA__VERSION_MAX_SIZE);
 
 #ifdef FOTA_ENABLE
-
-  status = salDeviceGetInfo(xComponents);
-
-  // Check if the device info was successfully retrieved
+  status = salDeviceGetInfo(xpRegInfo->xComponents);
   if (E_K_STATUS_OK != status)
   {
     M_KTALOG__ERR("Reading component failed, status = [%d]", status);
-    goto end;
   }
-  // Copy the xComponents array to xpRegInfo->xComponents one by one
-  for (startIndex = 0; startIndex < COMPONENTS_MAX; startIndex++)
-  {
-    (void)memcpy(xpRegInfo->xComponents[startIndex].componentName, xComponents[startIndex].componentName, CURRENT_MAX_LENGTH);
-    xpRegInfo->xComponents[startIndex].componentNameLen = xComponents[startIndex].componentNameLen;
-    (void)memcpy(xpRegInfo->xComponents[startIndex].componentVersion, xComponents[startIndex].componentVersion, CURRENT_MAX_LENGTH);
-    xpRegInfo->xComponents[startIndex].componentVersionLen = xComponents[startIndex].componentVersionLen;
-  }
+#endif
 
-#endif // FOTA_ENABLE
-  end:
+end:
   return status;
 }
 

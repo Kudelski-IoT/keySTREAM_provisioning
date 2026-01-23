@@ -25,6 +25,7 @@ var icpp__parser_8c =
     [ "M_K_ICPP_PARSER_GET_COMMAND_LENGTH", "icpp__parser_8c.html#a94e13c6ea65bb8337259499ee58b8971", null ],
     [ "M_K_ICPP_PARSER_GET_1_BYTE_FIELD_LENGTH", "icpp__parser_8c.html#ade1135a3836cce6ba98df8896288e10a", null ],
     [ "M_K_ICPP_PARSER_GET_2_BYTE_FIELD_LENGTH", "icpp__parser_8c.html#a88e07a615048a6c4c89243ab755bb35d", null ],
+    [ "C_COMMAND_TAGS_COUNT", "icpp__parser_8c.html#a856e263706cadde693fa677e68129efb", null ],
     [ "TKIcppTagType", "icpp__parser_8c.html#a831ba21e12bccdacf62383e1c613afaf", [
       [ "E_ICPP_PARSER_TAG_TYPE_COMMAND", "icpp__parser_8c.html#a831ba21e12bccdacf62383e1c613afafa58bd2cde8541edee964700ee1d353833", null ],
       [ "E_ICPP_PARSER_TAG_TYPE_FIELD", "icpp__parser_8c.html#a831ba21e12bccdacf62383e1c613afafaa2f27bd28c908a99a27837d47bf0fe4c", null ],

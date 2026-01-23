@@ -771,9 +771,9 @@
             <logicalFolder name="salapi" displayName="salapi" projectFiles="true">
               <logicalFolder name="include" displayName="include" projectFiles="true">
               </logicalFolder>
-              <itemPath>../src/commstack/coap/salapi/k_sal_os.c</itemPath>
-              <itemPath>../src/commstack/coap/salapi/k_sal_random.c</itemPath>
-              <itemPath>../src/commstack/coap/salapi/k_sal_socket.c</itemPath>
+              <itemPath>../../common/kta_provisioning/COMMSTACK/coap/salapi/k_sal_os.c</itemPath>
+              <itemPath>../../common/kta_provisioning/COMMSTACK/coap/salapi/k_sal_random.c</itemPath>
+              <itemPath>../../common/kta_provisioning/COMMSTACK/coap/salapi/k_sal_socket.c</itemPath>
             </logicalFolder>
             <itemPath>../../common/kta_provisioning/COMMSTACK/coap/comm_if.c</itemPath>
             <itemPath>../../common/kta_provisioning/COMMSTACK/coap/comm_interface.c</itemPath>
@@ -786,7 +786,8 @@
             <logicalFolder name="salapi" displayName="salapi" projectFiles="true">
               <logicalFolder name="include" displayName="include" projectFiles="true">
               </logicalFolder>
-              <itemPath>../src/commstack/http/salapi/k_sal_com.c</itemPath>
+              <itemPath>../../common/kta_provisioning/COMMSTACK/http/salapi/k_sal_com.c</itemPath>
+              <itemPath>../../common/kta_provisioning/COMMSTACK/http/salapi/k_sal_os.c</itemPath>
             </logicalFolder>
             <itemPath>../../common/kta_provisioning/COMMSTACK/http/comm_if.c</itemPath>
             <itemPath>../../common/kta_provisioning/COMMSTACK/http/http.c</itemPath>
@@ -870,6 +871,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../../..</Elem>
+    <Elem>../src/commstack/http/salapi</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -951,23 +953,13 @@
         <C32Global>
         </C32Global>
       </item>
-      <item path="../src/commstack/http/salapi/k_sal_com.c"
+      <item path="../../common/kta_provisioning/COMMSTACK/http/salapi/k_sal_com.c"
             ex="true"
             overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-CO>
-        </C32-CO>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
+      </item>
+      <item path="../../common/kta_provisioning/COMMSTACK/http/salapi/k_sal_os.c"
+            ex="true"
+            overriding="false">
       </item>
       <AtmelIceTool>
         <property key="AutoSelectMemRanges" value="auto"/>
@@ -1002,7 +994,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/driver/winc/include/;../src/config/keystream_connect/driver/winc/include/dev;../src/config/keystream_connect/driver/winc/include/drv/bsp;../src/config/keystream_connect/driver/winc/include/drv/bsp/include;../src/config/keystream_connect/driver/winc/include/drv/common;../src/config/keystream_connect/driver/winc/include/drv/driver;../src/config/keystream_connect/driver/winc/include/drv/socket;../src/config/keystream_connect/driver/winc/include/drv/spi_flash;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\common;..\src\common\paho_mqtt_embedded_c\MQTTClient-C;..\src\common\paho_mqtt_embedded_c\MQTTPacket;..\src\common\paho_mqtt_embedded_c\platform;..\src\common\parson_json;..\src\common\utilities;..\..\;..\src\config\keystream_connect\library\cryptoauthlib\atcacert;..\..\common\kta_provisioning\COMMON\logmodule\include;..\..\common\kta_provisioning\COMMSTACK\coap\include;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\nanostack\mbed-client-libservice;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\source\include;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\mbed-coap;..\..\common\kta_provisioning\COMMSTACK\coap;..\src\commstack\coap\salapi\include;..\..\common\kta_provisioning\SOURCE\include;..\..\common\kta_provisioning\SOURCE\kta\common\crypto\include;..\..\common\kta_provisioning\SOURCE\kta\common\general\include;..\..\common\kta_provisioning\SOURCE\kta\common\icpp_parser\include;..\..\common\kta_provisioning\SOURCE\kta\common\version\include;..\..\common\kta_provisioning\SOURCE\kta\modules\acthandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\cmdhandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\config\include;..\..\common\kta_provisioning\SOURCE\kta\modules\reghandler\include;..\..\common\kta_provisioning\SOURCE\salapi\include;..\src\apps;..\src\common;..\src\apps;..\..\common;..\..\..\;..\..\common\fota_service;..\..\common\kta_provisioning\SOURCE\kta\modules\fota_service\include;..\..\common\kta_provisioning\SOURCE\kta\fotaservice\include;..\..\common\kta_provisioning\SOURCE\kta\modules\fotaservice\include"/>
+                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/driver/winc/include/;../src/config/keystream_connect/driver/winc/include/dev;../src/config/keystream_connect/driver/winc/include/drv/bsp;../src/config/keystream_connect/driver/winc/include/drv/bsp/include;../src/config/keystream_connect/driver/winc/include/drv/common;../src/config/keystream_connect/driver/winc/include/drv/driver;../src/config/keystream_connect/driver/winc/include/drv/socket;../src/config/keystream_connect/driver/winc/include/drv/spi_flash;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\common;..\src\common\paho_mqtt_embedded_c\MQTTClient-C;..\src\common\paho_mqtt_embedded_c\MQTTPacket;..\src\common\paho_mqtt_embedded_c\platform;..\src\common\parson_json;..\src\common\utilities;..\..\;..\src\config\keystream_connect\library\cryptoauthlib\atcacert;..\..\common\kta_provisioning\COMMON\logmodule\include;..\..\common\kta_provisioning\COMMSTACK\coap\include;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\nanostack\mbed-client-libservice;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\source\include;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap;..\..\common\kta_provisioning\COMMSTACK\coap\mbedCoap\mbed-coap;..\..\common\kta_provisioning\COMMSTACK\coap;..\..\common\kta_provisioning\COMMSTACK\coap\salapi\include;..\..\common\kta_provisioning\SOURCE\include;..\..\common\kta_provisioning\SOURCE\kta\common\crypto\include;..\..\common\kta_provisioning\SOURCE\kta\common\general\include;..\..\common\kta_provisioning\SOURCE\kta\common\icpp_parser\include;..\..\common\kta_provisioning\SOURCE\kta\common\version\include;..\..\common\kta_provisioning\SOURCE\kta\modules\acthandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\cmdhandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\config\include;..\..\common\kta_provisioning\SOURCE\kta\modules\reghandler\include;..\..\common\kta_provisioning\SOURCE\salapi\include;..\src\apps;..\src\common;..\src\apps;..\..\common;..\..\..\;..\..\common\fota_service;..\..\common\kta_provisioning\SOURCE\kta\modules\fota_service\include;..\..\common\kta_provisioning\SOURCE\kta\fotaservice\include;..\..\common\kta_provisioning\SOURCE\kta\modules\fotaservice\include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -1672,6 +1664,7 @@
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.smart.program" value="When debugging only"/>
         <property key="reset.scl" value="false"/>
         <property key="reset.type" value="MCLR"/>
         <property key="script.has_reset" value="true"/>
@@ -2127,6 +2120,8 @@
       </Tool>
       <nEdbgTool>
         <property key="AutoSelectMemRanges" value="manual"/>
+        <property key="arm.use_vtor" value="false"/>
+        <property key="arm.vtor_adr" value="exception_table"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="swd"/>
         <property key="communication.speed" value="2.000"/>
@@ -2143,6 +2138,7 @@
         <property key="firmware.update.action" value="firmware.update.use.latest"/>
         <property key="freeze.timers" value="false"/>
         <property key="lastid" value=""/>
+        <property key="loader.board_file" value="${ProjectDir}/board.xboard"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
         <property key="memories.configurationmemory" value="true"/>
@@ -2167,11 +2163,17 @@
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.smart.program" value="When debugging only"/>
+        <property key="script.has_reset" value="true"/>
+        <property key="script.log_level" value="1"/>
+        <property key="script.reset_delay" value="0"/>
+        <property key="script.show_output" value="false"/>
         <property key="toolpack.updateoptions"
                   value="toolpack.updateoptions.uselatestoolpack"/>
         <property key="toolpack.updateoptions.packversion"
                   value="Press to select which tool pack to use"/>
         <property key="voltagevalue" value=""/>
+        <property key="x.erase.clearprot" value="true"/>
       </nEdbgTool>
     </conf>
     <conf name="keySTREAM_AWS_CONNECT_HTTP" type="2">
@@ -2378,7 +2380,7 @@
         <C32Global>
         </C32Global>
       </item>
-      <item path="../src/commstack/coap/salapi/k_sal_os.c"
+      <item path="../../common/kta_provisioning/COMMSTACK/coap/salapi/k_sal_os.c"
             ex="true"
             overriding="false">
         <C32>
@@ -2396,7 +2398,7 @@
         <C32Global>
         </C32Global>
       </item>
-      <item path="../src/commstack/coap/salapi/k_sal_random.c"
+      <item path="../../common/kta_provisioning/COMMSTACK/coap/salapi/k_sal_random.c"
             ex="true"
             overriding="false">
         <C32>
@@ -2414,7 +2416,7 @@
         <C32Global>
         </C32Global>
       </item>
-      <item path="../src/commstack/coap/salapi/k_sal_socket.c"
+      <item path="../../common/kta_provisioning/COMMSTACK/coap/salapi/k_sal_socket.c"
             ex="true"
             overriding="false">
         <C32>
@@ -2465,7 +2467,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/driver/winc/include/;../src/config/keystream_connect/driver/winc/include/dev;../src/config/keystream_connect/driver/winc/include/drv/bsp;../src/config/keystream_connect/driver/winc/include/drv/bsp/include;../src/config/keystream_connect/driver/winc/include/drv/common;../src/config/keystream_connect/driver/winc/include/drv/driver;../src/config/keystream_connect/driver/winc/include/drv/socket;../src/config/keystream_connect/driver/winc/include/drv/spi_flash;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\common;..\src\common\paho_mqtt_embedded_c\MQTTClient-C;..\src\common\paho_mqtt_embedded_c\MQTTPacket;..\src\common\paho_mqtt_embedded_c\platform;..\src\common\parson_json;..\src\common\utilities;..\..\;..\src\config\keystream_connect\library\cryptoauthlib\atcacert;..\..\common\kta_provisioning\COMMON\logmodule\include;..\src\commstack\http\salapi\include;..\..\common\kta_provisioning\COMMSTACK\http\include;..\..\common\kta_provisioning\SOURCE\include;..\..\common\kta_provisioning\SOURCE\kta\common\crypto\include;..\..\common\kta_provisioning\SOURCE\kta\common\general\include;..\..\common\kta_provisioning\SOURCE\kta\common\icpp_parser\include;..\..\common\kta_provisioning\SOURCE\kta\common\version\include;..\..\common\kta_provisioning\SOURCE\kta\modules\acthandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\cmdhandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\config\include;..\..\common\kta_provisioning\SOURCE\kta\modules\reghandler\include;..\..\common\kta_provisioning\SOURCE\salapi\include;..\src\apps;..\src\common;..\src\apps;..\..\common\;..\..\..\;..\..\common\fota_service;..\..\common\kta_provisioning\SOURCE\kta\modules\fota_service\include;..\..\common\kta_provisioning\SOURCE\kta\fotaservice\include;..\..\common\kta_provisioning\SOURCE\kta\modules\fotaservice\include"/>
+                  value="../src;../src/config/keystream_connect;../src/config/keystream_connect/driver/winc/include/;../src/config/keystream_connect/driver/winc/include/dev;../src/config/keystream_connect/driver/winc/include/drv/bsp;../src/config/keystream_connect/driver/winc/include/drv/bsp/include;../src/config/keystream_connect/driver/winc/include/drv/common;../src/config/keystream_connect/driver/winc/include/drv/driver;../src/config/keystream_connect/driver/winc/include/drv/socket;../src/config/keystream_connect/driver/winc/include/drv/spi_flash;../src/config/keystream_connect/library/cryptoauthlib;../src/config/keystream_connect/library/cryptoauthlib/crypto;../src/config/keystream_connect/library/cryptoauthlib/pkcs11;../src/packs/ATSAMD21E18A_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\src\common;..\src\common\paho_mqtt_embedded_c\MQTTClient-C;..\src\common\paho_mqtt_embedded_c\MQTTPacket;..\src\common\paho_mqtt_embedded_c\platform;..\src\common\parson_json;..\src\common\utilities;..\..\;..\src\config\keystream_connect\library\cryptoauthlib\atcacert;..\..\common\kta_provisioning\COMMON\logmodule\include;..\..\common\kta_provisioning\COMMSTACK\http\salapi\include;..\..\common\kta_provisioning\COMMSTACK\http\include;..\..\common\kta_provisioning\SOURCE\include;..\..\common\kta_provisioning\SOURCE\kta\common\crypto\include;..\..\common\kta_provisioning\SOURCE\kta\common\general\include;..\..\common\kta_provisioning\SOURCE\kta\common\icpp_parser\include;..\..\common\kta_provisioning\SOURCE\kta\common\version\include;..\..\common\kta_provisioning\SOURCE\kta\modules\acthandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\cmdhandler\include;..\..\common\kta_provisioning\SOURCE\kta\modules\config\include;..\..\common\kta_provisioning\SOURCE\kta\modules\reghandler\include;..\..\common\kta_provisioning\SOURCE\salapi\include;..\src\apps;..\src\common;..\src\apps;..\..\common\;..\..\..\;..\..\common\fota_service;..\..\common\kta_provisioning\SOURCE\kta\modules\fota_service\include;..\..\common\kta_provisioning\SOURCE\kta\fotaservice\include;..\..\common\kta_provisioning\SOURCE\kta\modules\fotaservice\include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -3135,6 +3137,7 @@
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.smart.program" value="When debugging only"/>
         <property key="reset.scl" value="false"/>
         <property key="reset.type" value="MCLR"/>
         <property key="script.has_reset" value="true"/>
@@ -3590,6 +3593,8 @@
       </Tool>
       <nEdbgTool>
         <property key="AutoSelectMemRanges" value="manual"/>
+        <property key="arm.use_vtor" value="false"/>
+        <property key="arm.vtor_adr" value="exception_table"/>
         <property key="communication.activationmode" value="nohv"/>
         <property key="communication.interface" value="swd"/>
         <property key="communication.speed" value="2.000"/>
@@ -3606,6 +3611,7 @@
         <property key="firmware.update.action" value="firmware.update.use.latest"/>
         <property key="freeze.timers" value="false"/>
         <property key="lastid" value=""/>
+        <property key="loader.board_file" value="${ProjectDir}/board.xboard"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
         <property key="memories.configurationmemory" value="true"/>
@@ -3630,11 +3636,17 @@
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.programuserotp" value="false"/>
+        <property key="programoptions.smart.program" value="When debugging only"/>
+        <property key="script.has_reset" value="true"/>
+        <property key="script.log_level" value="1"/>
+        <property key="script.reset_delay" value="0"/>
+        <property key="script.show_output" value="false"/>
         <property key="toolpack.updateoptions"
                   value="toolpack.updateoptions.uselatestoolpack"/>
         <property key="toolpack.updateoptions.packversion"
                   value="Press to select which tool pack to use"/>
         <property key="voltagevalue" value=""/>
+        <property key="x.erase.clearprot" value="true"/>
       </nEdbgTool>
     </conf>
   </confs>

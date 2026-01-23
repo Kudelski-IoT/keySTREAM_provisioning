@@ -1,7 +1,7 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2024 Nagravision Sàrl
+* (c) 2023-2025 Nagravision Sàrl
 
 * Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -31,6 +31,11 @@
  *  \date 2023/06/12
  *
  *  \file comm_if.h
+ * 
+ *  ROBUSTNESS IMPROVEMENTS (2026-01-08):
+ *  - Added statistics tracking types and API
+ *  - Connection health monitoring
+ *  - Extended status codes for better error handling
  ******************************************************************************/
 /**
  * @brief Communication Public Interface.
@@ -48,6 +53,7 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 /* -------------------------------------------------------------------------- */
 /* CONSTANTS, TYPES, ENUM                                                     */
@@ -81,6 +87,12 @@ typedef enum
   /* The network connectivity is not available. */
   E_COMM_IF_STATUS_MEMORY,
   /* Failure on memory allocation. */
+  E_COMM_IF_STATUS_NO_CONNECTION,
+  /* Not connected - call commInit first. [NEW] */
+  E_COMM_IF_STATUS_STALE,
+  /* Connection is too old/stale. [NEW] */
+  E_COMM_IF_STATUS_RESOURCE,
+  /* Resource unavailable (e.g., socket limit). [NEW] */
   E_COMM_IF_NUM_STATUS
   /* Number of status values. */
 } TCommIfStatus;
@@ -95,6 +107,31 @@ typedef enum
   E_COMM_IF_IP_NUM_PROTOCOLS
   /* Number of supported IP protocols. */
 } TCommIfIpProtocol;
+
+/** @brief Communication statistics structure [NEW] */
+typedef struct
+{
+  uint32_t      connectAttempts;
+  /* Total number of connection attempts. */
+  uint32_t      connectSuccess;
+  /* Number of successful connections. */
+  uint32_t      connectFailures;
+  /* Number of failed connections. */
+  uint32_t      msgExchangeAttempts;
+  /* Total number of message exchange attempts. */
+  uint32_t      msgExchangeSuccess;
+  /* Number of successful message exchanges. */
+  uint32_t      msgExchangeFailures;
+  /* Number of failed message exchanges. */
+  uint32_t      termCalls;
+  /* Number of times commTerm() was called. */
+  TCommIfStatus lastError;
+  /* Last error code encountered. */
+  bool          isConnected;
+  /* Current connection state. */
+  uint32_t      connectionAgeSeconds;
+  /* Age of current connection in seconds (0 if not connected). */
+} TCommIfStatistics;
 
 /* -------------------------------------------------------------------------- */
 /* VARIABLES                                                                  */
@@ -145,7 +182,9 @@ TCommIfStatus commInit
  * @return
  * - E_COMM_IF_STATUS_OK or the error status, in particular:
  * - E_COMM_IF_STATUS_PARAMETER if wrong parameters received.
+ * - E_COMM_IF_STATUS_NO_CONNECTION if not connected (call commInit first).
  * - E_COMM_IF_STATUS_NETWORK if any network issue.
+ * - E_COMM_IF_STATUS_TIMEOUT if operation timed out.
  */
 TCommIfStatus commMsgExchange
 (
@@ -168,12 +207,51 @@ TCommIfStatus commTerm
   void
 );
 
+/**
+ * @brief
+ *   Get communication statistics. [NEW]
+ *
+ * @param[out] xpStats
+ *   Pointer to statistics structure to fill; should not be NULL.
+ *
+ * @return
+ * - E_COMM_IF_STATUS_OK on success.
+ * - E_COMM_IF_STATUS_PARAMETER if xpStats is NULL.
+ */
+TCommIfStatus commGetStatistics
+(
+  TCommIfStatistics* xpStats
+);
+
+/**
+ * @brief
+ *   Reset communication statistics counters. [NEW]
+ *   Note: Does not affect connection state.
+ */
+void commResetStatistics
+(
+  void
+);
+
+/**
+ * @brief
+ *   Check connection health status. [NEW]
+ *
+ * @return
+ * - E_COMM_IF_STATUS_OK if connection is healthy.
+ * - E_COMM_IF_STATUS_NO_CONNECTION if not connected.
+ * - E_COMM_IF_STATUS_STALE if connection is too old (>5 minutes).
+ */
+TCommIfStatus commCheckConnectionHealth
+(
+  void
+);
+
 #ifdef __cplusplus
 }
 #endif /* C++ */
 
-#endif // K_SAL_COM_H
+#endif // COMM_IF_H
 /* -------------------------------------------------------------------------- */
 /* END OF FILE                                                                */
 /* -------------------------------------------------------------------------- */
-

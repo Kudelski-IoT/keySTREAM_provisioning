@@ -181,7 +181,7 @@ ATCA_STATUS calib_ecdh_enc(ATCADevice device, uint16_t key_id, const uint8_t* pu
             (void)ATCA_TRACE(status, "ECDH Failed"); break;
         }
 #if defined(ATCA_USE_CONSTANT_HOST_NONCE)
-        if ((status = calib_read_enc(device, key_id | 0x0001, 0, pms, read_key, read_key_id)) != ATCA_SUCCESS)
+        if ((status = calib_read_enc(device, key_id | 0x0001u, 0, pms, read_key, read_key_id)) != ATCA_SUCCESS)
 #else
         if ((status = calib_read_enc(device, key_id | 0x0001u, 0, pms, read_key, read_key_id, num_in)) != ATCA_SUCCESS)
 #endif

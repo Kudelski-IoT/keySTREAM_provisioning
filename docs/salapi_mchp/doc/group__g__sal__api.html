@@ -229,7 +229,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>CURRENT_MAX_LENGTH</b>&#160;&#160;&#160;(16u)</td></tr>
 <tr class="separator:gabe416600519eb92b4a0bbc1ffe940787"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf690fe114ff66fdd0eaaf7128c23876b"><td class="memItemLeft" align="right" valign="top"><a id="gaf690fe114ff66fdd0eaaf7128c23876b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMPONENTS_MAX</b>&#160;&#160;&#160;(8u)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMPONENTS_MAX</b>&#160;&#160;&#160;(1u)</td></tr>
 <tr class="separator:gaf690fe114ff66fdd0eaaf7128c23876b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6902aa7837a4f1248df64f98451aecf4"><td class="memItemLeft" align="right" valign="top"><a id="ga6902aa7837a4f1248df64f98451aecf4"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>ERROR_CODE_LEN</b>&#160;&#160;&#160;(1u)</td></tr>
@@ -318,15 +318,15 @@ Functions</h2></td></tr>
 <tr class="memitem:ga29aa2382e87f2767c2465e9f5338d14d"><td class="memItemLeft" align="right" valign="top">TKStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga29aa2382e87f2767c2465e9f5338d14d">salSignHash</a> (uint32_t xKeyId, uint8_t *xpMsgToHash, size_t xMsgToHashLen, uint8_t *xpSignedHashOutBuff, uint32_t xSignedHashOutBuffLen, size_t *xpActualSignedHashOutLen)</td></tr>
 <tr class="memdesc:ga29aa2382e87f2767c2465e9f5338d14d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic function to sign the hash data. The key is always located inside the secure platform and addressed by an identifier.  <a href="group__g__sal__api.html#ga29aa2382e87f2767c2465e9f5338d14d">More...</a><br /></td></tr>
 <tr class="separator:ga29aa2382e87f2767c2465e9f5338d14d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac8e8c3f196eb1e3ccb86ea7a29a53d52"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gac8e8c3f196eb1e3ccb86ea7a29a53d52">salFotaInstall</a> (const uint8_t *xpFotaName, const size_t xFotaNameLen, const uint8_t *xpFotaMetadata, const size_t xFotaMetadataLen, const <a class="el" href="group__g__sal__api.html#ga48001b855b48eb10b9ae30665b75274d">TTargetComponent</a> xTargetComponents[(8u)], <a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a> *xpFotaError, <a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> xComponents[(8u)])</td></tr>
-<tr class="memdesc:gac8e8c3f196eb1e3ccb86ea7a29a53d52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initiate FOTA installation.  <a href="group__g__sal__api.html#gac8e8c3f196eb1e3ccb86ea7a29a53d52">More...</a><br /></td></tr>
-<tr class="separator:gac8e8c3f196eb1e3ccb86ea7a29a53d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga67f0d4b81c770d46745094d3f0812828"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga67f0d4b81c770d46745094d3f0812828">salFotaGetStatus</a> (const uint8_t *xpFotaName, size_t xFotaNameLen, <a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a> *xpFotaError, <a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> xComponents[(8u)])</td></tr>
-<tr class="memdesc:ga67f0d4b81c770d46745094d3f0812828"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the status of the FOTA campaign.  <a href="group__g__sal__api.html#ga67f0d4b81c770d46745094d3f0812828">More...</a><br /></td></tr>
-<tr class="separator:ga67f0d4b81c770d46745094d3f0812828"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0fb291c0e02b4a9452ec4612f8d318e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga0fb291c0e02b4a9452ec4612f8d318e3">salDeviceGetInfo</a> (<a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> xComponents[(8u)])</td></tr>
-<tr class="memdesc:ga0fb291c0e02b4a9452ec4612f8d318e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get device information.  <a href="group__g__sal__api.html#ga0fb291c0e02b4a9452ec4612f8d318e3">More...</a><br /></td></tr>
-<tr class="separator:ga0fb291c0e02b4a9452ec4612f8d318e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga238cb923b70def287f0923e6898da2c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga238cb923b70def287f0923e6898da2c4">salFotaInstall</a> (const uint8_t *xpFotaName, const size_t xFotaNameLen, const uint8_t *xpFotaMetadata, const size_t xFotaMetadataLen, const <a class="el" href="group__g__sal__api.html#ga48001b855b48eb10b9ae30665b75274d">TTargetComponent</a> xTargetComponents[(1u)], <a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a> *xpFotaError, <a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> xComponents[(1u)])</td></tr>
+<tr class="memdesc:ga238cb923b70def287f0923e6898da2c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initiate FOTA installation.  <a href="group__g__sal__api.html#ga238cb923b70def287f0923e6898da2c4">More...</a><br /></td></tr>
+<tr class="separator:ga238cb923b70def287f0923e6898da2c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6f1093e816cef269fbfe713cb892ebad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga6f1093e816cef269fbfe713cb892ebad">salFotaGetStatus</a> (const uint8_t *xpFotaName, size_t xFotaNameLen, <a class="el" href="group__g__sal__api.html#gab69ef11d35da2f6077ff3feb41bc3f07">TFotaError</a> *xpFotaError, <a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> xComponents[(1u)])</td></tr>
+<tr class="memdesc:ga6f1093e816cef269fbfe713cb892ebad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the status of the FOTA campaign.  <a href="group__g__sal__api.html#ga6f1093e816cef269fbfe713cb892ebad">More...</a><br /></td></tr>
+<tr class="separator:ga6f1093e816cef269fbfe713cb892ebad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7ba2806951501db16daeb3876e164fcf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#ga7ba2806951501db16daeb3876e164fcf">salDeviceGetInfo</a> (<a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a> xComponents[(1u)])</td></tr>
+<tr class="memdesc:ga7ba2806951501db16daeb3876e164fcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get device information.  <a href="group__g__sal__api.html#ga7ba2806951501db16daeb3876e164fcf">More...</a><br /></td></tr>
+<tr class="separator:ga7ba2806951501db16daeb3876e164fcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa5a40c22005e1846359a08deabef11a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__g__sal__api.html#gaa5a40c22005e1846359a08deabef11a3">salPrint</a> (const char *xpBuffer)</td></tr>
 <tr class="memdesc:gaa5a40c22005e1846359a08deabef11a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">This api will have the data buffer as input and will print on console to provide logs. If required platform specific definition to be updated by the user.  <a href="group__g__sal__api.html#gaa5a40c22005e1846359a08deabef11a3">More...</a><br /></td></tr>
 <tr class="separator:gaa5a40c22005e1846359a08deabef11a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1531,8 +1531,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gac8e8c3f196eb1e3ccb86ea7a29a53d52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gac8e8c3f196eb1e3ccb86ea7a29a53d52">&#9670;&nbsp;</a></span>salFotaInstall()</h2>
+<a id="ga238cb923b70def287f0923e6898da2c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga238cb923b70def287f0923e6898da2c4">&#9670;&nbsp;</a></span>salFotaInstall()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1565,7 +1565,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="group__g__sal__api.html#ga48001b855b48eb10b9ae30665b75274d">TTargetComponent</a>&#160;</td>
-          <td class="paramname"><em>xTargetComponents</em>[(8u)], </td>
+          <td class="paramname"><em>xTargetComponents</em>[(1u)], </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1577,7 +1577,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a>&#160;</td>
-          <td class="paramname"><em>xComponents</em>[(8u)]&#160;</td>
+          <td class="paramname"><em>xComponents</em>[(1u)]&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1604,8 +1604,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga67f0d4b81c770d46745094d3f0812828"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga67f0d4b81c770d46745094d3f0812828">&#9670;&nbsp;</a></span>salFotaGetStatus()</h2>
+<a id="ga6f1093e816cef269fbfe713cb892ebad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6f1093e816cef269fbfe713cb892ebad">&#9670;&nbsp;</a></span>salFotaGetStatus()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1632,7 +1632,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a>&#160;</td>
-          <td class="paramname"><em>xComponents</em>[(8u)]&#160;</td>
+          <td class="paramname"><em>xComponents</em>[(1u)]&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1656,8 +1656,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ga0fb291c0e02b4a9452ec4612f8d318e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga0fb291c0e02b4a9452ec4612f8d318e3">&#9670;&nbsp;</a></span>salDeviceGetInfo()</h2>
+<a id="ga7ba2806951501db16daeb3876e164fcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7ba2806951501db16daeb3876e164fcf">&#9670;&nbsp;</a></span>salDeviceGetInfo()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1666,7 +1666,7 @@ Functions</h2></td></tr>
           <td class="memname"><a class="el" href="group__g__sal__api.html#gab7c08b505f7fdec250581b7d307986fe">TKFotaStatus</a> salDeviceGetInfo </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__g__sal__api.html#ga4e328bc29305bb0fae1531b25caee68e">TComponent</a>&#160;</td>
-          <td class="paramname"><em>xComponents</em>[(8u)]</td><td>)</td>
+          <td class="paramname"><em>xComponents</em>[(1u)]</td><td>)</td>
           <td></td>
         </tr>
       </table>

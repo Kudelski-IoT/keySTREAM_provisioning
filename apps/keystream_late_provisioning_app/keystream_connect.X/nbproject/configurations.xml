@@ -411,6 +411,7 @@
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/comm_if.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/k_sal_com.c</itemPath>
                   <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/http.c</itemPath>
+                  <itemPath>../src/config/default/library/kta_lib/COMMSTACK/http/k_sal_os.c</itemPath>
                 </logicalFolder>
               </logicalFolder>
               <logicalFolder name="SOURCE" displayName="SOURCE" projectFiles="true">
@@ -513,6 +514,7 @@
     <Elem>../src/config/default/library/cryptoauthlib/calib</Elem>
     <Elem>../src/config/default/library/kta_lib/SOURCE/kta/modules/fotaservice</Elem>
     <Elem>../src/config/default/library/kta_lib/SOURCE/include</Elem>
+    <Elem>../src/config/default/library/kta_lib/COMMSTACK/http</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
