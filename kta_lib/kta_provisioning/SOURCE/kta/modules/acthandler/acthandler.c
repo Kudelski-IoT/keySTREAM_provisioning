@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2025 Nagravision SÃ rl
+* (c) 2023-2026 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -26,9 +26,9 @@
 ********************************************************************************/
 /** \brief keySTREAM Trusted Agent - Activation handler.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
- *  \date 2023/06/12
+ *  \date 2025/06/12
  *
  *  \file acthandler.c
  ******************************************************************************/
@@ -792,16 +792,6 @@ static TKStatus lPrepareActivationRequest
 
   if (0u != xpActPayload->chipCertSize)
   {
-#ifdef PLATFORM_PROCESS_FEATURE
-    ++fieldPos;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldTag =
-      E_K_ICPP_PARSER_FLD_TAG_CHIP_CERT;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldLen =
-      xpActPayload->chipCertSize;
-    xpProtoMessage->commands[currentPos].data.fieldList.fields[fieldPos].fieldValue =
-      xpActPayload->aChipCert;
-#endif
-#ifdef OBJECT_MANAGEMENT_FEATURE
     /* Call tlv parser here and update fields. */
     status = lParseChipCert(xpProtoMessage, currentPos, xpActPayload, &fieldPos);
 
@@ -811,7 +801,6 @@ static TKStatus lPrepareActivationRequest
       goto end;
     }
 
-#endif
   }
 
   // REQ RQ_M-KTA-ACTV-FN-0045(1) :

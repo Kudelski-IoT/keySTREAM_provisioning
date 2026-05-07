@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2025 Nagravision SÃ rl
+* (c) 2023-2026 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -26,9 +26,9 @@
 ********************************************************************************/
 /** \brief keySTREAM Trusted Agent - ICPP command handler.
  *
- * \author Kudelski IoT
+ * \author Kudelski Labs
  *
- * \date 2023/06/12
+ * \date 2025/06/12
  *
  * \file cmdhandler.c
  *
@@ -1109,22 +1109,9 @@ TKStatus ktaCmdProcess
 
   if (E_K_STATUS_OK != status)
   {
-    size_t i;
-    for (i = 0; i < xpRecvdProtoMessage->commandsCount; i++)
-    {
-      if ((xpRecvdProtoMessage->commands[i].commandTag == E_K_ICPP_PARSER_CMD_TAG_INSTALL_FOTA) ||
-          (xpRecvdProtoMessage->commands[i].commandTag == E_K_ICPP_PARSER_CMD_TAG_GET_FOTA_STATUS))
-      {
-        status = E_K_STATUS_OK;
-        break;
-      }
-    }
-    if (E_K_STATUS_OK != status)
-    {
       M_KTALOG__ERR("Processing command or preparing response failed, status = [%d]", status);
       M_KTALOG__INFO("Command processing failed, but will still generate error response");
       // Don't goto end - still need to generate error response
-    }
   }
 
   M_KTALOG__INFO("Calling ktaGenerateResponse with %zu commands", sendProtoMessage.commandsCount);
@@ -2480,11 +2467,12 @@ static TKStatus lProcessGetChallengeCmd
   xpSendCommand->data.fieldList.fieldsCount = 2;
   xpSendCommand->data.fieldList.fields[0].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CMD_PROCESSING_STATUS;
   xpSendCommand->data.fieldList.fields[0].fieldLen = C_K_ICPP_PARSER_PROCESSING_STATUS_FIELD_LENGTH;
-  xpSendCommand->data.fieldList.fields[1].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE;
-  xpSendCommand->data.fieldList.fields[1].fieldLen = C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE;
+
 
   if (E_K_STATUS_OK == status)
   {
+    xpSendCommand->data.fieldList.fields[1].fieldTag = E_K_ICPP_PARSER_FIELD_TAG_CHALLENGE;
+    xpSendCommand->data.fieldList.fields[1].fieldLen = C_K_ICPP_PARSER_KTA_CHALLENGE_SIZE;
     xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
     xpSendCommand->data.fieldList.fields[1].fieldValue = (uint8_t*)xpChallenge;
   }
@@ -2492,7 +2480,6 @@ static TKStatus lProcessGetChallengeCmd
   {
     M_KTALOG__ERR("Get Challenge command failed with status = [%d]", status);
     xpSendCommand->data.fieldList.fields[0].fieldValue = (uint8_t*)xpPlatformStatus;
-    xpSendCommand->data.fieldList.fields[1].fieldValue = (uint8_t*)xpChallenge;
   }
 
   return status;

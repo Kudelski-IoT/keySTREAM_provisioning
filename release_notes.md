@@ -1,15 +1,14 @@
 ---
 title: "keySTREAM Trusted Agent Release Notes"
-date:  "2026.01.23"
+date:  "2026.05.07"
 author: "Kudelski IoT"
 ---
 
-# Release v1.4.4 (23/01/2026)
+# Release v1.4.7 (07/05/2026)
 
 ## New features/Changes in this version
-- TPDS FOTA app updated to support with and without smart EEPROM.
-- Improved communication stack code updated to handle retries.
-- Updated kta wrapper file with new commstack changes.
+- KTA improvements
+- Communication improvements
 
 ## Fixed issues
 - N/A
@@ -33,17 +32,54 @@ author: "Kudelski IoT"
 ## Compatibility
 - This version is compatible with
 - CAL Version       - 3.7.9
-- keySTREAM Version - 1.30.3
+- keySTREAM Version - 1.32.1
 
 ## Open source information
 - NA
 
 ## Identifier
-- Git Tag: v1.4.4
+- Git Tag: v1.4.7
 
 ---
 
 # History
+
+## Release v1.4.4 (23/01/2026)
+
+### New features/Changes in this version
+- TPDS FOTA app updated to support with and without smart EEPROM.
+- Improved communication stack code updated to handle retries.
+- Updated kta wrapper file with new commstack changes.
+
+### Fixed issues
+- N/A
+
+### Known Issues
+- N/A
+
+### Features list
+| Feature                                                              | ATECC608 |
+| ---                                                                  | ---      |
+| Onboarding with certificate validation with basic key(E256)          |    1     |
+| Onboarding with certificate validation with advance key(E384,E521..) |    0     |
+| Onboarding without certificate validation                            |    0     |
+| Mutable Fleet Profile                                                |    1     |
+| Certificate renewal                                                  |    1     |
+| key renewal                                                          |    1     |
+| Symmetric key service                                                |    1     |
+| Signing public key service                                           |    1     |
+| FOTA service                                                         |    1     |
+
+### Compatibility
+- This version is compatible with
+- CAL Version       - 3.7.9
+- keySTREAM Version - 1.30.3
+
+### Open source information
+- NA
+
+### Identifier
+- Git Tag: v1.4.4
 
 ## Release v1.4.3 (06/01/2026)
 

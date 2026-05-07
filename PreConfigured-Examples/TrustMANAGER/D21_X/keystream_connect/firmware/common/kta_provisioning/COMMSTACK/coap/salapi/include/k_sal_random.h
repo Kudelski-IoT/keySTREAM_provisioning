@@ -26,7 +26,7 @@
 ********************************************************************************/
 /** \brief  SAL for random number generation.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
  *  \date 2023/06/12
  *
