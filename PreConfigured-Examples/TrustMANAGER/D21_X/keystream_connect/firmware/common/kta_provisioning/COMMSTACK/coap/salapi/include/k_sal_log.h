@@ -26,7 +26,7 @@
 ********************************************************************************/
 /** \brief Log for commstack.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
  *  \date 2023/06/12
  *

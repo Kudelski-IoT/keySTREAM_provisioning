@@ -27,7 +27,7 @@
 /** \brief  keySTREAM Trusted Agent - Hook for keySTREAM Trusted Agent
  *          initialization and field management.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
  *  \date 2023/06/12
  *
@@ -175,6 +175,20 @@ static TKStatus lcommInit
  * - false if error is not retryable.
  */
 static bool lIsRetryableError
+(
+  TCommIfStatus xStatus
+);
+
+/**
+ * @brief
+ *   Get human-readable string for communication status code.
+ *
+ * @param[in] xStatus
+ *   Communication status code.
+ * @return
+ * - String representation of the status code.
+ */
+static const char* lCommStatusToString
 (
   TCommIfStatus xStatus
 );
@@ -503,8 +517,9 @@ static TKStatus lPollKeyStream
       
       if (retStatus != E_K_STATUS_OK)
       {
-        C_KTA_APP__LOG("[ERROR] lcommInit failed:%d (retry %d/%d)\r\n", 
-                       retStatus, retry + 1, C_KTA_COMM_MAX_RETRIES);
+        C_KTA_APP__LOG("[ERROR] lcommInit failed:%d-(%s) (retry %d/%d)\r\n", 
+                       retStatus, lCommStatusToString((TCommIfStatus)retStatus),
+                       retry + 1, C_KTA_COMM_MAX_RETRIES);
         
         /* Retry transient errors */
         if (retry < C_KTA_COMM_MAX_RETRIES - 1)
@@ -570,8 +585,9 @@ static TKStatus lPollKeyStream
       else
       {
         /* Exchange failed */
-        C_KTA_APP__LOG("[ERROR] commMsgExchange failed, status[%d]-(%d/%d)\r\n", 
-                       commStatus, retry + 1, C_KTA_COMM_MAX_RETRIES);
+        C_KTA_APP__LOG("[ERROR] commMsgExchange failed, status[%d]-(%s)-(%d/%d)\r\n", 
+                       commStatus, lCommStatusToString(commStatus),
+                       retry + 1, C_KTA_COMM_MAX_RETRIES);
         
         retStatus = E_K_STATUS_ERROR;
 
@@ -650,6 +666,27 @@ static bool lIsRetryableError
           (xStatus == E_COMM_IF_STATUS_RESOURCE) ||
           (xStatus == E_COMM_IF_STATUS_DATA) ||
           (xStatus == E_COMM_IF_STATUS_ERROR));
+}
+
+static const char* lCommStatusToString
+(
+  TCommIfStatus xStatus
+)
+{
+  switch (xStatus)
+  {
+    case E_COMM_IF_STATUS_OK:            return "OK";
+    case E_COMM_IF_STATUS_PARAMETER:     return "PARAMETER_ERROR";
+    case E_COMM_IF_STATUS_ERROR:         return "GENERAL_ERROR";
+    case E_COMM_IF_STATUS_DATA:          return "DATA_ERROR";
+    case E_COMM_IF_STATUS_TIMEOUT:       return "TIMEOUT";
+    case E_COMM_IF_STATUS_NETWORK:       return "NETWORK_UNAVAILABLE";
+    case E_COMM_IF_STATUS_MEMORY:        return "MEMORY_ALLOCATION_FAILED";
+    case E_COMM_IF_STATUS_NO_CONNECTION: return "NOT_CONNECTED";
+    case E_COMM_IF_STATUS_STALE:         return "CONNECTION_STALE";
+    case E_COMM_IF_STATUS_RESOURCE:      return "RESOURCE_UNAVAILABLE";
+    default:                             return "UNKNOWN_STATUS";
+  }
 }
 #endif /* NETWORK_STACK_AVAILABLE */
 

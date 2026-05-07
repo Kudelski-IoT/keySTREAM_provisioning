@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2025 Nagravision SÃ rl
+* (c) 2023-2026 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -26,9 +26,9 @@
 ********************************************************************************/
 /** \brief keySTREAM Trusted Agent - Registration module
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
- *  \date 2023/06/12
+ *  \date 2025/06/12
  *
  *  \file reghandler.c
  ******************************************************************************/
@@ -74,12 +74,7 @@
 #define C_K_ICPP_PARSER_HEADER_SIZE   (21u)
 
 /** @brief Capability based on feature. */
-#ifdef PLATFORM_PROCESS_FEATURE
-#define C_KTA_CAPABILITY    {0x00}
-#endif
-#ifdef OBJECT_MANAGEMENT_FEATURE
-#define C_KTA_CAPABILITY    {0x01}
-#endif
+#define C_KTA_CAPABILITY              {0x03}
 
 /** @brief Registration info payload. */
 typedef struct

@@ -1,7 +1,7 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2025 Nagravision Sàrl
+* (c) 2023-2026 Nagravision Sàrl
 
 * Subject to your compliance with these terms, you may use the Nagravision Sàrl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -26,7 +26,7 @@
 ********************************************************************************/
 /** \brief HTTP Client code.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
  *  \date 2023/06/02
  *
@@ -83,6 +83,15 @@
 #define M_INTL_HTTP_DEBUG(__PRINT__)
 #define M_INTL_HTTP_ERROR(__PRINT__)
 #endif /* DEBUG. */
+
+/**
+ * SUPPRESS: MISRA_DEV_KTA_003 : misra_c2012_rule_21.6_violation
+ * SUPPRESS: MISRA_DEV_KTA_001 : misra_c2012_rule_17.1_violation
+ * Using printf for logging.
+ * Not checking the return status of printf, since not required.
+ **/
+#define K_HTTP__LOG                      printf
+
 
 /**
  * @brief Set an argument/return value as unused.
@@ -296,6 +305,52 @@ TCommIfStatus httpMsgExchange
       status = E_K_COMM_STATUS_OK;
       M_INTL_HTTP_DEBUG(("Received Data %ld", gHttpInfo.bodyLen));
       *xpRecvMsgBufferSize = (size_t)gHttpInfo.bodyLen;
+    }
+    else
+    {
+      /* Log HTTP response code for debugging network/server failures */
+      if (ret > 0)
+      {
+        K_HTTP__LOG("[ERROR] HTTP POST failed with status code: %d\r\n", ret);
+        if ((ret >= 500) && (ret < 600))
+        {
+          K_HTTP__LOG("[ERROR] Server error (5xx). "
+                 "Code %d: %s\r\n", ret,
+                 (ret == 500) ? "Internal Server Error" :
+                 (ret == 502) ? "Bad Gateway" :
+                 (ret == 503) ? "Service Unavailable" :
+                 (ret == 504) ? "Gateway Timeout" : "Other Server Error");
+          status = E_COMM_IF_STATUS_ERROR;
+        }
+        else if ((ret >= 400) && (ret < 500))
+        {
+          K_HTTP__LOG("[ERROR] Client error (4xx). "
+                 "Code %d: %s\r\n", ret,
+                 (ret == 400) ? "Bad Request" :
+                 (ret == 401) ? "Unauthorized" :
+                 (ret == 403) ? "Forbidden" :
+                 (ret == 404) ? "Not Found" :
+                 (ret == 408) ? "Request Timeout" :
+                 (ret == 429) ? "Too Many Requests" : "Other Client Error");
+          status = E_COMM_IF_STATUS_DATA;
+        }
+        else if ((ret >= 300) && (ret < 400))
+        {
+          K_HTTP__LOG("[WARN] HTTP Redirect (3xx). Code %d\r\n", ret);
+          status = E_COMM_IF_STATUS_ERROR;
+        }
+        else
+        {
+          K_HTTP__LOG("[ERROR] Unexpected HTTP status code: %d\r\n", ret);
+          status = E_COMM_IF_STATUS_ERROR;
+        }
+      }
+      else
+      {
+        K_HTTP__LOG("[ERROR] HTTP POST failed - no valid response received "
+               "(ret=%d). Possible network timeout or connection reset.\r\n", ret);
+        status = E_COMM_IF_STATUS_NETWORK;
+      }
     }
   }
 

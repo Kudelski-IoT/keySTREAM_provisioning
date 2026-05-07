@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2025 Nagravision SÃ rl
+* (c) 2023-2026 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -26,7 +26,7 @@
 ********************************************************************************/
 /** \brief keySTREAM Trusted Agent manager.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
  *  \date 2023/06/13
  *
@@ -129,7 +129,6 @@ static const char* gpModuleName = "KTAMGR";
 
 static TKtaState gKtaState                              = E_KTA_STATE_INITIAL;
 static TKtaLifeCycleState gKtaLifeCycleState            = E_LIFE_CYCLE_STATE_INIT;
-static uint8_t gaKtaVersion[C_K__VERSION_STORAGE_LENGTH] = {0};
 static uint8_t  gKtaIsPreActivated                      = 0u;
 static TKktaKeyStreamStatus gCommandStatus              = E_K_KTA_KS_STATUS_NONE;
 
@@ -316,23 +315,6 @@ static TKStatus lHandleInitLifeCycleState
   size_t          xDeviceSerialNumSize,
   uint8_t*        xpConnectionRequest
 );
-
-/**
- * @brief
- *   Handle PROVISIONED lifecycle state version comparison.
- *
- * @param[out] xpConnectionRequest
- *   Connection request flag based on version comparison
- *
- * @return
- * - E_K_STATUS_OK in case of success.
- */
-static TKStatus lHandleProvisionedLifeCycleState
-(
-  uint8_t*  xpConnectionRequest
-);
-
-
 
 /**
  * @brief
@@ -557,7 +539,6 @@ TKStatus ktaStartup
   TKStatus status = E_K_STATUS_ERROR;
   // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
   size_t  lifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
-  size_t  ktaVersionLen = C_K__VERSION_STORAGE_LENGTH;
 
   M_KTALOG__START("Start");
 
@@ -591,16 +572,6 @@ TKStatus ktaStartup
   // REQ RQ_M-KTA-LCST-FN-0020(1) : Power off in INIT|INITIALIZED state
   // REQ RQ_M-KTA-LCST-FN-0025(1) : Power off in INIT|STARTED state
   status = lgetNVMLifeCycleState(&lifeCycleStateLen);
-  status = salStorageGetValue(C_K_KTA__VERSION_SLOT_ID, gaKtaVersion, &ktaVersionLen);
-
-  if (E_K_STATUS_OK != status)
-  {
-    M_KTALOG__DEBUG("Reading KTA Version failed with status:%d.\r\n", status);
-    goto end;
-  }
-
-  M_KTALOG__DEBUG("KTA Version in device is: %s\r\n", ktaGetDecodedVersionStr(gaKtaVersion));
-
   if ((E_K_STATUS_OK != status) || (0U == lifeCycleStateLen))
   {
     M_KTALOG__ERR("Reading life cycle state from NVM failed, status = [%d]", status);
@@ -722,7 +693,8 @@ TKStatus ktaSetDeviceInformation
 
     // REQ RQ_M-KTA-LCST-FN-0070(1) : Power off in PROVISIONED|STARTED state
     case E_LIFE_CYCLE_STATE_PROVISIONED:
-      status = lHandleProvisionedLifeCycleState(xpConnectionRequest);
+      *xpConnectionRequest = 0;
+      status = E_K_STATUS_OK;
       break;
 
     default:
@@ -801,28 +773,6 @@ static TKStatus lHandleInitLifeCycleState
   return E_K_STATUS_OK;
 }
 
-/**
- * @implements lHandleProvisionedLifeCycleState
- *
- */
-static TKStatus lHandleProvisionedLifeCycleState
-(
-  uint8_t*  xpConnectionRequest
-)
-{
-  uint8_t aKtaVersion[C_K__VERSION_STORAGE_LENGTH] = C_K_KTA__ENCODED_VERSION;
-
-  if (memcmp(gaKtaVersion, aKtaVersion, C_K__VERSION_STORAGE_LENGTH) < 0)
-  {
-    M_KTALOG__DEBUG("Connection Request set to TRUE");
-    *xpConnectionRequest = 1;
-    return E_K_STATUS_OK;
-  }
-
-  M_KTALOG__DEBUG("Connection Request set to FALSE");
-  *xpConnectionRequest = 0;
-  return E_K_STATUS_OK;
-}
 
 /* -------------------------------------------------------------------------- */
 /* LOCAL FUNCTIONS - HELPER FOR ktaExchangeMessage                           */
@@ -1875,7 +1825,6 @@ static TKStatus lProcessNoOpLifecycleTransition
   TKStatus status = E_K_STATUS_ERROR;
   // REQ RQ_M-KTA-LCST-FN-0010(1) : Life Cycle State Size
   size_t lifeCycleStateLen = C_KTA_CONFIG__LIFE_CYCLE_EACH_STATE_SIZE;
-  uint8_t aKtaVersion[C_K__VERSION_STORAGE_LENGTH] = C_K_KTA__ENCODED_VERSION;
 
   if (xpRecvdProtoMessage->cryptoVersion != (unsigned int)E_K_ICPP_PARSER_CRYPTO_TYPE_L2_BASED)
   {
@@ -1958,23 +1907,6 @@ static TKStatus lProcessNoOpLifecycleTransition
     {
       M_KTALOG__ERR("Setting life cycle state failed, status = [%d]", status);
       return status;
-    }
-
-    if (memcmp(gaKtaVersion, aKtaVersion, C_K__VERSION_STORAGE_LENGTH) < 0)
-    {
-      // REQ RQ_M-KTA-LCST-FN-0086(1) : Store KTA Version to device
-      status = salStorageSetValue(C_K_KTA__VERSION_SLOT_ID,
-                                  aKtaVersion,
-                                  C_K__VERSION_STORAGE_LENGTH);
-
-      if (E_K_STATUS_OK != status)
-      {
-        M_KTALOG__ERR("Storing KTA Version Failed, status = [%d]", status);
-        return status;
-      }
-
-      M_KTALOG__DEBUG("KTA Version [%s] Stored Successfully in device.\r\n",
-                      ktaGetDecodedVersionStr(aKtaVersion));
     }
 
     gKtaLifeCycleState = E_LIFE_CYCLE_STATE_PROVISIONED;

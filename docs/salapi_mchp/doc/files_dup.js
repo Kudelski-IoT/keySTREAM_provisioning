@@ -4,7 +4,7 @@ var files_dup =
     [ "k_sal.h", "k__sal_8h.html", "k__sal_8h" ],
     [ "k_sal_crypto.c", "k__sal__crypto_8c.html", "k__sal__crypto_8c" ],
     [ "k_sal_crypto.h", "k__sal__crypto_8h.html", "k__sal__crypto_8h" ],
-    [ "k_sal_fota.h", "k__sal__fota_8h_source.html", null ],
+    [ "k_sal_fota.h", "k__sal__fota_8h.html", "k__sal__fota_8h" ],
     [ "k_sal_fotastorage.h", "k__sal__fotastorage_8h.html", "k__sal__fotastorage_8h" ],
     [ "k_sal_log.c", "k__sal__log_8c.html", "k__sal__log_8c" ],
     [ "k_sal_log.h", "k__sal__log_8h.html", "k__sal__log_8h" ],

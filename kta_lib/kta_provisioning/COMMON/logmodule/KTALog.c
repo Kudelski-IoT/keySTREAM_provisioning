@@ -1,7 +1,7 @@
 ﻿/*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2025 Nagravision SÃ rl
+* (c) 2023-2026 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -26,9 +26,9 @@
 ********************************************************************************/
 /** \brief keySTREAM Trusted Agent - Log module.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
- *  \date 2023/06/12
+ *  \date 2025/06/12
  *
  *  \file KTALog.c
  ******************************************************************************/
@@ -69,7 +69,7 @@
 #define C_MAX_VALUE_SIZE (4u)
 
 /** @brief Maximum Modules for log */
-#define C_MAX_MODULES (17u)
+#define C_MAX_MODULES (18u)
 
 /** @brief MAximum Log Levels */
 #define C_MAX_LOG_LEVELS (6u)
@@ -86,23 +86,24 @@ typedef struct {
 
 /* Module level configs for each module. */
 static moduleLevelConfig gaLogConfigs[C_MAX_MODULES] = {
-  {"KTAMGR", LOG_KTA_ENABLE},
-  {"KTACONFIG", LOG_KTA_ENABLE},
-  {"KTAGENERAL", LOG_KTA_ENABLE},
-  {"KTACMDHANDLER", LOG_KTA_ENABLE},
-  {"KTAREGHANDLER", LOG_KTA_ENABLE},
-  {"KTAACTHANDLER", LOG_KTA_ENABLE},
-  {"KTACRYPTO", LOG_KTA_ENABLE},
-  {"KTAICPPPARSER", LOG_KTA_ENABLE},
-  {"SALSTORAGE", LOG_KTA_ENABLE},
-  {"SALCRYPTO", LOG_KTA_ENABLE},
-  {"SALOBJECT", LOG_KTA_ENABLE},
-  {"SALTHIRDPARTY", LOG_KTA_ENABLE},
-  {"SALFOTA", LOG_KTA_ENABLE},
-  {"FOTAAGENT", LOG_KTA_ENABLE},
-  {"FOTAPROCESS", LOG_KTA_ENABLE},
-  {"FOTAPLATFORM", LOG_KTA_ENABLE},
-  {"KSALFOTASTORAGE", LOG_KTA_ENABLE}
+  {{"KTAMGR"}, LOG_KTA_ENABLE},
+  {{"KTACONFIG"}, LOG_KTA_ENABLE},
+  {{"KTAGENERAL"}, LOG_KTA_ENABLE},
+  {{"KTACMDHANDLER"}, LOG_KTA_ENABLE},
+  {{"KTAREGHANDLER"}, LOG_KTA_ENABLE},
+  {{"KTAACTHANDLER"}, LOG_KTA_ENABLE},
+  {{"KTACRYPTO"}, LOG_KTA_ENABLE},
+  {{"KTAICPPPARSER"}, LOG_KTA_ENABLE},
+  {{"SALSTORAGE"}, LOG_KTA_ENABLE},
+  {{"SALCRYPTO"}, LOG_KTA_ENABLE},
+  {{"SALOBJECT"}, LOG_KTA_ENABLE},
+  {{"SALTHIRDPARTY"}, LOG_KTA_ENABLE},
+  {{"SALPLATFORM"}, LOG_KTA_ENABLE},
+  {{"SALFOTA"}, LOG_KTA_ENABLE},
+  {{"FOTAAGENT"}, LOG_KTA_ENABLE},
+  {{"FOTAPROCESS"}, LOG_KTA_ENABLE},
+  {{"FOTAPLATFORM"}, LOG_KTA_ENABLE},
+  {{"KSALFOTASTORAGE"}, LOG_KTA_ENABLE}
 };
 
 /** @brief Log event info structure. */

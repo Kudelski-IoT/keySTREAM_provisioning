@@ -26,7 +26,7 @@
 ********************************************************************************/
 /** \brief  SAL for socket commmunication, based on BSD socket API.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
  *  \date 2023/06/12
  *

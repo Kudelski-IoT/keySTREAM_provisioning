@@ -80,7 +80,7 @@ var NAVTREEINDEX =
 [
 "acthandler_8c.html",
 "icpp__parser_8c.html#a9d58bc2f039e601482251eba2a3a6822",
-"struct_t_kta_context_info_config.html#a1a2322c704559bc2ffc5029cad94c0d4"
+"struct_t_kta_context_info_config.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

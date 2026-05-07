@@ -27,9 +27,9 @@
 /** \brief  keySTREAM Trusted Agent - Hook for keySTREAM Trusted Agent
  *          initialization and field management.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
- *  \date 2023/06/12
+ *  \date 2025/06/12
  *
  *  \file ktaFieldMgntHook.h
  ******************************************************************************/

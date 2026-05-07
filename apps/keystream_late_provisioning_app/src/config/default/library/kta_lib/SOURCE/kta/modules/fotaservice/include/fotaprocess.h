@@ -2,7 +2,7 @@
 /*******************************************************************************
 *************************keySTREAM Trusted Agent ("KTA")************************
 
-* (c) 2023-2025 Nagravision SÃ rl
+* (c) 2023-2026 Nagravision SÃ rl
 
 * Subject to your compliance with these terms, you may use the Nagravision SÃ rl
 * Software and any derivatives exclusively with Nagravision's products. It is your
@@ -27,7 +27,7 @@
 ********************************************************************************/
 /** \brief  Fota Agent Process.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
  *  \date 2025/02/04
  *

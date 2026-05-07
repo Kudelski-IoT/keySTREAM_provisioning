@@ -26,7 +26,7 @@
 ********************************************************************************/
 /** \brief keySTREAM Trusted Agent public interface - type definitions for communication.
  *
- *  \author Kudelski IoT
+ *  \author Kudelski Labs
  *
  *  \date 2023/06/12
  *

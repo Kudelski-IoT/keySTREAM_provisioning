@@ -187,10 +187,11 @@ var NAVTREEINDEX1 =
 "pages.html":[],
 "reghandler_8c.html":[5,0,24],
 "reghandler_8c.html#a267df994207d1271f1b7c42ff8c7a7b0":[5,0,24,3],
+"reghandler_8c.html#a452553203baff33330f4ededa23c1268":[5,0,24,5],
 "reghandler_8c.html#a6eb5505522478681f0f43e2b3fcb3104":[5,0,24,1],
 "reghandler_8c.html#a8529fd660555f4e491e4bc6393dc69f4":[5,0,24,4],
 "reghandler_8c.html#a8a52ceba580b12aa22bd6ea0dcb9a7ed":[5,0,24,2],
-"reghandler_8c.html#ad9c49a8afc1bd58c47909425eec56068":[5,0,24,5],
+"reghandler_8c.html#ad9c49a8afc1bd58c47909425eec56068":[5,0,24,6],
 "reghandler_8h.html":[5,0,25],
 "reghandler_8h.html#ad9c49a8afc1bd58c47909425eec56068":[5,0,25,0],
 "reghandler_8h_source.html":[5,0,25],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "struct_t_kkta_data_object.html#a7f779162fb256131db968fcefd2bbc3d":[3,0,0,4],
 "struct_t_kkta_data_object.html#ab6f569e012acf06d3e280383ed6804d6":[3,0,0,3],
 "struct_t_kkta_data_object.html#ac6129354a0caed851c764a7666a1a727":[3,0,0,5],
-"struct_t_kkta_data_object.html#aed96ac4afd33acd521b850e9953c9bc2":[3,0,0,2],
-"struct_t_kta_context_info_config.html":[4,0,11]
+"struct_t_kkta_data_object.html#aed96ac4afd33acd521b850e9953c9bc2":[3,0,0,2]
 };
