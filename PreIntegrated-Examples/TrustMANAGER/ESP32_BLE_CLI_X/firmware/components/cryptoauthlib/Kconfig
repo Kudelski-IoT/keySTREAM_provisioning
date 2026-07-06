@@ -1,0 +1,65 @@
+menu "CryptoAuthLib (ATECC608)"
+
+config CRYPTOAUTHLIB_I2C_PORT
+    int "I2C port"
+    range 0 1
+    default 0
+    help
+        ESP32 I2C port to use for the CryptoAuth device.
+
+config CRYPTOAUTHLIB_I2C_SDA_GPIO
+    int "I2C SDA GPIO"
+    range 0 48
+    default 21
+    help
+        SDA GPIO used to connect to the ATECC608.
+
+config CRYPTOAUTHLIB_I2C_SCL_GPIO
+    int "I2C SCL GPIO"
+    range 0 48
+    default 22
+    help
+        SCL GPIO used to connect to the ATECC608.
+
+config CRYPTOAUTHLIB_I2C_FREQ_HZ
+    int "I2C frequency (Hz)"
+    range 10000 1000000
+    default 100000
+    help
+        I2C frequency for the ATECC608.
+
+config CRYPTOAUTHLIB_I2C_ADDR7
+    hex "I2C address (7-bit)"
+    range 0x03 0x77
+    default 0x60
+    help
+        7-bit I2C address of the CryptoAuth device.
+
+        Most ATECC608 parts use the default 0x60 (8-bit 0xC0). Some modules
+        ship with a different address; use the I2C bus scan log from
+        'cryptoauthlib_i2c' to pick the correct value.
+
+config CRYPTOAUTHLIB_I2C_ADDR8
+    hex "I2C address (8-bit, optional)"
+    range 0x00 0xFE
+    default 0x00
+    help
+        Optional 8-bit I2C address (left-shifted form) as some tools/logs print.
+
+        Example: a scan may report 8-bit 0x70, which corresponds to 7-bit 0x38.
+        If this value is non-zero, the firmware will use (ADDR8 >> 1) as the
+        effective 7-bit address.
+
+        Keep this at 0x00 to use the 7-bit address setting above.
+
+config CRYPTOAUTHLIB_I2C_ENABLE_BUS_SCAN
+    bool "Enable I2C bus scan at boot"
+    default n
+    help
+        When enabled, CryptoAuthLib will scan the I2C bus once during init and
+        log discovered devices.
+
+        Note: On ESP-IDF, probing non-existent addresses can produce many NACK
+        error logs. Keep this disabled unless debugging wiring/address issues.
+
+endmenu

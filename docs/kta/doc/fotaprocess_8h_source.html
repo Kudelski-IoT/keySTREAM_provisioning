@@ -1,8 +1,10 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>keySTREAM Trusted Agent: fotaprocess.h Source File</title>
@@ -18,23 +20,289 @@
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 <link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-<div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="LOGO_IOT_IOTHINGS.png"/></td>
-  <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">keySTREAM Trusted Agent
-   </div>
-  </td>
- </tr>
- </tbody>
-</table>
-</div>
-<!-- end header part -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
 <!-- Generated by Doxygen 1.8.17 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
@@ -87,7 +355,7 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="title">fotaprocess.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="fotaprocess_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">/*******************************************************************************</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">*************************keySTREAM Trusted Agent (&quot;KTA&quot;)************************</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"></span> </div>
@@ -120,7 +388,7 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">/* IMPORTS                                                                    */</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="fotaagent_8h.html">fotaagent.h</a>&quot;</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &quot;fotaagent.h&quot;</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &quot;k_sal_fota.h&quot;</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &quot;k_sal_fotastorage.h&quot;</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
@@ -130,7 +398,7 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment">/* CONSTANTS, TYPES, ENUM                                                     */</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="fotaprocess_8h.html#a0dc923906125cbf02c78ba17293c13bc">   57</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  E_FOTA_STATE_SUCCESS = 0x00,</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="comment">/* FOTA completed successfully. */</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  E_FOTA_STATE_IN_PROGRESS = 0x01,</div>
@@ -139,13 +407,13 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="comment">/* FOTA encountered an error. */</span></div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  E_FOTA_STATE_IDLE = 0xFF</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="comment">/* FOTA is idle. */</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;} <a class="code" href="fotaprocess_8h.html#a0dc923906125cbf02c78ba17293c13bc">TFotaState</a>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;} TFotaState;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="struct_t_fota_component_status.html">   70</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
 <div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="struct_t_fota_component_status.html#aa54ca2e5dc65927ff36411b89c522e7e">   71</a></span>&#160;  uint8_t xpFotaName[MAX_COMPONENT_NAME_LEN];</div>
 <div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="struct_t_fota_component_status.html#a8489fc1e8ca0b5d3778459425974ac33">   74</a></span>&#160;  <span class="keywordtype">size_t</span> <a class="code" href="struct_t_fota_component_status.html#a8489fc1e8ca0b5d3778459425974ac33">xFotaNameLen</a>;</div>
 <div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="struct_t_fota_component_status.html#a173bea86fcbba0a83007b87e190d8ddf">   77</a></span>&#160;  TComponent components[COMPONENTS_MAX];</div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="struct_t_fota_component_status.html#af886b3589d48513b77ce20c316e96428">   80</a></span>&#160;  <a class="code" href="fotaprocess_8h.html#a0dc923906125cbf02c78ba17293c13bc">TFotaState</a> state[COMPONENTS_MAX];</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="struct_t_fota_component_status.html#af886b3589d48513b77ce20c316e96428">   80</a></span>&#160;  TFotaState state[COMPONENTS_MAX];</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;} <a class="code" href="struct_t_fota_component_status.html">TFotaComponentStatus</a>;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
@@ -157,19 +425,19 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">/* FUNCTIONS                                                                  */</span></div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keywordtype">void</span> <a class="code" href="fotaprocess_8h.html#a35c898acbbad0fd0ff1c519d46b64dfd">initializefotaState</a></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keywordtype">void</span> initializefotaState</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;(</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="keywordtype">void</span></div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;);</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;TKFotaStatus <a class="code" href="fotaprocess_8h.html#a54a4987f206f3fb18817fd17d09b0e16">validateComponents</a></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;TKFotaStatus validateComponents</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;(</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  <span class="keyword">const</span> TTargetComponent xTargetComponents[COMPONENTS_MAX],</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  TFotaError            *xFotaError,</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  TComponent             xComponents[COMPONENTS_MAX]</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;);</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;TKFotaStatus <a class="code" href="fotaprocess_8h.html#a0c5e445504ea2b853e6e457286b67e4c">storeMetadata</a></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;TKFotaStatus storeMetadata</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;(</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <span class="keyword">const</span> uint8_t *xFotaName,</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;  <span class="keywordtype">size_t</span>         xFotaNameLen,</div>
@@ -178,7 +446,7 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  TFotaError    *xFotaError</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;);</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;TKFotaStatus <a class="code" href="fotaprocess_8h.html#a6d1e2bfce63fe566d4dbe1d598d71f43">fotaDownloadAndInstall</a>(</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;TKFotaStatus fotaDownloadAndInstall(</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="keyword">const</span> uint8_t *xpFotaName,</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">size_t</span> xFotaNameLen,</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  <span class="keyword">const</span> uint8_t *xpFotaMetadata,</div>
@@ -188,7 +456,7 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;);</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;TKFotaStatus <a class="code" href="fotaprocess_8h.html#a5ccb1533743f717e82374f6c19fcf6af">fotaGetComponentsStatus</a></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;TKFotaStatus fotaGetComponentsStatus</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;(</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  <span class="keyword">const</span> uint8_t *xpFotaName,</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  <span class="keywordtype">size_t</span>         fotaNameLen,</div>
@@ -196,21 +464,21 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  TComponent     components[COMPONENTS_MAX]</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;);</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;TKFotaStatus <a class="code" href="fotaprocess_8h.html#a07e12b641beb845e797d2fbb4721095c">fotaGetInstalledComponents</a></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;TKFotaStatus fotaGetInstalledComponents</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;(</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;  TComponent * xpComponents</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;);</div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;TKFotaStatus <a class="code" href="fotaprocess_8h.html#aaf74514c84ad3f2286ad12f55e2007e2">fotaUpdateComponent</a></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;TKFotaStatus fotaUpdateComponent</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;(</div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="keyword">const</span> uint8_t *componentName,</div>
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">size_t</span> componentNameLen,</div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keyword">const</span> uint8_t *componentVersion,</div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">size_t</span> componentVersionLen,</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    <a class="code" href="fotaprocess_8h.html#a0dc923906125cbf02c78ba17293c13bc">TFotaState</a> state</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    TFotaState state</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;);</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;TKFotaStatus <a class="code" href="fotaprocess_8h.html#a9b6c1741ffb674067f1a7cfd84816a52">fotaGetTargetComponents</a></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;TKFotaStatus fotaGetTargetComponents</div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;(</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;  TFotaComponentRecord *xpTargetComponents,</div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  uint8_t *xpNumComponents</div>
@@ -222,26 +490,127 @@ $(document).ready(function(){initNavTree('fotaprocess_8h_source.html',''); initR
 <div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="comment">/* -------------------------------------------------------------------------- */</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="afotaprocess_8h_html_a0dc923906125cbf02c78ba17293c13bc"><div class="ttname"><a href="fotaprocess_8h.html#a0dc923906125cbf02c78ba17293c13bc">TFotaState</a></div><div class="ttdeci">TFotaState</div><div class="ttdoc">Interface for Fota processing.</div><div class="ttdef"><b>Definition:</b> fotaprocess.h:57</div></div>
-<div class="ttc" id="afotaprocess_8h_html_aaf74514c84ad3f2286ad12f55e2007e2"><div class="ttname"><a href="fotaprocess_8h.html#aaf74514c84ad3f2286ad12f55e2007e2">fotaUpdateComponent</a></div><div class="ttdeci">TKFotaStatus fotaUpdateComponent(const uint8_t *componentName, const size_t componentNameLen, const uint8_t *componentVersion, const size_t componentVersionLen, TFotaState state)</div><div class="ttdoc">Updates the information of a specific component in the FOTA process.</div><div class="ttdef"><b>Definition:</b> fotaprocess.c:997</div></div>
-<div class="ttc" id="afotaprocess_8h_html_a6d1e2bfce63fe566d4dbe1d598d71f43"><div class="ttname"><a href="fotaprocess_8h.html#a6d1e2bfce63fe566d4dbe1d598d71f43">fotaDownloadAndInstall</a></div><div class="ttdeci">TKFotaStatus fotaDownloadAndInstall(const uint8_t *xpFotaName, const size_t xFotaNameLen, const uint8_t *xpFotaMetadata, const size_t xFotaMetadataLen, const TTargetComponent *xpTargetComponents, TComponent xComponents[COMPONENTS_MAX])</div><div class="ttdoc">Start the FOTA download and installation process.</div><div class="ttdef"><b>Definition:</b> fotaprocess.c:858</div></div>
-<div class="ttc" id="afotaprocess_8h_html_a9b6c1741ffb674067f1a7cfd84816a52"><div class="ttname"><a href="fotaprocess_8h.html#a9b6c1741ffb674067f1a7cfd84816a52">fotaGetTargetComponents</a></div><div class="ttdeci">TKFotaStatus fotaGetTargetComponents(TFotaComponentRecord *xpTargetComponents, uint8_t *xpNumComponents)</div><div class="ttdoc">Retrieves target component list from storage.</div><div class="ttdef"><b>Definition:</b> fotaprocess.c:664</div></div>
-<div class="ttc" id="afotaprocess_8h_html_a54a4987f206f3fb18817fd17d09b0e16"><div class="ttname"><a href="fotaprocess_8h.html#a54a4987f206f3fb18817fd17d09b0e16">validateComponents</a></div><div class="ttdeci">TKFotaStatus validateComponents(const TTargetComponent xTargetComponents[COMPONENTS_MAX], TFotaError *xFotaError, TComponent xComponents[COMPONENTS_MAX])</div><div class="ttdoc">Validates the components for the FOTA process.</div><div class="ttdef"><b>Definition:</b> fotaprocess.c:499</div></div>
-<div class="ttc" id="afotaprocess_8h_html_a07e12b641beb845e797d2fbb4721095c"><div class="ttname"><a href="fotaprocess_8h.html#a07e12b641beb845e797d2fbb4721095c">fotaGetInstalledComponents</a></div><div class="ttdeci">TKFotaStatus fotaGetInstalledComponents(TComponent *xpComponents)</div><div class="ttdoc">This API will get all component versions installed on platform.</div><div class="ttdef"><b>Definition:</b> fotaprocess.c:459</div></div>
 <div class="ttc" id="astruct_t_fota_component_status_html_a8489fc1e8ca0b5d3778459425974ac33"><div class="ttname"><a href="struct_t_fota_component_status.html#a8489fc1e8ca0b5d3778459425974ac33">TFotaComponentStatus::xFotaNameLen</a></div><div class="ttdeci">size_t xFotaNameLen</div><div class="ttdef"><b>Definition:</b> fotaprocess.h:74</div></div>
-<div class="ttc" id="afotaprocess_8h_html_a0c5e445504ea2b853e6e457286b67e4c"><div class="ttname"><a href="fotaprocess_8h.html#a0c5e445504ea2b853e6e457286b67e4c">storeMetadata</a></div><div class="ttdeci">TKFotaStatus storeMetadata(const uint8_t *xFotaName, size_t xFotaNameLen, const uint8_t *xFotaMetadata, size_t xFotaMetadataLen, TFotaError *xFotaError)</div><div class="ttdoc">Stores the FOTA metadata.</div><div class="ttdef"><b>Definition:</b> fotaprocess.c:621</div></div>
-<div class="ttc" id="afotaprocess_8h_html_a5ccb1533743f717e82374f6c19fcf6af"><div class="ttname"><a href="fotaprocess_8h.html#a5ccb1533743f717e82374f6c19fcf6af">fotaGetComponentsStatus</a></div><div class="ttdeci">TKFotaStatus fotaGetComponentsStatus(const uint8_t *xpFotaName, size_t fotaNameLen, TFotaError *xpFotaError, TComponent components[COMPONENTS_MAX])</div><div class="ttdoc">Gets the status of the FOTA update.</div><div class="ttdef"><b>Definition:</b> fotaprocess.c:752</div></div>
-<div class="ttc" id="afotaprocess_8h_html_a35c898acbbad0fd0ff1c519d46b64dfd"><div class="ttname"><a href="fotaprocess_8h.html#a35c898acbbad0fd0ff1c519d46b64dfd">initializefotaState</a></div><div class="ttdeci">void initializefotaState(void)</div><div class="ttdoc">Set the global FOTA state.</div><div class="ttdef"><b>Definition:</b> fotaprocess.c:305</div></div>
-<div class="ttc" id="afotaagent_8h_html"><div class="ttname"><a href="fotaagent_8h.html">fotaagent.h</a></div><div class="ttdoc">Interface for Fota Agent.</div></div>
 <div class="ttc" id="astruct_t_fota_component_status_html"><div class="ttname"><a href="struct_t_fota_component_status.html">TFotaComponentStatus</a></div><div class="ttdoc">Structure holds the status and information of FOTA components.</div><div class="ttdef"><b>Definition:</b> fotaprocess.h:70</div></div>
 <!-- HTML footer for doxygen 1.9.1-->
 <!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_5eff6672d80e7540a37431ed7424ce57.html">kta</a></li><li class="navelem"><a class="el" href="dir_7e2560d9caf2b698f36b0974bab08bcc.html">modules</a></li><li class="navelem"><a class="el" href="dir_127c324d8db5b4c9123beb71c11cc715.html">fotaservice</a></li><li class="navelem"><a class="el" href="dir_5a22328b303128169e5f04efb4019431.html">include</a></li><li class="navelem"><a class="el" href="fotaprocess_8h.html">fotaprocess.h</a></li>
+    <li class="navelem"><a class="el" href="dir_5eff6672d80e7540a37431ed7424ce57.html">kta</a></li><li class="navelem"><a class="el" href="dir_7e2560d9caf2b698f36b0974bab08bcc.html">modules</a></li><li class="navelem"><a class="el" href="dir_127c324d8db5b4c9123beb71c11cc715.html">fotaservice</a></li><li class="navelem"><a class="el" href="dir_5a22328b303128169e5f04efb4019431.html">include</a></li><li class="navelem"><b>fotaprocess.h</b></li>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

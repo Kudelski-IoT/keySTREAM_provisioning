@@ -1,0 +1,1214 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>keySTREAM Trusted Agent: keySTREAM Closed Network Integration Guide</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
+<!-- Generated by Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('generic_information_mcu_closed_network.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="PageDoc"><div class="header">
+  <div class="headertitle">
+<div class="title">keySTREAM Closed Network Integration Guide </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h1><a class="anchor" id="autotoc_md88"></a>
+keySTREAM Closed Network Integration Guide (Gateway + MCU)</h1>
+<p>Use this guide when your MCU has no direct internet.</p>
+<ul>
+<li>MCU side: talks locally over UART, USB, BLE, Zigbee, or any other closed network transport.</li>
+<li>Gateway side: talks to keySTREAM cloud over HTTP.</li>
+</ul>
+<p>If your MCU has direct internet access, use <a class="el" href="generic_information_mcu_wifi.html">keySTREAM Wi-Fi / Ethernet Integration Guide</a>.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md90"></a>
+1. Overview</h2>
+<div class="image">
+<img src="Gateway.gif" alt="" width="800px"/>
+<div class="caption">
+Closed Network - Gateway Model</div></div>
+<p>In closed-network mode, the MCU does not connect to the internet directly.</p>
+<ol type="1">
+<li>The MCU communicates locally with the Gateway by UART, USB, BLE, Zigbee, or any other closed network transport.</li>
+<li>The Gateway communicates with the keySTREAM cloud by HTTP.</li>
+<li>You must select the correct OS files, transport backend, and platform SAL files on both Gateway and MCU sides.</li>
+</ol>
+<h3><a class="anchor" id="autotoc_md91"></a>
+1.1 Prerequisites</h3>
+<p>Before you start, make sure you have:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Item </th><th class="markdownTableHeadNone">Why it is needed  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">keySTREAM portal account + an <b>active Fleet Profile</b> </td><td class="markdownTableBodyNone">Provides the <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> the device provisions against. See <a class="el" href="fleet_profile_creation.html">Fleet Profile Creation Guide</a>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>App_Config.h</code> for your project (customer-provided) </td><td class="markdownTableBodyNone">Holds <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>. <b>It is not shipped inside the package</b> — you create it (see the template in the Fleet Profile note in section 2) and place it at your project root.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Toolchain for your target </td><td class="markdownTableBodyNone">ESP32 → ESP-IDF v4.4+ with <code>ESP_IDF_PATH</code> set; Nordic / bare-metal ARM → <code>arm-none-eabi-gcc</code>; Linux host test → GCC + pthreads.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">A platform <b>SAL implementation</b> for your transport </td><td class="markdownTableBodyNone">The package ships SAL <em>stubs/contracts</em>; you implement the <code>*_sal.c</code> for any platform not already filled in (see the per-transport tables below).  </td></tr>
+</table>
+<blockquote class="doxtable">
+<p><b>Note on the package folder name.</b> Throughout this guide the integration package directory is referred to as <code>Kta-Unified/</code>. In the delivered SDK it is the **<code>Kta_Unified/</code>** folder; the two names refer to the same package. It contains exactly two top-level folders: <code>gateway/</code> and <code>mcu/</code>. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md93"></a>
+2. Full Folder Structure</h2>
+<p>This is the folder you integrate:</p>
+<div class="fragment"><div class="line">Kta-Unified/   (delivered as Kta_Unified/)</div>
+<div class="line">├── gateway/</div>
+<div class="line">└── mcu/</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md94"></a>
+2.1 Gateway side full structure</h3>
+<pre style="white-space: pre; overflow-x: auto;">
+Kta-Unified/gateway/
+├── application/                        &lt;- choose ONE main file by your Gateway OS
+│   ├── main_windows_async_kta.c        &lt;- use for Windows gateway
+│   ├── main_linux_async_kta.c          &lt;- use for Linux gateway
+│   ├── main_baremetal_async_kta.c      &lt;- use for bare-metal gateway
+│   └── main_freertos_async_kta.c       &lt;- use for FreeRTOS gateway
+│
+├── backends/                           &lt;- choose ONE transport to communicate between MCU and gateway: uart/usb/ble/zigbee
+│   ├── backend_interface.c             <span style="color:#cc0000">(Do not edit this file)</span>
+│   ├── backend_interface.h             <span style="color:#cc0000">(Do not edit this file)</span>
+│   ├── backend_message.c               <span style="color:#cc0000">(Do not edit this file)</span>
+│   ├── backend_message.h               <span style="color:#cc0000">(Do not edit this file)</span>
+│   ├── uart/
+│   │   ├── backend_uart.c              <span style="color:#cc0000">(Do not edit this file)</span>
+│   │   ├── uart_sal.h                  <span style="color:#cc0000">(Do not edit - SAL contract)</span>
+│   │   └── sal/
+│   │       ├── esp32/
+│   │       │   ├── uart_config.h       &lt;- configure UART parameters (baud, port) - edit this
+│   │       │   └── uart_sal.c          <span style="color:#007700">(implement your platform UART SAL here)</span>
+│   │       ├── linux/
+│   │       │   ├── uart_config.h       &lt;- already implemented; verify settings
+│   │       │   └── uart_sal.c          &lt;- already implemented (POSIX termios)
+│   │       ├── sg41/
+│   │       │   ├── uart_config.h       &lt;- configure SERCOM port and baud - edit this
+│   │       │   └── uart_sal.c          <span style="color:#007700">(implement your platform UART SAL here)</span>
+│   │       └── windows/
+│   │           ├── uart_config.h       &lt;- already implemented; verify COM port settings
+│   │           └── uart_sal.c          &lt;- already implemented (Win32 API)
+│   ├── usb/
+│   │   ├── backend_usb.c               <span style="color:#cc0000">(Do not edit this file)</span>
+│   │   ├── usb_sal.h                   <span style="color:#cc0000">(Do not edit - SAL contract)</span>
+│   │   └── sal/
+│   │       ├── esp32/
+│   │       │   ├── usb_config.h        &lt;- configure USB VID/PID and endpoints - edit this
+│   │       │   └── usb_sal.c           <span style="color:#007700">(implement your platform USB SAL here)</span>
+│   │       ├── linux/
+│   │       │   ├── usb_config.h        &lt;- configure VID/PID - edit this
+│   │       │   └── usb_sal.c           <span style="color:#007700">(implement your platform USB SAL here)</span>
+│   │       ├── sg41/
+│   │       │   ├── usb_config.h        &lt;- configure USB CDC Device Stack - edit this
+│   │       │   └── usb_sal.c           <span style="color:#007700">(implement your platform USB SAL here)</span>
+│   │       └── windows/
+│   │           ├── usb_config.h        &lt;- configure WinUSB settings - edit this
+│   │           └── usb_sal.c           <span style="color:#007700">(implement your platform USB SAL here)</span>
+│   ├── ble/
+│   │   ├── backend_ble.c               <span style="color:#cc0000">(Do not edit this file)</span>
+│   │   ├── ble_sal.h                   <span style="color:#cc0000">(Do not edit - SAL contract)</span>
+│   │   └── sal/
+│   │       ├── esp32/
+│   │       │   ├── ble_config.h        &lt;- configure MTU, scan params, device name - edit this
+│   │       │   └── ble_sal.c           <span style="color:#007700">(implement your platform BLE SAL here)</span>
+│   │       ├── linux/
+│   │       │   ├── ble_config.h        &lt;- configure BlueZ adapter and scan params - edit this
+│   │       │   └── ble_sal.c           <span style="color:#007700">(implement your platform BLE SAL here)</span>
+│   │       ├── nordic/
+│   │       │   ├── ble_config.h        &lt;- configure Nordic BLE params - edit this
+│   │       │   └── ble_sal.c           <span style="color:#007700">(implement your platform BLE SAL here)</span>
+│   │       └── windows/
+│   │           ├── ble_config.h        &lt;- configure WinRT BLE scan and MTU - edit this
+│   │           └── ble_sal.c           <span style="color:#007700">(implement your platform BLE SAL here)</span>
+│   └── zigbee/
+│       ├── backend_zigbee.c            <span style="color:#cc0000">(Do not edit this file)</span>
+│       ├── zigbee_sal.h                <span style="color:#cc0000">(Do not edit - SAL contract)</span>
+│       └── sal/
+│           ├── esp32/
+│           │   ├── zigbee_config.h     &lt;- configure Zigbee channel, PAN ID - edit this
+│           │   └── zigbee_sal.c        <span style="color:#007700">(implement your platform Zigbee SAL here)</span>
+│           ├── linux/
+│           │   ├── zigbee_config.h     &lt;- configure coordinator serial port - edit this
+│           │   └── zigbee_sal.c        <span style="color:#007700">(implement your platform Zigbee SAL here)</span>
+│           └── windows/
+│               ├── zigbee_config.h     &lt;- configure coordinator COM port - edit this
+│               └── zigbee_sal.c        <span style="color:#007700">(implement your platform Zigbee SAL here)</span>
+│
+├── ktaIntegration/                     <span style="color:#cc0000">(Do not edit core files)</span>
+│   ├── ktaFieldMgntHook.c              <span style="color:#cc0000">(Do not edit this file)</span>
+│   ├── ktaFieldMgntHook.h              <span style="color:#cc0000">(Do not edit this file)</span>
+│   ├── README.md
+│   └── platform/                       &lt;- choose ONE folder matching Gateway OS
+│       ├── include/                    <span style="color:#cc0000">(Do not edit)</span>
+│       ├── windows/                    &lt;- use with kta_async_kta.c <span style="color:#cc0000">(Do not edit files inside)</span>
+│       ├── linux/                      &lt;- use with kta_async_kta.c   <span style="color:#cc0000">(Do not edit files inside)</span>
+│       └── freertos/                   &lt;- use with kta_async_kta.c<span style="color:#cc0000">(Do not edit files inside)</span>
+│
+└── keyStreamIntegration/               &lt;- cloud/HTTP stack; choose OS adapter folder
+    ├── COMMON/
+    │   └── logmodule/
+    │       ├── include/                <span style="color:#cc0000">(Do not edit)</span>
+    │       └── KTALog.c                <span style="color:#cc0000">(Do not edit this file)</span>
+    └── COMMSTACK/
+        └── http/
+            ├── include/            <span style="color:#cc0000">(Do not edit)</span>
+            ├── comm_if.c           <span style="color:#cc0000">(Do not edit this file)</span>
+            ├── http.c              <span style="color:#cc0000">(Do not edit this file)</span>
+            ├── baremetal/
+            │   ├── k_sal_com.c     <span style="color:#007700">(implement your platform network SAL here)</span>
+            │   └── k_sal_os.c      <span style="color:#007700">(implement your platform OS/timer SAL here)</span>
+            ├── freertos/           &lt;- include for FreeRTOS gateway build   <span style="color:#cc0000">(Do not edit files inside)</span>
+            ├── linux/
+            │   ├── k_sal_com.c     &lt;- include for Linux gateway build     <span style="color:#cc0000">(Do not edit files inside)</span>
+            │   └── k_sal_os.c      <span style="color:#cc0000">(Do not edit)</span>
+            ├── microchip/          &lt;- include for Microchip gateway build  <span style="color:#cc0000">(Do not edit files inside)</span>
+            └── windows/
+                ├── k_sal_com.c     &lt;- include for Windows gateway build   <span style="color:#cc0000">(Do not edit files inside)</span>
+                └── k_sal_os.c      <span style="color:#cc0000">(Do not edit)</span>
+</pre><h3><a class="anchor" id="autotoc_md95"></a>
+2.2 MCU side full structure</h3>
+<pre style="white-space: pre; overflow-x: auto;">
+Kta-Unified/mcu/
+├── mcu_config.h                         &lt;- <b>edit this first</b>: set MCU_OS, MCU_BACKEND, MCU_PLATFORM
+├── Makefile                             &lt;- build: make OS=&lt;os&gt; BACKEND=&lt;transport&gt; PLATFORM=&lt;platform&gt;
+├── BUILD.md
+│
+├── backends/                            &lt;- choose ONE transport: uart/usb/ble/zigbee
+│   ├── backend_interface.c              <span style="color:#cc0000">(Do not edit this file)</span>
+│   ├── backend_interface.h              <span style="color:#cc0000">(Do not edit this file)</span>
+│   ├── uart/
+│   │   ├── backend_uart.c               <span style="color:#cc0000">(Do not edit this file)</span>
+│   │   ├── uart_sal.h                   <span style="color:#cc0000">(Do not edit - SAL contract)</span>
+│   │   └── sal/
+│   │       ├── esp32/
+│   │       │   ├── uart_config.h        &lt;- configure baud/pin settings - edit this
+│   │       │   └── uart_sal.c           <span style="color:#007700">(implement your ESP32 UART SAL here)</span>
+│   │       └── sg41/
+│   │           ├── uart_config.h        &lt;- configure SERCOM port and baud - edit this
+│   │           └── uart_sal.c           <span style="color:#007700">(implement your SG41 UART SAL here)</span>
+│   ├── usb/
+│   │   ├── backend_usb.c                <span style="color:#cc0000">(Do not edit this file)</span>
+│   │   ├── usb_sal.h                    <span style="color:#cc0000">(Do not edit - SAL contract)</span>
+│   │   └── sal/
+│   │       ├── esp32/
+│   │       │   ├── usb_config.h         &lt;- configure TinyUSB CDC params - edit this
+│   │       │   └── usb_sal.c            <span style="color:#007700">(implement your ESP32 USB SAL here)</span>
+│   │       └── sg41/
+│   │           ├── usb_config.h         &lt;- configure USB Device Stack - edit this
+│   │           └── usb_sal.c            <span style="color:#007700">(implement your SG41 USB SAL here)</span>
+│   ├── ble/
+│   │   ├── backend_ble.c                <span style="color:#cc0000">(Do not edit this file)</span>
+│   │   ├── ble_sal.h                    <span style="color:#cc0000">(Do not edit - SAL contract)</span>
+│   │   └── sal/
+│   │       ├── esp32/
+│   │       │   ├── ble_config.h         &lt;- configure MTU, advertising, NUS UUIDs - edit this
+│   │       │   └── ble_sal.c            <span style="color:#007700">(implement your ESP32 BLE SAL here)</span>
+│   │       └── nordic/
+│   │           ├── ble_config.h         &lt;- configure Nordic BLE (NUS, MTU, GAP) - edit this
+│   │           └── ble_sal.c            <span style="color:#007700">(implement your Nordic BLE SAL here)</span>
+│   └── zigbee/
+│       ├── backend_zigbee.c             <span style="color:#cc0000">(Do not edit this file)</span>
+│       ├── zigbee_sal.h                 <span style="color:#cc0000">(Do not edit - SAL contract)</span>
+│       └── sal/
+│           └── esp32/
+│               ├── zigbee_config.h      &lt;- configure Zigbee channel, PAN ID - edit this
+│               └── zigbee_sal.c         <span style="color:#007700">(implement your ESP32 Zigbee SAL here)</span>
+│
+├── bridgeKta/                           <span style="color:#cc0000">(Do not edit this folder)</span>
+│   ├── bridge_kta.c                     <span style="color:#cc0000">(Do not edit this file)</span>
+│   └── bridge_kta.h                     <span style="color:#cc0000">(Do not edit this file)</span>
+│
+└── examples/
+    ├── README.md
+    ├── common/
+    │   ├── bridge_integration.c         <span style="color:#cc0000">(Do not edit this file)</span>
+    │   └── bridge_integration.h         <span style="color:#cc0000">(Do not edit this file)</span>
+    └── platform/                        &lt;- choose ONE OS entry path
+        ├── kta_mcu_integration.h        <span style="color:#cc0000">(Do not edit)</span>
+        ├── bare_metal/                  &lt;- use when MCU_OS=bare_metal
+        │   ├── main_bare_metal.c        <span style="color:#cc0000">(Do not edit)</span>
+        │   └── kta_mcu_integration_baremetal.c   <span style="color:#cc0000">(Do not edit)</span>
+        ├── freertos/                    &lt;- use when MCU_OS=freertos
+        │   ├── main_freertos.c          <span style="color:#cc0000">(Do not edit)</span>
+        │   └── kta_mcu_integration_freertos.c    <span style="color:#cc0000">(Do not edit)</span>
+        ├── linux/                       &lt;- use when MCU_OS=linux (host testing)
+        │   ├── main_linux.c             <span style="color:#cc0000">(Do not edit)</span>
+        │   └── kta_mcu_integration_linux.c       <span style="color:#cc0000">(Do not edit)</span>
+        └── windows/                     &lt;- use when MCU_OS=windows (host testing)
+            ├── main_windows.c           <span style="color:#cc0000">(Do not edit)</span>
+            └── kta_mcu_integration_windows.c     <span style="color:#cc0000">(Do not edit)</span>
+</pre><p>Fleet Profile configuration note (required before build):</p>
+<p>The package does <b>not</b> ship an <code>App_Config.h</code>. Create one at your project root and set the Fleet Profile UID in it.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">What to set </th><th class="markdownTableHeadNone">File </th><th class="markdownTableHeadNone">Symbol  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Fleet Profile UID from keySTREAM portal </td><td class="markdownTableBodyNone"><code>App_Config.h</code> (you create it) </td><td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>  </td></tr>
+</table>
+<p>Minimal <code>App_Config.h</code> template:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#ifndef APP_CONFIG_H</span></div>
+<div class="line"><span class="preprocessor">#define APP_CONFIG_H</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* Fleet Profile UID copied from the keySTREAM portal */</span></div>
+<div class="line"><span class="preprocessor">#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID   &quot;&lt;your-fleet-profile-uid&gt;&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#endif </span><span class="comment">/* APP_CONFIG_H */</span><span class="preprocessor"></span></div>
+</div><!-- fragment --><p><code>App_Config.h</code> must be reachable on the include path of the KTA library (<code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> references <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>). Do <b>not</b> add <code>#include "ktaConfig.h"</code> inside <code>App_Config.h</code> — <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> already pulls in <code>App_Config.h</code>, and the reverse include creates a circular dependency.</p>
+<p>For step-by-step Fleet Profile creation (with field table), see: <a class="el" href="fleet_profile_creation.html">Fleet Profile Creation Guide</a></p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md97"></a>
+3. Gateway Integration Steps</h2>
+<h3><a class="anchor" id="autotoc_md98"></a>
+3.1 Step 1 — Choose your application entry file</h3>
+<p>From <code>gateway/application/</code>, choose <b>one</b> file matching your Gateway OS. Do not include the others in your build.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Gateway OS </th><th class="markdownTableHeadNone">File to use  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Windows </td><td class="markdownTableBodyNone"><code>main_windows_async_kta.c</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Linux </td><td class="markdownTableBodyNone"><code>main_linux_async_kta.c</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">FreeRTOS </td><td class="markdownTableBodyNone"><code>main_freertos_async_kta.c</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Bare-metal </td><td class="markdownTableBodyNone"><code>main_baremetal_async_kta.c</code>  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md99"></a>
+3.2 Step 2 — Choose your transport backend</h3>
+<p>From <code>gateway/backends/</code>, include <b>one</b> transport folder in your build.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Transport </th><th class="markdownTableHeadNone">Folder  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">UART </td><td class="markdownTableBodyNone"><code>backends/uart/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">USB </td><td class="markdownTableBodyNone"><code>backends/usb/</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">BLE </td><td class="markdownTableBodyNone"><code>backends/ble/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Zigbee </td><td class="markdownTableBodyNone"><code>backends/zigbee/</code>  </td></tr>
+</table>
+<p>Do not edit <code>backend_interface.c</code> or <code>backend_message.c</code>.</p>
+<h3><a class="anchor" id="autotoc_md100"></a>
+3.3 Step 3 — Implement your platform SAL</h3>
+<p>Inside your chosen transport folder open <code>sal/</code> and choose the subfolder for your Gateway platform. Open the <code>.c</code> file and implement all functions marked <code>TODO</code>.</p>
+<h4><a class="anchor" id="autotoc_md101"></a>
+BLE — gateway/backends/ble/sal/</h4>
+<p><b>windows/ble_sal.c</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Function </th><th class="markdownTableHeadNone">What to implement  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ble_sal_connect</code> </td><td class="markdownTableBodyNone">Windows BLE connection — use <code>BluetoothLEDevice::FromBluetoothAddressAsync()</code> (WinRT / C++/WinRT)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ble_sal_write</code> </td><td class="markdownTableBodyNone">GATT write — use <code>GattCharacteristic::WriteValueAsync()</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ble_sal_read</code> </td><td class="markdownTableBodyNone">GATT read with timeout using Windows BLE APIs  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ble_sal_scan</code> </td><td class="markdownTableBodyNone">BLE device scanning using Windows BLE APIs  </td></tr>
+</table>
+<p>Edit <code>gateway/backends/ble/sal/&lt;platform&gt;/ble_config.h</code> to set MTU size, scan interval/window, connection timeout, and device name before implementing.</p>
+<hr  />
+<h4><a class="anchor" id="autotoc_md103"></a>
+UART, USB and Zigbee — same pattern as BLE above</h4>
+<p>For UART, USB, and Zigbee, follow the exact same steps as the BLE example:</p>
+<ol type="1">
+<li>Open <code>gateway/backends/&lt;transport&gt;/sal/&lt;platform&gt;/</code></li>
+<li>Edit <code>&lt;transport&gt;_config.h</code> to set transport parameters (port, baud, VID/PID, channel, etc.).</li>
+<li>Implement all <code>TODO</code> functions in <code>&lt;transport&gt;_sal.c</code> — the required function signatures are in <code>&lt;transport&gt;_sal.h</code>.</li>
+</ol>
+<p>The same pattern applies to the MCU side: <code>mcu/backends/&lt;transport&gt;/sal/&lt;platform&gt;/</code>.</p>
+<p>Refer to the folder trees in section 2 for the full list of platforms available per transport.</p>
+<hr  />
+<h3><a class="anchor" id="autotoc_md105"></a>
+3.4 Step 4 — Choose ktaIntegration/platform (do not edit files)</h3>
+<p><code>gateway/ktaIntegration/platform/</code> contains OS-specific async implementation. Choose the folder that matches your Gateway OS and include it in the build. Do not modify any file inside it.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Gateway OS </th><th class="markdownTableHeadNone">Folder to include  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Windows </td><td class="markdownTableBodyNone"><code>platform/windows/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Linux </td><td class="markdownTableBodyNone"><code>platform/linux/</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">FreeRTOS </td><td class="markdownTableBodyNone"><code>platform/freertos/</code>  </td></tr>
+</table>
+<p><code>ktaFieldMgntHook.c</code> and <code>ktaFieldMgntHook.h</code> — do not modify these files.</p>
+<h3><a class="anchor" id="autotoc_md106"></a>
+3.5 Step 5 — keyStreamIntegration — choose OS folder and edit only baremetal SAL if used</h3>
+<p><code>gateway/keyStreamIntegration/</code> is the HTTPS/cloud communication stack. For Windows/Linux/FreeRTOS/Microchip, include the matching folder without editing. For baremetal, implement the TODO sections in <code>k_sal_com.c</code> and <code>k_sal_os.c</code>.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Folder </th><th class="markdownTableHeadNone">What it contains </th><th class="markdownTableHeadNone">Action  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>COMMON/logmodule/KTALog.c</code> </td><td class="markdownTableBodyNone">Logging module </td><td class="markdownTableBodyNone">Include in build; do not edit  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/comm_if.c</code> </td><td class="markdownTableBodyNone">HTTP interface layer </td><td class="markdownTableBodyNone">Include in build; do not edit  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/http.c</code> </td><td class="markdownTableBodyNone">HTTP core </td><td class="markdownTableBodyNone">Include in build; do not edit  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/windows/k_sal_com.c</code> </td><td class="markdownTableBodyNone">Windows HTTP transport </td><td class="markdownTableBodyNone">Include if Gateway OS = Windows; do not edit  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/windows/k_sal_os.c</code> </td><td class="markdownTableBodyNone">Windows OS abstraction </td><td class="markdownTableBodyNone">Include if Gateway OS = Windows; do not edit  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/linux/k_sal_com.c</code> </td><td class="markdownTableBodyNone">Linux HTTP transport </td><td class="markdownTableBodyNone">Include if Gateway OS = Linux; do not edit  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/linux/k_sal_os.c</code> </td><td class="markdownTableBodyNone">Linux OS abstraction </td><td class="markdownTableBodyNone">Include if Gateway OS = Linux; do not edit  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/freertos/</code> </td><td class="markdownTableBodyNone">FreeRTOS HTTP transport </td><td class="markdownTableBodyNone">Include if Gateway OS = FreeRTOS; do not edit  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/baremetal/k_sal_com.c</code> </td><td class="markdownTableBodyNone">Bare-metal HTTP transport </td><td class="markdownTableBodyNone">Include if Gateway OS = bare-metal; implement TODOs  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/baremetal/k_sal_os.c</code> </td><td class="markdownTableBodyNone">Bare-metal OS/time abstraction </td><td class="markdownTableBodyNone">Include if Gateway OS = bare-metal; implement TODOs  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>COMMSTACK/http/microchip/</code> </td><td class="markdownTableBodyNone">Microchip platform HTTP </td><td class="markdownTableBodyNone">Include if Gateway is Microchip; do not edit  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md107"></a>
+3.6 Step 6 — Call the Gateway APIs</h3>
+<p>Include the header and call these two functions from your <code>main_*.c</code>:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;ktaIntegration/ktaFieldMgntHook.h&quot;</span></div>
+<div class="line"> </div>
+<div class="line">ktaKeyStreamInit();                     <span class="comment">/* call once at startup */</span></div>
+<div class="line">ktaKeyStreamFieldMgmt(<span class="keywordtype">bool</span>, &amp;status);   <span class="comment">/* call after init, then periodically */</span></div>
+</div><!-- fragment --><p>Status values returned in <code>status</code>:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Status </th><th class="markdownTableHeadNone">Meaning  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>E_K_KTA_KS_STATUS_NOT_PROVISIONED</code> </td><td class="markdownTableBodyNone">Not provisioned yet  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>E_K_KTA_KS_STATUS_PROVISIONED</code> </td><td class="markdownTableBodyNone">Fully provisioned  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>E_K_KTA_KS_STATUS_SUSPENDED</code> </td><td class="markdownTableBodyNone">Suspended  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>E_K_KTA_KS_STATUS_REFURBISH</code> </td><td class="markdownTableBodyNone">Requires refurbish flow  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md109"></a>
+4. MCU Integration Steps</h2>
+<h3><a class="anchor" id="autotoc_md110"></a>
+4.0 Configuration hierarchy</h3>
+<p>Configuration flows top-down. The customer owns the top four layers; the transport-agnostic core is never edited.</p>
+<div class="fragment"><div class="line">App_Config.h          -&gt; Fleet Profile UID / device identity   (customer)</div>
+<div class="line">   |</div>
+<div class="line">mcu_config.h          -&gt; MCU_OS / MCU_BACKEND / MCU_PLATFORM    (customer)</div>
+<div class="line">   |</div>
+<div class="line">&lt;transport&gt;_config.h  -&gt; baud / MTU / VID-PID / channel         (customer)</div>
+<div class="line">   |</div>
+<div class="line">backend_interface / bridge_*  -&gt; transport-agnostic core        (do NOT edit)</div>
+<div class="line">   |</div>
+<div class="line">&lt;transport&gt;_sal.c     -&gt; hardware driver glue                   (customer implements)</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md111"></a>
+4.1 Step 1 — Set your target in mcu_config.h</h3>
+<p>Open **<code>mcu/mcu_config.h</code>** — this is the only file you need to edit before compiling. Change the three defines to match your hardware:</p>
+<div class="fragment"><div class="line"><span class="comment">/* mcu/mcu_config.h */</span></div>
+<div class="line"> </div>
+<div class="line"><span class="preprocessor">#define MCU_OS        freertos    </span><span class="comment">/* freertos | bare_metal | linux */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor">#define MCU_BACKEND   uart        </span><span class="comment">/* ble | uart | usb | zigbee    */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor">#define MCU_PLATFORM  esp32       </span><span class="comment">/* esp32 | nordic | sg41        */</span><span class="preprocessor"></span></div>
+</div><!-- fragment --><table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Define </th><th class="markdownTableHeadNone">Your options </th><th class="markdownTableHeadNone">What it selects  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>MCU_OS</code> </td><td class="markdownTableBodyNone"><code>freertos</code> | <code>bare_metal</code> | <code>linux</code> </td><td class="markdownTableBodyNone">RTOS/scheduler used by the entry layer. Compilation of <code>examples/platform/&lt;os&gt;/</code> is selected by the Makefile <code>OS=</code> variable; keep both in sync.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>MCU_BACKEND</code> </td><td class="markdownTableBodyNone"><code>uart</code> | <code>ble</code> | <code>usb</code> | <code>zigbee</code> </td><td class="markdownTableBodyNone">Transport the bridge requests at init. The <code>backends/&lt;transport&gt;/</code> tree compiled in is selected by the Makefile <code>BACKEND=</code> variable; keep both in sync.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>MCU_PLATFORM</code> </td><td class="markdownTableBodyNone"><code>esp32</code> | <code>nordic</code> | <code>sg41</code> </td><td class="markdownTableBodyNone">SAL implementation. The compiled SAL folder is selected by the Makefile <code>PLATFORM=</code> variable; keep both in sync.  </td></tr>
+</table>
+<p>Valid combinations:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">MCU + OS + Transport </th><th class="markdownTableHeadNone"><code>MCU_OS</code> </th><th class="markdownTableHeadNone"><code>MCU_BACKEND</code> </th><th class="markdownTableHeadNone"><code>MCU_PLATFORM</code>  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">ESP32 + FreeRTOS + UART </td><td class="markdownTableBodyNone"><code>freertos</code> </td><td class="markdownTableBodyNone"><code>uart</code> </td><td class="markdownTableBodyNone"><code>esp32</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">ESP32 + FreeRTOS + BLE </td><td class="markdownTableBodyNone"><code>freertos</code> </td><td class="markdownTableBodyNone"><code>ble</code> </td><td class="markdownTableBodyNone"><code>esp32</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">ESP32 + FreeRTOS + USB </td><td class="markdownTableBodyNone"><code>freertos</code> </td><td class="markdownTableBodyNone"><code>usb</code> </td><td class="markdownTableBodyNone"><code>esp32</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">ESP32 + FreeRTOS + Zigbee </td><td class="markdownTableBodyNone"><code>freertos</code> </td><td class="markdownTableBodyNone"><code>zigbee</code> </td><td class="markdownTableBodyNone"><code>esp32</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">SG41 + bare-metal + UART </td><td class="markdownTableBodyNone"><code>bare_metal</code> </td><td class="markdownTableBodyNone"><code>uart</code> </td><td class="markdownTableBodyNone"><code>sg41</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">SG41 + bare-metal + USB </td><td class="markdownTableBodyNone"><code>bare_metal</code> </td><td class="markdownTableBodyNone"><code>usb</code> </td><td class="markdownTableBodyNone"><code>sg41</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Nordic + bare-metal + BLE </td><td class="markdownTableBodyNone"><code>bare_metal</code> </td><td class="markdownTableBodyNone"><code>ble</code> </td><td class="markdownTableBodyNone"><code>nordic</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Linux host test + UART </td><td class="markdownTableBodyNone"><code>linux</code> </td><td class="markdownTableBodyNone"><code>uart</code> </td><td class="markdownTableBodyNone"><code>esp32</code>  </td></tr>
+</table>
+<h4><a class="anchor" id="autotoc_md112"></a>
+Shipped MCU SAL coverage</h4>
+<p>The package ships ready-to-edit SAL folders only for the combinations below. Any other <code>MCU_BACKEND</code> / <code>MCU_PLATFORM</code> pair requires you to add the matching <code>backends/&lt;transport&gt;/sal/&lt;platform&gt;/</code> folder (config header + <code>*_sal.c</code>) before it will build or link.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Transport </th><th class="markdownTableHeadNone">Platforms with a shipped MCU SAL folder  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>uart</code> </td><td class="markdownTableBodyNone"><code>esp32</code>, <code>sg41</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ble</code> </td><td class="markdownTableBodyNone"><code>esp32</code>, <code>nordic</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>usb</code> </td><td class="markdownTableBodyNone"><code>esp32</code>, <code>sg41</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>zigbee</code> </td><td class="markdownTableBodyNone"><code>esp32</code>  </td></tr>
+</table>
+<blockquote class="doxtable">
+<p><b>Host-test caveat:</b> there is no <code>uart/sal/linux</code> SAL on the MCU side, so a pure <code>make OS=linux …</code> build cannot link against a real driver out of the box — it is intended for compiling the OS-independent layers. Provide your own host SAL if you need a runnable Linux MCU binary. </p>
+</blockquote>
+<blockquote class="doxtable">
+<p><b>Note:</b> All three defines are wrapped in <code>#ifndef</code>, so you can also override them without editing the file, using a compiler flag: <code>-DMCU_OS=freertos -DMCU_BACKEND=uart -DMCU_PLATFORM=esp32</code> </p>
+</blockquote>
+<hr  />
+<h3><a class="anchor" id="autotoc_md114"></a>
+4.2 Step 2 — Configure your transport</h3>
+<p>Open the <code>*_config.h</code> for your chosen backend + platform and set the hardware parameters (pins, baud rate, port number, etc.):</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">MCU_BACKEND </th><th class="markdownTableHeadNone">MCU_PLATFORM </th><th class="markdownTableHeadNone">Config file to edit  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>uart</code> </td><td class="markdownTableBodyNone"><code>esp32</code> </td><td class="markdownTableBodyNone"><code>backends/uart/sal/esp32/uart_config.h</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>uart</code> </td><td class="markdownTableBodyNone"><code>sg41</code> </td><td class="markdownTableBodyNone"><code>backends/uart/sal/sg41/uart_config.h</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ble</code> </td><td class="markdownTableBodyNone"><code>esp32</code> </td><td class="markdownTableBodyNone"><code>backends/ble/sal/esp32/ble_config.h</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ble</code> </td><td class="markdownTableBodyNone"><code>nordic</code> </td><td class="markdownTableBodyNone"><code>backends/ble/sal/nordic/ble_config.h</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>usb</code> </td><td class="markdownTableBodyNone"><code>esp32</code> </td><td class="markdownTableBodyNone"><code>backends/usb/sal/esp32/usb_config.h</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>usb</code> </td><td class="markdownTableBodyNone"><code>sg41</code> </td><td class="markdownTableBodyNone"><code>backends/usb/sal/sg41/usb_config.h</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>zigbee</code> </td><td class="markdownTableBodyNone"><code>esp32</code> </td><td class="markdownTableBodyNone"><code>backends/zigbee/sal/esp32/zigbee_config.h</code>  </td></tr>
+</table>
+<p>The most important settings to verify before building:</p>
+<p><b>UART:</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#define UART_PORT_NUM           1       </span><span class="comment">/* UART peripheral: 0, 1, or 2 */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor">#define UART_TX_PIN             10      </span><span class="comment">/* GPIO for TX */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor">#define UART_RX_PIN             9       </span><span class="comment">/* GPIO for RX */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor"></span><span class="comment">/* UART_BAUD_RATE is set in uart_sal.h (default 115200); override here if needed */</span><span class="preprocessor"></span></div>
+</div><!-- fragment --><p><b>BLE (ESP32):</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#define BLE_GATEWAY_NAME        &quot;ESP32_Gateway&quot;  </span><span class="comment">/* Name that the Gateway scans for */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor">#define BLE_MTU_SIZE            244              </span><span class="comment">/* Agreed MTU; must match Gateway config */</span><span class="preprocessor"></span></div>
+</div><!-- fragment --><p><b>USB (ESP32):</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#define USB_TARGET_VID          0x303A    </span><span class="comment">/* Must match MCU USB descriptor */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor">#define USB_TARGET_PID          0x1001    </span><span class="comment">/* Must match MCU USB descriptor */</span><span class="preprocessor"></span></div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><b>Must match:</b> The transport config on the MCU side <b>must match</b> the corresponding <code>*_config.h</code> on the Gateway side (same baud, same MTU, same PAN ID, etc.). Mismatched settings are the most common source of E2E failures. </p>
+</blockquote>
+<hr  />
+<h3><a class="anchor" id="autotoc_md116"></a>
+4.3 Step 3 — Implement your platform SAL</h3>
+<p>Open <code>backends/&lt;MCU_BACKEND&gt;/sal/&lt;MCU_PLATFORM&gt;/&lt;backend&gt;_sal.c</code> and implement all functions marked with <code>/* TODO */</code>. The required function signatures are declared in <code>backends/&lt;backend&gt;/&lt;backend&gt;_sal.h</code> — do not change those signatures.</p>
+<blockquote class="doxtable">
+<p><b>Note:</b> For UART, USB, and Zigbee the MCU SAL function signatures and pattern are the same as the Gateway side (section 3.3). For BLE the MCU acts as a <b>peripheral/server</b> (it advertises and waits for the Gateway to connect), which is the opposite of the Gateway role. </p>
+</blockquote>
+<p><b>BLE MCU (nordic/ble_sal.c) — MCU acts as BLE peripheral (server):</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Function </th><th class="markdownTableHeadNone">What to implement  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ble_sal_init</code> </td><td class="markdownTableBodyNone">Initialize SoftDevice; configure GAP; set device name; initialize Nordic UART Service (NUS)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ble_sal_deinit</code> </td><td class="markdownTableBodyNone">Deinitialize SoftDevice  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ble_sal_advertise_start</code> </td><td class="markdownTableBodyNone">Start BLE advertising  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ble_sal_advertise_stop</code> </td><td class="markdownTableBodyNone">Stop BLE advertising  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ble_sal_write</code> </td><td class="markdownTableBodyNone">Write NUS notification to connected central (Gateway)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ble_sal_read</code> </td><td class="markdownTableBodyNone">Read data received from central (Gateway)  </td></tr>
+</table>
+<p><b>BLE MCU (esp32/ble_sal.c) — MCU acts as BLE peripheral (server):</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Function </th><th class="markdownTableHeadNone">What to implement  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ble_sal_init</code> </td><td class="markdownTableBodyNone">Initialize NimBLE or BlueDroid; set up GATT NUS server; configure advertising  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ble_sal_write</code> </td><td class="markdownTableBodyNone">Send NUS notification to connected Gateway  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ble_sal_read</code> </td><td class="markdownTableBodyNone">Read data from NUS RX characteristic  </td></tr>
+</table>
+<hr  />
+<h3><a class="anchor" id="autotoc_md118"></a>
+4.4 Step 4 — Build</h3>
+<p>After <code>mcu_config.h</code> is set and the SAL is implemented, build using the Makefile. Pass the same OS/BACKEND/PLATFORM values you set in <code>mcu_config.h</code>:</p>
+<div class="fragment"><div class="line">cd Kta-Unified/mcu</div>
+<div class="line"> </div>
+<div class="line"># Examples:</div>
+<div class="line">make OS=freertos  BACKEND=uart    PLATFORM=esp32</div>
+<div class="line">make OS=freertos  BACKEND=ble     PLATFORM=esp32</div>
+<div class="line">make OS=bare_metal BACKEND=uart   PLATFORM=sg41</div>
+<div class="line">make OS=bare_metal BACKEND=ble    PLATFORM=nordic</div>
+<div class="line">make OS=bare_metal BACKEND=usb    PLATFORM=sg41</div>
+<div class="line">make OS=linux      BACKEND=uart   PLATFORM=esp32</div>
+<div class="line"> </div>
+<div class="line"># Clean build outputs:</div>
+<div class="line">make clean</div>
+</div><!-- fragment --><p>Build output is placed in <code>build/&lt;OS&gt;_&lt;BACKEND&gt;_&lt;PLATFORM&gt;/kta_bridge_&lt;OS&gt;_&lt;BACKEND&gt;_&lt;PLATFORM&gt;</code>.</p>
+<blockquote class="doxtable">
+<p><b>Required external paths:</b> the bridge calls into the KTA library, so <code>bridgeKta/bridge_kta.c</code> includes <code><a class="el" href="k__kta_8h_source.html" title="keySTREAM Trusted Agent - Public interface.">k_kta.h</a></code>. That header ships with the KTA library (<code>kta_lib/SOURCE/include</code>), not with this package — pass its location to the build with <code>KTA_LIB_INC=...</code>. For ESP32/FreeRTOS builds also export <code>ESP_IDF_PATH</code>. Example:</p>
+<div class="fragment"><div class="line">make OS=freertos BACKEND=uart PLATFORM=esp32 \</div>
+<div class="line">     KTA_LIB_INC=/path/to/kta_lib/SOURCE/include</div>
+</div><!-- fragment --><p></p>
+</blockquote>
+<blockquote class="doxtable">
+<p><b>Tip:</b> <code>mcu_config.h</code> records your intended target; the <b>Makefile</b> (<code>OS</code>/<code>BACKEND</code>/<code>PLATFORM</code>) selects which source files are compiled. Pass the same values to both. (Roadmap: a future release wires <code>MCU_BACKEND</code> directly into transport selection so only <code>mcu_config.h</code> is needed.) </p>
+</blockquote>
+<hr  />
+<h3><a class="anchor" id="autotoc_md120"></a>
+4.5 Step 5 — Call the MCU Bridge API from your application</h3>
+<p>The MCU bridge exposes a single entry-point API. Call it from your <code>main()</code> or application startup:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;examples/platform/kta_mcu_integration.h&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">void</span>)</div>
+<div class="line">{</div>
+<div class="line">    <span class="comment">/* Single call — handles init, transport, and event loop internally */</span></div>
+<div class="line">    kta_mcu_integration_entry();</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">/* For bare-metal: returns only on fatal error.</span></div>
+<div class="line"><span class="comment">       For RTOS/FreeRTOS: starts the scheduler and never returns. */</span></div>
+<div class="line">    <span class="keywordflow">for</span> (;;) {}</div>
+<div class="line">}</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><b>Note (current behavior):</b> <code>kta_mcu_integration_entry()</code> selects the transport from <code>mcu_config.h</code> (<code>MCU_BACKEND</code>) and is fully wired for <b>UART</b> today. For <code>linux</code>/<code>windows</code> host-test builds, or for BLE/USB/Zigbee, use the lower-level <code>bridge_integration_*</code> API below and enable the transport in the build (see the status table). The supported transport macro is <code>BACKEND_TYPE_*</code> / the <code>MCU_BACKEND</code> value — earlier entry files referenced a <code>TRANSPORT_TYPE_*</code> macro, which is being removed. </p>
+</blockquote>
+<p>If you need finer control (e.g. to run the bridge alongside your own application loop), use the lower-level API directly:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;examples/common/bridge_integration.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;backends/backend_interface.h&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* 1. Init — call once at startup */</span></div>
+<div class="line">bridge_integration_init(BACKEND_TYPE_UART);   <span class="comment">/* or BLE / USB / ZIGBEE */</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* 2. Process — call repeatedly from your loop or task */</span></div>
+<div class="line"><span class="keywordflow">while</span> (1) {</div>
+<div class="line">    bridge_integration_process();   <span class="comment">/* non-blocking; returns immediately if no data */</span></div>
+<div class="line">    <span class="comment">/* ... your own application logic ... */</span></div>
+<div class="line">    delay_ms(10);</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">/* 3. Deinit — call on shutdown */</span></div>
+<div class="line">bridge_integration_deinit();</div>
+</div><!-- fragment --><p><code>BackendType</code> values:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Constant </th><th class="markdownTableHeadNone">Transport </th><th class="markdownTableHeadNone">Status in common dispatcher  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>BACKEND_TYPE_UART</code> </td><td class="markdownTableBodyNone">UART / Serial </td><td class="markdownTableBodyNone">Selectable today  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>BACKEND_TYPE_USB</code> </td><td class="markdownTableBodyNone">USB CDC/Bulk </td><td class="markdownTableBodyNone">SAL contract present; enable in the build (<code>-DKTA_ENABLE_USB</code>) and implement the SAL  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>BACKEND_TYPE_BLE</code> </td><td class="markdownTableBodyNone">Bluetooth Low Energy </td><td class="markdownTableBodyNone">SAL contract present; enable in the build (<code>-DKTA_ENABLE_BLE</code>) and implement the SAL  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>BACKEND_TYPE_ZIGBEE</code> </td><td class="markdownTableBodyNone">Zigbee </td><td class="markdownTableBodyNone">SAL contract present; enable in the build (<code>-DKTA_ENABLE_ZIGBEE</code>) and implement the SAL  </td></tr>
+</table>
+<hr  />
+<h3><a class="anchor" id="autotoc_md122"></a>
+4.6 Common E2E checklist</h3>
+<p>Before running an end-to-end test, verify each item:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone"># </th><th class="markdownTableHeadNone">Check </th><th class="markdownTableHeadNone">Where  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">1 </td><td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> is set </td><td class="markdownTableBodyNone"><code>App_Config.h</code> (project root)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">2 </td><td class="markdownTableBodyNone"><code>MCU_OS</code>, <code>MCU_BACKEND</code>, <code>MCU_PLATFORM</code> match your hardware </td><td class="markdownTableBodyNone"><code>mcu/mcu_config.h</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">3 </td><td class="markdownTableBodyNone">MCU transport config (baud / pins / MTU) matches Gateway transport config </td><td class="markdownTableBodyNone"><code>backends/&lt;transport&gt;/sal/&lt;platform&gt;/*_config.h</code> on both sides  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">4 </td><td class="markdownTableBodyNone">Only <b>one</b> backend is compiled on each side (MCU and Gateway) </td><td class="markdownTableBodyNone">Makefile / IDE project settings  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">5 </td><td class="markdownTableBodyNone">Gateway entry <code>main_&lt;os&gt;_async_kta.c</code> matches the Gateway OS </td><td class="markdownTableBodyNone"><code>gateway/application/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">Gateway ktaIntegration platform folder matches the Gateway OS </td><td class="markdownTableBodyNone"><code>gateway/ktaIntegration/platform/&lt;os&gt;/</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">7 </td><td class="markdownTableBodyNone"><code>ktaKeyStreamInit()</code> is called before <code>ktaKeyStreamFieldMgmt()</code> on Gateway </td><td class="markdownTableBodyNone"><code>gateway/application/main_*.c</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">8 </td><td class="markdownTableBodyNone">MCU <code>bridge_integration_init()</code> is called before <code>bridge_integration_process()</code> </td><td class="markdownTableBodyNone">Your MCU application  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">9 </td><td class="markdownTableBodyNone">Fleet Profile UID exists and is active in the keySTREAM portal </td><td class="markdownTableBodyNone">keySTREAM portal  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md123"></a>
+4.7 Customer integration checklist</h3>
+<p>A new platform integration touches only these items — no framework <code>.c</code> edits:</p>
+<ol type="1">
+<li>Set the Fleet Profile UID in <code>App_Config.h</code>.</li>
+<li>Set <code>MCU_OS</code> / <code>MCU_BACKEND</code> / <code>MCU_PLATFORM</code> in <code>mcu_config.h</code> (and pass matching <code>make</code> variables).</li>
+<li>Implement <code>&lt;transport&gt;_sal.c</code> for your platform (signatures from <code>&lt;transport&gt;_sal.h</code>; do not change them).</li>
+<li>Set <code>&lt;transport&gt;_config.h</code> parameters; ensure they match the Gateway side.</li>
+<li>If the transport is not UART, enable it in the build (<code>-DKTA_ENABLE_&lt;TRANSPORT&gt;</code>).</li>
+<li>Call <code>kta_mcu_integration_entry()</code> (or the lower-level <code>bridge_integration_*</code> API).</li>
+<li>Do <b>not</b> edit <code>backend_interface.*</code>, <code>bridge_*</code>, or <code>ktaFieldMgntHook.*</code>.</li>
+</ol>
+<hr  />
+<h2><a class="anchor" id="autotoc_md125"></a>
+5. Build and Run</h2>
+<h3><a class="anchor" id="autotoc_md126"></a>
+5.1 Build MCU</h3>
+<div class="fragment"><div class="line">cd Kta-Unified/mcu</div>
+<div class="line">make OS=&lt;os&gt; BACKEND=&lt;transport&gt; PLATFORM=&lt;platform&gt;</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md127"></a>
+5.2 Build Gateway — files to include</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone"># </th><th class="markdownTableHeadNone">What to include </th><th class="markdownTableHeadNone">Where  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">1 </td><td class="markdownTableBodyNone">Application entry (choose one) </td><td class="markdownTableBodyNone"><code>gateway/application/main_&lt;os&gt;_async_kta.c</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">2 </td><td class="markdownTableBodyNone">Transport backend </td><td class="markdownTableBodyNone"><code>gateway/backends/&lt;transport&gt;/backend_&lt;transport&gt;.c</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">3 </td><td class="markdownTableBodyNone">Transport common (do not edit) </td><td class="markdownTableBodyNone"><code>gateway/backends/backend_interface.c</code>, <code>backend_message.c</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">4 </td><td class="markdownTableBodyNone">Platform SAL (choose one) </td><td class="markdownTableBodyNone"><code>gateway/backends/&lt;transport&gt;/sal/&lt;platform&gt;/&lt;transport&gt;_sal.c</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">5 </td><td class="markdownTableBodyNone">KTA platform (choose one, do not edit) </td><td class="markdownTableBodyNone"><code>gateway/ktaIntegration/platform/&lt;os&gt;/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">Cloud HTTP stack (choose one) </td><td class="markdownTableBodyNone"><code>gateway/keyStreamIntegration/COMMSTACK/http/&lt;os&gt;/</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">7 </td><td class="markdownTableBodyNone">KTA hook (do not edit) </td><td class="markdownTableBodyNone"><code>gateway/ktaIntegration/ktaFieldMgntHook.c</code>  </td></tr>
+</table>
+<p>OS selection quick-reference:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Gateway OS </th><th class="markdownTableHeadNone">Entry (#1) </th><th class="markdownTableHeadNone">KTA platform (#5) </th><th class="markdownTableHeadNone">HTTP folder (#6)  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Windows </td><td class="markdownTableBodyNone"><code>main_windows_async_kta.c</code> </td><td class="markdownTableBodyNone"><code>platform/windows/</code> </td><td class="markdownTableBodyNone"><code>http/windows/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Linux </td><td class="markdownTableBodyNone"><code>main_linux_async_kta.c</code> </td><td class="markdownTableBodyNone"><code>platform/linux/</code> </td><td class="markdownTableBodyNone"><code>http/linux/</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">FreeRTOS </td><td class="markdownTableBodyNone"><code>main_freertos_async_kta.c</code> </td><td class="markdownTableBodyNone"><code>platform/freertos/</code> </td><td class="markdownTableBodyNone"><code>http/freertos/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Bare-metal </td><td class="markdownTableBodyNone"><code>main_baremetal_async_kta.c</code> </td><td class="markdownTableBodyNone">(bare-metal adapter) </td><td class="markdownTableBodyNone"><code>http/baremetal/</code>  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md128"></a>
+5.3 Run order</h3>
+<ol type="1">
+<li>Power and flash MCU first.</li>
+<li>Start the Gateway application.</li>
+<li>Observe logs on both sides.</li>
+</ol>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Check </th><th class="markdownTableHeadNone">Expected log / result  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>bridge_integration_init()</code> </td><td class="markdownTableBodyNone">returns <code>0</code> (success)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ktaKeyStreamInit()</code> </td><td class="markdownTableBodyNone">returns <code>E_K_STATUS_OK</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ktaKeyStreamFieldMgmt()</code> </td><td class="markdownTableBodyNone">returns <code>E_K_STATUS_OK</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Lifecycle status </td><td class="markdownTableBodyNone">eventually <code>E_K_KTA_KS_STATUS_PROVISIONED</code>  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md130"></a>
+6. Quick Troubleshooting</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Symptom </th><th class="markdownTableHeadNone">Likely cause </th><th class="markdownTableHeadNone">Fix  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>BACKEND_TIMEOUT</code> </td><td class="markdownTableBodyNone">transport link broken </td><td class="markdownTableBodyNone">verify wiring / BLE pairing / Zigbee join on both sides  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Transport cannot open </td><td class="markdownTableBodyNone">wrong COM port / VID-PID / BLE address / baud </td><td class="markdownTableBodyNone">fix <code>*_config.h</code> on both MCU and Gateway  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Build error: undefined <code>MCU_OS</code> </td><td class="markdownTableBodyNone"><code>mcu_config.h</code> not included </td><td class="markdownTableBodyNone">add <code>#include "mcu_config.h"</code> or pass <code>-DMCU_OS=…</code> to compiler  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Build error: header not found </td><td class="markdownTableBodyNone">wrong include path </td><td class="markdownTableBodyNone">verify <code>-I</code> flags in Makefile match the selected backend + platform  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Status never reaches <code>PROVISIONED</code> </td><td class="markdownTableBodyNone">onboarding or network issue </td><td class="markdownTableBodyNone">verify gateway internet; check <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> is correct  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">MCU BLE not found by Gateway </td><td class="markdownTableBodyNone">device name mismatch </td><td class="markdownTableBodyNone">ensure <code>BLE_GATEWAY_NAME</code> in MCU <code>ble_config.h</code> matches what the Gateway scans for  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Build error: <code>App_Config.h: No such file</code> </td><td class="markdownTableBodyNone"><code>App_Config.h</code> not created / not on include path </td><td class="markdownTableBodyNone">create it at your project root (template in section 2) and add its folder to your <code>-I</code> paths  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Build error: <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> undefined </td><td class="markdownTableBodyNone"><code>App_Config.h</code> not reachable from <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> </td><td class="markdownTableBodyNone">ensure <code>App_Config.h</code> is on the include path before <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> is compiled  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Compiler error: circular include between <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> and <code>App_Config.h</code> </td><td class="markdownTableBodyNone"><code>App_Config.h</code> includes <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> </td><td class="markdownTableBodyNone">remove <code>#include "ktaConfig.h"</code> from <code>App_Config.h</code> (<code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> already includes it)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Link error: undefined <code>kta_mcu_integration_entry</code> </td><td class="markdownTableBodyNone">OS integration file not compiled </td><td class="markdownTableBodyNone">ensure <code>examples/platform/&lt;os&gt;/kta_mcu_integration_&lt;suffix&gt;.c</code> is in the build (the Makefile adds it automatically)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Link error: undefined <code>*_sal_*</code> / no driver symbols </td><td class="markdownTableBodyNone">platform SAL not implemented/compiled </td><td class="markdownTableBodyNone">implement <code>backends/&lt;transport&gt;/sal/&lt;platform&gt;/&lt;transport&gt;_sal.c</code> and ensure it is compiled  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md132"></a>
+7. Migration guidance for older integrations</h2>
+<ul>
+<li><b>Pre-<code>mcu_config.h</code> integrations</b> that hardcoded the transport in the entry file: delete any local <code>#define BRIDGE_TRANSPORT_TYPE ...</code>, set <code>MCU_BACKEND</code> in <code>mcu_config.h</code>, and rebuild. (Note: <code>TRANSPORT_TYPE_*</code> macros are being replaced by <code>BACKEND_TYPE_*</code> / <code>MCU_BACKEND</code>.)</li>
+<li><b>Integrations that copied the whole <code>mcu/</code> tree</b> (e.g. SG41_UART_X): keep working unchanged; no action required.</li>
+<li><b>ESP32 examples</b> that ship a custom <code>g_ble_backend</code>: continue to build as-is; migrating them to the common dispatcher is optional.</li>
+</ul>
+<hr  />
+<h2><a class="anchor" id="autotoc_md134"></a>
+8. See Also</h2>
+<ul>
+<li><a class="el" href="generic_information_mcu_wifi.html">keySTREAM Wi-Fi / Ethernet Integration Guide</a></li>
+<li><a class="el" href="custom_integration.html">Custom Device and Network Integration</a></li>
+<li><a class="el" href="kta_integration.html">MPLAB Harmony KTA_LIB Integration Guide</a></li>
+<li><a class="el" href="custom_mcu_fota.html">FOTA Integration Guide</a> </li>
+</ul>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.1-->
+<!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer"><b></b>
+    Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+  </ul>
+</div>
+</body>
+</html>

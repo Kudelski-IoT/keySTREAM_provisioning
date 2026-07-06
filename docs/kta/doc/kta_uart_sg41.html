@@ -1,0 +1,747 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>keySTREAM Trusted Agent: UART Transport Integration - EV89U05A</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
+<!-- Generated by Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('kta_uart_sg41.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="PageDoc"><div class="header">
+  <div class="headertitle">
+<div class="title">UART Transport Integration - EV89U05A </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h1><a class="anchor" id="autotoc_md512"></a>
+UART Transport Integration - EV89U05A</h1>
+<p>Integration guide for running the keySTREAM gateway over UART with the EV89U05A board and the ATECC608 TrustMANAGER secure element.</p>
+<p> 
+<div style="display:flex; justify-content:center; margin: 16px 0;">
+  <img src="keystream_schematics_uart_sg41.gif" alt="UART Transport Integration - EV89U05A" style="max-width:700px; width:100%; height:auto;" />
+</div>
+</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md514"></a>
+Board Details</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Parameter </th><th class="markdownTableHeadNone">Value  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Board</b> </td><td class="markdownTableBodyNone">EV89U05A  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>MCU</b> </td><td class="markdownTableBodyNone">PIC32CM1025SG41  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Secure Element</b> </td><td class="markdownTableBodyNone">ATECC608-TMNGTLS  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Transport</b> </td><td class="markdownTableBodyNone">UART  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Execution Model</b> </td><td class="markdownTableBodyNone">Gateway-assisted provisioning  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md516"></a>
+Setup Requirements</h2>
+<h3><a class="anchor" id="autotoc_md517"></a>
+Hardware</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Item </th><th class="markdownTableHeadNone">Link  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">EV89U05A development board </td><td class="markdownTableBodyNone"><a href="https://www.microchip.com/en-us/development-tool/EV89U05A">Microchip EV89U05A</a>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">USB cable for board connection </td><td class="markdownTableBodyNone">Host PC to EV89U05A  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md518"></a>
+Software</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Tool </th><th class="markdownTableHeadNone">Link  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">MPLAB X IDE </td><td class="markdownTableBodyNone"><a href="https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide">Download MPLAB X IDE</a>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">SG41 project sources </td><td class="markdownTableBodyNone"><code>keystream_connect/keystream_connect.X</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Gateway build scripts </td><td class="markdownTableBodyNone"><code>SG41_UART_X\build_gateway.bat</code>  </td></tr>
+</table>
+<p>Additional host tooling for the Windows gateway: <b>MPLAB X IDE v6.30+</b> with <b>XC32 v5.00+</b> (to build/flash the MCU) and <b>MinGW GCC</b> on <code>PATH</code> (to build <code>kta_gateway.exe</code>).</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md520"></a>
+Prerequisites</h2>
+<p>Before building or running this example, complete the following steps in the keySTREAM portal:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Requirement </th><th class="markdownTableHeadNone">Description </th><th class="markdownTableHeadNone">Guide  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Fleet Profile UID</b> </td><td class="markdownTableBodyNone">Create a Fleet Profile and copy its public UID into <code>App_Config.h</code> </td><td class="markdownTableBodyNone"><a class="el" href="fleet_profile_creation.html">Fleet Profile Creation Guide</a>  </td></tr>
+</table>
+<blockquote class="doxtable">
+<p>This step must be completed <b>before</b> configuring <code>App_Config.h</code> and building the project. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md521"></a>
+Package Setup</h3>
+<p>Before building, clone the repository:</p>
+<div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning</div>
+</div><!-- fragment --><p>Then configure the firmware package using the provided script:</p>
+<ol type="1">
+<li>Navigate to <code>keySTREAM_provisioning\PreIntegrated-Examples</code> in the package</li>
+<li>Open <b>PowerShell</b> and run <code>.\Config.ps1</code></li>
+<li>Select <b>TrustMANAGER</b> when prompted</li>
+<li>Select your device — <b>SG41_UART_X</b></li>
+<li>The script generates the configured firmware package; place the generated <code>SG41_UART_X</code> folder in your preferred path (e.g. <code>C:\</code>) and proceed to build and flash</li>
+</ol>
+<blockquote class="doxtable">
+<p>If you encounter any error while running <code>Config.ps1</code>, refer to the <a class="el" href="config_issue.html">Config.ps1 — Troubleshooting &amp; Usage</a> guide. </p>
+</blockquote>
+<div class="image">
+<img src="configscript.jpg" alt="" width="700px"/>
+<div class="caption">
+Config.ps1 — Package Configuration</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md523"></a>
+Project Folder Structure</h2>
+<div class="fragment"><div class="line">SG41_UART_X/</div>
+<div class="line">├── build_gateway.bat               ← Builds the Windows UART gateway (MinGW GCC)</div>
+<div class="line">├── App_Config.h                    ← Shared config (Fleet UID + COM port) — edit this</div>
+<div class="line">├── gateway/                        ← Windows gateway application</div>
+<div class="line">│   ├── application/</div>
+<div class="line">│   │   └── main_windows_async_kta.c</div>
+<div class="line">│   ├── ktaIntegration/</div>
+<div class="line">│   ├── backends/uart/sal/windows/   ← Windows UART (COM port) driver</div>
+<div class="line">│   └── keyStreamIntegration/        ← HTTP comm stack to keySTREAM</div>
+<div class="line">└── keystream_connect/              ← SG41 MPLAB X project</div>
+<div class="line">    ├── keystream_connect.X/         ← MPLAB X project (open this)</div>
+<div class="line">    └── src/</div>
+<div class="line">        └── config/default/library/</div>
+<div class="line">            ├── kta_lib/             ← KTA library</div>
+<div class="line">            └── cryptoauthlib/       ← ATECC608 driver</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><code>App_Config.h</code> at the project root is the <b>single source of truth</b> shared by both the SG41 firmware and the Windows gateway. Edit it once before building either side. After a successful gateway build, the executable is produced at <code>gateway\kta_gateway.exe</code>. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md525"></a>
+Configuration</h2>
+<p>Open <code>App_Config.h</code> and update the required values before building:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Macro </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> </td><td class="markdownTableBodyNone">Fleet profile UID provided from keySTREAM  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>UART_COM_PORT</code> </td><td class="markdownTableBodyNone">COM port <b>number</b> of the board (integer, no quotes)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>UART_COM_PORT_STR</code> </td><td class="markdownTableBodyNone">COM port <b>string</b> in the form <code>"COMx"</code> (quoted)  </td></tr>
+</table>
+<p>Both macros must point to the <b>same</b> physical COM port. <code>UART_COM_PORT</code> is the numeric value and <code>UART_COM_PORT_STR</code> is the full string form of that same port.</p>
+<h3><a class="anchor" id="autotoc_md526"></a>
+Step 1 — Find the COM port in Device Manager</h3>
+<ol type="1">
+<li>Connect the EV89U05A board to the host PC over USB.</li>
+<li>Press <code>Win + X</code> and open <b>Device Manager</b>.</li>
+<li>Expand <b>Ports (COM &amp; LPT)</b>.</li>
+<li>Locate the board's serial entry (for example, <em>USB Serial Device (COM6)</em>). The number in parentheses is your COM port — in this example, <b>6</b>.</li>
+</ol>
+<h3><a class="anchor" id="autotoc_md527"></a>
+Step 2 — Map the port to both macros</h3>
+<p>If Device Manager shows <b>COM6</b>, set the macros as follows:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#define UART_COM_PORT       6        </span><span class="comment">/* numeric port number */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor">#define UART_COM_PORT_STR   &quot;COM6&quot;   </span><span class="comment">/* same port as a string */</span><span class="preprocessor"></span></div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md528"></a>
+Example configurations</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Device Manager shows </th><th class="markdownTableHeadNone"><code>UART_COM_PORT</code> </th><th class="markdownTableHeadNone"><code>UART_COM_PORT_STR</code>  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">COM3 </td><td class="markdownTableBodyNone"><code>3</code> </td><td class="markdownTableBodyNone"><code>"COM3"</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">COM6 </td><td class="markdownTableBodyNone"><code>6</code> </td><td class="markdownTableBodyNone"><code>"COM6"</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">COM11 </td><td class="markdownTableBodyNone"><code>11</code> </td><td class="markdownTableBodyNone"><code>"COM11"</code>  </td></tr>
+</table>
+<blockquote class="doxtable">
+<p>Re-check Device Manager after reconnecting the board — Windows may assign a different COM port number. Update <b>both</b> macros whenever the port changes. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md530"></a>
+Integration Steps</h2>
+<ol type="1">
+<li>Open MPLAB X IDE and load <code>keystream_connect/keystream_connect.X</code>.</li>
+<li>Clean and build the project with <code>Shift+F11</code>.</li>
+<li>Connect the EV89U05A board to the host PC over USB.</li>
+<li>Flash the SG41 application by pressing <code>F5</code> in MPLAB X.</li>
+<li>Open a command prompt in <code>SG41_UART_X</code> and run <code>build_gateway.bat</code> to build the UART gateway.</li>
+<li>Verify that the SG41 UART COM port matches the values configured in <code>App_Config.h</code>.</li>
+<li>Start the gateway by running <code>gateway\kta_gateway.exe</code>.</li>
+<li>Monitor the console output until the device provisioning flow completes.</li>
+</ol>
+<hr  />
+<h2><a class="anchor" id="autotoc_md532"></a>
+Expected Output</h2>
+<p>After the gateway starts, it opens the configured COM port, reads the secure element UID, and drives the keySTREAM provisioning exchange. A successful run looks like:</p>
+<div class="fragment"><div class="line">[INFO] Scanning for SG41 device...</div>
+<div class="line">[INFO] Connected to SG41 (COM16)</div>
+<div class="line">[INFO] Reading RoT UID from ATECC608...</div>
+<div class="line">[INFO] Initializing KTA...</div>
+<div class="line">[INFO] Round 1/10: Exchanging messages with cloud...</div>
+<div class="line">[INFO] Provisioning complete!</div>
+<div class="line">[INFO] Status: ONBOARDED</div>
+</div><!-- fragment --><p>After onboarding, the gateway enters a monitoring loop (periodic keep-alive to the cloud) and stays running until stopped with <code>Ctrl+C</code>.</p>
+<h2><a class="anchor" id="autotoc_md533"></a>
+Validation Checklist</h2>
+<ul>
+<li>[ ] <code>App_Config.h</code> has your <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> and the correct <code>UART_COM_PORT</code> / <code>UART_COM_PORT_STR</code>.</li>
+<li>[ ] SG41 builds in MPLAB X (<code>BUILD SUCCESSFUL</code>) and flashes (<code>Programming Succeeded</code>).</li>
+<li>[ ] <code>build_gateway.bat</code> produces <code>gateway\kta_gateway.exe</code>.</li>
+<li>[ ] The COM port in <code>App_Config.h</code> matches the SG41 port shown in Device Manager.</li>
+<li>[ ] Gateway console reaches <code>Status: ONBOARDED</code>.</li>
+<li>[ ] The device shows as provisioned in the keySTREAM portal.</li>
+</ul>
+<hr  />
+<h2><a class="anchor" id="autotoc_md535"></a>
+Troubleshooting</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Problem </th><th class="markdownTableHeadNone">Recommended Action  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">UART failed to open the COM port </td><td class="markdownTableBodyNone">Reconnect the board, confirm the COM port in Device Manager, and reinstall or update the USB UART driver if needed  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">"No device found" in MPLAB X </td><td class="markdownTableBodyNone">Check the USB connection, refresh connected tools, and restart MPLAB X  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">SG41 flashing fails </td><td class="markdownTableBodyNone">Power-cycle the board and repeat the flash operation  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Gateway cannot find the SG41 board </td><td class="markdownTableBodyNone">Verify the configured COM port and ensure no other tool is holding the serial port open  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Provisioning times out </td><td class="markdownTableBodyNone">Wait at least 30 seconds and confirm the network connection used by the gateway  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Gateway stalls during exchange </td><td class="markdownTableBodyNone">The ATECC608 operation can take longer; allow up to 60 seconds before retrying  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md537"></a>
+Viewing KTA Debug Logs (MCU)</h2>
+<p>Two separate serial ports are used on this target:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Port </th><th class="markdownTableHeadNone">Role  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>COM4</b> (SERCOM6 UART) </td><td class="markdownTableBodyNone">Binary KTA bridge data — used by the gateway <code>.exe</code>. <b>Do not open this port for logs.</b>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>USB-CDC console port</b> </td><td class="markdownTableBodyNone">All text logs: <code>[UART-Bridge]</code> status messages, KTA <code>[DEBUG]</code>/<code>[INFO]</code> output, hex dumps.  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md538"></a>
+Set the log level</h3>
+<p>Locate <b><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></b> — after running <code>Config.ps1</code>, the file is generated at:</p>
+<div class="fragment"><div class="line">SG41_UART_X/keystream_connect/src/config/default/library/kta_lib/SOURCE/include/ktaConfig.h</div>
+</div><!-- fragment --><p>Open it, find the <b>LOG LEVEL CONFIGURATION - USER SECTION</b>, and uncomment the <code>LOG_KTA_ENABLE</code> line:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#define LOG_KTA_ENABLE   C_KTA_LOG_LEVEL_DEBUG</span></div>
+</div><!-- fragment --><p>Available log levels:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Value </th><th class="markdownTableHeadNone">Level </th><th class="markdownTableHeadNone">Shows  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_DEBUG</code> </td><td class="markdownTableBodyNone">1 </td><td class="markdownTableBodyNone">DEBUG and everything above  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_INFO</code> </td><td class="markdownTableBodyNone">2 </td><td class="markdownTableBodyNone">INFO, WARN, ENTRY/EXIT, ERROR  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_WARN</code> </td><td class="markdownTableBodyNone">3 </td><td class="markdownTableBodyNone">WARN, ENTRY/EXIT, ERROR  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_ENTRY_EXIT</code> </td><td class="markdownTableBodyNone">4 </td><td class="markdownTableBodyNone">ENTRY/EXIT, ERROR  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_ERROR</code> </td><td class="markdownTableBodyNone">5 </td><td class="markdownTableBodyNone">ERROR only  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_NONE</code> </td><td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">No logs  </td></tr>
+</table>
+<p><code>C_KTA_LOG_LEVEL_DEBUG</code> shows everything from DEBUG upwards. Rebuild and reflash the <code>keystream_connect</code> MCU firmware after changing the log level.</p>
+<h3><a class="anchor" id="autotoc_md539"></a>
+Find the USB-CDC debug port</h3>
+<ol type="1">
+<li>Open <b>Device Manager → Ports (COM &amp; LPT)</b>.</li>
+<li>Pick the port that is <b>not</b> COM4 (e.g. COM5 or COM6).</li>
+<li>Open it in a serial terminal (Tera Term / PuTTY) at <b>115200 baud, 8-N-1</b>.</li>
+</ol>
+<h3><a class="anchor" id="autotoc_md540"></a>
+Run the gateway at the same time</h3>
+<p>Launch the gateway <code>.exe</code> on COM4 simultaneously so the MCU executes KTA operations and produces log output.</p>
+<h3><a class="anchor" id="autotoc_md541"></a>
+Expected log output</h3>
+<div class="fragment"><div class="line">[DEBUG] [ktamgr:511] KTA initialization SUCCESS!!!</div>
+<div class="line">Chip Uid:, Public Key:, Secret: &lt;hex dumps&gt;</div>
+<div class="line">[UART-Bridge] Alive heartbeat every 5 s.</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><b>Note:</b> KTA logs are printed via <code>SYS_CONSOLE</code> on the USB-CDC port — not <code>printf</code>, which is a no-op stub on this target because SERCOM6 is reserved for the UART bridge. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md542"></a>
+Troubleshooting log output</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Problem </th><th class="markdownTableHeadNone">Recommended Action  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Hex dumps look truncated </td><td class="markdownTableBodyNone">Increase <code>SYS_CONSOLE_PRINT_BUFFER_SIZE</code> and the USB-CDC write buffer size in <code>configuration.h</code>, then rebuild and reflash  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">No output on USB-CDC port </td><td class="markdownTableBodyNone">Confirm you opened the correct port (not COM4) and that the baud rate is 115200  </td></tr>
+</table>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.1-->
+<!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer"><b></b>
+    Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+  </ul>
+</div>
+</body>
+</html>

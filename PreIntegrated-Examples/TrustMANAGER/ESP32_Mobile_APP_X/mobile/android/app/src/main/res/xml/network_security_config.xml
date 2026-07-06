@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Allow cleartext (HTTP) to the keySTREAM ICPP host -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">icph.cie.iot-lab.kudelski.com</domain>
+        <domain includeSubdomains="true">icph.mss.iot.kudelski.com</domain>
+    </domain-config>
+</network-security-config>

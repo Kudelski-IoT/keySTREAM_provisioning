@@ -1,11 +1,13 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>keySTREAM Trusted Agent: Main Page</title>
+<title>keySTREAM Trusted Agent: keySTREAM Trusted Agent Documentation</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -18,23 +20,289 @@
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 <link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-<div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="LOGO_IOT_IOTHINGS.png"/></td>
-  <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">keySTREAM Trusted Agent
-   </div>
-  </td>
- </tr>
- </tbody>
-</table>
-</div>
-<!-- end header part -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
 <!-- Generated by Doxygen 1.8.17 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
@@ -82,20 +350,274 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </iframe>
 </div>
 
-<div class="header">
+<div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">keySTREAM Trusted Agent Documentation</div>  </div>
+<div class="title">keySTREAM Trusted Agent Documentation </div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p>Welcome to the <b>keySTREAM Trusted Agent</b> documentation. This portal provides complete technical reference, integration guides, and API documentation for the keySTREAM Trusted Agent library.</p>
+<hr  />
+<h1><a class="anchor" id="autotoc_md213"></a>
+Generic Integration</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Guide </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="generic_information_mcu_wifi.html">keySTREAM Integration Guide — Wi-Fi / Ethernet (Direct Cloud)</a> </td><td class="markdownTableBodyNone">Step-by-step integration for MCU devices that connect directly to keySTREAM over Wi-Fi or Ethernet — covers CryptoAuthLib, Communication API, KTA lifecycle, and secure transport setup  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="generic_information_mcu_closed_network.html">keySTREAM Integration Guide — Closed Network (Gateway Model)</a> </td><td class="markdownTableBodyNone">Step-by-step integration for MCU devices that reach keySTREAM through a local gateway over BLE, UART, USB, or Zigbee — covers gateway API, MCU bridge, transport configuration, and build system  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="kta_fota_integration.html">TPDS FOTA Integration — Firmware Over-The-Air Update</a> </td><td class="markdownTableBodyNone">Card 3: TPDS-focused FOTA integration guide — covers campaign metadata flow, FOTA Agent/Process/Platform APIs, SAL FOTA storage (<code>salFotaStorageWrite</code>/<code>salFotaStorageRead</code>), resumable update state machine, and component update workflow  </td></tr>
+</table>
+<hr  />
+<h1><a class="anchor" id="autotoc_md215"></a>
+Microchip Ecosystem</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Guide </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="kta_integration.html">MPLAB 3 HARMONY INTEGRATION</a> </td><td class="markdownTableBodyNone">Production-ready Harmony 3 integration for keySTREAM Trusted Agent on SAM/PIC32 — keywords: SERCOM I2C/UART bring-up, ATECC608 CryptoAuthLib HAL porting, Harmony Content Manager module setup, TCP/IP + TLS/MQTT middleware, provisioning/lifecycle hooks, and MPLAB X build-debug workflow  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="tpds_onboarding.html">keySTREAM™ in-field Provisioning</a> </td><td class="markdownTableBodyNone">ECC608 TrustMANAGER with keySTREAM™ in-field Provisioning and key management  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="tpds_fota.html">TPDS FOTA Integration (Refer PDF)</a> </td><td class="markdownTableBodyNone">TPDS FOTA user flow — refer the integrated PDF for campaign creation, firmware packaging, rollout targeting, execution steps, monitoring dashboard, and troubleshooting  </td></tr>
+</table>
+<hr  />
+<h1><a class="anchor" id="autotoc_md217"></a>
+Pre-Integrated Examples</h1>
+<p>Seven pre-integrated firmware examples cover the complete range of supported hardware and connectivity options. Run <code>Config.ps1</code> to configure any of them for your Fleet Profile. See <a class="el" href="fleet_profile_creation.html">Fleet Profile Creation Guide</a> before starting.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Board </th><th class="markdownTableHeadNone">Target ID </th><th class="markdownTableHeadNone">Transport </th><th class="markdownTableHeadNone">Build tool </th><th class="markdownTableHeadNone">Guide  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">EV10E69A + WINC1500 </td><td class="markdownTableBodyNone"><code>D21_X</code> </td><td class="markdownTableBodyNone">Wi-Fi (AWS IoT) </td><td class="markdownTableBodyNone">MPLAB X </td><td class="markdownTableBodyNone"><a class="el" href="d21.html">EV10E69A + WINC1500</a>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">ATSAME54-XPRO + ATECC608 </td><td class="markdownTableBodyNone"><code>SAME54_X</code> </td><td class="markdownTableBodyNone">Ethernet (AWS IoT) </td><td class="markdownTableBodyNone">MPLAB X </td><td class="markdownTableBodyNone"><a class="el" href="same54_aws.html">ATSAME54-XPRO + AWS IoT Core</a>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">EV89U05A + WINCS02 </td><td class="markdownTableBodyNone"><code>SG41_X</code> </td><td class="markdownTableBodyNone">Wi-Fi (FOTA-capable) </td><td class="markdownTableBodyNone">MPLAB X </td><td class="markdownTableBodyNone"><a class="el" href="sg41_fota.html">EV89U05A + WINCS02</a>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">EV89U05A + UART gateway </td><td class="markdownTableBodyNone"><code>SG41_UART_X</code> </td><td class="markdownTableBodyNone">UART → Windows gateway </td><td class="markdownTableBodyNone">MPLAB X + exe </td><td class="markdownTableBodyNone"><a class="el" href="kta_uart_sg41.html">EV89U05A — UART Gateway</a>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">EV89U05A + TA101 HAT </td><td class="markdownTableBodyNone"><code>TA101_X</code> </td><td class="markdownTableBodyNone">Wi-Fi </td><td class="markdownTableBodyNone">MPLAB X </td><td class="markdownTableBodyNone">EV89U05A + TA101 HAT  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">ESP32 + ATECC608 </td><td class="markdownTableBodyNone"><code>ESP32_BLE_CLI_X</code> </td><td class="markdownTableBodyNone">BLE (Windows Python CLI) </td><td class="markdownTableBodyNone">ESP-IDF </td><td class="markdownTableBodyNone"><a class="el" href="kta_esp32_cli.html">ESP32 — BLE CLI</a>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">ESP32 + ATECC608 </td><td class="markdownTableBodyNone"><code>ESP32_Mobile_APP_X</code> </td><td class="markdownTableBodyNone">BLE (Android mobile app) </td><td class="markdownTableBodyNone">ESP-IDF </td><td class="markdownTableBodyNone"><a class="el" href="kta_esp32_ble_mobile.html">ESP32 — BLE Mobile App</a>  </td></tr>
+</table>
+<hr  />
+<h1><a class="anchor" id="autotoc_md219"></a>
+Reference</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Resource </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="modules.html">API Reference</a> </td><td class="markdownTableBodyNone">Complete API function documentation  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a class="el" href="kta_release_notes.html">Release Notes</a> </td><td class="markdownTableBodyNone">Version history and changelog  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a class="el" href="kta_license.html">License</a> </td><td class="markdownTableBodyNone">License information  </td></tr>
+</table>
+<hr  />
+<h1><a class="anchor" id="autotoc_md221"></a>
+Documentation Structure</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Section </th><th class="markdownTableHeadNone">Purpose  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Modules</b> </td><td class="markdownTableBodyNone">Organized API groups by functional area  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Data Structures</b> </td><td class="markdownTableBodyNone">All structs, enums, and type definitions  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Files</b> </td><td class="markdownTableBodyNone">Source code file listing and organization  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Related Pages</b> </td><td class="markdownTableBodyNone">Integration guides and supplementary documentation  </td></tr>
+</table>
+<hr  />
+<h1><a class="anchor" id="autotoc_md223"></a>
+Technical Reference</h1>
+<h2><a class="anchor" id="autotoc_md224"></a>
+API Documentation</h2>
+<p>Complete function signatures, parameters, return values, and usage notes for all public APIs.</p>
+<h2><a class="anchor" id="autotoc_md225"></a>
+Data Structures</h2>
+<p>Full definitions of all structures, enumerations, and types used by the keySTREAM Trusted Agent.</p>
+<h2><a class="anchor" id="autotoc_md226"></a>
+File Organization</h2>
+<p>Source code layout and module structure for the KTA library.</p>
+<hr  />
+<h1><a class="anchor" id="autotoc_md228"></a>
+Platform Support</h1>
+<p>The keySTREAM Trusted Agent supports the following platforms:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Platform </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Microchip SAM</b> </td><td class="markdownTableBodyNone">SAME54, SAM D21 series  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Silabs</b> </td><td class="markdownTableBodyNone">Gecko series microcontrollers  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>STM32</b> </td><td class="markdownTableBodyNone">STM32U5 series (STM32U3 variant)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Generic PSA</b> </td><td class="markdownTableBodyNone">Platform Security Architecture implementations  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Infineon</b> </td><td class="markdownTableBodyNone">IFXV-PSA implementations  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Mueller</b> </td><td class="markdownTableBodyNone">Mueller Electronics platforms  </td></tr>
+</table>
+<hr  />
+<h1><a class="anchor" id="autotoc_md230"></a>
+Features</h1>
+<h2><a class="anchor" id="autotoc_md231"></a>
+Security</h2>
+<ul>
+<li>Hardware-based cryptographic operations</li>
+<li>Secure key storage and certificate management</li>
+<li>Cryptographic authentication</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md232"></a>
+Cloud Integration</h2>
+<ul>
+<li>AWS IoT Core connectivity</li>
+<li>MQTT protocol support</li>
+<li>Device provisioning and fleet management</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md233"></a>
+IoT Connectivity</h2>
+<ul>
+<li>Multi-platform support</li>
+<li>FOTA (Firmware-Over-The-Air) updates</li>
+<li>Device lifecycle management</li>
+</ul>
+<hr  />
+<h1><a class="anchor" id="autotoc_md235"></a>
+Support</h1>
+<p>For questions, issues, or contributions:</p><ul>
+<li>Review the <a class="el" href="kta_release_notes.html">Release Notes</a> for version-specific information</li>
+<li>Check the <a class="el" href="kta_license.html">License</a> for usage terms</li>
+</ul>
+<hr  />
+<p><em>Provided by Kudelski IoT</em> </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.9.1-->
 <!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

@@ -1,0 +1,27 @@
+menu "Keystream BLE"
+
+    config KTA_FORCE_REPROVISION_ON_BOOT
+        bool "Force KTA reprovision on boot"
+        default n
+        help
+            Clears KTA lifecycle state (stored in the ATECC608) back to INIT at every boot.
+            This forces ktaSetDeviceInformation() to return connectionRequest=1 so the
+            mobile app performs ktaExchangeMessage() (Activation Request generation).
+
+    config KTA_CRYPTO_IO_LOG
+        bool "Log crypto input/output (AES/HMAC)"
+        default n
+        help
+            Prints crypto input/output buffers from the SAL crypto layer to ESP-IDF logs.
+            WARNING: This can leak sensitive material (plaintext/ciphertext/MACs).
+
+    config KTA_CRYPTO_IO_LOG_MAX_BYTES
+        int "Max bytes to dump per buffer"
+        default 256
+        range 0 4096
+        depends on KTA_CRYPTO_IO_LOG
+        help
+            Limits hexdump size per buffer to keep logs manageable.
+            Set to 0 to disable buffer dumps (sizes still logged).
+
+endmenu

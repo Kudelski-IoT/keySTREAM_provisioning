@@ -4,11 +4,13 @@ date:  "2026.05.07"
 author: "Kudelski IoT"
 ---
 
-# Release v1.4.7 (07/05/2026)
+# Release v1.5.0 (07/03/2026)
 
 ## New features/Changes in this version
+- Added applications for Closed networks
+- Added FOTA app for preconfigured applications
 - KTA improvements
-- Communication improvements
+- Integrated cryptoauthlib 3.8.0
 
 ## Fixed issues
 - N/A
@@ -31,18 +33,54 @@ author: "Kudelski IoT"
 
 ## Compatibility
 - This version is compatible with
-- CAL Version       - 3.7.9
+- CAL Version       - 3.8.0
 - keySTREAM Version - 1.32.1
 
 ## Open source information
 - NA
 
 ## Identifier
-- Git Tag: v1.4.7
+- Git Tag: v1.5.0
 
 ---
 
 # History
+
+## Release v1.4.7 (07/05/2026)
+
+### New features/Changes in this version
+- KTA improvements
+- Communication improvements
+
+### Fixed issues
+- N/A
+
+### Known Issues
+- N/A
+
+### Features list
+| Feature                                                              | ATECC608 |
+| ---                                                                  | ---      |
+| Onboarding with certificate validation with basic key(E256)          |    1     |
+| Onboarding with certificate validation with advance key(E384,E521..) |    0     |
+| Onboarding without certificate validation                            |    0     |
+| Mutable Fleet Profile                                                |    1     |
+| Certificate renewal                                                  |    1     |
+| key renewal                                                          |    1     |
+| Symmetric key service                                                |    1     |
+| Signing public key service                                           |    1     |
+| FOTA service                                                         |    1     |
+
+### Compatibility
+- This version is compatible with
+- CAL Version       - 3.7.9
+- keySTREAM Version - 1.32.1
+
+### Open source information
+- NA
+
+### Identifier
+- Git Tag: v1.4.7
 
 ## Release v1.4.4 (23/01/2026)
 
