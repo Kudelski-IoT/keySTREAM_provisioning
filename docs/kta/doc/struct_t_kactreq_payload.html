@@ -1,8 +1,10 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>keySTREAM Trusted Agent: TKactreqPayload Struct Reference</title>
@@ -18,23 +20,289 @@
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 <link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-<div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="LOGO_IOT_IOTHINGS.png"/></td>
-  <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">keySTREAM Trusted Agent
-   </div>
-  </td>
- </tr>
- </tbody>
-</table>
-</div>
-<!-- end header part -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
 <!-- Generated by Doxygen 1.8.17 -->
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
@@ -113,19 +381,127 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>aRotEpk</b> [C_K_K
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Activation request payload. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li><a class="el" href="acthandler_8c.html">acthandler.c</a></li>
-</ul>
-</div><!-- contents -->
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.9.1-->
 <!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="struct_t_kactreq_payload.html">TKactreqPayload</a></li>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

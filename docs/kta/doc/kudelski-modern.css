@@ -1,0 +1,861 @@
+/*
+ * Kudelski IoT - Doxygen Theme
+ * Compatible with Doxygen 1.8.17 (CI) and 1.9.7 (local)
+ *   - Dark navy top bar  #1a2142
+ *   - Dark navy sidebar  #202C55  (when treeview available)
+ *   - White content area, centered on pages without sidebar
+ *   - Blue accent        #2CA3E6
+ *
+ * Config:
+ *   GENERATE_TREEVIEW = YES
+ *   DISABLE_INDEX     = NO
+ *   FULL_SIDEBAR      = NO
+ *   TREEVIEW_WIDTH    = 240
+ *   HTML_COLORSTYLE   = LIGHT
+ */
+
+/* ==========================================================================
+   RESET / BASE
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+    font-family: 'Segoe UI', 'Open Sans', 'Calibri', Arial, sans-serif;
+    font-size: 14px;
+    color: #333333;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================================================================
+   TOP BAR  ──  #top wraps our navbar + Doxygen elements
+   Hide #titlearea and #main-nav (redundant with #ks-navbar)
+   ========================================================================== */
+
+#top {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+}
+
+#titlearea {
+    display: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#main-nav {
+    display: none !important;
+    height: 0 !important;
+}
+
+/* ==========================================================================
+   SEARCH BOX  ──  tinted to dark top bar
+   ========================================================================== */
+
+#MSearchBox  { background: transparent !important; }
+
+#MSearchField {
+    background-color: rgba(255,255,255,0.12) !important;
+    border: 1px solid rgba(255,255,255,0.22) !important;
+    border-radius: 3px !important;
+    color: #ffffff !important;
+    padding: 3px 7px !important;
+    font-size: 12px !important;
+}
+
+#MSearchField::placeholder { color: rgba(255,255,255,0.45) !important; }
+
+/* ==========================================================================
+   HORIZONTAL NAVIGATION BAR  ──  top navbar with dropdown menus
+   ========================================================================== */
+
+#main-nav-horizontal {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0 !important;
+    background: #1a2142 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-bottom: 2px solid #2CA3E6 !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+}
+
+.nav-h-item {
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+.nav-h-item > a {
+    display: block !important;
+    color: #2CA3E6 !important;
+    text-decoration: none !important;
+    padding: 12px 18px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    border-bottom: 3px solid transparent !important;
+    transition: background 0.2s, color 0.2s !important;
+    white-space: nowrap !important;
+}
+
+.nav-h-item > a:hover {
+    background: #202C55 !important;
+    color: #ffffff !important;
+    border-bottom-color: #2CA3E6 !important;
+}
+
+.nav-h-item.active > a {
+    background: #202C55 !important;
+    color: #ffffff !important;
+    border-bottom-color: #7986cb !important;
+}
+
+/* Dropdown Menu */
+.nav-h-dropdown {
+    display: none !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    background: #1a2142 !important;
+    border: 1px solid #2a3d6e !important;
+    border-top: none !important;
+    border-radius: 0 0 4px 4px !important;
+    min-width: 220px !important;
+    z-index: 1000 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.nav-h-item:hover .nav-h-dropdown {
+    display: block !important;
+}
+
+.nav-h-dropdown a {
+    display: block !important;
+    padding: 10px 16px !important;
+    color: #b8c8e0 !important;
+    text-decoration: none !important;
+    font-size: 12px !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-weight: 400 !important;
+    border-left: 3px solid transparent !important;
+    transition: background 0.12s, color 0.12s !important;
+}
+
+.nav-h-dropdown a:hover {
+    background: #2a3d6e !important;
+    color: #ffffff !important;
+    border-left-color: #2CA3E6 !important;
+}
+
+/* ==========================================================================
+   HIDE THE HORIZONTAL TAB BAR  ──  our custom #ks-navbar replaces it
+   In 1.8.17 with DISABLE_INDEX=NO, Doxygen generates div.tabs tab bars.
+   Hide them since header_custom.html provides the real nav.
+   ========================================================================== */
+
+#main-nav { display: none !important; }
+div.tabs, div.tabs2, div.tabs3, .tablist {
+    display: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* ==========================================================================
+   LEFT SIDEBAR  ──  matches preview.py #sidebar exactly
+   ========================================================================== */
+
+#side-nav {
+    background-color: #202C55 !important;
+    border-right: none !important;
+    padding: 0 !important;
+}
+
+#nav-tree,
+#nav-tree-contents {
+    background-color: #202C55 !important;
+    padding: 8px 0 !important;
+}
+
+/* Scrollbar */
+#nav-tree::-webkit-scrollbar       { width: 4px; }
+#nav-tree::-webkit-scrollbar-track { background: #1a2344; }
+#nav-tree::-webkit-scrollbar-thumb { background: #3a4f8a; border-radius: 2px; }
+
+/* ── COMPLETELY HIDE all arrow/expand icons ── preview.py has none ── */
+#nav-tree .arrow,
+#nav-tree span.arrow {
+    display: none !important;
+}
+
+/* Hide the sync button */
+#nav-sync { display: none !important; }
+
+/* Hide ALL images in nav tree (folder icons, doc icons, arrow imgs) */
+#nav-tree img {
+    display: none !important;
+}
+
+/* Flatten tree – remove ALL indentation so it looks like preview.py's flat list */
+#nav-tree .item {
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#nav-tree .children_ul {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#nav-tree li {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* The expandToggle <a> that wraps the arrow – collapse it */
+#nav-tree a[href="javascript:void(0)"] {
+    display: none !important;
+}
+
+#nav-tree .label {
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+    padding-left: 0 !important;
+}
+
+/* Nav links – flat list identical to preview.py #sidebar li a */
+#nav-tree .label a,
+#nav-tree a {
+    font-size: 13px !important;
+    color: #b8c8e0 !important;
+    text-decoration: none !important;
+    padding: 7px 16px 7px 18px !important;
+    display: block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.5 !important;
+    border-left: 3px solid transparent !important;
+    transition: background 0.12s, color 0.12s !important;
+}
+
+#nav-tree .label a:hover,
+#nav-tree a:hover {
+    background-color: #2a3d6e !important;
+    color: #ffffff !important;
+    border-left-color: #2CA3E6 !important;
+}
+
+/* Selected / active */
+#nav-tree .selected > .item { background-color: #2a3d6e !important; }
+
+#nav-tree .selected .label a,
+#nav-tree .selected a {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    border-left-color: #7986cb !important;
+    background-color: #2a3d6e !important;
+}
+
+/* Resize splitter */
+#splitbar {
+    background-color: #1a2344 !important;
+    border: none !important;
+    width: 4px !important;
+    cursor: col-resize !important;
+}
+#splitbar:hover { background-color: #2CA3E6 !important; }
+
+/* ==========================================================================
+   PAGE HEADER  ──  prominent, structured
+   Works on both 1.8.17 (no sidebar) and 1.9.x (with sidebar)
+   ========================================================================== */
+
+#doc-content { background-color: #ffffff !important; }
+
+div.header {
+    background: linear-gradient(135deg, #1a2142 0%, #202C55 100%) !important;
+    background-image: none; /* fallback for older browsers */
+    background-color: #1a2142 !important;
+    border-bottom: 3px solid #2CA3E6 !important;
+    padding: 24px 32px 18px !important;
+    margin: 0 !important;
+}
+
+div.headertitle { padding: 0 !important; }
+
+div.title {
+    font-size: 1.6em !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+}
+
+div.ingroups,
+div.summary {
+    font-size: 12px !important;
+    color: #b8c8e0 !important;
+    padding: 3px 0 0 !important;
+    margin: 0 !important;
+}
+
+div.ingroups a, div.summary a { color: #7ac8f0 !important; }
+
+/* ==========================================================================
+   BREADCRUMB  ──  now styled as part of footer (see FOOTER section)
+   ========================================================================== */
+
+div.navpath li.navelem {
+    display: none !important;
+}
+
+/* ==========================================================================
+   CONTENT BODY  ──  centered, constrained width, proper padding
+   Works with and without sidebar (Doxygen 1.8.17 has no sidebar)
+   ========================================================================== */
+
+.contents {
+    background-color: #ffffff !important;
+    padding: 28px 36px 56px !important;
+    color: #333333 !important;
+    max-width: 960px !important;
+    margin: 0 auto !important;
+    min-height: 60vh;
+}
+
+/* When contents is inside doc-content (1.9.x with sidebar), don't center */
+#doc-content .contents {
+    margin: 0 !important;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+
+.contents h1 {
+    font-size: 1.8em; font-weight: 700; color: #1a2142;
+    border-bottom: 2px solid #e8edf3; padding-bottom: 8px; margin: 0 0 20px;
+}
+.contents h2 {
+    font-size: 1.3em; font-weight: 600; color: #202C55;
+    border-bottom: 1px solid #e8edf3; padding-bottom: 5px; margin: 1.6em 0 0.7em;
+}
+.contents h3 { font-size: 1.1em; font-weight: 600; color: #2a4070; margin: 1.3em 0 0.5em; }
+.contents h4 { font-size: 1em;   font-weight: 600; color: #3a5080; margin: 1.1em 0 0.4em; }
+
+.contents p  { line-height: 1.8; margin: 0.4em 0 0.9em; color: #333333; }
+.contents a  { color: #1a72b8; text-decoration: none; }
+.contents a:hover { color: #1a2142; text-decoration: underline; }
+
+.contents ul,
+.contents ol { margin: 0.4em 0 0.9em 1.6em; padding: 0; line-height: 1.75; }
+.contents li { margin-bottom: 0.3em; }
+
+.contents blockquote {
+    background: #f0f6fb; border-left: 4px solid #2CA3E6;
+    border-radius: 0 4px 4px 0; padding: 8px 14px;
+    margin: 0.9em 0; color: #333333;
+}
+.contents blockquote p { margin: 0 0 4px; }
+.contents blockquote p:last-child { margin-bottom: 0; }
+
+hr, .contents hr { border: none; border-top: 1px solid #e8edf3; margin: 1.6em 0; }
+
+/* ==========================================================================
+   CODE
+   ========================================================================== */
+
+.contents code,
+.contents tt {
+    background: #f0f2f5; border: 1px solid #dde2ea; border-radius: 3px;
+    padding: 1px 5px; font-family: Consolas, 'Courier New', monospace;
+    font-size: 0.88em; color: #1a3a5c;
+}
+
+.contents pre,
+div.fragment {
+    background: #f7f8fa; border: 1px solid #dde2ea;
+    border-left: 3px solid #2CA3E6; border-radius: 0 4px 4px 0;
+    padding: 12px 16px; margin: 0.8em 0; overflow-x: auto;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 0.87em; line-height: 1.6; color: #1a3a5c;
+}
+
+.contents pre code,
+.contents pre tt { background: none; border: none; padding: 0; color: inherit; }
+
+div.line { color: #1a3a5c; font-family: Consolas, 'Courier New', monospace; font-size: 0.87em; line-height: 1.6; }
+
+span.keyword       { color: #0070c1; }
+span.keywordtype   { color: #267f99; }
+span.keywordflow   { color: #af00db; }
+span.comment       { color: #6a737d; font-style: italic; }
+span.preprocessor  { color: #800000; }
+span.stringliteral { color: #d73a49; }
+span.charliteral   { color: #d73a49; }
+
+/* ==========================================================================
+   TABLES
+   ========================================================================== */
+
+table.doxtable,
+table.markdownTable {
+    border-collapse: collapse; width: 100%;
+    margin: 1em 0; border: 1px solid #dde2ea; font-size: 13px;
+}
+
+table.doxtable th,
+table.markdownTable th,
+th.markdownTableHeadLeft,
+th.markdownTableHeadRight,
+th.markdownTableHeadCenter,
+th.markdownTableHeadNone {
+    background-color: #202C55 !important;
+    color: #ffffff !important;
+    font-weight: 600; padding: 9px 13px;
+    border: 1px solid #1a2344; text-align: left;
+}
+
+table.doxtable td,
+table.markdownTable td {
+    padding: 7px 13px; border: 1px solid #dde2ea;
+    color: #333333; vertical-align: top; line-height: 1.65;
+}
+
+table.doxtable tbody tr:nth-child(even) td,
+table.markdownTable tbody tr:nth-child(even) td { background-color: #f7f8fa; }
+
+table.doxtable tbody tr:hover td,
+table.markdownTable tbody tr:hover td { background-color: #eaf4fb; }
+
+table.fieldtable {
+    border-collapse: collapse; width: 100%;
+    margin: 0.8em 0; border: 1px solid #dde2ea; font-size: 13px;
+}
+table.fieldtable th {
+    background-color: #202C55; color: #ffffff;
+    padding: 7px 12px; font-weight: 600; border: 1px solid #1a2344;
+}
+table.fieldtable td { padding: 6px 12px; border: 1px solid #dde2ea; color: #333333; }
+table.fieldtable tr:nth-child(odd) { background: rgba(198,210,230,0.15); }
+
+/* ==========================================================================
+   MEMBER DOCUMENTATION
+   ========================================================================== */
+
+table.memberdecls { width: 100%; border-collapse: collapse; border: 1px solid #dde2ea; margin: 0.6em 0 1.2em; }
+
+/* Return-type column */
+table.memberdecls td.memItemLeft {
+    background: #edf3fb !important;
+    color: #267f99 !important;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 11.5px;
+    white-space: nowrap;
+    padding: 6px 10px 6px 12px;
+    border: 1px solid #d4e3f5;
+    border-right: none;
+    vertical-align: middle;
+}
+
+/* Function-name column */
+table.memberdecls td.memItemRight {
+    background: #ffffff !important;
+    padding: 6px 12px;
+    border: 1px solid #d4e3f5;
+    border-left: 3px solid #2CA3E6 !important;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+table.memberdecls td.memItemRight > a:first-child,
+table.memberdecls td.memItemRight b {
+    color: #1a2142 !important;
+    font-weight: 700;
+}
+
+table.memberdecls td.memItemRight > a:first-child:hover {
+    color: #2CA3E6 !important;
+    text-decoration: none;
+}
+
+/* Brief-description rows */
+table.memberdecls td.mdescLeft {
+    background: #f9fafc;
+    border: 1px solid #e8edf3;
+    border-right: none;
+    padding: 3px 10px 7px;
+}
+
+table.memberdecls td.mdescRight {
+    background: #f9fafc !important;
+    color: #5B6770;
+    font-size: 12.5px;
+    font-style: italic;
+    padding: 3px 12px 7px;
+    border: 1px solid #e8edf3;
+    border-left: 3px solid transparent;
+    line-height: 1.55;
+}
+
+/* Section heading rows inside memberdecls */
+table.memberdecls tr.heading td {
+    background: #202C55 !important;
+    color: #ffffff !important;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 7px 14px;
+    letter-spacing: 0.2px;
+}
+
+table.memberdecls tr.heading td a {
+    color: #7ac8f0 !important;
+}
+
+.mdescLeft, .mdescRight { background-color: #f9fafb; padding: 3px 8px; color: #5B6770; font-size: 13px; }
+.memSeparator { border-top: 1px solid #e8edf3; }
+
+div.memitem {
+    background: #ffffff;
+    border: 1px solid #d4e3f5;
+    border-left: 4px solid #2CA3E6 !important;
+    border-radius: 0 4px 4px 0;
+    margin: 1em 0;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(26,33,66,0.07);
+}
+div.memitem:hover { border-color: #2CA3E6; box-shadow: 0 3px 10px rgba(44,163,230,0.15); }
+
+div.memtitle {
+    background: #202C55 !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid #1a2344;
+    padding: 7px 14px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.2px;
+}
+
+div.memtitle a, div.memtitle a:hover {
+    color: #7ac8f0 !important;
+    text-decoration: none;
+}
+
+div.memproto {
+    background: #eaf2fb !important;
+    border-bottom: 1px solid #c5d8ef !important;
+    padding: 10px 14px !important;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 13px;
+    color: #1a3a5c;
+    overflow-x: auto;
+}
+
+/* Param type in prototype (e.g. TKStatus, uint8_t) */
+td.paramtype { color: #267f99 !important; font-style: normal; }
+/* Param name */
+td.paramname em, td.paramname { color: #8b5c00 !important; font-style: normal; }
+
+div.memdoc { background: #ffffff; padding: 14px 16px; color: #333333; font-size: 13px; line-height: 1.7; }
+
+/* dl.params / dl.retval inside memdoc */
+dl.params .paramname, dl.retval .paramname { color: #267f99; font-weight: 600; }
+
+.groupheader {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff !important;
+    background: #202C55;
+    border-radius: 4px;
+    padding: 8px 14px !important;
+    margin: 1.8em 0 0.8em !important;
+    letter-spacing: 0.2px;
+}
+
+/* ==========================================================================
+   NOTE / WARNING BOXES
+   ========================================================================== */
+
+dl.note       { background: #fffbe6; border-left: 4px solid #f5a623; border-radius: 0 4px 4px 0; padding: 8px 14px; margin: 0.8em 0; }
+dl.warning,
+dl.deprecated { background: #fff3f0; border-left: 4px solid #e53e3e; border-radius: 0 4px 4px 0; padding: 8px 14px; margin: 0.8em 0; }
+dl.attention,
+dl.todo       { background: #f0f6fb; border-left: 4px solid #2CA3E6; border-radius: 0 4px 4px 0; padding: 8px 14px; margin: 0.8em 0; }
+
+dl.note dt, dl.warning dt, dl.attention dt,
+dl.deprecated dt, dl.todo dt { font-weight: 700; color: #1a2142; margin-bottom: 3px; }
+
+/* ==========================================================================
+   IN-PAGE TOC
+   ========================================================================== */
+
+div.toc {
+    background: #f7f8fa; border: 1px solid #dde2ea; border-radius: 4px;
+    padding: 10px 16px; margin: 0 0 1em 1.2em;
+    float: right; min-width: 150px; max-width: 220px; font-size: 12px;
+}
+div.toc h3 { font-size: 12px; font-weight: 700; color: #1a2142; border: none; margin: 0 0 6px; padding: 0; }
+div.toc li  { line-height: 1.5; margin: 2px 0; list-style: none; }
+div.toc a   { color: #1a72b8; font-size: 12px; }
+div.toc a:hover { color: #1a2142; }
+
+/* ==========================================================================
+   IMAGES
+   ========================================================================== */
+
+.contents img {
+    max-width: 100%; height: auto; border-radius: 3px;
+    border: 1px solid #dde2ea; margin: 1em 0; display: block;
+}
+
+/* ==========================================================================
+   DIRECTORY LISTING  (modules, pages, annotated, files)
+   Targets BOTH Doxygen 1.8.17 and 1.9.x HTML structures
+   ========================================================================== */
+
+/* Intro text: "Here is a list of all modules:" */
+div.textblock {
+    background: #edf3fb;
+    border-left: 4px solid #2CA3E6;
+    border-radius: 0 4px 4px 0;
+    padding: 12px 18px;
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: #1a2142;
+    font-weight: 600;
+}
+
+/* Directory table wrapper (1.9.x) */
+div.directory {
+    background: #ffffff;
+    border: 1px solid #dde2ea;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(26,33,66,0.06);
+}
+
+table.directory {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+/* Rows */
+table.directory tr {
+    border-bottom: 1px solid #e8edf3;
+    transition: background 0.12s;
+}
+table.directory tr:last-child { border-bottom: none; }
+table.directory tr.even { background-color: #f9fafb; }
+table.directory tr.odd  { background-color: #ffffff; }
+table.directory tr:hover { background-color: #e6f2fb !important; }
+
+/* Entry cell: module/page/file name */
+.directory td.entry {
+    padding: 13px 22px;
+    font-size: 14px;
+    color: #1a2142;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.directory td.entry a.el {
+    color: #1a72b8 !important;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 4px 12px;
+    border-left: 3px solid #2CA3E6;
+    display: inline-block;
+}
+.directory td.entry a.el:hover {
+    color: #2CA3E6 !important;
+    background: #edf3fb;
+    border-radius: 0 3px 3px 0;
+}
+
+/* Description cell */
+.directory td.desc {
+    padding: 13px 22px 13px 16px;
+    font-size: 12.5px;
+    color: #5B6770;
+    vertical-align: middle;
+    line-height: 1.55;
+    border-left: 1px solid #e8edf3;
+}
+
+/* Hide empty description cells */
+.directory td.desc:empty {
+    display: none !important;
+    width: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+/* Struct/class icon (shows "C", "F", etc.) */
+.directory span.icona {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.directory span.icon {
+    background: #202C55;
+    color: #7ac8f0;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+}
+
+/* Hide open-folder and doc glyph icons */
+.directory span.iconfopen,
+.directory span.icondoc { display: none !important; }
+
+/* expand arrow in directory rows */
+.directory span.arrow {
+    color: #2CA3E6;
+    margin-right: 6px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+/* ── Doxygen 1.8.17 fallback: pages listed as <ul> not table ── */
+.contents > ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.contents > ul > li {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #2CA3E6;
+    border-radius: 0 6px 6px 0;
+    margin: 0 0 12px !important;
+    padding: 14px 20px !important;
+    transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.contents > ul > li:hover {
+    box-shadow: 0 3px 12px rgba(26,33,66,0.1);
+    border-color: #2CA3E6;
+}
+
+.contents > ul > li a {
+    color: #1a72b8 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+}
+
+.contents > ul > li a:hover {
+    color: #2CA3E6 !important;
+}
+
+/* Nested lists inside content (sub-items) */
+.contents > ul > li > ul {
+    list-style: none !important;
+    padding: 8px 0 0 16px !important;
+    margin: 0 !important;
+}
+
+.contents > ul > li > ul > li {
+    border: none !important;
+    border-left: 2px solid #dde2ea !important;
+    padding: 6px 12px !important;
+    margin: 0 0 4px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 13px;
+}
+
+.contents > ul > li > ul > li a {
+    font-size: 13px !important;
+    font-weight: 400 !important;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+address.footer, .footer {
+    background-color: #1a2142 !important;
+    border-top: 2px solid #2CA3E6 !important;
+    color: #7986cb !important;
+    font-size: 10px !important;
+    padding: 8px 20px !important;
+    text-align: center !important;
+    line-height: 1.4 !important;
+}
+
+/* Footer inside navpath (Doxygen 1.8.17 renders footer in a <li class="footer">) */
+li.footer {
+    list-style: none !important;
+    background-color: #1a2142 !important;
+    color: #7986cb !important;
+    font-size: 10px !important;
+    padding: 8px 20px !important;
+    text-align: center !important;
+    display: block !important;
+    line-height: 1.4 !important;
+}
+li.footer a { color: #7ac8f0 !important; text-decoration: none !important; font-size: 10px !important; }
+li.footer b { display: none; }
+
+/* navpath that wraps the footer */
+div.navpath, #nav-path {
+    background-color: #1a2142 !important;
+    border-top: 1px solid #2CA3E6 !important;
+    border-bottom: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    font-size: 10px !important;
+}
+div.navpath ul, #nav-path ul {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+/* ==========================================================================
+   STICKY NAVBAR – sidebar and splitbar offsets
+   The #ks-navbar in header_custom.html is position:sticky; top:0; height≈42px.
+   Override Doxygen's JS-positioned sidebar so it starts below the navbar.
+   ========================================================================== */
+
+#side-nav {
+    top: 42px !important;
+    height: calc(100vh - 42px) !important;
+    position: fixed !important;
+    left: 0 !important;
+    z-index: 100 !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+#splitbar {
+    top: 42px !important;
+}
+
+#splitbar {
+    top: 42px !important;
+    height: calc(100vh - 42px) !important;
+}

@@ -1,0 +1,893 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>keySTREAM Trusted Agent: EV89U05A + WINCS02</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
+<!-- Generated by Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('sg41_fota__non_t_p_d_s.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="PageDoc"><div class="header">
+  <div class="headertitle">
+<div class="title">EV89U05A + WINCS02 </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h1><a class="anchor" id="autotoc_md250"></a>
+FOTA Without TPDS — Integration Guide</h1>
+<p>This guide provides a step-by-step walkthrough for building, signing, and flashing firmware for the <b>PIC32CX SG41</b> platform using keySTREAM signing, without requiring the TPDS package.</p>
+<blockquote class="doxtable">
+<p><b>Note:</b> This flow is self-contained. The only cloud call is a single <code>POST /sign</code> to keySTREAM per firmware component. No TPDS backend or TPDS Python package is required.</p>
+<p><b>Note:</b> Ensure MPLAB X IDE is installed before proceeding. It provides the <code>ipecmd</code> programmer utility used in Step 5. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md252"></a>
+Quick Steps — SG41 Non-TPDS FOTA</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Item </th><th class="markdownTableHeadNone">Details  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Example </td><td class="markdownTableBodyNone">SG41 FOTA without TPDS  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Board </td><td class="markdownTableBodyNone">PIC32CX SG41 (EV89U05A) + ATECC608  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Network </td><td class="markdownTableBodyNone">Wi-Fi (WINCS02)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Required Config </td><td class="markdownTableBodyNone">Wi-Fi SSID, Wi-Fi Password, keySTREAM <code>Fleet_uid</code>, <code>keySTREAM_API_Token</code>, <code>keySTREAM_Signingkey</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Step 1 </td><td class="markdownTableBodyNone">Fill Wi-Fi credentials and keySTREAM fields in <code>mchp_non_tpds_fota_config.ini</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Step 2 </td><td class="markdownTableBodyNone">Run <code>python mchp_non_tpds_fota.py</code> to validate configuration and generate <code>App_Config.h</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Step 3 </td><td class="markdownTableBodyNone">Compile Bootloader (<code>keystream_boot</code>) and KTA FOTA Application (<code>keystream_Fota</code>) in MPLAB X  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Step 4 </td><td class="markdownTableBodyNone">Run <code>python mchp_non_tpds_fota.py</code> again to sign the compiled binaries  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Step 5 </td><td class="markdownTableBodyNone">Flash the signed image to the board (prompted by the script, or manually)  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md254"></a>
+Overview</h2>
+<p>Overview quick links:</p>
+<ul>
+<li><a href="#step-1">Step 1 — Configure Input Parameters</a></li>
+<li><a href="#step-2">Step 2 — Generate App_Config.h</a></li>
+<li><a href="#step-3">Step 3 — Compile Firmware</a></li>
+<li><a href="#step-4">Step 4 — Sign Firmware</a></li>
+<li><a href="#step-5">Step 5 — Flash Programming</a></li>
+<li><a href="#output-files">Output Files</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+<p>The flow involves two firmware components:</p><ul>
+<li><b>Bootloader</b> (<code>keystream_boot</code>) — verifies the application signature using the ATECC608 secure element before booting.</li>
+<li><b>KTA FOTA Application</b> (<code>keystream_Fota</code>) — connects to Wi-Fi, downloads the new firmware image from keySTREAM, and writes it to the passive flash bank.</li>
+</ul>
+<p>The host-side Python script (<code>mchp_non_tpds_fota.py</code>) validates configuration, generates the application header, orchestrates offline signing, and optionally flashes the board.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md256"></a>
+Prerequisites</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Requirement </th><th class="markdownTableHeadNone">Details  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Python </td><td class="markdownTableBodyNone">3.9 or later  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Python packages </td><td class="markdownTableBodyNone"><code>requests</code>, <code>cryptography</code>, <code>intelhex</code>, <code>pyyaml</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">MPLAB X IDE </td><td class="markdownTableBodyNone">v6.00 or later (provides <code>ipecmd</code> for flashing)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Hardware </td><td class="markdownTableBodyNone">PIC32CX SG41 evaluation board (EV89U05A) with ATECC608  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">keySTREAM account </td><td class="markdownTableBodyNone">Valid <code>Fleet_uid</code> and <code>keySTREAM_API_Token</code>  </td></tr>
+</table>
+<p>Install Python dependencies:</p>
+<div class="fragment"><div class="line">pip install requests cryptography intelhex pyyaml</div>
+</div><!-- fragment --><hr  />
+<p><a class="anchor" id="step-1"></a> </p>
+<h2><a class="anchor" id="autotoc_md258"></a>
+Step 1 — Configure Input Parameters in mchp_non_tpds_fota_config.ini</h2>
+<p>Open <a href="mchp_non_tpds_fota_config.ini"><code>mchp_non_tpds_fota_config.ini</code></a> and fill in all required fields <b>before</b> running the script.</p>
+<p>All configuration — Wi-Fi credentials, keySTREAM API details, and component hex file names — is provided in a single <code>.ini</code> file.</p>
+<div class="fragment"><div class="line">[keystream]</div>
+<div class="line">Fleet_uid            = BKFZ:SG41-1.3.2</div>
+<div class="line">keySTREAM_API_Token  = &lt;Base64-encoded API key&gt;</div>
+<div class="line">keySTREAM_Signingkey = SG41_1.3.2</div>
+<div class="line"> </div>
+<div class="line">[wifi]</div>
+<div class="line">ssid     = Your-WiFi-SSID</div>
+<div class="line">password = Your-WiFi-Password</div>
+<div class="line"> </div>
+<div class="line">[components]</div>
+<div class="line">comp_1_file = keystream_boot.X.production.hex</div>
+<div class="line">comp_1_info = 0xFC00</div>
+<div class="line"> </div>
+<div class="line">comp_2_file = keystream_Fota.X.production.hex</div>
+<div class="line">comp_2_info = 0x6FC00</div>
+<div class="line"> </div>
+<div class="line">[output]</div>
+<div class="line">output_dir = signed_out</div>
+</div><!-- fragment --><p><b>Field Descriptions</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Field </th><th class="markdownTableHeadNone">Section </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Fleet_uid</code> </td><td class="markdownTableBodyNone"><code>[keystream]</code> </td><td class="markdownTableBodyNone">Fleet Profile Public UID — found on the keySTREAM portal.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>keySTREAM_API_Token</code> </td><td class="markdownTableBodyNone"><code>[keystream]</code> </td><td class="markdownTableBodyNone">Base64-encoded API key (with or without <code>Basic</code> prefix).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>keySTREAM_Signingkey</code> </td><td class="markdownTableBodyNone"><code>[keystream]</code> </td><td class="markdownTableBodyNone">Name of the ECDSA P-256 signing key pair registered in keySTREAM.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ssid</code> </td><td class="markdownTableBodyNone"><code>[wifi]</code> </td><td class="markdownTableBodyNone">Wi-Fi network name. Written into <code>App_Config.h</code> automatically by the script.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>password</code> </td><td class="markdownTableBodyNone"><code>[wifi]</code> </td><td class="markdownTableBodyNone">Wi-Fi password. Written into <code>App_Config.h</code> automatically by the script.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>comp_1_file</code> </td><td class="markdownTableBodyNone"><code>[components]</code> </td><td class="markdownTableBodyNone">Bootloader hex filename (resolved from the same folder as this <code>.ini</code>).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>comp_1_info</code> </td><td class="markdownTableBodyNone"><code>[components]</code> </td><td class="markdownTableBodyNone">Flash address of the <code>firmware_metadata_t</code> struct in the bootloader hex.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>comp_2_file</code> </td><td class="markdownTableBodyNone"><code>[components]</code> </td><td class="markdownTableBodyNone">KTA FOTA application hex filename.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>comp_2_info</code> </td><td class="markdownTableBodyNone"><code>[components]</code> </td><td class="markdownTableBodyNone">Flash address of the <code>firmware_metadata_t</code> struct in the application hex.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>output_dir</code> </td><td class="markdownTableBodyNone"><code>[output]</code> </td><td class="markdownTableBodyNone">Folder for signed <code>.hex</code>, <code>.bin</code>, and <code>combined_component.hex</code> output files.  </td></tr>
+</table>
+<blockquote class="doxtable">
+<p><b>Important:</b> The script validates all fields on startup and aborts with a clear message if any field is empty or contains a placeholder value (e.g. <code>XYZ</code>, <code>WiFi-SSID</code>, <code>XXXX</code>). Replace every placeholder with a real value before proceeding. </p>
+</blockquote>
+<p><b>keySTREAM Portal — Fleet Profile UID and Signing Key Name</b></p>
+<p>Use the keySTREAM portal to locate the <code>Fleet_uid</code> (Fleet Profile Public UID) and <code>keySTREAM_Signingkey</code> (Signing Key Name).</p>
+<div class="image">
+<img src="KeySTREAM_Fota_NonTPDS_SigningKey_Fleet.png" alt="" width="800px"/>
+<div class="caption">
+keySTREAM Fleet Profile UID and Signing Key Name</div></div>
+<p><b>keySTREAM Portal — API Key Token</b></p>
+<p>Use the keySTREAM portal to generate or copy the <code>keySTREAM_API_Token</code> (API Key Token).</p>
+<div class="image">
+<img src="KeySTREAM_Fota_NonTPDS_API_Token.png" alt="" width="800px"/>
+<div class="caption">
+keySTREAM API Key Token</div></div>
+<hr  />
+<p><a class="anchor" id="step-2"></a> </p>
+<h2><a class="anchor" id="autotoc_md260"></a>
+Step 2 — Generate App_Config.h</h2>
+<p>Run the script once to validate the configuration and generate <code>App_Config.h</code>:</p>
+<div class="fragment"><div class="line">python mchp_non_tpds_fota.py</div>
+</div><!-- fragment --><p>The script performs the following on this first run:</p>
+<ol type="1">
+<li><b>Validates</b> all fields in <code>mchp_non_tpds_fota_config.ini</code> — aborts if any value is empty or a placeholder.</li>
+<li><b>Generates <code>App_Config.h</code></b> with the Wi-Fi credentials and Fleet Profile UID from the <code>.ini</code> file. <br  />
+ The file is written to two locations so both MPLAB X projects can find it:</li>
+</ol>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Location </th><th class="markdownTableHeadNone">Used by  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>SG41_X/App_Config.h</code> </td><td class="markdownTableBodyNone"><code>configuration.h</code> (<code>#include "../../../../../App_Config.h"</code>)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SG41_X/keystream_connect/App_Config.h</code> </td><td class="markdownTableBodyNone"><code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> (<code>#include "../../../../../../../../App_Config.h"</code>)  </td></tr>
+</table>
+<ol type="1">
+<li><b>Checks</b> whether the compiled HEX files exist and are up-to-date. Since compilation has not yet been performed at this stage, the script prints a recompilation notice and exits:</li>
+</ol>
+<div class="fragment"><div class="line">ERROR: The following HEX files are out-of-date with App_Config.h:</div>
+<div class="line">  • ...\keystream_boot.X.production.hex  (file not found)</div>
+<div class="line">  • ...\keystream_Fota.X.production.hex  (file not found)</div>
+<div class="line"> </div>
+<div class="line">Recompilation is required before signing.</div>
+<div class="line">Please rebuild the affected project(s) in MPLAB X, then re-run this script:</div>
+<div class="line">  1. Open keystream_boot.X and perform Clean and Build.</div>
+<div class="line">  2. Open keystream_Fota.X and perform Clean and Build.</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><b>This is expected behaviour.</b> <code>App_Config.h</code> has been successfully generated. Proceed to Step 3 to compile the firmware. </p>
+</blockquote>
+<blockquote class="doxtable">
+<p><b>Note:</b> If you update any value in <code>mchp_non_tpds_fota_config.ini</code> after compiling, re-run the script. It will regenerate <code>App_Config.h</code> and require recompilation before signing. </p>
+</blockquote>
+<hr  />
+<p><a class="anchor" id="step-3"></a> </p>
+<h2><a class="anchor" id="autotoc_md262"></a>
+Step 3 — Compile the Firmware</h2>
+<p>With <code>App_Config.h</code> now in place, open MPLAB X IDE and build both projects.</p>
+<h3><a class="anchor" id="autotoc_md263"></a>
+Bootloader — &lt;tt&gt;keystream_boot&lt;/tt&gt;</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Item </th><th class="markdownTableHeadNone">Details  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Project path </td><td class="markdownTableBodyNone"><code>keystream_connect/keystream_boot/keystream_boot.X/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Configuration </td><td class="markdownTableBodyNone"><code>default</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Output hex </td><td class="markdownTableBodyNone"><code>keystream_connect/keystream_boot/keystream_boot.X/dist/default/production/keystream_boot.X.production.hex</code>  </td></tr>
+</table>
+<p>Open the project in MPLAB X IDE and perform a <b>Clean and Build</b> in the <code>default</code> configuration.</p>
+<p><b>Bootloader Behaviour</b></p>
+<p>On every reset the bootloader runs the following sequence:</p><ol type="1">
+<li>Initialize the ATECC608 secure element.</li>
+<li>Read the device lifecycle state from ATECC608 Slot 8 and check whether Slot 14 holds a valid public key.</li>
+<li><b>If provisioned</b> (lifecycle = <code>PROVISIONED</code> or <code>CON_REQ</code> and Slot 14 key present) — compute SHA-256 over the application image and verify the ECDSA signature against the Slot 14 public key.</li>
+<li><b>If not yet provisioned</b> — skip signature verification and boot the application directly.</li>
+<li>On verification failure — perform <code>NVMCTRL_BankSwap()</code> to switch to the passive flash bank and reset. If the passive bank also has no valid image, halt.</li>
+</ol>
+<blockquote class="doxtable">
+<p><b>Note:</b> Signature verification uses <code>atcab_verify_extern</code> (raw 64-byte X‖Y public key) because Slot 14 is written with the raw key format during provisioning, not the padded ECC-slot format expected by <code>atcab_verify_stored</code>. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md264"></a>
+KTA FOTA Application — &lt;tt&gt;keystream_Fota&lt;/tt&gt;</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Item </th><th class="markdownTableHeadNone">Details  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Project path </td><td class="markdownTableBodyNone"><code>keystream_connect/keystream_fota/keystream_Fota.X/</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Configuration </td><td class="markdownTableBodyNone"><code>default</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Output hex </td><td class="markdownTableBodyNone"><code>keystream_connect/keystream_fota/keystream_Fota.X/dist/default/production/keystream_Fota.X.production.hex</code>  </td></tr>
+</table>
+<p>Open the project in MPLAB X IDE and perform a <b>Clean and Build</b> in the <code>default</code> configuration.</p>
+<p>The KTA FOTA application performs the following after boot:</p><ol type="1">
+<li>Connect to Wi-Fi using credentials from <code>App_Config.h</code>.</li>
+<li>Contact keySTREAM to check for a pending FOTA campaign.</li>
+<li>Download the signed firmware image over TLS (port 443, Amazon Root CA).</li>
+<li>Write the image to the passive flash bank page by page using NVM.</li>
+<li>Reset the device — the bootloader then verifies and boots the new image.</li>
+</ol>
+<blockquote class="doxtable">
+<p><b>Note:</b> Copy the compiled <code>.hex</code> files to the same folder as <code>mchp_non_tpds_fota_config.ini</code> after building, or update <code>comp_1_file</code> / <code>comp_2_file</code> in the <code>.ini</code> with the paths to the dist output files. </p>
+</blockquote>
+<hr  />
+<p><a class="anchor" id="step-4"></a> </p>
+<h2><a class="anchor" id="autotoc_md266"></a>
+Step 4 — Sign the Firmware</h2>
+<p>Run the script again after compilation is complete:</p>
+<div class="fragment"><div class="line">python mchp_non_tpds_fota.py</div>
+</div><!-- fragment --><p>The script performs the following:</p>
+<ol type="1">
+<li><b>Validates</b> configuration (same as Step 2).</li>
+<li><b>Confirms</b> <code>App_Config.h</code> is up-to-date — skips regeneration if values are unchanged.</li>
+<li><b>Confirms</b> HEX files are newer than <code>App_Config.h</code> — proceeds to signing.</li>
+<li><b>Checks</b> whether the signed outputs in <code>signed_out/</code> are already newer than the input HEX files. If so, signing is skipped and the script proceeds directly to the flash prompt.</li>
+<li><b>Phase A — Offline Signing</b> (if signing is required):</li>
+</ol>
+<p>For each component (Bootloader + KTA FOTA Application):</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Step </th><th class="markdownTableHeadNone">Action  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">1 </td><td class="markdownTableBodyNone">Load the input <code>.hex</code> file (IntelHex).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">2 </td><td class="markdownTableBodyNone">Read the <code>firmware_metadata_t</code> struct at <code>comp_X_info</code> — extracts <code>image_address</code>, <code>image_size</code>, <code>signature_address</code>.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">3 </td><td class="markdownTableBodyNone">Compute SHA-256 digest over the firmware image bytes.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">4 </td><td class="markdownTableBodyNone"><code>POST /sign {digest: [32 ints]}</code> → keySTREAM returns <code>rawSignature</code> (64 bytes, r‖s).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">5 </td><td class="markdownTableBodyNone">Patch the 64-byte signature into the hex at <code>signature_address</code>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">Write <code>&lt;name&gt;_&lt;version&gt;.hex</code> and <code>&lt;name&gt;_&lt;version&gt;.bin</code> to <code>signed_out/</code>.  </td></tr>
+</table>
+<p>After both components are signed, the script merges the two signed hex files into <code>combined_component.hex</code> / <code>combined_component.bin</code> (Bank 2-shifted at offset <code>0x00080000</code>).</p>
+<blockquote class="doxtable">
+<p><b>Note:</b> No host-side signature verification is performed. Verification is exclusively the bootloader's responsibility using the ATECC608 Slot 14 public key. </p>
+</blockquote>
+<blockquote class="doxtable">
+<p><b>Note:</b> Re-signing is triggered <b>only</b> when a new build produces HEX files with a timestamp newer than the existing <code>signed_out/combined_component.hex</code>. If no changes are made to the firmware, the script skips Phase A and proceeds to the flash prompt. </p>
+</blockquote>
+<hr  />
+<p><a class="anchor" id="step-5"></a> </p>
+<h2><a class="anchor" id="autotoc_md268"></a>
+Step 5 — Flash Programming</h2>
+<p>After signing (or when signed outputs are already current), the script prompts:</p>
+<div class="fragment"><div class="line">======================================================================</div>
+<div class="line">Proceed with flashing the firmware image?</div>
+<div class="line">  [1] YES — program the board now</div>
+<div class="line">  [2] NO  — exit (signed files are in signed_out/)</div>
+<div class="line">======================================================================</div>
+<div class="line">Enter choice (1 / 2):</div>
+</div><!-- fragment --><table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Choice </th><th class="markdownTableHeadNone">Behaviour  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>1</code> YES </td><td class="markdownTableBodyNone">Auto-detects the connected programmer (nEDBG / PKoB 4) via USB, locates <code>ipecmd.exe</code> from any installed MPLAB X version, and runs <code>java -jar ipecmd.jar -P&lt;MCU&gt; -TP&lt;Programmer&gt; -OL -OK -M -F&lt;combined_component.hex&gt;</code>. If a Device Family Pack is missing (exit code 36), it is auto-installed and the flash command is retried.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>2</code> NO </td><td class="markdownTableBodyNone">Exits. Signed files remain in <code>signed_out/</code> for manual flashing.  </td></tr>
+</table>
+<blockquote class="doxtable">
+<p><b>Note:</b> Ensure the board is connected via USB before selecting <code>YES</code>. If the board is not detected, the script prints an error and exits. Re-run the script after connecting the board — signing will be skipped and the flash prompt will be shown immediately. </p>
+</blockquote>
+<h2><a class="anchor" id="autotoc_md269"></a>
+FOTA Steps</h2>
+<h3><a class="anchor" id="autotoc_md270"></a>
+1. Update the Application Version</h3>
+<p>Open <code>app_wincs02.h</code> and update the application version to <code>1.2.1</code>.</p>
+<div class="image">
+<img src="app-h.png" alt="" width="800px"/>
+<div class="caption">
+Update application version to 1.2.1</div></div>
+<p>After saving the file, perform a <b>Clean and Build</b> in MPLAB X, then re-run the signing script:</p>
+<div class="fragment"><div class="line">python mchp_non_tpds_fota.py</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><b>Note:</b> At this stage, enter <code>2</code> (NO) to skip flashing. The signed binary in <code>signed_out/</code> will be uploaded to the keySTREAM portal in the FOTA campaign steps below. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md271"></a>
+2. Prepare a FOTA Campaign in the keySTREAM Cloud</h3>
+<p>In the keySTREAM portal, navigate to <b>Assets → Firmware</b>, then select your component.</p>
+<div class="image">
+<img src="prepare-fota-campaign.jpg" alt="" width="800px"/>
+<div class="caption">
+keySTREAM Firmware Assets — select component</div></div>
+<blockquote class="doxtable">
+<p><b>Note:</b> If no components are listed in the dropdown, click <b>CREATE COMPONENT</b> and enter <code>MCHP-CAL</code> as the name. This name is fixed for this use case. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md272"></a>
+3. Create a Component Version</h3>
+<p>Click <b>CREATE COMP. VERSION</b>, enter <code>1.2.1</code>, and press <b>Commit</b>.</p>
+<div class="image">
+<img src="create-component-1.jpg" alt="" width="800px"/>
+<div class="caption">
+Create component version 1.2.1</div></div>
+<h3><a class="anchor" id="autotoc_md273"></a>
+4. Add a Firmware Package</h3>
+<p>Under the <b>Packages</b> column, click the paperclip icon for version <code>1.2.1</code>. In the panel that appears, click <b>ADD PACKAGE</b>.</p>
+<div class="image">
+<img src="create-compoenet-2.jpg" alt="" width="800px"/>
+<div class="caption">
+Add package to component version</div></div>
+<div class="image">
+<img src="component-3.jpg" alt="" width="800px"/>
+<div class="caption">
+Package upload panel</div></div>
+<p>Upload the updated firmware image <code>MCHP-CAL_1.2.1.bin</code>. Leave the <b>Source Component Version</b> field blank unless you want the update to apply only to devices running a specific existing firmware version. Once complete, click <b>COMMIT</b>.</p>
+<div class="image">
+<img src="upload-bin.jpg" alt="" width="800px"/>
+<div class="caption">
+Upload firmware package and commit</div></div>
+<h3><a class="anchor" id="autotoc_md274"></a>
+5. Associate the Component with a Fleet</h3>
+<p>Navigate to <b>Fleet Management</b> and select your fleet.</p>
+<div class="image">
+<img src="fleet-1.jpg" alt="" width="800px"/>
+<div class="caption">
+Fleet Management — select fleet</div></div>
+<p>Verify that the <code>MCHP-CAL</code> component is associated with your fleet profile. If it is not, click the <b>Associate</b> button.</p>
+<div class="image">
+<img src="fota-1.jpg" alt="" width="800px"/>
+<div class="caption">
+Associate component with fleet profile</div></div>
+<h3><a class="anchor" id="autotoc_md275"></a>
+6. Create and Launch the Campaign</h3>
+<p>Click <b>Create Campaign</b> and press <b>Commit</b> to launch.</p>
+<div class="image">
+<img src="fota-2.jpg" alt="" width="800px"/>
+<div class="caption">
+Create FOTA campaign</div></div>
+<div class="image">
+<img src="fota-3.jpg" alt="" width="800px"/>
+<div class="caption">
+Confirm and commit the campaign</div></div>
+<blockquote class="doxtable">
+<p><b>Note:</b> The percentage field controls what proportion of devices in the fleet will receive the update. It is good practice to start with a small percentage, validate the update, and then progressively increase the rollout. For this use case, the field may be left blank. </p>
+</blockquote>
+<p>Once committed, keySTREAM initiates the firmware over-the-air update.</p>
+<h3><a class="anchor" id="autotoc_md276"></a>
+7. Observe the FOTA Result in TeraTerm</h3>
+<p>Monitor the update progress in TeraTerm. The bootloader output will display the <code>MCHP-CAL</code> component name and the target version being downloaded (<code>1.2.1</code>).</p>
+<div class="image">
+<img src="fota-link.jpg" alt="" width="800px"/>
+<div class="caption">
+TeraTerm — FOTA download in progress</div></div>
+<hr  />
+<p><a class="anchor" id="output-files"></a> </p>
+<h2><a class="anchor" id="autotoc_md278"></a>
+Output Files</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">File </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>SG41_X/App_Config.h</code> </td><td class="markdownTableBodyNone">Auto-generated header with Wi-Fi credentials and Fleet Profile UID (satisfies <code>configuration.h</code> include).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SG41_X/keystream_connect/App_Config.h</code> </td><td class="markdownTableBodyNone">Same generated header copied to <code>keystream_connect/</code> (satisfies <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> include).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>signed_out/&lt;name&gt;_&lt;ver&gt;.hex</code> </td><td class="markdownTableBodyNone">Individually signed component hex.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>signed_out/&lt;name&gt;_&lt;ver&gt;.bin</code> </td><td class="markdownTableBodyNone">Individually signed component binary.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>signed_out/combined_component.hex</code> </td><td class="markdownTableBodyNone">Merged, Bank-2-shifted hex — this is what gets flashed to the board.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>signed_out/combined_component.bin</code> </td><td class="markdownTableBodyNone">Merged binary.  </td></tr>
+</table>
+<hr  />
+<p><a class="anchor" id="troubleshooting"></a> </p>
+<h2><a class="anchor" id="autotoc_md280"></a>
+Troubleshooting</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Symptom </th><th class="markdownTableHeadNone">Likely Cause </th><th class="markdownTableHeadNone">Resolution  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>Invalid or placeholder configuration values — signing aborted</code> </td><td class="markdownTableBodyNone">One or more fields in <code>.ini</code> still contain a placeholder (e.g. <code>XYZ</code>, <code>WiFi-SSID</code>, <code>XXXX</code>) </td><td class="markdownTableBodyNone">Replace all placeholder values with real credentials in <code>mchp_non_tpds_fota_config.ini</code>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>Connection failed — check Fleet_uid and keySTREAM_API_Token</code> </td><td class="markdownTableBodyNone">Wrong credentials in <code>.ini</code> </td><td class="markdownTableBodyNone">Verify <code>Fleet_uid</code> and <code>keySTREAM_API_Token</code> on the keySTREAM portal.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>HEX files are out-of-date with App_Config.h</code> / <code>file not found</code> </td><td class="markdownTableBodyNone">HEX files are missing or were compiled before the latest <code>App_Config.h</code> </td><td class="markdownTableBodyNone">Build (or rebuild) the listed project(s) in MPLAB X, then re-run the script.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>fatal error: ../../../../../App_Config.h: No such file or directory</code> (MPLAB X build error) </td><td class="markdownTableBodyNone"><code>App_Config.h</code> has not been generated yet </td><td class="markdownTableBodyNone">Run <code>python mchp_non_tpds_fota.py</code> first (Step 2) to generate <code>App_Config.h</code> before compiling.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ipecmd.exe not found</code> </td><td class="markdownTableBodyNone">MPLAB X not installed or not on PATH </td><td class="markdownTableBodyNone">Install MPLAB X or add <code>ipecmd</code> to PATH.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>no Microchip programmer … connected via USB</code> </td><td class="markdownTableBodyNone">Board not plugged in when flashing was selected </td><td class="markdownTableBodyNone">Connect the board via USB and re-run the script. Signing is skipped and the flash prompt is shown directly.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>DFP missing</code> (exit code 36) </td><td class="markdownTableBodyNone">Device Family Pack not installed </td><td class="markdownTableBodyNone">Script auto-installs; or open MPLAB X → Tools → Packs.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>App Signature address is invalid</code> </td><td class="markdownTableBodyNone">Wrong <code>comp_X_info</code> address in <code>.ini</code> </td><td class="markdownTableBodyNone">Check <code>metadata.c</code> in the firmware project for the correct address.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Bootloader boots without verifying </td><td class="markdownTableBodyNone">Device not provisioned or Slot 14 empty </td><td class="markdownTableBodyNone">Provision the device via keySTREAM before expecting signature checks.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Bootloader performs bank swap </td><td class="markdownTableBodyNone">Signature mismatch </td><td class="markdownTableBodyNone">Ensure the correct signing key is used and the hex was not modified after signing.  </td></tr>
+</table>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.1-->
+<!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer"><b></b>
+    Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+  </ul>
+</div>
+</body>
+</html>

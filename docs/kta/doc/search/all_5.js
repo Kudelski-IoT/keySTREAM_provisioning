@@ -1,6 +1,19 @@
 var searchData=
 [
-  ['g_5fkta_5fhook_200',['G_kta_hook',['../group__g__kta__hook.html',1,'']]],
-  ['general_2ec_201',['general.c',['../general_8c.html',1,'']]],
-  ['general_2eh_202',['general.h',['../general_8h.html',1,'']]]
+  ['keystream_20trusted_20agent_20interface_40',['keySTREAM Trusted Agent Interface',['../group__g__kta__api.html',1,'']]],
+  ['keystream_20closed_20network_20integration_20guide_41',['keySTREAM Closed Network Integration Guide',['../generic_information_mcu_closed_network.html',1,'']]],
+  ['keystream_20integration_20guide_20—_20mcu_20with_20wi_2dfi_20_2f_20ethernet_20_28direct_20cloud_29_42',['keySTREAM Integration Guide — MCU with Wi-Fi / Ethernet (Direct Cloud)',['../generic_information_mcu_wifi.html',1,'']]],
+  ['keystream_20trusted_20agent_20documentation_43',['keySTREAM Trusted Agent Documentation',['../index.html',1,'']]],
+  ['keystream_20trusted_20agent_20license_44',['keySTREAM Trusted Agent License',['../kta_license.html',1,'']]],
+  ['keystream_20trusted_20agent_20release_20notes_45',['keySTREAM Trusted Agent Release Notes',['../kta_release_notes.html',1,'']]],
+  ['ktaexchangemessage_46',['ktaExchangeMessage',['../group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207',1,'ktaExchangeMessage(const uint8_t *xpKs2ktaMsg, size_t xKs2ktaMsgLen, uint8_t *xpKta2ksMsg, size_t *xpKta2ksMsgLen):&#160;ktamgr.c'],['../group__g__kta__api.html#ga9ba21eab8cceee0d3a3ca976e33b6207',1,'ktaExchangeMessage(const uint8_t *xpKs2ktaMsg, size_t xKs2ktaMsgLen, uint8_t *xpKta2ksMsg, size_t *xpKta2ksMsgLen):&#160;ktamgr.c']]],
+  ['ktagetobject_47',['ktaGetObject',['../group__g__kta__api.html#gacc19b52e78e3200cf6ddb6b666b98041',1,'k_kta.h']]],
+  ['ktagetobjectwithassociation_48',['ktaGetObjectWithAssociation',['../group__g__kta__api.html#ga8cd7ee8ffd7e24e789a914cb8a2e3db4',1,'k_kta.h']]],
+  ['ktainitialize_49',['ktaInitialize',['../group__g__kta__api.html#ga76b155d79d8a6858e424797682a2cc21',1,'ktaInitialize(void):&#160;ktamgr.c'],['../group__g__kta__api.html#ga76b155d79d8a6858e424797682a2cc21',1,'ktaInitialize(void):&#160;ktamgr.c']]],
+  ['ktakeystreamstatus_50',['ktaKeyStreamStatus',['../group__g__kta__api.html#ga865318ab46e05aaea00932f1eb7dc052',1,'ktaKeyStreamStatus(TKktaKeyStreamStatus *xpKtaKSCmdStatus):&#160;ktamgr.c'],['../group__g__kta__api.html#ga865318ab46e05aaea00932f1eb7dc052',1,'ktaKeyStreamStatus(TKktaKeyStreamStatus *xpKtaKSCmdStatus):&#160;ktamgr.c']]],
+  ['ktasetdeviceinformation_51',['ktaSetDeviceInformation',['../group__g__kta__api.html#ga046b31490e1b3df30ad44d4a423bf16a',1,'ktaSetDeviceInformation(const uint8_t *xpDeviceProfilePublicUid, size_t xDeviceProfilePublicUidSize, const uint8_t *xpDeviceSerialNum, size_t xDeviceSerialNumSize, uint8_t *xpConnectionRequest):&#160;ktamgr.c'],['../group__g__kta__api.html#ga046b31490e1b3df30ad44d4a423bf16a',1,'ktaSetDeviceInformation(const uint8_t *xpDeviceProfilePublicUid, size_t xDeviceProfilePublicUidSize, const uint8_t *xpDeviceSerialNum, size_t xDeviceSerialNumSize, uint8_t *xpConnectionRequest):&#160;ktamgr.c']]],
+  ['ktasignhash_52',['ktaSignHash',['../group__g__kta__api.html#gafe6a9be7bb9e2ac1237e0121dc9aa749',1,'k_kta.h']]],
+  ['ktastartup_53',['ktaStartup',['../group__g__kta__api.html#ga71c68154dc1d65df6d55041382eead7e',1,'ktaStartup(const uint8_t *xpL1SegSeed, const uint8_t *xpKtaContextProfileUid, size_t xKtaContextProfileUidLen, const uint8_t *xpKtaContexSerialNumber, size_t xKtaContexSerialNumberLen, const uint8_t *xpKtaContextVersion, size_t xKtaContextVersionLen):&#160;ktamgr.c'],['../group__g__kta__api.html#ga71c68154dc1d65df6d55041382eead7e',1,'ktaStartup(const uint8_t *xpL1SegSeed, const uint8_t *xpKtaContextProfileUid, size_t xKtaContextProfileUidLen, const uint8_t *xpKtaContexSerialNumber, size_t xKtaContexSerialNumberLen, const uint8_t *xpKtaContextVersion, size_t xKtaContextVersionLen):&#160;ktamgr.c']]],
+  ['keystream™_20firmware_20over_2dthe_2dair_20update_54',['keySTREAM™ Firmware Over-The-Air Update',['../tpds_fota.html',1,'']]],
+  ['keystream™_20in_2dfield_20provisioning_55',['keySTREAM™ in-field Provisioning',['../tpds_onboarding.html',1,'']]]
 ];

@@ -1,0 +1,753 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>keySTREAM Trusted Agent: Fleet Profile Creation Guide</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
+<!-- Generated by Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('fleet_profile_creation.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="PageDoc"><div class="header">
+  <div class="headertitle">
+<div class="title">Fleet Profile Creation Guide </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h1><a class="anchor" id="autotoc_md64"></a>
+Fleet Profile Creation Guide</h1>
+<p>Use this page to create a Fleet Profile in the keySTREAM portal and map it to firmware configuration.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md66"></a>
+1. Prerequisite</h2>
+<p>You must have a keySTREAM tenant/account before creating a Fleet Profile.</p>
+<p>Portal link: <a href="https://mc.obp.iot.kudelski.com/products/iot">https://mc.obp.iot.kudelski.com/products/iot</a></p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md68"></a>
+2. Create keySTREAM account (if needed)</h2>
+<ol type="1">
+<li>Open the portal link and click Register.</li>
+<li>Fill the registration form.</li>
+<li>Confirm the verification code from email.</li>
+</ol>
+<div class="image">
+<img src="kudelski_keystream_portal.png" alt="" width="900px"/>
+<div class="caption">
+keySTREAM portal</div></div>
+ <div class="image">
+<img src="Kudelski_keyStream_register.png" alt="" width="900px"/>
+<div class="caption">
+Registration form</div></div>
+ <div class="image">
+<img src="kudelski_keystream_verify.png" alt="" width="900px"/>
+<div class="caption">
+Email verification</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md70"></a>
+3. Sign in to your tenant</h2>
+<ol type="1">
+<li>Open the onboarding email from Kudelski IoT.</li>
+<li>Use the provided tenant sign-in link.</li>
+<li>Or open the main portal and click Login to keySTREAM.</li>
+</ol>
+<div class="image">
+<img src="kudelski_keystream_portal_2.png" alt="" width="900px"/>
+<div class="caption">
+Tenant login</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md72"></a>
+4. Create a standard Fleet Profile</h2>
+<h3><a class="anchor" id="autotoc_md73"></a>
+4.1 Navigation steps</h3>
+<ol type="1">
+<li>Go to Fleet and PKI in the left panel.</li>
+<li>Open FLEET and CERT.</li>
+<li>Click CREATE.</li>
+</ol>
+<div class="image">
+<img src="create_profile.png" alt="" width="900px"/>
+<div class="caption">
+Fleet and PKI menu</div></div>
+ <div class="image">
+<img src="2tier_create.png" alt="" width="900px"/>
+<div class="caption">
+Create fleet profile</div></div>
+ <div class="image">
+<img src="profile_details.png" alt="" width="900px"/>
+<div class="caption">
+Fleet profile details</div></div>
+<h3><a class="anchor" id="autotoc_md74"></a>
+4.2 Fleet profile fields</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Field </th><th class="markdownTableHeadNone">Required </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Fleet Profile Public UID </td><td class="markdownTableBodyNone">Yes </td><td class="markdownTableBodyNone">Human-readable unique UID. Final value is prefixed by keySTREAM (example: <code>9S4F:example.org:dp:network:device</code>).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Model </td><td class="markdownTableBodyNone">No </td><td class="markdownTableBodyNone">Informational model name.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Brand </td><td class="markdownTableBodyNone">No </td><td class="markdownTableBodyNone">Informational brand.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Manufacturer </td><td class="markdownTableBodyNone">No </td><td class="markdownTableBodyNone">Informational manufacturer.  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md75"></a>
+4.3 Root CA configuration</h3>
+<p>Click NEXT and configure Root CA details:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Field </th><th class="markdownTableHeadNone">Rule  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Root CA Common Name (CN) </td><td class="markdownTableBodyNone">Fixed 16 bytes. Short values are right-padded, long values are truncated.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Root CA Organization (O) </td><td class="markdownTableBodyNone">Fixed 16 bytes. Short values are right-padded, long values are truncated. Organization Unit is fixed to TrustMANAGER.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Root CA Certificate Validity (Years) </td><td class="markdownTableBodyNone">Validity period of Root CA.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Device Operational Certificate Validity (Years) </td><td class="markdownTableBodyNone">Must be shorter than Root CA validity.  </td></tr>
+</table>
+<div class="image">
+<img src="configure_CA.png" alt="" width="900px"/>
+<div class="caption">
+Root CA configuration</div></div>
+<p>Click COMMIT. The new Fleet Profile appears in the list.</p>
+<div class="image">
+<img src="device_profile_list_tpds.png" alt="" width="900px"/>
+<div class="caption">
+Fleet profile list</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md77"></a>
+5. Create a 2-tier Fleet Profile (optional)</h2>
+<p>Use this only if you need a 2-tier PKI model.</p>
+<ol type="1">
+<li>Create 2-tier Root CA from Fleet and PKI.</li>
+<li>Create a Fleet Profile and associate it with the 2-tier CA.</li>
+<li>Commit and verify it appears in the list.</li>
+</ol>
+<div class="image">
+<img src="2tier_fleet.png" alt="" width="900px"/>
+<div class="caption">
+2-tier root CA entry</div></div>
+ <div class="image">
+<img src="2tier_ca.png" alt="" width="900px"/>
+<div class="caption">
+2-tier CA creation</div></div>
+ <div class="image">
+<img src="2tier_pop.png" alt="" width="900px"/>
+<div class="caption">
+2-tier CA created</div></div>
+ <div class="image">
+<img src="2_tier_profile_details.png" alt="" width="900px"/>
+<div class="caption">
+2-tier profile details</div></div>
+ <div class="image">
+<img src="2_tier_device_profile_list_tpds.png" alt="" width="900px"/>
+<div class="caption">
+2-tier fleet profile list</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md79"></a>
+6. Firmware mapping (important)</h2>
+<p>After creating a Fleet Profile, copy its final public UID and set it in the firmware configuration file for your device:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Device </th><th class="markdownTableHeadNone">Configuration file </th><th class="markdownTableHeadNone">Symbol to set  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>D21_X</code> </td><td class="markdownTableBodyNone"><code>TrustMANAGER\D21_X\keystream_connect\App_Config.h</code> </td><td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SAME54_X</code> </td><td class="markdownTableBodyNone"><code>TrustMANAGER\SAME54_X\keystream_connect\App_Config.h</code> </td><td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>SG41_X</code> </td><td class="markdownTableBodyNone"><code>TrustMANAGER\SG41_X\keystream_connect\fota_app_config.h</code> </td><td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SG41_UART_X</code> </td><td class="markdownTableBodyNone"><code>TrustMANAGER\SG41_UART_X\App_Config.h</code> </td><td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>TA101_X</code> </td><td class="markdownTableBodyNone"><code>TrustMANAGER\TA101_X\keystream_connect\App_Config.h</code> </td><td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ESP32_BLE_CLI_X</code> </td><td class="markdownTableBodyNone"><code>TrustMANAGER\ESP32_BLE_CLI_X\App_Config.h</code> </td><td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ESP32_Mobile_APP_X</code> </td><td class="markdownTableBodyNone">*(managed by mobile app at runtime — no firmware edit needed)* </td><td class="markdownTableBodyNone">—  </td></tr>
+</table>
+<p>Example:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID  &quot;9S4F:example.org:dp:network:device&quot;</span></div>
+</div><!-- fragment --><p>Without this value, device registration/provisioning will fail.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md81"></a>
+7. Device Claiming</h2>
+<p>The keySTREAM portal supports two methods to associate (claim) ECC608 TrustMANAGER devices with your tenant:</p>
+<ol type="1">
+<li><b>Claim by Manifest</b> — Lite Manifest file generated with Microchip TPDS (recommended for dev kits).</li>
+<li><b>Autoclaim</b> — automatic association when buying devices after configuring your account.</li>
+</ol>
+<p>Choose the approach that matches how you acquire devices.</p>
+<hr  />
+<h3><a class="anchor" id="autotoc_md83"></a>
+7.1 Claiming Devices via Lite Manifest File</h3>
+<p>Use this method if you already have ECC608 TrustMANAGER devices (loose units or on boards) and need to register them manually.</p>
+<h4><a class="anchor" id="autotoc_md84"></a>
+Generate the Lite Manifest (TPDS)</h4>
+<ol type="1">
+<li>Download and install the latest Trust Platform Design Suite (TPDS): <a href="https://www.microchip.com/en-us/products/security/trust-platform/tpds">https://www.microchip.com/en-us/products/security/trust-platform/tpds</a></li>
+<li>Launch TPDS.</li>
+<li>Open: <b>Utilities &gt; Package Manager</b>.</li>
+<li>Locate the package named: <code>tpds-extension-keystream-connect</code>.</li>
+<li>Select it and click <b>Install Selected Package</b>. Wait for compilation to finish.</li>
+<li>Restart your PC (recommended by Microchip after extension installation).</li>
+<li>Go to <b>Utilities &gt; Manifest</b>.</li>
+<li>Configure the target device:<ul>
+<li>Device: <b>ATECC608</b> (TrustMANAGER variant)</li>
+<li>Interface: <b>I2C</b></li>
+<li>I2C Address: <b>0x70</b> (default for ECC608 TrustMANAGER)</li>
+</ul>
+</li>
+<li>Click <b>Generate Manifest</b>.</li>
+<li>A Lite Manifest JSON file is produced. Compress/zip the JSON before upload.</li>
+</ol>
+<div class="image">
+<img src="tpds_install.png" alt="" width="800px"/>
+<div class="caption">
+TPDS — Installing keySTREAM Connect Extension</div></div>
+ <div class="image">
+<img src="Generate_manifest.png" alt="" width="800px"/>
+<div class="caption">
+Generating the Lite Manifest in TPDS</div></div>
+<blockquote class="doxtable">
+<p><b>Tips:</b></p><ul>
+<li>Ensure you picked the correct device variant in the dropdown before generating.</li>
+<li>Regenerate if you later add more devices. </li>
+</ul>
+</blockquote>
+<h4><a class="anchor" id="autotoc_md85"></a>
+Upload the Manifest to keySTREAM</h4>
+<ol type="1">
+<li>Log into the keySTREAM portal.</li>
+<li>In the left navigation, click <b>DEVICE OWNERSHIP</b>.</li>
+<li>Select <b>DEVICE CLAIMING</b>.</li>
+<li>Under the <b>Manifest</b> section, click <b>Choose File</b> and select the Lite Manifest JSON (or its ZIP).</li>
+<li>Click <b>IMPORT</b>.</li>
+<li>The devices listed in the manifest (identified by their ChipUID / Serial Number) will appear with status <b>Claimed</b>. They will transition to <b>Active</b> after successful in-field provisioning.</li>
+</ol>
+<div class="image">
+<img src="device_Ownership.png" alt="" width="800px"/>
+<div class="caption">
+Device Ownership Section</div></div>
+ <div class="image">
+<img src="claim_devices.png" alt="" width="800px"/>
+<div class="caption">
+Importing a Lite Manifest</div></div>
+<blockquote class="doxtable">
+<p><b>Common issues:</b></p><ul>
+<li>File rejected: Verify JSON format was not altered by a text editor.</li>
+<li>Missing devices: Ensure they were present/connected when generating the manifest in TPDS. </li>
+</ul>
+</blockquote>
+<hr  />
+<h3><a class="anchor" id="autotoc_md87"></a>
+7.2 Device Claiming via Autoclaim Flow</h3>
+<ul>
+<li>The Autoclaim flow applies only if you create the keySTREAM account AND register your microchipdirect.com email address <b>before</b> purchasing ECC608 TrustMANAGER devices via <a href="https://www.microchipdirect.com/trust-platform">this link</a>.</li>
+<li>There is no need to upload a manifest — the association is fully automated between Microchip and keySTREAM.</li>
+</ul>
+<blockquote class="doxtable">
+<p><b>This flow will NOT work if:</b></p><ul>
+<li>You work with a development kit with an ECC608 TrustMANAGER soldered directly on the PCB (e.g. EV10E69A or DT100104) — use the <b>Claim by Manifest</b> flow instead.</li>
+<li>You purchased your ECC608 TrustMANAGER from microchipdirect.com <b>before</b> opening your keySTREAM account and registering your email. </li>
+</ul>
+</blockquote>
+<p><b>Steps:</b></p>
+<ol type="1">
+<li>Create an account on microchipdirect.com — do <b>not</b> buy the ECC608 TrustMANAGER yet.</li>
+<li>Create a keySTREAM account.</li>
+<li>Go to <b>DEVICE OWNERSHIP</b> in the left navigation menu.</li>
+</ol>
+<div class="image">
+<img src="device_Ownership.png" alt="" width="800px"/>
+<div class="caption">
+Device Ownership Section</div></div>
+<ol type="1">
+<li>Choose <b>AUTOCLAIMING</b>.</li>
+</ol>
+<div class="image">
+<img src="auto_claim.png" alt="" width="800px"/>
+<div class="caption">
+Autoclaiming option</div></div>
+<ol type="1">
+<li>Click <b>CREATE</b>.</li>
+</ol>
+<div class="image">
+<img src="auto_claim_create.png" alt="" width="800px"/>
+<div class="caption">
+Create autoclaim rule</div></div>
+<ol type="1">
+<li>In the popup, enter the email address used to log into your microchipdirect.com account in the <b>MicrochipDirect Purchaser</b> field.</li>
+</ol>
+<div class="image">
+<img src="auto_claim_form.png" alt="" width="800px"/>
+<div class="caption">
+Autoclaim form</div></div>
+<ol type="1">
+<li>Choose <b>ECC608-TMNGTLS</b> in the <b>Chip Part Number</b> field and click <b>COMMIT</b>. Your device will appear in <b>DEVICE OWNERSHIP</b> as <b>Claimed</b> and turn <b>Active</b> after successful in-field provisioning. </li>
+</ol>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.1-->
+<!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer"><b></b>
+    Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+  </ul>
+</div>
+</body>
+</html>

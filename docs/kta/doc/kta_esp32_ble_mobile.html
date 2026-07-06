@@ -1,0 +1,959 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>keySTREAM Trusted Agent: ESP32 BLE Mobile App Provisioning</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
+<!-- Generated by Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('kta_esp32_ble_mobile.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="PageDoc"><div class="header">
+  <div class="headertitle">
+<div class="title">ESP32 BLE Mobile App Provisioning </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h1><a class="anchor" id="autotoc_md344"></a>
+ESP32 BLE Mobile App — keySTREAM Provisioning Guide</h1>
+<p>End-to-end guide for onboarding an <b>ESP32 + ATECC608</b> device onto the keySTREAM platform using a React Native mobile app over Bluetooth Low Energy (BLE).</p>
+<div class="image">
+<img src="keystream_schematics_esp32_ble_mobile.gif" alt="" width="700px"/>
+<div class="caption">
+ESP32 BLE Mobile App Provisioning</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md346"></a>
+Overview</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Item </th><th class="markdownTableHeadNone">Details  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Example</b> </td><td class="markdownTableBodyNone"><code>ESP32_Mobile_APP_X</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Board</b> </td><td class="markdownTableBodyNone">ESP32 development board + ATECC608 secure element  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Transport</b> </td><td class="markdownTableBodyNone">Bluetooth Low Energy (BLE) — mobile app ↔ ESP32  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Cloud</b> </td><td class="markdownTableBodyNone">keySTREAM portal (HTTP)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Build tool</b> </td><td class="markdownTableBodyNone">ESP-IDF v5.3.1 (<code>idf.py</code>)  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md347"></a>
+What this solution does</h3>
+<p>The mobile app acts as a <b>transparent relay</b> between the ESP32 + ATECC608 device and the keySTREAM cloud server. All KTA (keySTREAM Trust Agent) cryptographic protocol logic runs on the ESP32 firmware and ATECC608 hardware. The app simply forwards binary provisioning messages back and forth and displays the result.</p>
+<h3><a class="anchor" id="autotoc_md348"></a>
+End-to-end flow</h3>
+<ol type="1">
+<li>User enters Auth Token and Fleet Profile UID in the mobile app.</li>
+<li>App scans for nearby BLE devices and connects to the ESP32.</li>
+<li>App triggers provisioning; ESP32 runs the KTA exchange loop with the keySTREAM server.</li>
+<li>On success, the app shows the device status, chip UID, and connection details.</li>
+</ol>
+<hr  />
+<h2><a class="anchor" id="autotoc_md350"></a>
+Prerequisites</h2>
+<h3><a class="anchor" id="autotoc_md351"></a>
+Hardware</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Item </th><th class="markdownTableHeadNone">Purpose  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ESP32 development board</b> </td><td class="markdownTableBodyNone">Main microcontroller target  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ATECC608 secure element</b> (breakout or module) </td><td class="markdownTableBodyNone">Cryptographic key storage (I2C)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>USB Micro-B cable</b> (data-capable, not charge-only) </td><td class="markdownTableBodyNone">Power and flashing  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Android phone</b> with Bluetooth (BLE) </td><td class="markdownTableBodyNone">Host for the mobile app  </td></tr>
+</table>
+<dl class="section note"><dt>Note</dt><dd>Service Availability Notice: The Signing Key Service and Symmetric Key Service are currently under active development for the ESP32 MCU platform. Full support for these cryptographic services will be introduced in a forthcoming release.</dd></dl>
+<h3><a class="anchor" id="autotoc_md352"></a>
+keySTREAM Portal Setup</h3>
+<p>Complete these steps <b>before</b> building or running anything:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Step </th><th class="markdownTableHeadNone">Action </th><th class="markdownTableHeadNone">Guide  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">1 </td><td class="markdownTableBodyNone">Create a keySTREAM account </td><td class="markdownTableBodyNone"><a href="https://mc.obp.iot.kudelski.com">mc.obp.iot.kudelski.com</a>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">2 </td><td class="markdownTableBodyNone">Create a Fleet Profile and copy its <b>Fleet Profile Public UID</b> </td><td class="markdownTableBodyNone"><a class="el" href="fleet_profile_creation.html">Fleet Profile Creation Guide</a>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">3 </td><td class="markdownTableBodyNone">Obtain an <b>Auth Token</b> (Bearer token) from the portal </td><td class="markdownTableBodyNone">Portal → API Keys or session token  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">4 </td><td class="markdownTableBodyNone">Claim your device using its <b>Chip UID</b> or <b>RoT Public UID</b> </td><td class="markdownTableBodyNone">Portal → Fleet &amp; PKI → Devices  </td></tr>
+</table>
+<blockquote class="doxtable">
+<p>The Fleet Profile UID and Auth Token are entered directly in the mobile app — they are <b>not</b> embedded in the firmware. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md353"></a>
+Software — Firmware Build (host PC)</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Tool </th><th class="markdownTableHeadNone">Version </th><th class="markdownTableHeadNone">Notes  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Windows 10/11</b> </td><td class="markdownTableBodyNone">— </td><td class="markdownTableBodyNone">Linux/macOS also supported by ESP-IDF  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ESP-IDF</b> </td><td class="markdownTableBodyNone"><b>v5.3.1</b> </td><td class="markdownTableBodyNone">Installed via the Espressif Windows installer  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Python</b> </td><td class="markdownTableBodyNone">3.12 </td><td class="markdownTableBodyNone">Bundled inside the ESP-IDF installer  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>CMake</b> </td><td class="markdownTableBodyNone">3.24+ </td><td class="markdownTableBodyNone">Bundled inside the ESP-IDF installer  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>USB-to-Serial driver</b> </td><td class="markdownTableBodyNone">— </td><td class="markdownTableBodyNone">CP210x or CH340 depending on your board  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md354"></a>
+Software — Mobile App Build (host PC)</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Tool </th><th class="markdownTableHeadNone">Purpose  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Node.js LTS (≥ 18)</b> and <b>npm</b> </td><td class="markdownTableBodyNone">Install JS dependencies and run the React Native CLI  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Android Studio / Android SDK</b> with <code>adb</code> </td><td class="markdownTableBodyNone">Build the APK and install it on the phone  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>JDK 17</b> </td><td class="markdownTableBodyNone">Required by the Android Gradle build  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md355"></a>
+Hardware Wiring — ESP32 to ATECC608</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">ESP32 Pin </th><th class="markdownTableHeadNone">ATECC608 Pin </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>GND</b> </td><td class="markdownTableBodyNone"><b>GND</b> </td><td class="markdownTableBodyNone">Ground  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>3V3</b> </td><td class="markdownTableBodyNone"><b>3V3</b> </td><td class="markdownTableBodyNone">Power (3.3 V)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>GPIO 21</b> </td><td class="markdownTableBodyNone"><b>SDA</b> </td><td class="markdownTableBodyNone">I2C Data  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>GPIO 22</b> </td><td class="markdownTableBodyNone"><b>SCL</b> </td><td class="markdownTableBodyNone">I2C Clock  </td></tr>
+</table>
+<div class="image">
+<img src="BLE_MCU_COnnection.jpg" alt="" width="500px"/>
+<div class="caption">
+BLE MCU Hardware Connection</div></div>
+<h3><a class="anchor" id="autotoc_md356"></a>
+Package Setup</h3>
+<p>Before building, clone the repository:</p>
+<div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning</div>
+</div><!-- fragment --><p>Then configure the firmware package using the provided script:</p>
+<ol type="1">
+<li>Navigate to <code>keySTREAM_provisioning\PreIntegrated-Examples</code> in the package</li>
+<li>Open <b>PowerShell</b> and run <code>.\Config.ps1</code></li>
+<li>Select <b>TrustMANAGER</b> when prompted</li>
+<li>Select your device — <b>ESP32_Mobile_APP_X</b></li>
+<li>The script generates the configured firmware package; place the generated <code>ESP32_Mobile_APP_X</code> folder in your preferred path (e.g. <code>C:\</code>) and proceed to build and flash</li>
+</ol>
+<blockquote class="doxtable">
+<p>If you encounter any error while running <code>Config.ps1</code>, refer to the <a class="el" href="config_issue.html">Config.ps1 — Troubleshooting &amp; Usage</a> guide. </p>
+</blockquote>
+<div class="image">
+<img src="configscript.jpg" alt="" width="700px"/>
+<div class="caption">
+Config.ps1 — Package Configuration</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md358"></a>
+Quick Start</h2>
+<p>Fastest path from zero to a provisioned device:</p>
+<div class="fragment"><div class="line">Step 1 — Install ESP-IDF v5.3.1 (Windows installer)</div>
+<div class="line">Step 2 — Build firmware:   cd firmware &amp;&amp; idf.py build</div>
+<div class="line">Step 3 — Flash firmware:   idf.py -p COM&lt;N&gt; flash</div>
+<div class="line">Step 4 — Build mobile app: cd mobile &amp;&amp; npm install &amp;&amp; npm run android</div>
+<div class="line">Step 5 — In the app:       enter Auth Token + Fleet Profile UID → Scan → Start Provisioning</div>
+<div class="line">Step 6 — Verify:           app shows &quot;Provisioned&quot; + chip UID</div>
+</div><!-- fragment --><hr  />
+<h2><a class="anchor" id="autotoc_md360"></a>
+Firmware Build Instructions</h2>
+<h3><a class="anchor" id="autotoc_md361"></a>
+Project structure</h3>
+<div class="fragment"><div class="line">ESP32_Mobile_APP_X/</div>
+<div class="line">└── firmware/</div>
+<div class="line">    ├── CMakeLists.txt              ← Project definition</div>
+<div class="line">    ├── sdkconfig                   ← Build configuration (generated)</div>
+<div class="line">    ├── sdkconfig.defaults          ← Default build options</div>
+<div class="line">    ├── main/</div>
+<div class="line">    │   ├── CMakeLists.txt</div>
+<div class="line">    │   ├── main.c                  ← Main application &amp; BLE GATT server</div>
+<div class="line">    │   ├── project_config.h        ← Device settings</div>
+<div class="line">    │   └── kta_provisioning/       ← keySTREAM Trust Agent (KTA) library</div>
+<div class="line">    │       ├── SOURCE/             ← KTA core (kta, salapi, include)</div>
+<div class="line">    │       ├── COMMON/             ← Log module</div>
+<div class="line">    │       └── mcu/                ← MCU bridge / backend SAL</div>
+<div class="line">    └── components/</div>
+<div class="line">        └── cryptoauthlib/          ← ATECC608 crypto library</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>KTA sources are vendored under <code>main/kta_provisioning/</code>. The only ESP-IDF component under <code>components/</code> is <code>cryptoauthlib</code>. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md362"></a>
+Step 1 — Install ESP-IDF</h3>
+<p><b>Option A — Windows Installer (recommended)</b></p>
+<ol type="1">
+<li>Download the Espressif Windows Installer from: <br  />
+ <a href="https://dl.espressif.com/dl/esp-idf/">https://dl.espressif.com/dl/esp-idf/</a></li>
+<li>Run <code>esp-idf-tools-setup-online-*.exe</code>.</li>
+<li>Select <b>ESP-IDF v5.3.1</b> when prompted.</li>
+<li>The installer places everything under <code>C:\Espressif\</code> and creates a **"ESP-IDF v5.3 PowerShell"** Start Menu shortcut.</li>
+</ol>
+<p><b>Option B — Manual (git clone)</b></p>
+<div class="fragment"><div class="line">git clone --recursive https://github.com/espressif/esp-idf.git C:\Espressif\frameworks\esp-idf-v5.3.1</div>
+<div class="line">cd C:\Espressif\frameworks\esp-idf-v5.3.1</div>
+<div class="line">git checkout v5.3.1</div>
+<div class="line">git submodule update --init --recursive</div>
+<div class="line">.\install.ps1 esp32</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md363"></a>
+Step 2 — Activate the ESP-IDF environment</h3>
+<p>Run this <b>once per terminal session</b> before any <code>idf.py</code> command:</p>
+<div class="fragment"><div class="line">C:\Espressif\frameworks\esp-idf-v5.3.1\export.ps1</div>
+</div><!-- fragment --><p>Expected output (last line): </p><div class="fragment"><div class="line">Done! You can now compile ESP-IDF projects.</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><b>Tip:</b> Using the "ESP-IDF v5.3 PowerShell" Start Menu shortcut activates the environment automatically. </p>
+</blockquote>
+<h3><a class="anchor" id="autotoc_md364"></a>
+Step 3 — Configure the firmware (optional)</h3>
+<p>The <b>Fleet Profile UID</b> is set at runtime by the mobile app, not compiled into the firmware. No firmware edits are required for standard provisioning.</p>
+<p>If you need to change device-level settings (I2C pins, BLE device name), edit:</p>
+<div class="fragment"><div class="line">firmware/main/project_config.h</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md365"></a>
+Step 4 — Build</h3>
+<div class="fragment"><div class="line">cd &lt;repo&gt;\TrustMANAGER\ESP32_Mobile_APP_X\firmware</div>
+<div class="line"> </div>
+<div class="line"># Activate ESP-IDF first (if not using the shortcut)</div>
+<div class="line">C:\Espressif\frameworks\esp-idf-v5.3.1\export.ps1</div>
+<div class="line"> </div>
+<div class="line">idf.py build</div>
+</div><!-- fragment --><p>Successful build output: </p><div class="fragment"><div class="line">Project build complete. To flash, run:</div>
+<div class="line"> idf.py flash</div>
+</div><!-- fragment --><p>The compiled binary is at: </p><div class="fragment"><div class="line">firmware/build/keystream_ble.bin</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md366"></a>
+Full clean and rebuild</h3>
+<div class="fragment"><div class="line">idf.py fullclean</div>
+<div class="line">idf.py build</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><code>fullclean</code> removes all build artifacts including <code>managed_components</code>. The next build will re-download IDF component manager dependencies. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md368"></a>
+Flashing Instructions</h2>
+<ol type="1">
+<li>Connect the ESP32 board via USB.</li>
+<li>Find the COM port in Device Manager (e.g. <code>COM9</code>).</li>
+</ol>
+<div class="fragment"><div class="line"># Find available COM ports</div>
+<div class="line">[System.IO.Ports.SerialPort]::GetPortNames()</div>
+<div class="line"> </div>
+<div class="line"># Flash to a specific port</div>
+<div class="line">idf.py -p COM9 flash</div>
+<div class="line"> </div>
+<div class="line"># Flash and open the serial monitor immediately (recommended)</div>
+<div class="line">idf.py -p COM9 flash monitor</div>
+</div><!-- fragment --><p>Press <code>Ctrl+]</code> to exit the serial monitor.</p>
+<blockquote class="doxtable">
+<p><b>If flashing fails or the port is not detected</b>, hold the <b>BOOT</b> button on the ESP32 while initiating the flash command, then release it once flashing begins. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md370"></a>
+Mobile Application Setup</h2>
+<h3><a class="anchor" id="autotoc_md371"></a>
+Project structure</h3>
+<div class="fragment"><div class="line">ESP32_Mobile_APP_X/</div>
+<div class="line">└── mobile/</div>
+<div class="line">    ├── App.tsx                    ← App entry component</div>
+<div class="line">    ├── index.js</div>
+<div class="line">    ├── package.json               ← Dependencies &amp; scripts</div>
+<div class="line">    ├── run-app.bat                ← Quick environment check helper</div>
+<div class="line">    ├── src/                       ← Screens, BLE relay logic</div>
+<div class="line">    └── android/</div>
+<div class="line">        └── app/</div>
+<div class="line">            └── build/outputs/apk/release/</div>
+<div class="line">                └── app-release.apk   ← Produced after a release build</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md372"></a>
+Step 1 — Install dependencies</h3>
+<div class="fragment"><div class="line">cd &lt;repo&gt;\TrustMANAGER\ESP32_Mobile_APP_X\mobile</div>
+<div class="line">npm install</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md373"></a>
+Step 2a — Run a debug build on a connected phone (fastest for testing)</h3>
+<p>``<code>powershell @section autotoc_md374 With an Android phone connected via USB (USB debugging ON) and visible in</code>adb devices` npm run android </p><div class="fragment"><div class="line">### Step 2b — Build a release APK (for distribution)</div>
+<div class="line"> </div>
+<div class="line">```powershell</div>
+<div class="line">cd &lt;repo&gt;\TrustMANAGER\ESP32_Mobile_APP_X\mobile\android</div>
+<div class="line">.\gradlew assembleRelease</div>
+</div><!-- fragment --><p>The release APK is created at: </p><div class="fragment"><div class="line">mobile\android\app\build\outputs\apk\release\app-release.apk</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md375"></a>
+Step 3 — Install the APK on the phone</h3>
+<p><b>Option A — ADB (fastest):</b> </p><div class="fragment"><div class="line">adb install -r &quot;...\mobile\android\app\build\outputs\apk\release\app-release.apk&quot;</div>
+</div><!-- fragment --><p><b>Option B — Manual transfer:</b></p><ol type="1">
+<li>On the phone: Settings → Apps → Special app access → Install unknown apps → enable for your file manager.</li>
+<li>Copy the APK to the phone via USB or cloud storage and tap to install.</li>
+</ol>
+<hr  />
+<h2><a class="anchor" id="autotoc_md377"></a>
+BLE Pairing and Discovery</h2>
+<p>The ESP32 firmware advertises a BLE GATT server using the Nordic UART Service (NUS). The mobile app uses <code>react-native-ble-plx</code> to scan and connect.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">BLE parameter </th><th class="markdownTableHeadNone">Value  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Advertised device name </td><td class="markdownTableBodyNone"><code>esp32_KTA</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">BLE MTU size </td><td class="markdownTableBodyNone">244 bytes  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Profile </td><td class="markdownTableBodyNone">Nordic UART Service (NUS)  </td></tr>
+</table>
+<p><b>Scanning steps in the app:</b></p>
+<ol type="1">
+<li>Enable Bluetooth on the Android phone.</li>
+<li>Grant the app <b>Bluetooth and Location</b> permissions when prompted.</li>
+<li>Tap <b>Scan for Bluetooth Devices</b> in the app.</li>
+<li>Select your <code>esp32_KTA</code> device from the list.</li>
+</ol>
+<blockquote class="doxtable">
+<p>If the device does not appear in the scan list, verify that the firmware is running (serial monitor should show <code>BLE advertising started</code>) and that the phone is within 5 metres of the ESP32. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md379"></a>
+Device Provisioning Flow</h2>
+<h3><a class="anchor" id="autotoc_md380"></a>
+Using the app</h3>
+<ol type="1">
+<li><b>Open the app</b> and tap <b>keySTREAM Provisioning</b> from the home screen or app drawer.</li>
+<li><p class="startli"><b>Enter credentials:</b></p>
+<div class="image">
+<img src="Home_Screen.jpg" alt="" width="300px"/>
+<div class="caption">
+Mobile App Home Screen</div></div>
+</li>
+</ol>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Field </th><th class="markdownTableHeadNone">Value  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Auth Token</b> </td><td class="markdownTableBodyNone">Bearer token from the keySTREAM portal  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Fleet Profile UID</b> </td><td class="markdownTableBodyNone">e.g. <code>9S4F:example.org:dp:my-fleet</code>  </td></tr>
+</table>
+<ol type="1">
+<li>Tap <b>Submit</b> — the app connects to the keySTREAM portal and validates your fleet.</li>
+<li>Tap <b>Scan for Bluetooth Devices</b>, wait for scanning to complete, and select your ESP32 board.</li>
+<li>Tap <b>Start Provisioning</b> — the app connects to the ESP32 over BLE and starts the KTA provisioning exchange automatically.</li>
+<li>Wait for provisioning to complete (typically 30–60 seconds). The app relays messages between the ESP32 and the keySTREAM server in multiple rounds.</li>
+<li><p class="startli">On success, the <b>Device Status</b> screen displays:</p>
+<div class="image">
+<img src="MobileApp_ss.jpg" alt="" width="300px"/>
+<div class="caption">
+Mobile App Status Screen</div></div>
+</li>
+</ol>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Field </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Status</b> </td><td class="markdownTableBodyNone"><code>Provisioned</code>, <code>Activated</code>, or <code>CON_REQ</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Chip UID</b> </td><td class="markdownTableBodyNone">Hardware identity of the ATECC608  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Connection details</b> </td><td class="markdownTableBodyNone">Server endpoint and round count  </td></tr>
+</table>
+<ol type="1">
+<li>From the Device Status screen you can also:<ul>
+<li><b>Refurbish</b> — reset the device to factory state (deletes all credentials)</li>
+<li><b>Renew</b> — refresh the certificate chain</li>
+</ul>
+</li>
+</ol>
+<h3><a class="anchor" id="autotoc_md381"></a>
+What happens internally</h3>
+<p>The app is a relay. All KTA protocol logic runs on the ESP32 firmware:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Phase </th><th class="markdownTableHeadNone">KTA API </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Initialization </td><td class="markdownTableBodyNone"><code>0xA0</code> </td><td class="markdownTableBodyNone">Clears ATECC608 lifecycle state  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Startup </td><td class="markdownTableBodyNone"><code>0xA1</code> </td><td class="markdownTableBodyNone">Initialises KTA with L1 seed, profile UID, serial, version  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Set device info </td><td class="markdownTableBodyNone"><code>0xA2</code> </td><td class="markdownTableBodyNone">Associates device with the Fleet Profile on the server  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Exchange loop </td><td class="markdownTableBodyNone"><code>0xA3</code> (×1–10) </td><td class="markdownTableBodyNone">ICPP round-trip: ATECC608 generates challenge/response; server sends certs/keys  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Status query </td><td class="markdownTableBodyNone"><code>0xA4</code> </td><td class="markdownTableBodyNone">Reads final device state  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md383"></a>
+Cloud Connection Verification</h2>
+<p>After provisioning completes:</p>
+<ol type="1">
+<li><b>In the app:</b> The Device Status screen shows <code>Provisioned</code> and a valid Chip UID.</li>
+<li><b>In the keySTREAM portal:</b><ul>
+<li>Navigate to <b>Fleet &amp; PKI → Devices</b>.</li>
+<li>Find your device by its Chip UID.</li>
+<li>Status should show <b>Provisioned</b> or <b>Activated</b>.</li>
+</ul>
+</li>
+<li><b>In the serial monitor</b> (<code>idf.py -p COM9 monitor</code>):<ul>
+<li>Look for log lines containing <code>Provisioned</code> or <code>E_K_STATUS_OK</code>.</li>
+<li>No error messages should appear after the final exchange round.</li>
+</ul>
+</li>
+</ol>
+<h3><a class="anchor" id="autotoc_md384"></a>
+Expected serial monitor output</h3>
+<div class="fragment"><div class="line">I (1234) KTA: BLE advertising started</div>
+<div class="line">I (5678) KTA: BLE client connected</div>
+<div class="line">I (5700) KTA: ktaInitialize OK</div>
+<div class="line">I (5900) KTA: ktaStartup OK</div>
+<div class="line">I (6100) KTA: ktaSetDeviceInformation OK</div>
+<div class="line">I (6300) KTA: ktaExchangeMessage round 1 OK</div>
+<div class="line">I (6500) KTA: ktaExchangeMessage round 2 OK</div>
+<div class="line">I (6700) KTA: Provisioning complete — status: PROVISIONED</div>
+</div><!-- fragment --><hr  />
+<h2><a class="anchor" id="autotoc_md386"></a>
+Troubleshooting</h2>
+<h3><a class="anchor" id="autotoc_md387"></a>
+BLE / Mobile App</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Symptom </th><th class="markdownTableHeadNone">Solution  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">BLE scan finds no device </td><td class="markdownTableBodyNone">Confirm the firmware is flashed and running. Check serial monitor for <code>BLE advertising started</code>. Ensure phone is within 5 m of the ESP32.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">BLE disconnects during provisioning </td><td class="markdownTableBodyNone">The app reconnects automatically and resumes from the last completed round. Wait up to 60 seconds.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">App crashes on startup </td><td class="markdownTableBodyNone">Uninstall and reinstall the APK. Grant all requested permissions (Bluetooth, Location).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Device does not appear after scanning </td><td class="markdownTableBodyNone">Check that the device name in <code>project_config.h</code> matches <code>esp32_KTA</code>. Power-cycle the ESP32.  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md388"></a>
+Provisioning Failures</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Symptom </th><th class="markdownTableHeadNone">Solution  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>HTTP 401</code> from cloud </td><td class="markdownTableBodyNone">Auth Token is wrong or expired — update it in the app.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>HTTP 500</code> from cloud </td><td class="markdownTableBodyNone">Device is not claimed in the portal, or the payload is invalid. Claim the device first, then power-cycle the ESP32 and retry.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Device not claimed error </td><td class="markdownTableBodyNone">Go to the keySTREAM portal → Fleet &amp; PKI → Devices and register the Chip UID.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Provisioning stuck at round 1 </td><td class="markdownTableBodyNone">I2C wiring issue between ESP32 and ATECC608. Verify SDA→GPIO21, SCL→GPIO22, power is 3.3 V.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Status stays <code>Activated</code> (not <code>Provisioned</code>) </td><td class="markdownTableBodyNone">Normal — <code>Activated</code> is a valid intermediate state. Run another provisioning cycle or wait for the NOOP polling loop to complete.  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md389"></a>
+ESP-IDF Build Failures</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Error </th><th class="markdownTableHeadNone">Cause </th><th class="markdownTableHeadNone">Fix  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>idf.py</code> is not recognized </td><td class="markdownTableBodyNone">ESP-IDF environment not activated </td><td class="markdownTableBodyNone">Run <code>C:\Espressif\frameworks\esp-idf-v5.3.1\export.ps1</code> first  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>python.exe doesn't exist</code> </td><td class="markdownTableBodyNone">Python venv was not created </td><td class="markdownTableBodyNone">Run: <code>python.exe C:\Espressif\frameworks\esp-idf-v5.3.1\tools\idf_tools.py install-python-env</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ninja failed</code> — multiple definition of <code>salSignHash</code> </td><td class="markdownTableBodyNone">Stub in <code>main.c</code> conflicts with <code>k_sal_crypto.c</code> </td><td class="markdownTableBodyNone">Remove the stub from <code>main.c</code>; keep only the <code>#include "k_sal_crypto.h"</code> line  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>undefined reference to ble_sal_enqueue_rx</code> </td><td class="markdownTableBodyNone">BLE SAL sources not listed in <code>CMakeLists.txt</code> </td><td class="markdownTableBodyNone">Ensure <code>backend_ble.c</code> and <code>ble_sal.c</code> entries are not commented out in <code>main/CMakeLists.txt</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>mingw32-make: No targets specified</code> </td><td class="markdownTableBodyNone"><code>mcu_bridge_build</code> custom target runs without a <code>Makefile</code> </td><td class="markdownTableBodyNone">Update <code>CMakeLists.txt</code> to the latest version; the guard skips the target automatically  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md390"></a>
+Flashing Failures</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Symptom </th><th class="markdownTableHeadNone">Solution  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">COM port not found </td><td class="markdownTableBodyNone">Install the correct USB driver: CP210x → <a href="https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers">Silicon Labs driver</a>; CH340 → <a href="http://www.wch-ic.com/downloads/CH341SER_EXE.html">CH340 driver</a>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Flashing times out or fails </td><td class="markdownTableBodyNone">Hold <b>BOOT</b> button on ESP32 while running <code>idf.py flash</code>, release after flashing starts  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Device crashes at boot / reset loop </td><td class="markdownTableBodyNone">Run <code>idf.py -p COM9 erase_flash</code> then <code>idf.py -p COM9 flash</code> to clear NVS and start clean  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Wrong binary flashed </td><td class="markdownTableBodyNone">Verify you are in the correct <code>firmware/</code> directory before running <code>idf.py flash</code>  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md392"></a>
+Frequently Asked Questions</h2>
+<p><b>Q: Do I need to recompile the firmware every time I provision a new device?</b> <br  />
+ A: No. The Fleet Profile UID and Auth Token are entered in the mobile app at runtime. Flash the firmware once per physical board.</p>
+<p><b>Q: Can I use iOS instead of Android?</b> <br  />
+ A: The current app targets Android only. iOS is not supported in this release.</p>
+<p><b>Q: The app shows "Device not claimed" — what does that mean?</b> <br  />
+ A: The keySTREAM portal does not recognise the device's Chip UID. Go to <b>Fleet &amp; PKI → Devices</b> in the portal and register the Chip UID before provisioning.</p>
+<p><b>Q: How do I find the Chip UID before provisioning?</b> <br  />
+ A: Open the serial monitor (<code>idf.py -p COM9 monitor</code>) after flashing. The firmware prints the ATECC608 Chip UID on startup.</p>
+<p><b>Q: What is the difference between <code>Activated</code> and <code>Provisioned</code>?</b> <br  />
+ A: <code>Activated</code> means the device has exchanged initial keys with the server. <code>Provisioned</code> means the full certificate chain has been installed and the device is ready for field operation.</p>
+<p><b>Q: Can I refurbish and re-provision the same device?</b> <br  />
+ A: Yes. From the Device Status screen tap <b>Refurbish</b>. The app resets the ATECC608 lifecycle state and runs a full provisioning cycle again.</p>
+<p><b>Q: The build fails with a <code>size_t</code> undefined error in <code>ktamgr.c</code>.</b> <br  />
+ A: This indicates the <code>Config.ps1</code> KTA source patch over-matched and removed <code>#include</code> directives. Re-run <code>Config.ps1</code> with the latest version to regenerate a clean <code>SOURCE/</code> tree, then rebuild.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md394"></a>
+References</h2>
+<ul>
+<li><a class="el" href="fleet_profile_creation.html">Fleet Profile Creation Guide</a></li>
+<li><a class="el" href="kta_esp32_ble_firmware.html">Firmware Build, Flash &amp; Monitor — ESP32 (detailed)</a> </li>
+</ul>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.1-->
+<!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer"><b></b>
+    Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+  </ul>
+</div>
+</body>
+</html>

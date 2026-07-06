@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['network_5fstack_5favailable_264',['NETWORK_STACK_AVAILABLE',['../kta_config_8h.html#a706569a103c87eb60a3071b71ea68325',1,'ktaConfig.h']]]
+  ['uart_20transport_20integration_20_2d_20ev89u05a_78',['UART Transport Integration - EV89U05A',['../kta_uart_sg41.html',1,'']]]
 ];

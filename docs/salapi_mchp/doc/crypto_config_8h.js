@@ -24,5 +24,6 @@ var crypto_config_8h =
     [ "C_K__ICPP_MSG_MAX_SIZE", "crypto_config_8h.html#a5d578966f559be29229811a05ee3b490", null ],
     [ "C_K__CHIP_CERT_MAX_SIZE_VENDOR_SPECIFIC", "crypto_config_8h.html#aff00b687c80be7953eb95b41f90625ac", null ],
     [ "C_K__ICPP_CMD_RESPONSE_SIZE_VENDOR_SPECIFIC", "crypto_config_8h.html#a713dafeadf0b8b9b4d8c6523cad5d72d", null ],
-    [ "C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC", "crypto_config_8h.html#ac0d8e1125fc68e349e23a93391345cff", null ]
+    [ "C_K__ICPP_FIELD_TAG_PUB_KEY_VENDOR_SPECIFIC", "crypto_config_8h.html#ac0d8e1125fc68e349e23a93391345cff", null ],
+    [ "C_KTA__L1_SEG_SEED", "crypto_config_8h.html#af7db038c93b53000b0fb70035e7315c6", null ]
 ];

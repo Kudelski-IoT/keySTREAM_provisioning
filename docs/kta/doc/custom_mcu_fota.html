@@ -1,0 +1,781 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>keySTREAM Trusted Agent: Custom MCU FOTA Integration Guide</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
+<!-- Generated by Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('custom_mcu_fota.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="PageDoc"><div class="header">
+  <div class="headertitle">
+<div class="title">Custom MCU FOTA Integration Guide </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h1><a class="anchor" id="autotoc_md21"></a>
+FOTA Integration Guide</h1>
+<blockquote class="doxtable">
+<p><b>Note:</b> FOTA integration and usage can be performed and evaluated only on the Trust Platform Design Suite (TPDS) application. Ensure you have the latest TPDS application installed, along with the keySTREAM Connect extension, to enable full FOTA functionality and testing. </p>
+</blockquote>
+<blockquote class="doxtable">
+<p><b>Note:</b> The FOTA Agent and FOTA Process modules are provided as part of the KTA package and <b>do not require modification</b>. Only the APIs listed below need to be implemented by you. </p>
+</blockquote>
+<h2><a class="anchor" id="autotoc_md22"></a>
+&lt;/blockquote&gt;</h2>
+<h2><a class="anchor" id="autotoc_md23"></a>
+Overview</h2>
+<div class="image">
+<img src="fota_phase.png" alt="" width="900px"/>
+<div class="caption">
+FOTA integration phases</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md25"></a>
+1. How FOTA Works — The Big Picture</h2>
+<p>The KTA library handles all communication with keySTREAM. You only implement the platform-specific parts — how to read your firmware version, how to download, and how to store state.</p>
+<div class="fragment"><div class="line">keySTREAM Cloud</div>
+<div class="line">     │</div>
+<div class="line">     │  Campaign available</div>
+<div class="line">     ▼</div>
+<div class="line">┌─────────────┐</div>
+<div class="line">│ KTA Library │──── calls ──── fotaPlatformGetComponents()  ← YOU: return current version</div>
+<div class="line">│ (provided,  │                          │</div>
+<div class="line">│  do not     │               version doesn&#39;t match campaign</div>
+<div class="line">│  modify)    │                          │</div>
+<div class="line">│             │──── calls ──── fotaStartInstalltation()      ← YOU: download + write flash</div>
+<div class="line">│             │                          │</div>
+<div class="line">│             │                   download completes</div>
+<div class="line">│             │                          │</div>
+<div class="line">│             │ ◄── you call ── fotaUpdateComponent()        ← YOU: report success/failure</div>
+<div class="line">└─────────────┘</div>
+<div class="line">     │</div>
+<div class="line">KTA reports result to keySTREAM</div>
+<div class="line">     │</div>
+<div class="line">Your bootloader verifies + boots new image</div>
+</div><!-- fragment --><p><b>That's it.</b> Three touchpoints in <code>fotaplatform.c</code>, plus two storage functions in <code>k_sal_fotastorage.c</code>.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md27"></a>
+2. What You Must Implement</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone"># </th><th class="markdownTableHeadNone">Function </th><th class="markdownTableHeadNone">File </th><th class="markdownTableHeadNone">What It Does  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">1 </td><td class="markdownTableBodyNone"><code>fotaPlatformGetComponents()</code> </td><td class="markdownTableBodyNone"><code>fotaplatform.c</code> </td><td class="markdownTableBodyNone">Return your firmware's current name and version  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">2 </td><td class="markdownTableBodyNone"><code>fotaStartInstalltation()</code> </td><td class="markdownTableBodyNone"><code>fotaplatform.c</code> </td><td class="markdownTableBodyNone">Receive a download URL → download the binary → write to flash  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">3 </td><td class="markdownTableBodyNone"><code>fotaUpdateComponent()</code> </td><td class="markdownTableBodyNone">— (you call it) </td><td class="markdownTableBodyNone">After download, tell KTA if it succeeded or failed  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">4 </td><td class="markdownTableBodyNone"><code>salFotaStorageWrite()</code> </td><td class="markdownTableBodyNone"><code>k_sal_fotastorage.c</code> </td><td class="markdownTableBodyNone">Save FOTA campaign state to your NVM  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">5 </td><td class="markdownTableBodyNone"><code>salFotaStorageRead()</code> </td><td class="markdownTableBodyNone"><code>k_sal_fotastorage.c</code> </td><td class="markdownTableBodyNone">Load FOTA campaign state from your NVM  </td></tr>
+</table>
+<blockquote class="doxtable">
+<p><code>fotaUpdateComponent()</code> is already implemented by KTA. You only <b>call</b> it — you don't write it. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md29"></a>
+3. API Reference</h2>
+<h3><a class="anchor" id="autotoc_md30"></a>
+3.1 &lt;tt&gt;fotaPlatformGetComponents()&lt;/tt&gt;</h3>
+<p>KTA calls this at startup and when keySTREAM queries the device. Return the <b>currently running</b> firmware name and version.</p>
+<div class="fragment"><div class="line">TKFotaStatus fotaPlatformGetComponents(TComponent *xpComponents);</div>
+</div><!-- fragment --><p><b>Fill these fields in <code>xpComponents[0]</code>:</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Field </th><th class="markdownTableHeadNone">Max Size </th><th class="markdownTableHeadNone">Example  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>componentName</code> </td><td class="markdownTableBodyNone">16 bytes </td><td class="markdownTableBodyNone"><code>"MY-APP"</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>componentNameLen</code> </td><td class="markdownTableBodyNone">— </td><td class="markdownTableBodyNone"><code>6</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>componentVersion</code> </td><td class="markdownTableBodyNone">16 bytes </td><td class="markdownTableBodyNone"><code>"2.1.0"</code> (free-form string)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>componentVersionLen</code> </td><td class="markdownTableBodyNone">— </td><td class="markdownTableBodyNone"><code>5</code>  </td></tr>
+</table>
+<p><b>Return:</b> <code>E_K_FOTA_SUCCESS</code> or <code>E_K_FOTA_ERROR</code></p>
+<p><b>How you get the version is entirely up to you</b> — read it from a struct in flash, a header constant, a file, a register, whatever works on your platform.</p>
+<p><b>Minimal example:</b> </p><div class="fragment"><div class="line">TKFotaStatus fotaPlatformGetComponents(TComponent *xpComponents)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">if</span> (xpComponents == NULL)</div>
+<div class="line">        <span class="keywordflow">return</span> E_K_FOTA_ERROR;</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Read from wherever your firmware version lives</span></div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> *name    = <span class="stringliteral">&quot;MY-APP&quot;</span>;</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> *version = <span class="stringliteral">&quot;2.1.0&quot;</span>;</div>
+<div class="line"> </div>
+<div class="line">    memcpy(xpComponents[0].componentName, name, strlen(name));</div>
+<div class="line">    xpComponents[0].componentNameLen = strlen(name);</div>
+<div class="line">    memcpy(xpComponents[0].componentVersion, version, strlen(version));</div>
+<div class="line">    xpComponents[0].componentVersionLen = strlen(version);</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> E_K_FOTA_SUCCESS;</div>
+<div class="line">}</div>
+</div><!-- fragment --><hr  />
+<h3><a class="anchor" id="autotoc_md32"></a>
+3.2 &lt;tt&gt;fotaStartInstalltation()&lt;/tt&gt;</h3>
+<p>KTA calls this when a FOTA campaign is ready. You receive the download URL and must handle the rest.</p>
+<blockquote class="doxtable">
+<p><b>Note:</b> The function name has a double-<code>t</code> (<code>fotaStartInstalltation</code>) — this is the actual symbol name in KTA. </p>
+</blockquote>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> fotaStartInstalltation(<span class="keyword">const</span> <span class="keywordtype">void</span>             *xpFotaMetadata,</div>
+<div class="line">                             <span class="keywordtype">size_t</span>                  xFotaMetadataLen,</div>
+<div class="line">                             <span class="keyword">const</span> TTargetComponent *xpComponents);</div>
+</div><!-- fragment --><p><b>What you get from <code>xpComponents</code>:</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Field </th><th class="markdownTableHeadNone">Max Size </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>componentTargetName</code> / <code>componentTargetNameLen</code> </td><td class="markdownTableBodyNone">16 bytes </td><td class="markdownTableBodyNone">Name of component to update  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>componentTargetVersion</code> / <code>componentTargetVersionLen</code> </td><td class="markdownTableBodyNone">16 bytes </td><td class="markdownTableBodyNone">Target version  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>componentUrl</code> / <code>componentUrlLen</code> </td><td class="markdownTableBodyNone">512 bytes </td><td class="markdownTableBodyNone">HTTPS URL to download the firmware binary  </td></tr>
+</table>
+<p><b>What you must do:</b></p>
+<ol type="1">
+<li>Extract the URL from <code>xpComponents-&gt;componentUrl</code></li>
+<li>Download the binary using your network stack (WiFi, Ethernet, LTE — your choice)</li>
+<li>Write it to flash using your flash driver</li>
+<li>Call <code>fotaUpdateComponent()</code> when done (success or failure)</li>
+<li>Activate the new firmware (reboot, swap partitions, set boot flag — your choice)</li>
+</ol>
+<p><b>Minimal example:</b> </p><div class="fragment"><div class="line"><span class="keywordtype">void</span> fotaStartInstalltation(<span class="keyword">const</span> <span class="keywordtype">void</span>             *xpFotaMetadata,</div>
+<div class="line">                             <span class="keywordtype">size_t</span>                  xFotaMetadataLen,</div>
+<div class="line">                             <span class="keyword">const</span> TTargetComponent *xpComponents)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">if</span> (!xpFotaMetadata || !xFotaMetadataLen || !xpComponents)</div>
+<div class="line">        <span class="keywordflow">return</span>;</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Copy the download URL</span></div>
+<div class="line">    <span class="keywordtype">char</span> url[512] = {0};</div>
+<div class="line">    memcpy(url, xpComponents-&gt;componentUrl, xpComponents-&gt;componentUrlLen);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// &gt;&gt;&gt; YOUR PLATFORM CODE HERE &lt;&lt;&lt;</span></div>
+<div class="line">    <span class="comment">// 1. Download firmware from `url` over HTTPS</span></div>
+<div class="line">    <span class="comment">// 2. Write to your flash/update area</span></div>
+<div class="line">    <span class="comment">// 3. Validate the image</span></div>
+<div class="line">    <span class="comment">// 4. Call fotaUpdateComponent() — see Section 3.3</span></div>
+<div class="line">    <span class="comment">// 5. Activate new firmware (reboot, swap, etc.)</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><hr  />
+<h3><a class="anchor" id="autotoc_md34"></a>
+3.3 &lt;tt&gt;fotaUpdateComponent()&lt;/tt&gt; — You Call This</h3>
+<p>After your download + flash write finishes, you <b>must</b> call this to tell KTA the result.</p>
+<div class="fragment"><div class="line">TKFotaStatus fotaUpdateComponent(<span class="keyword">const</span> uint8_t *componentName,</div>
+<div class="line">                                  <span class="keywordtype">size_t</span>         componentNameLen,</div>
+<div class="line">                                  <span class="keyword">const</span> uint8_t *componentVersion,</div>
+<div class="line">                                  <span class="keywordtype">size_t</span>         componentVersionLen,</div>
+<div class="line">                                  TFotaState     state);</div>
+</div><!-- fragment --><div class="fragment"><div class="line"><span class="comment">// Success — pass the NEW version:</span></div>
+<div class="line">fotaUpdateComponent(name, nameLen, newVersion, newVersionLen, E_K_FOTA_SUCCESS);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Failure — pass the OLD version:</span></div>
+<div class="line">fotaUpdateComponent(name, nameLen, oldVersion, oldVersionLen, E_K_FOTA_ERROR);</div>
+</div><!-- fragment --><hr  />
+<h2><a class="anchor" id="autotoc_md36"></a>
+4. FOTA Storage (Persistence)</h2>
+<p>KTA needs to save campaign state so it can resume after a reset. You provide two functions that read/write raw bytes by ID to whatever NVM your MCU has.</p>
+<p><b>Edit:</b> <code>SOURCE/salapi/k_sal_fotastorage.c</code></p>
+<div class="fragment"><div class="line"><span class="keywordtype">bool</span> salFotaStorageWrite(uint32_t xStorageDataId, <span class="keyword">const</span> uint8_t *xpData, <span class="keywordtype">size_t</span> xDataLen);</div>
+<div class="line"><span class="keywordtype">bool</span> salFotaStorageRead(uint32_t xStorageDataId, uint8_t *xpData, <span class="keywordtype">size_t</span> *xpDataLen);</div>
+</div><!-- fragment --><p><b>Storage IDs KTA uses:</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">ID </th><th class="markdownTableHeadNone">Value </th><th class="markdownTableHeadNone">Max Size </th><th class="markdownTableHeadNone">Purpose  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>FOTA_STORAGE_NAME_ID</code> </td><td class="markdownTableBodyNone"><code>0x2001</code> </td><td class="markdownTableBodyNone">36 bytes </td><td class="markdownTableBodyNone">Campaign name  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>FOTA_STORAGE_METADATA_ID</code> </td><td class="markdownTableBodyNone"><code>0x2003</code> </td><td class="markdownTableBodyNone">68 bytes </td><td class="markdownTableBodyNone">Campaign metadata  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>FOTA_STORAGE_COMMIT_ID</code> </td><td class="markdownTableBodyNone"><code>0x2005</code> </td><td class="markdownTableBodyNone">12 bytes </td><td class="markdownTableBodyNone">Commit flag (written last for power safety)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>FOTA_STORAGE_COMPONENT_ID(i)</code> </td><td class="markdownTableBodyNone"><code>0x2010 + i</code> </td><td class="markdownTableBodyNone">~558 bytes </td><td class="markdownTableBodyNone">Component record (name, version, URL, state)  </td></tr>
+</table>
+<p><b>Rules:</b></p><ol type="1">
+<li>Each ID maps to a separate NVM region — regions must not overlap.</li>
+<li>Read must return exactly what was last written for the same ID.</li>
+<li>Data must survive reset.</li>
+<li>If nothing was written for an ID, return <code>false</code>.</li>
+<li>You do <b>not</b> interpret the data — just store and retrieve raw bytes.</li>
+</ol>
+<p><b>If your MCU has no NVM</b> (or for quick evaluation), use this stub:</p>
+<div class="fragment"><div class="line"><span class="keywordtype">bool</span> salFotaStorageWrite(uint32_t <span class="keywordtype">id</span>, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="keyword">true</span>;   <span class="comment">// KTA keeps state in RAM</span></div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">bool</span> salFotaStorageRead(uint32_t <span class="keywordtype">id</span>, uint8_t *data, <span class="keywordtype">size_t</span> *len)</div>
+<div class="line">{</div>
+<div class="line">    <span class="keywordflow">return</span> <span class="keyword">false</span>;  <span class="comment">// No saved state — KTA starts fresh</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>With the stub, FOTA cannot resume after power loss — the download must complete in one session. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md38"></a>
+5. KTA Agent Integration</h2>
+<p>Your application must call the KTA agent periodically so it can communicate with keySTREAM and receive FOTA campaigns.</p>
+<div class="fragment"><div class="line"><span class="comment">// 1. After network is ready — initialize once:</span></div>
+<div class="line">ktaKeyStreamInit();</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// 2. In your main loop — call every ~5 seconds:</span></div>
+<div class="line"><a class="code" href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a> status;</div>
+<div class="line">ktaKeyStreamFieldMgmt(<span class="keyword">true</span>, &amp;status);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// 3. If KTA says to re-init:</span></div>
+<div class="line"><span class="keywordflow">if</span> (status == <a class="code" href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe">E_K_KTA_KS_STATUS_REFURBISH</a>)</div>
+<div class="line">    ktaKeyStreamInit();</div>
+</div><!-- fragment --><p>When a campaign arrives, KTA automatically:</p><ol type="1">
+<li>Calls your <code>fotaPlatformGetComponents()</code> to check current version</li>
+<li>Saves state via your <code>salFotaStorageWrite()</code></li>
+<li>Calls your <code>fotaStartInstalltation()</code> with the download URL</li>
+</ol>
+<hr  />
+<h2><a class="anchor" id="autotoc_md40"></a>
+6. Bootloader</h2>
+<p>You must provide your own bootloader. Its job:</p>
+<ol type="1">
+<li><b>Verify</b> the firmware image (hash, signature, CRC — your choice)</li>
+<li><b>Boot</b> if valid — jump to application</li>
+<li><b>Roll back</b> if invalid — boot previous firmware or enter recovery</li>
+</ol>
+<p>How you implement this depends entirely on your MCU architecture. The SG41 reference uses ECC608 for ECDSA signature verification and dual-bank swap — study <code>firmware/sg41_boot/src/app.c</code> for one approach.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md42"></a>
+7. Integration Checklist</h2>
+<ul>
+<li>[ ] **<code>fotaPlatformGetComponents()</code>** — returns your firmware name + version</li>
+<li>[ ] **<code>fotaStartInstalltation()</code>** — downloads from URL, writes to flash, calls <code>fotaUpdateComponent()</code></li>
+<li>[ ] **<code>salFotaStorageWrite/Read()</code>** — stores/loads FOTA state in your NVM (or use stub)</li>
+<li>[ ] <b>KTA agent loop</b> — <code>ktaKeyStreamInit()</code> + periodic <code>ktaKeyStreamFieldMgmt()</code></li>
+<li>[ ] <b>Bootloader</b> — verifies new image, jumps or rolls back</li>
+<li>[ ] <b>Config</b> — set <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> to match your ECC608 fleet profile</li>
+<li>[ ] <b>Test</b> — create a campaign in TPDS, verify download → reboot → new version reported</li>
+</ul>
+<hr  />
+<h2><a class="anchor" id="autotoc_md44"></a>
+8. Troubleshooting</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Symptom </th><th class="markdownTableHeadNone">Fix  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">KTA reports wrong version </td><td class="markdownTableBodyNone">Check <code>fotaPlatformGetComponents()</code> — is it reading the real running version?  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Download never starts </td><td class="markdownTableBodyNone">Check <code>fotaStartInstalltation()</code> — are you triggering your download logic?  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Download fails </td><td class="markdownTableBodyNone">Check your TLS/network stack and CA certificate  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Reboot shows old version </td><td class="markdownTableBodyNone">Check that you activate the new firmware after <code>fotaUpdateComponent()</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">FOTA state lost after reset </td><td class="markdownTableBodyNone">Check <code>salFotaStorageWrite()</code> — is it actually writing to NVM?  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Campaign not received </td><td class="markdownTableBodyNone">Is <code>ktaKeyStreamFieldMgmt()</code> being called every ~5 seconds?  </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md46"></a>
+9. File Reference</h2>
+<p><b>You implement:</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">File </th><th class="markdownTableHeadNone">What to Do  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>SOURCE/kta/modules/fotaservice/fotaplatform.c</code> </td><td class="markdownTableBodyNone">Implement <code>fotaPlatformGetComponents()</code> + <code>fotaStartInstalltation()</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SOURCE/salapi/k_sal_fotastorage.c</code> </td><td class="markdownTableBodyNone">Implement <code>salFotaStorageWrite()</code> + <code>salFotaStorageRead()</code>  </td></tr>
+</table>
+<p><b>KTA provides (do not modify):</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">File </th><th class="markdownTableHeadNone">Purpose  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>SOURCE/kta/modules/fotaservice/fotaprocess.c</code> </td><td class="markdownTableBodyNone">FOTA state machine  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SOURCE/kta/modules/fotaservice/fotaagent.c</code> </td><td class="markdownTableBodyNone">FOTA orchestrator  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code><a class="el" href="fotaplatform_8h_source.html" title="Interface for Fota platform to be implemented by integrator as per target platform.">SOURCE/kta/modules/fotaservice/include/fotaplatform.h</a></code> </td><td class="markdownTableBodyNone">API declarations + types  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SOURCE/salapi/include/k_sal_fotastorage.h</code> </td><td class="markdownTableBodyNone">Storage IDs + record structures  </td></tr>
+</table>
+<p><b>SG41 reference (study, do not copy blindly):</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">File </th><th class="markdownTableHeadNone">What It Shows  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>SOURCE/salapi/k_sal_fotastorage_eeprom.c</code> </td><td class="markdownTableBodyNone">NVM storage using SmartEEPROM  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>firmware/sg41_kta_fota/src/app_dldr.c</code> </td><td class="markdownTableBodyNone">Download + flash write via WiFi  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>firmware/sg41_kta_fota/src/app_KTA.c</code> </td><td class="markdownTableBodyNone">KTA agent loop pattern  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>firmware/sg41_boot/src/app.c</code> </td><td class="markdownTableBodyNone">Bootloader with ECC608 signature verification  </td></tr>
+</table>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<div class="ttc" id="agroup__g__kta__api_html_gaae332fe18ad4822069439374ce313962"><div class="ttname"><a href="group__g__kta__api.html#gaae332fe18ad4822069439374ce313962">TKktaKeyStreamStatus</a></div><div class="ttdeci">TKktaKeyStreamStatus</div><div class="ttdoc">keySTREAM command status.</div><div class="ttdef"><b>Definition:</b> k_kta.h:93</div></div>
+<div class="ttc" id="agroup__g__kta__api_html_ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe"><div class="ttname"><a href="group__g__kta__api.html#ggaae332fe18ad4822069439374ce313962aa7233b1dd2e50180c5a6d075b7433fbe">E_K_KTA_KS_STATUS_REFURBISH</a></div><div class="ttdeci">@ E_K_KTA_KS_STATUS_REFURBISH</div><div class="ttdef"><b>Definition:</b> k_kta.h:112</div></div>
+<!-- HTML footer for doxygen 1.9.1-->
+<!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer"><b></b>
+    Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+  </ul>
+</div>
+</body>
+</html>

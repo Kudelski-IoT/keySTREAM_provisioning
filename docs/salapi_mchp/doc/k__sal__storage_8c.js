@@ -12,7 +12,6 @@ var k__sal__storage_8c =
     [ "C_SAL_KTA_VERSION_STORAGE_LENGTH", "k__sal__storage_8c.html#ad98cb4143372572d3d4791323685bf1b", null ],
     [ "C_SAL_DEVICE_SERIAL_NO", "k__sal__storage_8c.html#a6bed13d253be2cd5ddc13aa0deb3907e", null ],
     [ "C_SAL_DEVICE_SERIAL_NO_LENGTH", "k__sal__storage_8c.html#a6d892ad34e1e9580788207973c2ccdb7", null ],
-    [ "C_SAL_L1_SEG_SEED", "k__sal__storage_8c.html#ad890d4133fb021ebbf30ff5618ecf401", null ],
     [ "C_SAL_MCHP_MAX_DATA_SIZE", "k__sal__storage_8c.html#a45cff0836978a35f67c3a59c77ec3f18", null ],
     [ "C_SAL_L1_SEG_SEED_LENGTH", "k__sal__storage_8c.html#a7c1f2bd8353f6c01a04a4dbded4be042", null ],
     [ "C_SAL_SEALED_DATA_STORAGE_ID_ACTUAL_LENGTH", "k__sal__storage_8c.html#a87f360a485c78edfb00d29ebfebf8586", null ],

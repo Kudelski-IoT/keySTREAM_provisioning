@@ -1,0 +1,651 @@
+<!-- keySTREAM Trusted Agent - Custom Doxygen Header -->
+<!-- Proper Doxygen template with all required markers -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>keySTREAM Trusted Agent: Firmware Build, Flash &amp; Monitor – keySTREAM ESP32</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="kudelski.css" rel="stylesheet" type="text/css"/>
+<link href="kudelski-modern.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+function ksShouldHideLink(href) {
+  if (!href) {
+    return false;
+  }
+  return href.indexOf("annotated.html") !== -1 ||
+       href.indexOf("classes.html") !== -1 ||
+      href.indexOf("files.html") !== -1 ||
+      href.indexOf("modules.html") !== -1;
+}
+function ksPruneNavLinks() {
+  var containers = document.querySelectorAll("[id^='navrow'], #nav-tree");
+  containers.forEach(function(container) {
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function(link) {
+      if (ksShouldHideLink(link.getAttribute("href"))) {
+        var row = link.closest("li");
+        if (row) {
+          row.remove();
+        } else {
+          link.remove();
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", function() {
+  ksPruneNavLinks();
+  setTimeout(ksPruneNavLinks, 400);
+  setTimeout(ksPruneNavLinks, 1200);
+});
+// AUTH RECOVERY — v7: recover ONLY on a genuine auth failure, never interrupt reading.
+// v6 reloaded the page (while hidden) on a 401/403 so GitLab's Pages auth middleware
+// could re-issue the session cookie. v7 keeps that rule and adds three safety nets:
+//   1. A bounded reload budget so a permanently-expired session can never loop-reload.
+//   2. Handling for 402 (payment/quota), which a reload cannot fix.
+//   3. A friendly, dismissible notice for the cases a silent reload cannot resolve —
+//      so the user always sees clear guidance instead of a raw HTTP error page.
+(function() {
+  if (window.__ks401guard) { return; } // prevent double-init from footer script
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, { method: 'HEAD', credentials: 'include', cache: 'no-store', redirect: 'manual' })
+      .then(function(r) {
+        if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+          authExpired = true;
+          if (document.hidden) { recoverAuth(); } // reload only while hidden
+        } else if (r.status === 402) {
+          // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+          showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+        }
+      }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<style>
+/* ── Custom Navbar (inline so it works even before external CSS loads) ── */
+#ks-navbar {
+    display: flex;
+    align-items: stretch;
+    background: #202C55;
+    border-bottom: 2px solid #2CA3E6;
+    margin: 0;
+    padding: 0 8px;
+    font-family: 'Segoe UI', 'Open Sans', Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    flex-wrap: wrap;
+}
+.ksnav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ksnav-item > a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b8c8e0;
+    text-decoration: none;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1;
+}
+.ksnav-item > a .arrow {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 2px;
+    font-style: normal;
+}
+.ksnav-item > a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-bottom-color: #2CA3E6;
+}
+.ksnav-item.ks-active > a {
+    color: #ffffff;
+    background: #2a3d6e;
+    border-bottom-color: #7986cb;
+}
+.ksnav-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #1a2142;
+    border: 1px solid #2a3d6e;
+    border-top: 2px solid #2CA3E6;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 4px 0;
+}
+.ksnav-item:hover .ksnav-dropdown {
+    display: block;
+}
+.ksnav-section {
+    color: #7986cb;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    display: block;
+    border-top: 1px solid #2a3d6e;
+    margin-top: 2px;
+}
+.ksnav-section:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+.ksnav-dropdown a {
+    display: block;
+    padding: 8px 16px 8px 20px;
+    color: #b8c8e0;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    border-left: 3px solid transparent;
+    transition: background 0.1s, color 0.1s, border-color 0.1s;
+    line-height: 1.4;
+}
+.ksnav-dropdown a:hover {
+    background: #2a3d6e;
+    color: #ffffff;
+    border-left-color: #2CA3E6;
+}
+</style>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<!-- Custom Navbar -->
+<nav id="ks-navbar">
+  <div class="ksnav-item">
+    <a href="../../index.html" title="Back to Documentation Portal">Home</a>
+  </div>
+  <div class="ksnav-item ks-active">
+    <a href="pages.html">Pre-Integrated</a>
+  </div>
+  <div class="ksnav-item">
+    <a href="pages.html">Pre-Integrated <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Pre-integrated Examples</span>
+      <a href="d21.html">EV10E69A + WINC1500</a>
+      <a href="sg41_fota.html">EV89U05A + FOTA</a>
+      <a href="same54_aws.html">ATSAME54P20A</a>
+      <a href="kta_uart_sg41.html">UART with SG41</a>
+      <a href="kta_esp32_ble_mobile.html">ESP32 BLE Mobile</a>
+      <a href="kta_esp32_cli.html">ESP32 BLE CLI (Python)</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="kta_integration.html">Generic Integration <span class="arrow">&#9660;</span></a>
+    <div class="ksnav-dropdown">
+      <span class="ksnav-section">Generic Integration</span>
+      <a href="kta_integration.html">Custom Device and Network</a>
+      <a href="kta_integration.html">MPLAB Harmony 3 Integration</a>
+    </div>
+  </div>
+  <div class="ksnav-item">
+    <a href="group__g__kta__api.html">KTA API Reference</a>
+  </div>
+</nav>
+<!-- End Custom Navbar -->
+<!-- Generated by Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('kta_esp32_ble_firmware.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="PageDoc"><div class="header">
+  <div class="headertitle">
+<div class="title">Firmware Build, Flash &amp; Monitor – keySTREAM ESP32 </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h1><a class="anchor" id="autotoc_md319"></a>
+Firmware Build, Flash &amp; Monitor – keySTREAM ESP32</h1>
+<p>Build and deploy the ESP32 firmware using ESP-IDF (v5.3.1) with integrated KTA provisioning and NimBLE BLE stack.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md321"></a>
+Project Structure</h2>
+<div class="fragment"><div class="line">ESP32_Mobile_APP_X/</div>
+<div class="line">└── firmware/</div>
+<div class="line">    ├── CMakeLists.txt              ← Project definition</div>
+<div class="line">    ├── sdkconfig                   ← Build configuration (generated)</div>
+<div class="line">    ├── sdkconfig.defaults          ← Default build options</div>
+<div class="line">    ├── main/</div>
+<div class="line">    │   ├── CMakeLists.txt          ← main component build script</div>
+<div class="line">    │   ├── main.c                  ← Main application &amp; BLE GATT server</div>
+<div class="line">    │   ├── project_config.h        ← Device settings</div>
+<div class="line">    │   ├── Kconfig.projbuild       ← Project Kconfig options</div>
+<div class="line">    │   ├── aws_connect.h           ← Cloud connection helpers</div>
+<div class="line">    │   └── kta_provisioning/       ← keySTREAM Trust Agent (KTA) library &amp; protocol</div>
+<div class="line">    │       ├── SOURCE/             ← KTA core (kta, salapi, include)</div>
+<div class="line">    │       ├── COMMON/             ← Log module</div>
+<div class="line">    │       └── mcu/                ← MCU bridge / backend SAL</div>
+<div class="line">    ├── components/</div>
+<div class="line">    │   └── cryptoauthlib/          ← ATECC608 crypto library</div>
+<div class="line">    └── build/</div>
+<div class="line">        └── keystream_ble.bin       ← Compiled firmware (after build)</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p><b>Note:</b> The keySTREAM Trust Agent (KTA) sources are vendored under <code>main/kta_provisioning/</code> — there is <b>no</b> separate <code>components/kta/</code> folder. The only ESP-IDF component shipped under <code>components/</code> is <code>cryptoauthlib</code>. </p>
+</blockquote>
+<hr  />
+<h2><a class="anchor" id="autotoc_md323"></a>
+Table of Contents</h2>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#hardware-setup--esp32-to-atecc608-wiring">Hardware Setup – ESP32 to ATECC608 Wiring</a></li>
+<li><a href="#firmware-setup--build">Firmware Setup &amp; Build</a></li>
+<li><a href="#flash--monitor">Flash &amp; Monitor</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+<hr  />
+<h2><a class="anchor" id="autotoc_md325"></a>
+Prerequisites</h2>
+<p>Before building and flashing:</p>
+<h3><a class="anchor" id="autotoc_md326"></a>
+Required Hardware &amp; Software</h3>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Item </th><th class="markdownTableHeadNone">Purpose  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ESP32 development board</b> </td><td class="markdownTableBodyNone">Main microcontroller  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ATECC608 Secure Element</b> </td><td class="markdownTableBodyNone">Cryptographic key storage (I2C connected)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>USB Micro-B cable</b> </td><td class="markdownTableBodyNone">Power and data transfer (not charge-only)  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Windows 10/11</b> with Bluetooth </td><td class="markdownTableBodyNone">Host computer for building and flashing  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b><a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/">ESP-IDF v5.3.1</a></b> </td><td class="markdownTableBodyNone">Build framework (install once)  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md327"></a>
+Install USB-to-Serial Driver</h3>
+<p>The ESP32 uses a <b>CP210x USB-to-UART chip</b>. Install the driver:</p>
+<ol type="1">
+<li>Download: <b><a href="https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers">https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers</a></b></li>
+<li>Extract and run <code>CP210xVCPInstaller_x64.exe</code></li>
+<li>Plug in the ESP32 via USB</li>
+<li>Verify in <b>Device Manager → Ports (COM &amp; LPT)</b>: device should appear as <code>Silicon Labs CP210x ... (COM4)</code></li>
+</ol>
+<p>If not visible, try the <b>CH340 driver</b> instead: <b><a href="http://www.wch-ic.com/downloads/CH341SER_EXE.html">http://www.wch-ic.com/downloads/CH341SER_EXE.html</a></b></p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md329"></a>
+Hardware Setup – ESP32 to ATECC608 Wiring</h2>
+<p>Connect the ATECC608 secure element to the ESP32 using the following I2C pins:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">ESP32 Pin </th><th class="markdownTableHeadNone">ATECC608 Pin </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>GND</b> </td><td class="markdownTableBodyNone"><b>GND</b> </td><td class="markdownTableBodyNone">Ground  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>3V3</b> </td><td class="markdownTableBodyNone"><b>3V3</b> </td><td class="markdownTableBodyNone">Power (3.3V)  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>GPIO 21</b> </td><td class="markdownTableBodyNone"><b>SDA</b> </td><td class="markdownTableBodyNone">I2C Data  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>GPIO 22</b> </td><td class="markdownTableBodyNone"><b>SCL</b> </td><td class="markdownTableBodyNone">I2C Clock  </td></tr>
+</table>
+<div class="image">
+<img src="BLE_MCU_COnnection.jpg" alt="" width="500px"/>
+<div class="caption">
+ESP32 to ATECC608 Wiring</div></div>
+<hr  />
+<h2><a class="anchor" id="autotoc_md331"></a>
+Firmware Setup &amp; Build</h2>
+<h3><a class="anchor" id="autotoc_md332"></a>
+Install ESP-IDF (One Time)</h3>
+<p>Download the <b>Offline Installer</b> for Windows from: <b><a href="https://dl.espressif.com/dl/esp-idf/">https://dl.espressif.com/dl/esp-idf/</a></b> <br  />
+ Run the installer, select <b>v5.3.1</b>, and install to <code>C:\Espressif\</code>. The installer lays out:</p>
+<div class="fragment"><div class="line">C:\Espressif\</div>
+<div class="line">├── frameworks\esp-idf-v5.3.1\      ← IDF source &amp; tools</div>
+<div class="line">├── python_env\idf5.3_py3.12_env\   ← Python 3.12 virtual environment</div>
+<div class="line">└── tools\                          ← xtensa toolchain, cmake, ninja, etc.</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md333"></a>
+Activate the ESP-IDF Environment (every new terminal)</h3>
+<p>Every new PowerShell session must source the export script before <code>idf.py</code> is available:</p>
+<div class="fragment"><div class="line">C:\Espressif\frameworks\esp-idf-v5.3.1\export.ps1</div>
+</div><!-- fragment --><p>You should see <code>Done! You can now compile ESP-IDF projects.</code> The **"ESP-IDF v5.3 PowerShell"** Start Menu shortcut performs this automatically.</p>
+<h4><a class="anchor" id="autotoc_md334"></a>
+First-time Python environment setup</h4>
+<p>If activation reports <code>...idf5.3_py3.12_env\Scripts\python.exe doesn't exist!</code>, create the Python environment <b>once</b>, then re-run <code>export.ps1</code>:</p>
+<div class="fragment"><div class="line">python.exe C:\Espressif\frameworks\esp-idf-v5.3.1\tools\idf_tools.py install-python-env</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md335"></a>
+Build Firmware</h3>
+<div class="fragment"><div class="line">cd C:\ESP32_Mobile_APP_X\firmware</div>
+<div class="line">C:\Espressif\frameworks\esp-idf-v5.3.1\export.ps1</div>
+<div class="line">idf.py build</div>
+</div><!-- fragment --><p>A successful build ends with <code>Project build complete.</code> and produces <code>firmware/build/keystream_ble.bin</code>.</p>
+<h3><a class="anchor" id="autotoc_md336"></a>
+Full Clean + Rebuild</h3>
+<p>Use <code>fullclean</code> to remove all build artifacts (and <code>managed_components</code>) and start fresh:</p>
+<div class="fragment"><div class="line">cd C:\ESP32_Mobile_APP_X\firmware</div>
+<div class="line">idf.py fullclean</div>
+<div class="line">idf.py build</div>
+</div><!-- fragment --><hr  />
+<h2><a class="anchor" id="autotoc_md338"></a>
+Flash &amp; Monitor</h2>
+<p>Find your COM port in <b>Device Manager → Ports (COM &amp; LPT)</b> and replace <code>COM4</code> below:</p>
+<div class="fragment"><div class="line"># Flash only</div>
+<div class="line">idf.py -p COM4 flash</div>
+<div class="line"> </div>
+<div class="line"># Monitor only</div>
+<div class="line">idf.py -p COM4 monitor</div>
+<div class="line"> </div>
+<div class="line"># Build + Flash + Monitor (all in one)</div>
+<div class="line">idf.py -p COM4 build flash monitor</div>
+</div><!-- fragment --><p>Press <b>Ctrl + ]</b> to exit monitor. Expected output: <code>Advertising started as ESP32-Keystream</code></p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md340"></a>
+Troubleshooting</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Problem </th><th class="markdownTableHeadNone">Fix  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>idf.py</code> not found </td><td class="markdownTableBodyNone">Run the <code>export.ps1</code> command first to activate ESP-IDF  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>...idf5.3_py3.12_env\Scripts\python.exe doesn't exist!</code> </td><td class="markdownTableBodyNone">Run <code>python.exe C:\Espressif\frameworks\esp-idf-v5.3.1\tools\idf_tools.py install-python-env</code>, then re-run <code>export.ps1</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">COM port not visible </td><td class="markdownTableBodyNone">Install USB driver (CP210x or CH340); restart Device Manager  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Flash fails "could not open port" </td><td class="markdownTableBodyNone">Close the monitor and ensure no other app uses the COM port; try a different (data-capable) USB cable  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Build fails "configured for different project path" </td><td class="markdownTableBodyNone">Run <code>idf.py fullclean</code> then <code>idf.py build</code> again  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Device not in BLE scan </td><td class="markdownTableBodyNone">Check monitor logs — should say <code>Advertising started as ESP32-Keystream</code>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Build errors with KTA library </td><td class="markdownTableBodyNone">Verify the sources under <code>firmware/main/kta_provisioning/</code> are present; try <code>idf.py fullclean</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">Device crashes / reset loop at boot </td><td class="markdownTableBodyNone">Run <code>idf.py -p COM4 erase_flash</code>, then flash again  </td></tr>
+</table>
+<h3><a class="anchor" id="autotoc_md341"></a>
+&lt;tt&gt;ninja failed&lt;/tt&gt; — multiple definition of &lt;tt&gt;salSignHash&lt;/tt&gt;</h3>
+<p><b>Cause:</b> A stub definition of <code>salSignHash</code> in <code>main/main.c</code> conflicts with the real implementation in <code>main/kta_provisioning/SOURCE/salapi/k_sal_crypto.c</code>. <br  />
+ <b>Fix:</b> Remove the stub from <code>main.c</code>; keep only the <code>#include "k_sal_crypto.h"</code> line.</p>
+<h3><a class="anchor" id="autotoc_md342"></a>
+‘undefined reference to 'ble_sal_enqueue_rx’`</h3>
+<p><b>Cause:</b> The BLE backend/SAL source files are not listed in <code>main/CMakeLists.txt</code>. <br  />
+ <b>Fix:</b> In <code>main/CMakeLists.txt</code>, ensure these lines are <b>not</b> commented out inside <code>MAIN_SRCS</code>: </p><div class="fragment"><div class="line">&quot;${MCU_BACKEND_PATH}/backend_${MCU_BACKEND}.c&quot;</div>
+<div class="line">&quot;${MCU_SAL_PATH}/${MCU_BACKEND}_sal.c&quot;</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md343"></a>
+&lt;tt&gt;mingw32-make: No targets specified and no makefile found&lt;/tt&gt;</h3>
+<p><b>Cause:</b> The <code>mcu_bridge_build</code> custom target in <code>main/CMakeLists.txt</code> tried to run <code>make</code> in <code>kta_provisioning/mcu/</code>, but no <code>Makefile</code> exists there. <br  />
+ <b>Fix:</b> Use the current <code>main/CMakeLists.txt</code>, whose <code>elseif(NOT EXISTS "${MCU_DIR}/Makefile")</code> guard skips that custom target automatically. </p>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.9.1-->
+<!-- start footer part -->
+<!-- AUTH RECOVERY — v6: reload ONLY on a genuine auth failure, never while reading -->
+<script type="text/javascript">
+(function() {
+  // Only run if header_custom.html hasn't already loaded (avoid double-init)
+  if (window.__ks401guard) return;
+  window.__ks401guard = true;
+  var AUTH_CHECK_MS = 2 * 60 * 1000;   // background auth probe interval
+  var RELOAD_KEY = '_ks_auth_reloads'; // reload-budget bookkeeping
+  var RELOAD_WINDOW_MS = 60 * 1000;    // window over which the budget applies
+  var MAX_RELOADS = 2;                 // never loop-reload more than this per window
+  var authExpired = false;
+  var noticeShown = false;
+  // Own scroll restoration deterministically instead of the browser's heuristic.
+  if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+  function saveScroll() {
+    try {
+      sessionStorage.setItem('_ks_scroll_y', String(window.scrollY || document.documentElement.scrollTop || 0));
+    } catch (e) {}
+  }
+  // Restore scroll position after a recovery reload.
+  (function() {
+    var saved = null;
+    try { saved = sessionStorage.getItem('_ks_scroll_y'); } catch (e) {}
+    if (saved === null) { return; }
+    try { sessionStorage.removeItem('_ks_scroll_y'); } catch (e) {}
+    var target = parseInt(saved, 10);
+    if (isNaN(target) || target <= 0) { return; }
+    function restore() { window.scrollTo(0, target); }
+    window.addEventListener('load', restore);
+    [0, 100, 300, 600, 1200].forEach(function(d) { setTimeout(restore, d); });
+  })();
+  // Reload budget: prevents an endless reload loop if the session stays expired.
+  function readBudget() {
+    var now = Date.now(), rec = null;
+    try { rec = JSON.parse(sessionStorage.getItem(RELOAD_KEY) || 'null'); } catch (e) {}
+    if (!rec || (now - rec.t) > RELOAD_WINDOW_MS) { rec = { t: now, n: 0 }; }
+    return rec;
+  }
+  function reloadsLeft() { return MAX_RELOADS - readBudget().n; }
+  function noteReload() {
+    var rec = readBudget(); rec.n += 1;
+    try { sessionStorage.setItem(RELOAD_KEY, JSON.stringify(rec)); } catch (e) {}
+  }
+  // Friendly, dismissible notice for situations a silent reload cannot fix.
+  function showNotice(msg, actionLabel, action) {
+    if (noticeShown) { return; }
+    noticeShown = true;
+    var bar = document.createElement('div');
+    bar.setAttribute('role', 'status');
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;background:#202C55;'
+      + 'color:#fff;font-family:Segoe UI,Open Sans,Arial,sans-serif;font-size:14px;padding:12px 16px;'
+      + 'box-shadow:0 -2px 10px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;';
+    var text = document.createElement('span');
+    text.textContent = msg; text.style.flex = '1';
+    bar.appendChild(text);
+    if (actionLabel && typeof action === 'function') {
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = actionLabel;
+      btn.style.cssText = 'background:#2CA3E6;color:#fff;border:0;border-radius:4px;padding:8px 14px;'
+        + 'cursor:pointer;font-weight:600;font-size:13px;';
+      btn.addEventListener('click', action);
+      bar.appendChild(btn);
+    }
+    var close = document.createElement('button');
+    close.type = 'button'; close.textContent = '\u2715';
+    close.setAttribute('aria-label', 'Dismiss');
+    close.style.cssText = 'background:transparent;color:#b8c8e0;border:0;cursor:pointer;font-size:16px;';
+    close.addEventListener('click', function() {
+      if (bar.parentNode) { bar.parentNode.removeChild(bar); }
+      noticeShown = false;
+    });
+    bar.appendChild(close);
+    (document.body || document.documentElement).appendChild(bar);
+  }
+  // Reload so GitLab's auth middleware can re-issue cookies. Preserves scroll and is
+  // bounded by the reload budget so it can never loop.
+  function recoverAuth() {
+    if (reloadsLeft() <= 0) {
+      showNotice('Your session has expired. Please sign in again to continue viewing the documentation.',
+        'Sign in', function() { window.location.reload(); });
+      return;
+    }
+    saveScroll();
+    noteReload();
+    window.location.reload();
+  }
+  // Background probe: detect a real auth failure without touching the visible page.
+  // Defer the recovery reload until the tab is hidden so reading is never broken.
+  setInterval(function() {
+    fetch(window.location.href, {
+      method: 'HEAD',
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'manual'
+    }).then(function(r) {
+      if (r.status === 401 || r.status === 403 || r.type === 'opaqueredirect') {
+        authExpired = true;
+        if (document.hidden) { recoverAuth(); } // reload only while hidden
+      } else if (r.status === 402) {
+        // Payment/quota limit — a reload cannot fix this, so guide the user instead.
+        showNotice('This documentation is temporarily unavailable due to a hosting limit. Please try again later or contact the documentation owner.');
+      }
+    }).catch(function() { /* network error — not an auth failure, skip reload */ });
+  }, AUTH_CHECK_MS);
+  // When the user looks away, quietly refresh a known-expired session so it is valid
+  // again on return. Never reloads while the tab is visible.
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden && authExpired) { recoverAuth(); }
+  });
+})();
+</script>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer"><b></b>
+    Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
+	- Generated on Mon Jul 6 2026 21:24:00 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+  </ul>
+</div>
+</body>
+</html>
