@@ -404,8 +404,10 @@ Software</h3>
 <td class="markdownTableBodyNone">SG41 project sources </td><td class="markdownTableBodyNone"><code>keystream_connect/keystream_connect.X</code>  </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">Gateway build scripts </td><td class="markdownTableBodyNone"><code>SG41_UART_X\build_gateway.bat</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>MinGW GCC</b> </td><td class="markdownTableBodyNone">Must be installed and on <code>PATH</code> — (to build <code>kta_gateway.exe</code>)  </td></tr>
 </table>
-<p>Additional host tooling for the Windows gateway: <b>MPLAB X IDE v6.30+</b> with <b>XC32 v5.00+</b> (to build/flash the MCU) and <b>MinGW GCC</b> on <code>PATH</code> (to build <code>kta_gateway.exe</code>).</p>
+<p>Additional host tooling for the Windows gateway: <b>MPLAB X IDE v6.30+</b> with <b>XC32 v5.00+</b> (to build/flash the MCU). <b>MinGW GCC must be installed and available on <code>PATH</code></b> before running <code>build_gateway.bat</code> — without it the gateway build will fail.</p>
 <hr  />
 <h2><a class="anchor" id="autotoc_md520"></a>
 Prerequisites</h2>
@@ -422,7 +424,7 @@ Prerequisites</h2>
 <h3><a class="anchor" id="autotoc_md521"></a>
 Package Setup</h3>
 <p>Before building, clone the repository:</p>
-<div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning</div>
+<div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning.git</div>
 </div><!-- fragment --><p>Then configure the firmware package using the provided script:</p>
 <ol type="1">
 <li>Navigate to <code>keySTREAM_provisioning\PreIntegrated-Examples</code> in the package</li>
@@ -469,11 +471,11 @@ Configuration</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> </td><td class="markdownTableBodyNone">Fleet profile UID provided from keySTREAM  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>UART_COM_PORT</code> </td><td class="markdownTableBodyNone">COM port <b>number</b> of the board (integer, no quotes)  </td></tr>
+<td class="markdownTableBodyNone"><code>UART_COM_PORT</code> </td><td class="markdownTableBodyNone">COM port as a <b>wide string</b> literal — <code>L"COMx"</code>  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>UART_COM_PORT_STR</code> </td><td class="markdownTableBodyNone">COM port <b>string</b> in the form <code>"COMx"</code> (quoted)  </td></tr>
+<td class="markdownTableBodyNone"><code>UART_COM_PORT_STR</code> </td><td class="markdownTableBodyNone">COM port as a <b>narrow string</b> literal — <code>"COMx"</code>  </td></tr>
 </table>
-<p>Both macros must point to the <b>same</b> physical COM port. <code>UART_COM_PORT</code> is the numeric value and <code>UART_COM_PORT_STR</code> is the full string form of that same port.</p>
+<p>Both macros must name the <b>same</b> physical COM port. <code>UART_COM_PORT</code> uses the wide-string form (<code>L"COMx"</code>) and <code>UART_COM_PORT_STR</code> uses the standard narrow-string form (<code>"COMx"</code>).</p>
 <h3><a class="anchor" id="autotoc_md526"></a>
 Step 1 — Find the COM port in Device Manager</h3>
 <ol type="1">
@@ -484,20 +486,22 @@ Step 1 — Find the COM port in Device Manager</h3>
 </ol>
 <h3><a class="anchor" id="autotoc_md527"></a>
 Step 2 — Map the port to both macros</h3>
-<p>If Device Manager shows <b>COM6</b>, set the macros as follows:</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#define UART_COM_PORT       6        </span><span class="comment">/* numeric port number */</span><span class="preprocessor"></span></div>
-<div class="line"><span class="preprocessor">#define UART_COM_PORT_STR   &quot;COM6&quot;   </span><span class="comment">/* same port as a string */</span><span class="preprocessor"></span></div>
+<p>If Device Manager shows <b>COM5</b>, set the macros as follows:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#define UART_COM_PORT     L&quot;COM5&quot;   </span><span class="comment">/* wide-string port name */</span><span class="preprocessor"></span></div>
+<div class="line"><span class="preprocessor">#define UART_COM_PORT_STR  &quot;COM5&quot;   </span><span class="comment">/* narrow-string port name */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md528"></a>
 Example configurations</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Device Manager shows </th><th class="markdownTableHeadNone"><code>UART_COM_PORT</code> </th><th class="markdownTableHeadNone"><code>UART_COM_PORT_STR</code>  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">COM3 </td><td class="markdownTableBodyNone"><code>3</code> </td><td class="markdownTableBodyNone"><code>"COM3"</code>  </td></tr>
+<td class="markdownTableBodyNone">COM3 </td><td class="markdownTableBodyNone"><code>L"COM3"</code> </td><td class="markdownTableBodyNone"><code>"COM3"</code>  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">COM6 </td><td class="markdownTableBodyNone"><code>6</code> </td><td class="markdownTableBodyNone"><code>"COM6"</code>  </td></tr>
+<td class="markdownTableBodyNone">COM5 </td><td class="markdownTableBodyNone"><code>L"COM5"</code> </td><td class="markdownTableBodyNone"><code>"COM5"</code>  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">COM11 </td><td class="markdownTableBodyNone"><code>11</code> </td><td class="markdownTableBodyNone"><code>"COM11"</code>  </td></tr>
+<td class="markdownTableBodyNone">COM6 </td><td class="markdownTableBodyNone"><code>L"COM6"</code> </td><td class="markdownTableBodyNone"><code>"COM6"</code>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">COM11 </td><td class="markdownTableBodyNone"><code>L"COM11"</code> </td><td class="markdownTableBodyNone"><code>"COM11"</code>  </td></tr>
 </table>
 <blockquote class="doxtable">
 <p>Re-check Device Manager after reconnecting the board — Windows may assign a different COM port number. Update <b>both</b> macros whenever the port changes. </p>
@@ -507,9 +511,8 @@ Example configurations</h3>
 Integration Steps</h2>
 <ol type="1">
 <li>Open MPLAB X IDE and load <code>keystream_connect/keystream_connect.X</code>.</li>
-<li>Clean and build the project with <code>Shift+F11</code>.</li>
 <li>Connect the EV89U05A board to the host PC over USB.</li>
-<li>Flash the SG41 application by pressing <code>F5</code> in MPLAB X.</li>
+<li>In MPLAB X, click <b>Clean and Build</b> from the toolbar. Once the build completes successfully, click <b>Run Project</b> (the play button) to flash the SG41 application.</li>
 <li>Open a command prompt in <code>SG41_UART_X</code> and run <code>build_gateway.bat</code> to build the UART gateway.</li>
 <li>Verify that the SG41 UART COM port matches the values configured in <code>App_Config.h</code>.</li>
 <li>Start the gateway by running <code>gateway\kta_gateway.exe</code>.</li>
@@ -740,7 +743,7 @@ Troubleshooting log output</h3>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Tue Jul 7 2026 12:23:36 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>
