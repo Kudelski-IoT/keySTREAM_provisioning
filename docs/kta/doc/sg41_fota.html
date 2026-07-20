@@ -355,7 +355,7 @@ $(document).ready(function(){initNavTree('sg41_fota.html',''); initResizable(); 
 <div class="title">EV89U05A + WINCS02 </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md472"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md476"></a>
 EV89U05A + WINCS02</h1>
 <p>Pre-configured example for keySTREAM onboarding using the CryptoAuth Pro Trust Platform Development Kit (EV89U05A) with WINCS02 Wi-Fi connectivity.</p>
 <p> 
@@ -364,7 +364,7 @@ EV89U05A + WINCS02</h1>
 </div>
 </p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md474"></a>
+<h2><a class="anchor" id="autotoc_md478"></a>
 Board Details</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -379,9 +379,9 @@ Board Details</h2>
 <td class="markdownTableBodyNone"><b>Execution Model</b> </td><td class="markdownTableBodyNone">Baremetal (no RTOS / no FreeRTOS)  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md476"></a>
+<h2><a class="anchor" id="autotoc_md480"></a>
 Setup Requirements</h2>
-<h3><a class="anchor" id="autotoc_md477"></a>
+<h3><a class="anchor" id="autotoc_md481"></a>
 Hardware</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -401,7 +401,7 @@ Hardware</h3>
 <blockquote class="doxtable">
 <p><b>WINCS02 Firmware:</b> Version 3.0.0 or higher required. Update using the <a href="https://onlinedocs.microchip.com/oxy/GUID-B7A95EBE-7BB2-4AF4-A525-700FB718E47A-en-US-3/GUID-346DCACA-9907-4FCC-A018-B2BBA0C98FDC.html">Device Firmware Update (DFU) guide</a>. </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md478"></a>
+<h3><a class="anchor" id="autotoc_md482"></a>
 Software</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -410,7 +410,7 @@ Software</h3>
 <td class="markdownTableBodyNone">MPLAB X IDE version 6.15 or above </td><td class="markdownTableBodyNone"><a href="https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide">Download from Microchip</a>  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md480"></a>
+<h2><a class="anchor" id="autotoc_md484"></a>
 Hardware Connection</h2>
 <ol type="1">
 <li>Connect the <b>WINCS02</b> add-on board on the <b>MicroBus 2 (MB2)</b> connector as shown in the image above.</li>
@@ -423,7 +423,7 @@ Hardware Connection</h2>
 <div class="caption">
 WINCS02 Add-On Board (EV68G27A)</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md482"></a>
+<h2><a class="anchor" id="autotoc_md486"></a>
 Prerequisites</h2>
 <p>Before building or running this example, complete the following in the keySTREAM portal:</p>
 <table class="markdownTable">
@@ -437,8 +437,14 @@ Prerequisites</h2>
 <blockquote class="doxtable">
 <p>These steps must be completed <b>before</b> configuring firmware and running the provisioning script. </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md483"></a>
+<h3><a class="anchor" id="autotoc_md487"></a>
 Package Setup</h3>
+<h4><a class="anchor" id="autotoc_md488"></a>
+Note: Enable Long Path Support on Windows</h4>
+<p>When cloning this repository, you may encounter issues related to long file paths on Windows. To avoid this, ensure you clone the repository to a short path (e.g., directly under <code>C:\</code>).</p>
+<p>Before cloning, run the following command to enable support for long paths in Git:</p>
+<div class="fragment"><div class="line">git config --global core.longpaths true</div>
+</div><!-- fragment --><p>Once this is set, you can proceed to clone the repository without path length issues.</p>
 <p>Before building, clone the repository:</p>
 <div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning.git</div>
 </div><!-- fragment --><p>Then configure the firmware package using the provided script:</p>
@@ -457,14 +463,14 @@ Package Setup</h3>
 <div class="caption">
 Config.ps1 — Package Configuration</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md485"></a>
+<h2><a class="anchor" id="autotoc_md490"></a>
 Enabling KTA Debug Logs</h2>
 <p>KTA runtime logs (initialization, provisioning rounds, error codes) are controlled by the <code>LOG_KTA_ENABLE</code> macro in <b><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></b>.</p>
-<h3><a class="anchor" id="autotoc_md486"></a>
+<h3><a class="anchor" id="autotoc_md491"></a>
 Location of ktaConfig.h</h3>
 <p>After running <code>Config.ps1</code>, the file is generated at:</p>
 <div class="fragment"><div class="line">SG41_X/keystream_connect/keystream_fota/src/config/default/library/kta_lib/SOURCE/include/ktaConfig.h</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md487"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md492"></a>
 Enable the logs</h3>
 <p>Open <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> and locate the <b>LOG LEVEL CONFIGURATION - USER SECTION</b>. Uncomment the <code>LOG_KTA_ENABLE</code> line and set the desired level:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_DEBUG   // enable DEBUG logs (most verbose)</span></div>
@@ -485,7 +491,7 @@ Enable the logs</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_NONE</code> </td><td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">No logs  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md488"></a>
+<h3><a class="anchor" id="autotoc_md493"></a>
 View the logs</h3>
 <ol type="1">
 <li>Rebuild and reflash the firmware in MPLAB X IDE after changing the log level.</li>
@@ -493,7 +499,7 @@ View the logs</h3>
 <li>Reset the board — KTA logs appear as the provisioning flow runs.</li>
 </ol>
 <hr  />
-<h2><a class="anchor" id="autotoc_md490"></a>
+<h2><a class="anchor" id="autotoc_md495"></a>
 FOTA Feature</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -501,7 +507,7 @@ FOTA Feature</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><b>FOTA (Firmware Over-The-Air)</b> </td><td class="markdownTableBodyNone">To try the FOTA feature, follow this guide: <a class="el" href="sg41_fota__non_t_p_d_s.html">Pre-Configure FOTA Guide</a>  </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md491"></a>
+<h2><a class="anchor" id="autotoc_md496"></a>
 References</h2>
 <ul>
 <li><a href="https://www.microchip.com/en-us/development-tool/EV89U05A">EV89U05A Product Page</a></li>
@@ -629,7 +635,7 @@ References</h2>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

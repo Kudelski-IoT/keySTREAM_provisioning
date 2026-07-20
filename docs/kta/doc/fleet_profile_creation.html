@@ -355,16 +355,16 @@ $(document).ready(function(){initNavTree('fleet_profile_creation.html',''); init
 <div class="title">Fleet Profile Creation Guide </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md64"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md65"></a>
 Fleet Profile Creation Guide</h1>
 <p>Use this page to create a Fleet Profile in the keySTREAM portal and map it to firmware configuration.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md66"></a>
+<h2><a class="anchor" id="autotoc_md67"></a>
 1. Prerequisite</h2>
 <p>You must have a keySTREAM tenant/account before creating a Fleet Profile.</p>
 <p>Portal link: <a href="https://mc.obp.iot.kudelski.com/products/iot">https://mc.obp.iot.kudelski.com/products/iot</a></p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md68"></a>
+<h2><a class="anchor" id="autotoc_md69"></a>
 2. Create keySTREAM account (if needed)</h2>
 <ol type="1">
 <li>Open the portal link and click Register.</li>
@@ -384,7 +384,7 @@ Registration form</div></div>
 <div class="caption">
 Email verification</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md70"></a>
+<h2><a class="anchor" id="autotoc_md71"></a>
 3. Sign in to your tenant</h2>
 <ol type="1">
 <li>Open the onboarding email from Kudelski IoT.</li>
@@ -396,9 +396,9 @@ Email verification</div></div>
 <div class="caption">
 Tenant login</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md72"></a>
+<h2><a class="anchor" id="autotoc_md73"></a>
 4. Create a standard Fleet Profile</h2>
-<h3><a class="anchor" id="autotoc_md73"></a>
+<h3><a class="anchor" id="autotoc_md74"></a>
 4.1 Navigation steps</h3>
 <ol type="1">
 <li>Go to Fleet and PKI in the left panel.</li>
@@ -417,7 +417,7 @@ Create fleet profile</div></div>
 <img src="profile_details.png" alt="" width="900px"/>
 <div class="caption">
 Fleet profile details</div></div>
-<h3><a class="anchor" id="autotoc_md74"></a>
+<h3><a class="anchor" id="autotoc_md75"></a>
 4.2 Fleet profile fields</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -431,7 +431,7 @@ Fleet profile details</div></div>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">Manufacturer </td><td class="markdownTableBodyNone">No </td><td class="markdownTableBodyNone">Informational manufacturer.  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md75"></a>
+<h3><a class="anchor" id="autotoc_md76"></a>
 4.3 Root CA configuration</h3>
 <p>Click NEXT and configure Root CA details:</p>
 <table class="markdownTable">
@@ -456,7 +456,7 @@ Root CA configuration</div></div>
 <div class="caption">
 Fleet profile list</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md77"></a>
+<h2><a class="anchor" id="autotoc_md78"></a>
 5. Create a 2-tier Fleet Profile (optional)</h2>
 <p>Use this only if you need a 2-tier PKI model.</p>
 <ol type="1">
@@ -485,7 +485,7 @@ Fleet profile list</div></div>
 <div class="caption">
 2-tier fleet profile list</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md79"></a>
+<h2><a class="anchor" id="autotoc_md80"></a>
 6. Firmware mapping (important)</h2>
 <p>After creating a Fleet Profile, copy its final public UID and set it in the firmware configuration file for your device:</p>
 <table class="markdownTable">
@@ -510,7 +510,7 @@ Fleet profile list</div></div>
 <div class="fragment"><div class="line"><span class="preprocessor">#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID  &quot;9S4F:example.org:dp:network:device&quot;</span></div>
 </div><!-- fragment --><p>Without this value, device registration/provisioning will fail.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md81"></a>
+<h2><a class="anchor" id="autotoc_md82"></a>
 7. Device Claiming</h2>
 <p>The keySTREAM portal supports two methods to associate (claim) ECC608 TrustMANAGER devices with your tenant:</p>
 <ol type="1">
@@ -519,10 +519,10 @@ Fleet profile list</div></div>
 </ol>
 <p>Choose the approach that matches how you acquire devices.</p>
 <hr  />
-<h3><a class="anchor" id="autotoc_md83"></a>
+<h3><a class="anchor" id="autotoc_md84"></a>
 7.1 Claiming Devices via Lite Manifest File</h3>
 <p>Use this method if you already have ECC608 TrustMANAGER devices (loose units or on boards) and need to register them manually.</p>
-<h4><a class="anchor" id="autotoc_md84"></a>
+<h4><a class="anchor" id="autotoc_md85"></a>
 Generate the Lite Manifest (TPDS)</h4>
 <ol type="1">
 <li>Download and install the latest Trust Platform Design Suite (TPDS): <a href="https://www.microchip.com/en-us/products/security/trust-platform/tpds">https://www.microchip.com/en-us/products/security/trust-platform/tpds</a></li>
@@ -555,7 +555,7 @@ Generating the Lite Manifest in TPDS</div></div>
 <li>Regenerate if you later add more devices. </li>
 </ul>
 </blockquote>
-<h4><a class="anchor" id="autotoc_md85"></a>
+<h4><a class="anchor" id="autotoc_md86"></a>
 Upload the Manifest to keySTREAM</h4>
 <ol type="1">
 <li>Log into the keySTREAM portal.</li>
@@ -580,7 +580,7 @@ Importing a Lite Manifest</div></div>
 </ul>
 </blockquote>
 <hr  />
-<h3><a class="anchor" id="autotoc_md87"></a>
+<h3><a class="anchor" id="autotoc_md88"></a>
 7.2 Device Claiming via Autoclaim Flow</h3>
 <ul>
 <li>The Autoclaim flow applies only if you create the keySTREAM account AND register your microchipdirect.com email address <b>before</b> purchasing ECC608 TrustMANAGER devices via <a href="https://www.microchipdirect.com/trust-platform">this link</a>.</li>
@@ -746,7 +746,7 @@ Autoclaim form</div></div>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

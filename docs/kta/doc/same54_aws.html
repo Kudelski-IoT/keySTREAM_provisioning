@@ -355,7 +355,7 @@ $(document).ready(function(){initNavTree('same54_aws.html',''); initResizable();
 <div class="title">ATSAME54-XPRO + AWS IoT Core </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md438"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md441"></a>
 ATSAME54-XPRO + AWS IoT Core</h1>
 <p>Pre-configured example for keySTREAM onboarding using the ATSAME54-XPRO development board with Ethernet connectivity and AWS IoT Core integration.</p>
 <p> 
@@ -367,7 +367,7 @@ ATSAME54-XPRO + AWS IoT Core</h1>
 </div>
 </p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md440"></a>
+<h2><a class="anchor" id="autotoc_md443"></a>
 Board Details</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -384,9 +384,9 @@ Board Details</h2>
 <td class="markdownTableBodyNone"><b>Execution Model</b> </td><td class="markdownTableBodyNone">FreeRTOS-based application flow  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md442"></a>
+<h2><a class="anchor" id="autotoc_md445"></a>
 Setup Requirements</h2>
-<h3><a class="anchor" id="autotoc_md443"></a>
+<h3><a class="anchor" id="autotoc_md446"></a>
 Hardware</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -404,7 +404,7 @@ Hardware</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">Micro USB cable </td><td class="markdownTableBodyNone">—  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md444"></a>
+<h3><a class="anchor" id="autotoc_md447"></a>
 Optional TrustMANAGER Purchase and Connection Reference</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -417,7 +417,7 @@ Optional TrustMANAGER Purchase and Connection Reference</h3>
   <img src="SAME54_EXT2.png" alt="SAME54 external connection" style="max-width:500px; width:100%; height:auto;" />
 </div>
 </p>
-<h3><a class="anchor" id="autotoc_md445"></a>
+<h3><a class="anchor" id="autotoc_md448"></a>
 Software</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -428,7 +428,7 @@ Software</h3>
 <td class="markdownTableBodyNone">Serial monitor (e.g. TeraTerm) </td><td class="markdownTableBodyNone">—  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md447"></a>
+<h2><a class="anchor" id="autotoc_md450"></a>
 Prerequisites</h2>
 <p>Before building or running this example, complete the following steps in the keySTREAM portal:</p>
 <table class="markdownTable">
@@ -442,8 +442,14 @@ Prerequisites</h2>
 <blockquote class="doxtable">
 <p>This step must be completed <b>before</b> configuring firmware and running the provisioning script. </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md448"></a>
+<h3><a class="anchor" id="autotoc_md451"></a>
 Package Setup</h3>
+<h4><a class="anchor" id="autotoc_md452"></a>
+Note: Enable Long Path Support on Windows</h4>
+<p>When cloning this repository, you may encounter issues related to long file paths on Windows. To avoid this, ensure you clone the repository to a short path (e.g., directly under <code>C:\</code>).</p>
+<p>Before cloning, run the following command to enable support for long paths in Git:</p>
+<div class="fragment"><div class="line">git config --global core.longpaths true</div>
+</div><!-- fragment --><p>Once this is set, you can proceed to clone the repository without path length issues.</p>
 <p>Before building, clone the repository:</p>
 <div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning.git</div>
 </div><!-- fragment --><p>Then configure the firmware package using the provided script:</p>
@@ -462,7 +468,7 @@ Package Setup</h3>
 <div class="caption">
 Config.ps1 — Package Configuration</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md450"></a>
+<h2><a class="anchor" id="autotoc_md454"></a>
 Quick Start</h2>
 <p>Follow the step-by-step provisioning guide:</p>
 <p><a class="el" href="fleet_profile_creation.html">keySTREAM Pre-Configured Examples – Getting Started</a></p>
@@ -474,14 +480,14 @@ Quick Start</h2>
 <li>Open serial monitor</li>
 </ol>
 <hr  />
-<h2><a class="anchor" id="autotoc_md452"></a>
+<h2><a class="anchor" id="autotoc_md456"></a>
 Enabling KTA Debug Logs</h2>
 <p>KTA runtime logs (initialization, provisioning rounds, error codes) are controlled by the <code>LOG_KTA_ENABLE</code> macro in <b><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></b>.</p>
-<h3><a class="anchor" id="autotoc_md453"></a>
+<h3><a class="anchor" id="autotoc_md457"></a>
 Location of ktaConfig.h</h3>
 <p>After running <code>Config.ps1</code>, the file is generated at:</p>
 <div class="fragment"><div class="line">SAME54_X/keystream_connect/firmware/common/kta_provisioning/SOURCE/include/ktaConfig.h</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md454"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md458"></a>
 Enable the logs</h3>
 <p>Open <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> and locate the <b>LOG LEVEL CONFIGURATION - USER SECTION</b>. Uncomment the <code>LOG_KTA_ENABLE</code> line and set the desired level:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_DEBUG   // enable DEBUG logs (most verbose)</span></div>
@@ -502,7 +508,7 @@ Enable the logs</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_NONE</code> </td><td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">No logs  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md455"></a>
+<h3><a class="anchor" id="autotoc_md459"></a>
 View the logs</h3>
 <ol type="1">
 <li>Rebuild and reflash the firmware in MPLAB X IDE after changing the log level.</li>
@@ -510,7 +516,7 @@ View the logs</h3>
 <li>Reset the board — KTA logs appear as the provisioning flow runs.</li>
 </ol>
 <hr  />
-<h2><a class="anchor" id="autotoc_md457"></a>
+<h2><a class="anchor" id="autotoc_md461"></a>
 References</h2>
 <ul>
 <li><a href="https://www.microchip.com/en-us/development-tool/ATSAME54-XPRO">ATSAME54-XPRO Product Page</a></li>
@@ -638,7 +644,7 @@ References</h2>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

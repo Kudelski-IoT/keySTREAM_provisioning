@@ -355,10 +355,10 @@ $(document).ready(function(){initNavTree('harmony.html',''); initResizable(); })
 <div class="title">MPLAB Harmony 3 Integration Guide </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md154"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md155"></a>
 MPLAB Harmony 3 Integration Guide</h1>
 <p>Complete guide for integrating keySTREAM Trusted Agent (KTA) library into MPLAB Harmony 3 projects with support for Microchip SAM/PIC32 MCUs.</p>
-<h2><a class="anchor" id="autotoc_md155"></a>
+<h2><a class="anchor" id="autotoc_md156"></a>
 MPLAB Harmony 3 Overview</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -376,7 +376,7 @@ MPLAB Harmony 3 Overview</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><b>License</b> </td><td class="markdownTableBodyNone">Apache 2.0  </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md156"></a>
+<h2><a class="anchor" id="autotoc_md157"></a>
 Harmony 3 Architecture</h2>
 <div class="fragment"><div class="line">┌─────────────────────────────────────────┐</div>
 <div class="line">│       Application Layer                 │</div>
@@ -403,7 +403,7 @@ Harmony 3 Architecture</h2>
 <div class="line">┌─────────────────────────────────────────┐</div>
 <div class="line">│  Hardware (Peripheral Drivers)          │</div>
 <div class="line">└─────────────────────────────────────────┘</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md157"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md158"></a>
 KTA Integration Layers</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -419,7 +419,7 @@ KTA Integration Layers</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><b>Application</b> </td><td class="markdownTableBodyNone">User logic </td><td class="markdownTableBodyNone">All layers above  </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md158"></a>
+<h2><a class="anchor" id="autotoc_md159"></a>
 Typical Project Structure</h2>
 <div class="fragment"><div class="line">harmony-project/</div>
 <div class="line">├── src/</div>
@@ -443,16 +443,16 @@ Typical Project Structure</h2>
 <div class="line">│       ├── src/</div>
 <div class="line">│       └── Makefile</div>
 <div class="line">└── README.md</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md159"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md160"></a>
 Installation Steps</h2>
-<h3><a class="anchor" id="autotoc_md160"></a>
+<h3><a class="anchor" id="autotoc_md161"></a>
 Step 1: Create New Harmony Project</h3>
 <div class="fragment"><div class="line">1. Open MPLAB X IDE</div>
 <div class="line">2. File &gt; New Project &gt; &quot;Microchip Embedded &gt; 32-bit MCU (PIC32/ARM)&quot;</div>
 <div class="line">3. Select your target MCU (e.g., ATSAME54P20A)</div>
 <div class="line">4. Choose &quot;Start from scratch&quot;</div>
 <div class="line">5. Finish project creation</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md161"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md162"></a>
 Step 2: Launch Harmony Content Manager</h3>
 <div class="fragment"><div class="line">1. Within project: Tools &gt; Embedded &gt; MPLAB Harmony 3 Content Manager</div>
 <div class="line">2. Search for desired components:</div>
@@ -460,7 +460,7 @@ Step 2: Launch Harmony Content Manager</h3>
 <div class="line">   - &quot;CRYPTO&quot; (optional, if using SW crypto)</div>
 <div class="line">   - &quot;TCPIP&quot; (if using Ethernet/WiFi)</div>
 <div class="line">3. Click &quot;Finish&quot; to integrate</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md162"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md163"></a>
 Step 3: Configure SERCOM for KTA</h3>
 <p><b>For I2C (Secure Element):</b></p>
 <table class="markdownTable">
@@ -500,14 +500,14 @@ Step 3: Configure SERCOM for KTA</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><b>RX Pin</b> </td><td class="markdownTableBodyNone">PA11 (example)  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md163"></a>
+<h3><a class="anchor" id="autotoc_md164"></a>
 Step 4: Add KTA Library</h3>
 <div class="fragment"><div class="line">1. Copy KTA source files to src/kta/</div>
 <div class="line">2. Update project include paths:</div>
 <div class="line">   - Properties &gt; xc32 &gt; xc32-cpp &gt; Include Directories</div>
 <div class="line">   - Add: &quot;../src/kta/include&quot;</div>
 <div class="line">3. Update Linker Paths if using pre-compiled KTA library</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md164"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md165"></a>
 Step 5: Configure KTA HAL</h3>
 <p>Edit <code>src/config/default/kta/kta_hal.c</code>:</p>
 <div class="fragment"><div class="line"><span class="comment">/* Secure Element I2C Interface */</span></div>
@@ -523,9 +523,9 @@ Step 5: Configure KTA HAL</h3>
 <div class="line"> </div>
 <div class="line"><span class="comment">/* Tick Timer */</span></div>
 <div class="line"><span class="preprocessor">#define KTA_TICK_SOURCE     TC0_TIMER_COMPARE</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md165"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md166"></a>
 Configuration Files</h2>
-<h3><a class="anchor" id="autotoc_md166"></a>
+<h3><a class="anchor" id="autotoc_md167"></a>
 Key Configuration Headers</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -539,7 +539,7 @@ Key Configuration Headers</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>kta_app.h</code> </td><td class="markdownTableBodyNone">Application-specific KTA setup  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md167"></a>
+<h3><a class="anchor" id="autotoc_md168"></a>
 Example kta_config.h</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#define KTA_DEBUG           1  // Enable debug output</span></div>
 <div class="line"><span class="preprocessor">#define KTA_CRYPTO_HW       1  // Use ATECC608 (vs. software)</span></div>
@@ -547,9 +547,9 @@ Example kta_config.h</h3>
 <div class="line"><span class="preprocessor">#define KTA_FOTA_ENABLED    1  // FOTA support</span></div>
 <div class="line"><span class="preprocessor">#define KTA_MAX_DEVICES     1  // Max concurrent devices</span></div>
 <div class="line"><span class="preprocessor">#define KTA_MAX_MESSAGES    32 // Message queue size</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md168"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md169"></a>
 Middleware Integration</h2>
-<h3><a class="anchor" id="autotoc_md169"></a>
+<h3><a class="anchor" id="autotoc_md170"></a>
 Cryptography</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -564,7 +564,7 @@ Cryptography</h3>
 <td class="markdownTableBodyNone"><b>Random</b> </td><td class="markdownTableBodyNone">ATECC608 TRNG </td><td class="markdownTableBodyNone">Harmony Crypto (weak)  </td></tr>
 </table>
 <p><b>Recommendation</b>: Always use ATECC608 for private key operations; use Harmony Crypto for hashing.</p>
-<h3><a class="anchor" id="autotoc_md170"></a>
+<h3><a class="anchor" id="autotoc_md171"></a>
 Networking (TCP/IP)</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -578,9 +578,9 @@ Networking (TCP/IP)</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><b>TLS 1.2</b> </td><td class="markdownTableBodyNone">Harmony NET (OpenSSL) </td><td class="markdownTableBodyNone">ECC-capable  </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md171"></a>
+<h2><a class="anchor" id="autotoc_md172"></a>
 Development Workflow</h2>
-<h3><a class="anchor" id="autotoc_md172"></a>
+<h3><a class="anchor" id="autotoc_md173"></a>
 1. Initialize Application</h3>
 <div class="fragment"><div class="line"><span class="comment">/* app_init.c */</span></div>
 <div class="line"><span class="preprocessor">#include &quot;kta.h&quot;</span></div>
@@ -590,7 +590,7 @@ Development Workflow</h2>
 <div class="line">    KTA_SetSecureElement(SE_I2C_PORT);</div>
 <div class="line">    KTA_EnableDebug(UART_PORT);</div>
 <div class="line">}</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md173"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md174"></a>
 2. Main Loop</h3>
 <div class="fragment"><div class="line"><span class="comment">/* app.c */</span></div>
 <div class="line"><span class="keywordtype">void</span> APP_Tasks(<span class="keywordtype">void</span>) {</div>
@@ -613,28 +613,28 @@ Development Workflow</h2>
 <div class="line">            <span class="keywordflow">break</span>;</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md174"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md175"></a>
 3. Provisioning Hook</h3>
 <div class="fragment"><div class="line"><span class="comment">/* Implement KTA provisioning callback */</span></div>
 <div class="line"><span class="keywordtype">void</span> KTA_OnProvisioningComplete(KTA_Device_t *device) {</div>
 <div class="line">    LED_SetStatus(LED_GREEN, LED_ON);</div>
 <div class="line">    UART_WriteString(<span class="stringliteral">&quot;Device provisioned!\r\n&quot;</span>);</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md175"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md176"></a>
 Build &amp; Debug</h2>
-<h3><a class="anchor" id="autotoc_md176"></a>
+<h3><a class="anchor" id="autotoc_md177"></a>
 Building the Project</h3>
 <div class="fragment"><div class="line">1. Select project in MPLAB X IDE</div>
 <div class="line">2. Click Clean and Build from the toolbar</div>
 <div class="line">3. Check console for errors</div>
 <div class="line">4. Resolve missing includes or linker errors</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md177"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md178"></a>
 Debugging with EDBG</h3>
 <div class="fragment"><div class="line">1. Project &gt; Set Configuration &gt; Customize</div>
 <div class="line">2. Debug Tab &gt; Debugger: Embedded Debugger (EDBG)</div>
 <div class="line">3. Debug Main Project (Ctrl+F5)</div>
 <div class="line">4. Use Breakpoints, Watch variables, Memory view</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md178"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md179"></a>
 UART Console Output</h3>
 <div class="fragment"><div class="line">1. Tools &gt; Serial Monitor (or Tera Term)</div>
 <div class="line">2. Set baud: 115200</div>
@@ -642,7 +642,7 @@ UART Console Output</h3>
 <div class="line">   - &quot;[KTA] Initializing...&quot;</div>
 <div class="line">   - &quot;[KTA] SE detected: ATECC608&quot;</div>
 <div class="line">   - &quot;[KTA] Provisioning token: xxxxxxxx&quot;</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md179"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md180"></a>
 Best Practices</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -662,7 +662,7 @@ Best Practices</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><b>Profile power consumption</b> </td><td class="markdownTableBodyNone">Optimize sleep/wake cycles  </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md180"></a>
+<h2><a class="anchor" id="autotoc_md181"></a>
 Troubleshooting</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -678,7 +678,7 @@ Troubleshooting</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><b>Code size &gt; Flash</b> </td><td class="markdownTableBodyNone">Too many features enabled </td><td class="markdownTableBodyNone">Reduce KTA features in kta_config.h  </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md181"></a>
+<h2><a class="anchor" id="autotoc_md182"></a>
 References</h2>
 <ul>
 <li><a href="https://microchipdeveloper.com/harmony3:start">MPLAB Harmony 3 Documentation</a></li>
@@ -808,7 +808,7 @@ References</h2>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

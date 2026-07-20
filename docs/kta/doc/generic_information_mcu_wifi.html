@@ -355,7 +355,7 @@ $(document).ready(function(){initNavTree('generic_information_mcu_wifi.html','')
 <div class="title">keySTREAM Integration Guide — MCU with Wi-Fi / Ethernet (Direct Cloud) </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md135"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md136"></a>
 keySTREAM Integration Guide — MCU with Wi-Fi / Ethernet</h1>
 <p>This page covers integrating the <b>keySTREAM Trusted Agent (KTA)</b> on an MCU that connects <b>directly</b> to the keySTREAM cloud over <b>Wi-Fi</b> or <b>Ethernet</b>.</p>
 <p>Use this page when your device has its own IP connectivity and does <b>not</b> need an intermediate gateway.</p>
@@ -367,7 +367,7 @@ keySTREAM Integration Guide — MCU with Wi-Fi / Ethernet</h1>
 <div class="caption">
 Software Architecture — MCU with Direct Cloud Communication</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md137"></a>
+<h2><a class="anchor" id="autotoc_md138"></a>
 Quick Understanding</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -382,7 +382,7 @@ Quick Understanding</h2>
 <td class="markdownTableBodyNone">Is there a ready-made example? </td><td class="markdownTableBodyNone">Yes — see reference implementations listed below.  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md139"></a>
+<h2><a class="anchor" id="autotoc_md140"></a>
 Supported Protocols</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -396,7 +396,7 @@ Supported Protocols</h2>
 <p><b>Recommendation:</b> Use HTTP – it's simpler and works with any TCP socket API. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md141"></a>
+<h2><a class="anchor" id="autotoc_md142"></a>
 How It Works</h2>
 <div class="fragment"><div class="line">Your App</div>
 <div class="line">   │</div>
@@ -413,7 +413,7 @@ How It Works</h2>
 <div class="line">YOUR MCU&#39;s TCP socket API (Wi-Fi or Ethernet)</div>
 </div><!-- fragment --><p><b>You only implement the bottom layer</b> – 5 functions that wrap your MCU's network driver.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md143"></a>
+<h2><a class="anchor" id="autotoc_md144"></a>
 Step 1: Implement 5 SAL Functions</h2>
 <p>Create one file: <code>COMMSTACK/KS/http/salapi/&lt;your_platform&gt;/k_sal_com.c</code></p>
 <p>Header: <code>COMMSTACK/KS/http/salapi/include/k_sal_com.h</code></p>
@@ -498,14 +498,14 @@ Step 1: Implement 5 SAL Functions</h2>
 <li>POSIX/Linux: <code>COMMSTACK/KS/http/salapi/libc/k_sal_com.c</code></li>
 </ul>
 <hr  />
-<h2><a class="anchor" id="autotoc_md145"></a>
+<h2><a class="anchor" id="autotoc_md146"></a>
 Step 2: Configure ktaConfig.h</h2>
 <p>Open <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">SOURCE/include/ktaConfig.h</a></code> and verify these are set:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define C_KTA_APP__KEYSTREAM_HOST_HTTP_URL  (const uint8_t*)&quot;icph.mss.iot.kudelski.com&quot;</span></div>
 <div class="line"><span class="preprocessor">#define C_KTA_APP__DEVICE_PUBLIC_UID        &quot;your_fleet_profile_uid&quot;  // from keySTREAM portal</span></div>
 <div class="line"><span class="preprocessor">#define NETWORK_STACK_AVAILABLE</span></div>
 </div><!-- fragment --><hr  />
-<h2><a class="anchor" id="autotoc_md147"></a>
+<h2><a class="anchor" id="autotoc_md148"></a>
 Step 3: Call KTA After Network Is Up</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;ktaFieldMgntHook.h&quot;</span></div>
 <div class="line"> </div>
@@ -528,7 +528,7 @@ Step 3: Call KTA After Network Is Up</h2>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --><hr  />
-<h2><a class="anchor" id="autotoc_md149"></a>
+<h2><a class="anchor" id="autotoc_md150"></a>
 Build Setup</h2>
 <p>Add these to your project:</p>
 <p><b>Source files:</b> </p><div class="fragment"><div class="line">COMMSTACK/KS/http/comm_if.c</div>
@@ -541,7 +541,7 @@ Build Setup</h2>
 <div class="line">COMMSTACK/KS/http/salapi/include/</div>
 <div class="line">APPS/common/KudelskiTrustedAgent_ns/include/</div>
 </div><!-- fragment --><hr  />
-<h2><a class="anchor" id="autotoc_md151"></a>
+<h2><a class="anchor" id="autotoc_md152"></a>
 Troubleshooting</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -556,7 +556,7 @@ Troubleshooting</h2>
 <td class="markdownTableBodyNone">KTA returns error before network call </td><td class="markdownTableBodyNone">Check KTA SAL (crypto/storage) is implemented  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md153"></a>
+<h2><a class="anchor" id="autotoc_md154"></a>
 Summary</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -689,7 +689,7 @@ Summary</h2>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

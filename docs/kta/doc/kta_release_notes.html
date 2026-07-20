@@ -355,35 +355,35 @@ $(document).ready(function(){initNavTree('kta_release_notes.html',''); initResiz
 <div class="title">keySTREAM Trusted Agent Release Notes </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md395"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md398"></a>
 Release v1.2.8 (09/03/2024)</h1>
-<h2><a class="anchor" id="autotoc_md396"></a>
+<h2><a class="anchor" id="autotoc_md399"></a>
 New features/Changes in this version</h2>
-<h4><a class="anchor" id="autotoc_md397"></a>
+<h4><a class="anchor" id="autotoc_md400"></a>
 Static Check Fixed using SonarQube Tool</h4>
 <ul>
 <li>KTA/SAL, Hook Files and communication files present in Harmony pkg were fixed for static check with listed deviation.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md398"></a>
+<h2><a class="anchor" id="autotoc_md401"></a>
 Compatibility</h2>
 <ul>
 <li>This version is compatible with</li>
 <li>CAL Version - 3.7.5</li>
 <li>keySTREAM Version - 1.25.3</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md399"></a>
+<h2><a class="anchor" id="autotoc_md402"></a>
 Migrating from Old KTA (v1.2.6) to KTA v1.2.8.</h2>
-<h3><a class="anchor" id="autotoc_md400"></a>
+<h3><a class="anchor" id="autotoc_md403"></a>
 Scenario 1 :</h3>
 <ul>
 <li>Onboarding same device using different Fleet Profile in the same tenant. </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md401"></a>
+<h4><a class="anchor" id="autotoc_md404"></a>
 Preconditions</h4>
 <ul>
 <li>Device is already on-boarded to Fleet Profile A, with old KTA (v1.2.6). </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md402"></a>
+<h4><a class="anchor" id="autotoc_md405"></a>
 Steps to migrate</h4>
 <ul>
 <li>Create new fleet Profile B in <b>same tenant</b></li>
@@ -393,23 +393,23 @@ Steps to migrate</h4>
 <li>From the keystream UI, where your device is already listed. click on <b>Remove device</b> option.</li>
 <li>This will refurbish the device .Once reburbish is completed. Manually Claim device in tenant with manifest lite file generated via TPDS Usecase. </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md403"></a>
+<h4><a class="anchor" id="autotoc_md406"></a>
 Expected Results</h4>
 <ul>
 <li>Device should be on-boarded to Fleet Profile B</li>
 <li>Device should be provisioned and End to End should work.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md404"></a>
+<h3><a class="anchor" id="autotoc_md407"></a>
 Scenario 2 :</h3>
 <ul>
 <li>Onboarding same device using different Fleet Profile created in different tenant. </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md405"></a>
+<h4><a class="anchor" id="autotoc_md408"></a>
 Preconditions</h4>
 <ul>
 <li>Device is already on-boarded to Fleet Profile A, with old KTA (v1.2.6) in one tenant. </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md406"></a>
+<h4><a class="anchor" id="autotoc_md409"></a>
 Steps to migrate</h4>
 <ul>
 <li>Create new fleet Profile B in <b>different tenant</b></li>
@@ -419,119 +419,119 @@ Steps to migrate</h4>
 <li>From the keystream UI, where your device is already listed. click on <b>Remove device</b> option.</li>
 <li>This will refurbish the device .Once reburbish is completed. Manually Claim device with manifest lite file generated via TPDS Usecase in tenant where Fleet Profile B is created. </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md407"></a>
+<h4><a class="anchor" id="autotoc_md410"></a>
 Expected Results</h4>
 <ul>
 <li>Device should be on-boarded to Fleet Profile B</li>
 <li>Device should be provisioned and End to End should work.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md408"></a>
+<h2><a class="anchor" id="autotoc_md411"></a>
 Open source information</h2>
 <ul>
 <li>NA</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md409"></a>
+<h2><a class="anchor" id="autotoc_md412"></a>
 Identifier</h2>
 <ul>
 <li>Git Tag: v1.2.8</li>
 </ul>
 <hr  />
-<h1><a class="anchor" id="autotoc_md411"></a>
+<h1><a class="anchor" id="autotoc_md414"></a>
 History</h1>
-<h1><a class="anchor" id="autotoc_md412"></a>
+<h1><a class="anchor" id="autotoc_md415"></a>
 Release v1.2.7 (07/12/2024) (Internal released to KUD only)</h1>
-<h2><a class="anchor" id="autotoc_md413"></a>
+<h2><a class="anchor" id="autotoc_md416"></a>
 New features/Changes in this version</h2>
-<h4><a class="anchor" id="autotoc_md414"></a>
+<h4><a class="anchor" id="autotoc_md417"></a>
 UTC to Generalized time format migration</h4>
 <ul>
 <li>KTA code was updated to support Generalized Time format.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md415"></a>
+<h4><a class="anchor" id="autotoc_md418"></a>
 KTA Version Storage</h4>
 <ul>
 <li>KTA Version Storage in Slot 8 implemented for handling transition from UTC to Generalized time format.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md416"></a>
+<h4><a class="anchor" id="autotoc_md419"></a>
 Progressive keySTREAM Server polling</h4>
 <ul>
 <li>Polling time to keySTREAM Server changes done with 5 seconds for first 10 minutes and after that hourly once.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md417"></a>
+<h4><a class="anchor" id="autotoc_md420"></a>
 CAL Update 3.7.5</h4>
 <ul>
 <li>KTA code has been integrated with cryptoauthlib (3.7.5).</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md418"></a>
+<h4><a class="anchor" id="autotoc_md421"></a>
 2PKI Implementation</h4>
 <ul>
 <li>KTA Code updated to support 2PKI/1PKI feature.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md419"></a>
+<h2><a class="anchor" id="autotoc_md422"></a>
 Fixed issues / Change Requests</h2>
 <ul>
 <li>Fixed HTTP Receive Timeout issue.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md420"></a>
+<h2><a class="anchor" id="autotoc_md423"></a>
 Compatibility</h2>
 <ul>
 <li>This version is compatible with</li>
 <li>CAL Version - 3.7.5</li>
 <li>keySTREAM Version - NA</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md421"></a>
+<h2><a class="anchor" id="autotoc_md424"></a>
 Open source information</h2>
 <ul>
 <li>NA</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md422"></a>
+<h2><a class="anchor" id="autotoc_md425"></a>
 Identifier</h2>
 <ul>
 <li>Git Tag: NA</li>
 </ul>
 <hr  />
-<h1><a class="anchor" id="autotoc_md424"></a>
+<h1><a class="anchor" id="autotoc_md427"></a>
 History</h1>
-<h1><a class="anchor" id="autotoc_md425"></a>
+<h1><a class="anchor" id="autotoc_md428"></a>
 Release v1.2.6 (03/21/2024)</h1>
-<h2><a class="anchor" id="autotoc_md426"></a>
+<h2><a class="anchor" id="autotoc_md429"></a>
 New features/Changes in this version</h2>
-<h4><a class="anchor" id="autotoc_md427"></a>
+<h4><a class="anchor" id="autotoc_md430"></a>
 Device Onboarding</h4>
 <ul>
 <li>Device Onboarding is the process by which a device is registered in keySTREAM server with a certain device identity and attached to a certain device vendor. Device onboarding is performed automatically by keySTREAM as part of the in-field device identity provisioning process.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md428"></a>
+<h4><a class="anchor" id="autotoc_md431"></a>
 Device Certificate Renewal</h4>
 <ul>
 <li>A new certificate will be generated and provisioned to the device before the old one expires. Renewing a certificate does not mean changing the associated key pair. <b>The key pair stays the same.</b></li>
 </ul>
-<h4><a class="anchor" id="autotoc_md429"></a>
+<h4><a class="anchor" id="autotoc_md432"></a>
 Key Renewal</h4>
 <ul>
 <li>This Option Enables the User to Renew the key pair from keySTREAM UI.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md430"></a>
+<h4><a class="anchor" id="autotoc_md433"></a>
 Device Refurbish</h4>
 <ul>
 <li>A device can be brought back to factory provisioned state at any time using the device refurbishment functionality.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md431"></a>
+<h4><a class="anchor" id="autotoc_md434"></a>
 Optional Multi Device Profile Public Uid</h4>
 <ul>
 <li>Added Mutable Device Profile Public UID Feature in KTA.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md432"></a>
+<h4><a class="anchor" id="autotoc_md435"></a>
 Slot 8 Config Update</h4>
 <ul>
 <li>Storage of Signer Issuer Common Name, Signer Subject Common Name, Leaf Issuer Common Name, Signer Issuer Organisation Name, Signer Issuer Oraganisation Unit Name, Signer Subject Organisation Name, Signer Expiry Date, Leaf Expiry Date and Leaf Issuer Organisation Name has been updated.</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md433"></a>
+<h4><a class="anchor" id="autotoc_md436"></a>
 CAL Update 3.7.4</h4>
 <ul>
 <li>KTA code has been integrated with cryptoauthlib (3.7.4).</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md434"></a>
+<h2><a class="anchor" id="autotoc_md437"></a>
 Fixed issues / Change Requests</h2>
 <ul>
 <li>Changes Done to Support Integration of KTA with Latest Cryptoauthlib (3.7.4).</li>
@@ -541,19 +541,19 @@ Fixed issues / Change Requests</h2>
 <li>Key Renewal issue fixed.</li>
 <li>Expiry Date issue fixed.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md435"></a>
+<h2><a class="anchor" id="autotoc_md438"></a>
 Compatibility</h2>
 <ul>
 <li>This version is compatible with</li>
 <li>CAL Version - 3.7.4</li>
 <li>keySTREAM Version - NA</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md436"></a>
+<h2><a class="anchor" id="autotoc_md439"></a>
 Open source information</h2>
 <ul>
 <li>NA</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md437"></a>
+<h2><a class="anchor" id="autotoc_md440"></a>
 Identifier</h2>
 <ul>
 <li>Git Tag: v1.2.6 </li>
@@ -678,7 +678,7 @@ Identifier</h2>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

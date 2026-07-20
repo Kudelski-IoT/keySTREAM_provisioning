@@ -355,7 +355,7 @@ $(document).ready(function(){initNavTree('generic_information_mcu_closed_network
 <div class="title">keySTREAM Closed Network Integration Guide </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md88"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md89"></a>
 keySTREAM Closed Network Integration Guide (Gateway + MCU)</h1>
 <p>Use this guide when your MCU has no direct internet.</p>
 <ul>
@@ -364,7 +364,7 @@ keySTREAM Closed Network Integration Guide (Gateway + MCU)</h1>
 </ul>
 <p>If your MCU has direct internet access, use <a class="el" href="generic_information_mcu_wifi.html">keySTREAM Wi-Fi / Ethernet Integration Guide</a>.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md90"></a>
+<h2><a class="anchor" id="autotoc_md91"></a>
 1. Overview</h2>
 <div class="image">
 <img src="Gateway.gif" alt="" width="800px"/>
@@ -376,7 +376,7 @@ Closed Network - Gateway Model</div></div>
 <li>The Gateway communicates with the keySTREAM cloud by HTTP.</li>
 <li>You must select the correct OS files, transport backend, and platform SAL files on both Gateway and MCU sides.</li>
 </ol>
-<h3><a class="anchor" id="autotoc_md91"></a>
+<h3><a class="anchor" id="autotoc_md92"></a>
 1.1 Prerequisites</h3>
 <p>Before you start, make sure you have:</p>
 <table class="markdownTable">
@@ -395,13 +395,13 @@ Closed Network - Gateway Model</div></div>
 <p><b>Note on the package folder name.</b> Throughout this guide the integration package directory is referred to as <code>Kta-Unified/</code>. In the delivered SDK it is the **<code>Kta_Unified/</code>** folder; the two names refer to the same package. It contains exactly two top-level folders: <code>gateway/</code> and <code>mcu/</code>. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md93"></a>
+<h2><a class="anchor" id="autotoc_md94"></a>
 2. Full Folder Structure</h2>
 <p>This is the folder you integrate:</p>
 <div class="fragment"><div class="line">Kta-Unified/   (delivered as Kta_Unified/)</div>
 <div class="line">├── gateway/</div>
 <div class="line">└── mcu/</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md94"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md95"></a>
 2.1 Gateway side full structure</h3>
 <pre style="white-space: pre; overflow-x: auto;">
 Kta-Unified/gateway/
@@ -509,7 +509,7 @@ Kta-Unified/gateway/
             └── windows/
                 ├── k_sal_com.c     &lt;- include for Windows gateway build   <span style="color:#cc0000">(Do not edit files inside)</span>
                 └── k_sal_os.c      <span style="color:#cc0000">(Do not edit)</span>
-</pre><h3><a class="anchor" id="autotoc_md95"></a>
+</pre><h3><a class="anchor" id="autotoc_md96"></a>
 2.2 MCU side full structure</h3>
 <pre style="white-space: pre; overflow-x: auto;">
 Kta-Unified/mcu/
@@ -600,9 +600,9 @@ Kta-Unified/mcu/
 </div><!-- fragment --><p><code>App_Config.h</code> must be reachable on the include path of the KTA library (<code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> references <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code>). Do <b>not</b> add <code>#include "ktaConfig.h"</code> inside <code>App_Config.h</code> — <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> already pulls in <code>App_Config.h</code>, and the reverse include creates a circular dependency.</p>
 <p>For step-by-step Fleet Profile creation (with field table), see: <a class="el" href="fleet_profile_creation.html">Fleet Profile Creation Guide</a></p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md97"></a>
+<h2><a class="anchor" id="autotoc_md98"></a>
 3. Gateway Integration Steps</h2>
-<h3><a class="anchor" id="autotoc_md98"></a>
+<h3><a class="anchor" id="autotoc_md99"></a>
 3.1 Step 1 — Choose your application entry file</h3>
 <p>From <code>gateway/application/</code>, choose <b>one</b> file matching your Gateway OS. Do not include the others in your build.</p>
 <table class="markdownTable">
@@ -617,7 +617,7 @@ Kta-Unified/mcu/
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">Bare-metal </td><td class="markdownTableBodyNone"><code>main_baremetal_async_kta.c</code>  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md99"></a>
+<h3><a class="anchor" id="autotoc_md100"></a>
 3.2 Step 2 — Choose your transport backend</h3>
 <p>From <code>gateway/backends/</code>, include <b>one</b> transport folder in your build.</p>
 <table class="markdownTable">
@@ -633,10 +633,10 @@ Kta-Unified/mcu/
 <td class="markdownTableBodyNone">Zigbee </td><td class="markdownTableBodyNone"><code>backends/zigbee/</code>  </td></tr>
 </table>
 <p>Do not edit <code>backend_interface.c</code> or <code>backend_message.c</code>.</p>
-<h3><a class="anchor" id="autotoc_md100"></a>
+<h3><a class="anchor" id="autotoc_md101"></a>
 3.3 Step 3 — Implement your platform SAL</h3>
 <p>Inside your chosen transport folder open <code>sal/</code> and choose the subfolder for your Gateway platform. Open the <code>.c</code> file and implement all functions marked <code>TODO</code>.</p>
-<h4><a class="anchor" id="autotoc_md101"></a>
+<h4><a class="anchor" id="autotoc_md102"></a>
 BLE — gateway/backends/ble/sal/</h4>
 <p><b>windows/ble_sal.c</b></p>
 <table class="markdownTable">
@@ -653,7 +653,7 @@ BLE — gateway/backends/ble/sal/</h4>
 </table>
 <p>Edit <code>gateway/backends/ble/sal/&lt;platform&gt;/ble_config.h</code> to set MTU size, scan interval/window, connection timeout, and device name before implementing.</p>
 <hr  />
-<h4><a class="anchor" id="autotoc_md103"></a>
+<h4><a class="anchor" id="autotoc_md104"></a>
 UART, USB and Zigbee — same pattern as BLE above</h4>
 <p>For UART, USB, and Zigbee, follow the exact same steps as the BLE example:</p>
 <ol type="1">
@@ -664,7 +664,7 @@ UART, USB and Zigbee — same pattern as BLE above</h4>
 <p>The same pattern applies to the MCU side: <code>mcu/backends/&lt;transport&gt;/sal/&lt;platform&gt;/</code>.</p>
 <p>Refer to the folder trees in section 2 for the full list of platforms available per transport.</p>
 <hr  />
-<h3><a class="anchor" id="autotoc_md105"></a>
+<h3><a class="anchor" id="autotoc_md106"></a>
 3.4 Step 4 — Choose ktaIntegration/platform (do not edit files)</h3>
 <p><code>gateway/ktaIntegration/platform/</code> contains OS-specific async implementation. Choose the folder that matches your Gateway OS and include it in the build. Do not modify any file inside it.</p>
 <table class="markdownTable">
@@ -678,7 +678,7 @@ UART, USB and Zigbee — same pattern as BLE above</h4>
 <td class="markdownTableBodyNone">FreeRTOS </td><td class="markdownTableBodyNone"><code>platform/freertos/</code>  </td></tr>
 </table>
 <p><code>ktaFieldMgntHook.c</code> and <code>ktaFieldMgntHook.h</code> — do not modify these files.</p>
-<h3><a class="anchor" id="autotoc_md106"></a>
+<h3><a class="anchor" id="autotoc_md107"></a>
 3.5 Step 5 — keyStreamIntegration — choose OS folder and edit only baremetal SAL if used</h3>
 <p><code>gateway/keyStreamIntegration/</code> is the HTTPS/cloud communication stack. For Windows/Linux/FreeRTOS/Microchip, include the matching folder without editing. For baremetal, implement the TODO sections in <code>k_sal_com.c</code> and <code>k_sal_os.c</code>.</p>
 <table class="markdownTable">
@@ -707,7 +707,7 @@ UART, USB and Zigbee — same pattern as BLE above</h4>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>COMMSTACK/http/microchip/</code> </td><td class="markdownTableBodyNone">Microchip platform HTTP </td><td class="markdownTableBodyNone">Include if Gateway is Microchip; do not edit  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md107"></a>
+<h3><a class="anchor" id="autotoc_md108"></a>
 3.6 Step 6 — Call the Gateway APIs</h3>
 <p>Include the header and call these two functions from your <code>main_*.c</code>:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;ktaIntegration/ktaFieldMgntHook.h&quot;</span></div>
@@ -728,9 +728,9 @@ UART, USB and Zigbee — same pattern as BLE above</h4>
 <td class="markdownTableBodyNone"><code>E_K_KTA_KS_STATUS_REFURBISH</code> </td><td class="markdownTableBodyNone">Requires refurbish flow  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md109"></a>
+<h2><a class="anchor" id="autotoc_md110"></a>
 4. MCU Integration Steps</h2>
-<h3><a class="anchor" id="autotoc_md110"></a>
+<h3><a class="anchor" id="autotoc_md111"></a>
 4.0 Configuration hierarchy</h3>
 <p>Configuration flows top-down. The customer owns the top four layers; the transport-agnostic core is never edited.</p>
 <div class="fragment"><div class="line">App_Config.h          -&gt; Fleet Profile UID / device identity   (customer)</div>
@@ -742,7 +742,7 @@ UART, USB and Zigbee — same pattern as BLE above</h4>
 <div class="line">backend_interface / bridge_*  -&gt; transport-agnostic core        (do NOT edit)</div>
 <div class="line">   |</div>
 <div class="line">&lt;transport&gt;_sal.c     -&gt; hardware driver glue                   (customer implements)</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md111"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md112"></a>
 4.1 Step 1 — Set your target in mcu_config.h</h3>
 <p>Open **<code>mcu/mcu_config.h</code>** — this is the only file you need to edit before compiling. Change the three defines to match your hardware:</p>
 <div class="fragment"><div class="line"><span class="comment">/* mcu/mcu_config.h */</span></div>
@@ -781,7 +781,7 @@ UART, USB and Zigbee — same pattern as BLE above</h4>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">Linux host test + UART </td><td class="markdownTableBodyNone"><code>linux</code> </td><td class="markdownTableBodyNone"><code>uart</code> </td><td class="markdownTableBodyNone"><code>esp32</code>  </td></tr>
 </table>
-<h4><a class="anchor" id="autotoc_md112"></a>
+<h4><a class="anchor" id="autotoc_md113"></a>
 Shipped MCU SAL coverage</h4>
 <p>The package ships ready-to-edit SAL folders only for the combinations below. Any other <code>MCU_BACKEND</code> / <code>MCU_PLATFORM</code> pair requires you to add the matching <code>backends/&lt;transport&gt;/sal/&lt;platform&gt;/</code> folder (config header + <code>*_sal.c</code>) before it will build or link.</p>
 <table class="markdownTable">
@@ -803,7 +803,7 @@ Shipped MCU SAL coverage</h4>
 <p><b>Note:</b> All three defines are wrapped in <code>#ifndef</code>, so you can also override them without editing the file, using a compiler flag: <code>-DMCU_OS=freertos -DMCU_BACKEND=uart -DMCU_PLATFORM=esp32</code> </p>
 </blockquote>
 <hr  />
-<h3><a class="anchor" id="autotoc_md114"></a>
+<h3><a class="anchor" id="autotoc_md115"></a>
 4.2 Step 2 — Configure your transport</h3>
 <p>Open the <code>*_config.h</code> for your chosen backend + platform and set the hardware parameters (pins, baud rate, port number, etc.):</p>
 <table class="markdownTable">
@@ -837,7 +837,7 @@ Shipped MCU SAL coverage</h4>
 <p><b>Must match:</b> The transport config on the MCU side <b>must match</b> the corresponding <code>*_config.h</code> on the Gateway side (same baud, same MTU, same PAN ID, etc.). Mismatched settings are the most common source of E2E failures. </p>
 </blockquote>
 <hr  />
-<h3><a class="anchor" id="autotoc_md116"></a>
+<h3><a class="anchor" id="autotoc_md117"></a>
 4.3 Step 3 — Implement your platform SAL</h3>
 <p>Open <code>backends/&lt;MCU_BACKEND&gt;/sal/&lt;MCU_PLATFORM&gt;/&lt;backend&gt;_sal.c</code> and implement all functions marked with <code>/* TODO */</code>. The required function signatures are declared in <code>backends/&lt;backend&gt;/&lt;backend&gt;_sal.h</code> — do not change those signatures.</p>
 <blockquote class="doxtable">
@@ -872,7 +872,7 @@ Shipped MCU SAL coverage</h4>
 <td class="markdownTableBodyNone"><code>ble_sal_read</code> </td><td class="markdownTableBodyNone">Read data from NUS RX characteristic  </td></tr>
 </table>
 <hr  />
-<h3><a class="anchor" id="autotoc_md118"></a>
+<h3><a class="anchor" id="autotoc_md119"></a>
 4.4 Step 4 — Build</h3>
 <p>After <code>mcu_config.h</code> is set and the SAL is implemented, build using the Makefile. Pass the same OS/BACKEND/PLATFORM values you set in <code>mcu_config.h</code>:</p>
 <div class="fragment"><div class="line">cd Kta-Unified/mcu</div>
@@ -898,7 +898,7 @@ Shipped MCU SAL coverage</h4>
 <p><b>Tip:</b> <code>mcu_config.h</code> records your intended target; the <b>Makefile</b> (<code>OS</code>/<code>BACKEND</code>/<code>PLATFORM</code>) selects which source files are compiled. Pass the same values to both. (Roadmap: a future release wires <code>MCU_BACKEND</code> directly into transport selection so only <code>mcu_config.h</code> is needed.) </p>
 </blockquote>
 <hr  />
-<h3><a class="anchor" id="autotoc_md120"></a>
+<h3><a class="anchor" id="autotoc_md121"></a>
 4.5 Step 5 — Call the MCU Bridge API from your application</h3>
 <p>The MCU bridge exposes a single entry-point API. Call it from your <code>main()</code> or application startup:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;examples/platform/kta_mcu_integration.h&quot;</span></div>
@@ -945,7 +945,7 @@ Shipped MCU SAL coverage</h4>
 <td class="markdownTableBodyNone"><code>BACKEND_TYPE_ZIGBEE</code> </td><td class="markdownTableBodyNone">Zigbee </td><td class="markdownTableBodyNone">SAL contract present; enable in the build (<code>-DKTA_ENABLE_ZIGBEE</code>) and implement the SAL  </td></tr>
 </table>
 <hr  />
-<h3><a class="anchor" id="autotoc_md122"></a>
+<h3><a class="anchor" id="autotoc_md123"></a>
 4.6 Common E2E checklist</h3>
 <p>Before running an end-to-end test, verify each item:</p>
 <table class="markdownTable">
@@ -970,7 +970,7 @@ Shipped MCU SAL coverage</h4>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">9 </td><td class="markdownTableBodyNone">Fleet Profile UID exists and is active in the keySTREAM portal </td><td class="markdownTableBodyNone">keySTREAM portal  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md123"></a>
+<h3><a class="anchor" id="autotoc_md124"></a>
 4.7 Customer integration checklist</h3>
 <p>A new platform integration touches only these items — no framework <code>.c</code> edits:</p>
 <ol type="1">
@@ -983,13 +983,13 @@ Shipped MCU SAL coverage</h4>
 <li>Do <b>not</b> edit <code>backend_interface.*</code>, <code>bridge_*</code>, or <code>ktaFieldMgntHook.*</code>.</li>
 </ol>
 <hr  />
-<h2><a class="anchor" id="autotoc_md125"></a>
+<h2><a class="anchor" id="autotoc_md126"></a>
 5. Build and Run</h2>
-<h3><a class="anchor" id="autotoc_md126"></a>
+<h3><a class="anchor" id="autotoc_md127"></a>
 5.1 Build MCU</h3>
 <div class="fragment"><div class="line">cd Kta-Unified/mcu</div>
 <div class="line">make OS=&lt;os&gt; BACKEND=&lt;transport&gt; PLATFORM=&lt;platform&gt;</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md127"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md128"></a>
 5.2 Build Gateway — files to include</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -1022,7 +1022,7 @@ Shipped MCU SAL coverage</h4>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">Bare-metal </td><td class="markdownTableBodyNone"><code>main_baremetal_async_kta.c</code> </td><td class="markdownTableBodyNone">(bare-metal adapter) </td><td class="markdownTableBodyNone"><code>http/baremetal/</code>  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md128"></a>
+<h3><a class="anchor" id="autotoc_md129"></a>
 5.3 Run order</h3>
 <ol type="1">
 <li>Power and flash MCU first.</li>
@@ -1042,7 +1042,7 @@ Shipped MCU SAL coverage</h4>
 <td class="markdownTableBodyNone">Lifecycle status </td><td class="markdownTableBodyNone">eventually <code>E_K_KTA_KS_STATUS_PROVISIONED</code>  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md130"></a>
+<h2><a class="anchor" id="autotoc_md131"></a>
 6. Quick Troubleshooting</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -1071,7 +1071,7 @@ Shipped MCU SAL coverage</h4>
 <td class="markdownTableBodyNone">Link error: undefined <code>*_sal_*</code> / no driver symbols </td><td class="markdownTableBodyNone">platform SAL not implemented/compiled </td><td class="markdownTableBodyNone">implement <code>backends/&lt;transport&gt;/sal/&lt;platform&gt;/&lt;transport&gt;_sal.c</code> and ensure it is compiled  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md132"></a>
+<h2><a class="anchor" id="autotoc_md133"></a>
 7. Migration guidance for older integrations</h2>
 <ul>
 <li><b>Pre-<code>mcu_config.h</code> integrations</b> that hardcoded the transport in the entry file: delete any local <code>#define BRIDGE_TRANSPORT_TYPE ...</code>, set <code>MCU_BACKEND</code> in <code>mcu_config.h</code>, and rebuild. (Note: <code>TRANSPORT_TYPE_*</code> macros are being replaced by <code>BACKEND_TYPE_*</code> / <code>MCU_BACKEND</code>.)</li>
@@ -1079,7 +1079,7 @@ Shipped MCU SAL coverage</h4>
 <li><b>ESP32 examples</b> that ship a custom <code>g_ble_backend</code>: continue to build as-is; migrating them to the common dispatcher is optional.</li>
 </ul>
 <hr  />
-<h2><a class="anchor" id="autotoc_md134"></a>
+<h2><a class="anchor" id="autotoc_md135"></a>
 8. See Also</h2>
 <ul>
 <li><a class="el" href="generic_information_mcu_wifi.html">keySTREAM Wi-Fi / Ethernet Integration Guide</a></li>
@@ -1207,7 +1207,7 @@ Shipped MCU SAL coverage</h4>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

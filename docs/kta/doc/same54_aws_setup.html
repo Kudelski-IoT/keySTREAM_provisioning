@@ -355,14 +355,14 @@ $(document).ready(function(){initNavTree('same54_aws_setup.html',''); initResiza
 <div class="title">SAME54 â€” AWS IoT Thing &amp; Policy Setup </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md458"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md462"></a>
 SAME54 â€” AWS IoT Thing &amp; Policy Setup</h1>
 <p>This guide walks you through creating an AWS IoT Thing, generating a policy, and attaching the policy to a certificate for your SAME54 device.</p>
 <blockquote class="doxtable">
 <p><b>Prerequisites:</b> An active <a href="https://aws.amazon.com/">AWS account</a> with the CA certificate already registered. Complete <a class="el" href="aws_setup.html">AWS Setup Requirements</a> first. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md460"></a>
+<h2><a class="anchor" id="autotoc_md464"></a>
 1. Create an AWS IoT Thing</h2>
 <ol type="1">
 <li>Go to <a href="https://console.aws.amazon.com/iot">AWS IoT Core Console</a>.</li>
@@ -394,7 +394,7 @@ Enter Thing Name</div></div>
 <div class="caption">
 Default settings</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md462"></a>
+<h2><a class="anchor" id="autotoc_md466"></a>
 2. Create and Attach a Certificate</h2>
 <ol type="1">
 <li>Choose <b>Auto-generate a new certificate</b> and click <b>Next</b>.</li>
@@ -407,7 +407,7 @@ Auto-generate certificate</div></div>
 <li>Download the device certificate, private key, and Amazon Root CA.</li>
 </ol>
 <hr  />
-<h2><a class="anchor" id="autotoc_md464"></a>
+<h2><a class="anchor" id="autotoc_md468"></a>
 3. Create an IoT Policy</h2>
 <ol type="1">
 <li>Go to <b>Security &gt; Policies</b> and click <b>Create policy</b>.</li>
@@ -434,13 +434,13 @@ Auto-generate certificate</div></div>
 <div class="caption">
 IoT policy statement</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md466"></a>
+<h2><a class="anchor" id="autotoc_md470"></a>
 4. Update &lt;tt&gt;App_Config.h&lt;/tt&gt; with Your Thing Name</h2>
 <p>Open <code>SAME54_X\keystream_connect\App_Config.h</code> and set the <code>AWS_THING_NAME</code> macro:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define AWS_THING_NAME  &quot;Demo_Thing&quot;</span></div>
 </div><!-- fragment --><p>Compile and flash the project. The device begins onboarding and certificate download automatically. After successful onboarding the device certificate appears in AWS IoT Core.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md468"></a>
+<h2><a class="anchor" id="autotoc_md472"></a>
 5. Attach Policy to the Certificate</h2>
 <ol type="1">
 <li>Go to <b>Security &gt; Certificates</b> in AWS IoT Core.</li>
@@ -465,7 +465,7 @@ Attach policy to certificate</div></div>
 <div class="caption">
 Policy attached</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md470"></a>
+<h2><a class="anchor" id="autotoc_md474"></a>
 6. Reset and Verify</h2>
 <p>Reset the SAME54 device. After reboot, the device communicates securely with AWS IoT Core. Monitor activity in the AWS IoT Core console to confirm successful connectivity.</p>
 <hr  />
@@ -589,7 +589,7 @@ Policy attached</div></div>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

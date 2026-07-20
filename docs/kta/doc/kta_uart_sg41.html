@@ -355,7 +355,7 @@ $(document).ready(function(){initNavTree('kta_uart_sg41.html',''); initResizable
 <div class="title">UART Transport Integration - EV89U05A </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md512"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md517"></a>
 UART Transport Integration - EV89U05A</h1>
 <p>Integration guide for running the keySTREAM gateway over UART with the EV89U05A board and the ATECC608 TrustMANAGER secure element.</p>
 <p> 
@@ -364,7 +364,7 @@ UART Transport Integration - EV89U05A</h1>
 </div>
 </p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md514"></a>
+<h2><a class="anchor" id="autotoc_md519"></a>
 Board Details</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -381,9 +381,9 @@ Board Details</h2>
 <td class="markdownTableBodyNone"><b>Execution Model</b> </td><td class="markdownTableBodyNone">Gateway-assisted provisioning  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md516"></a>
+<h2><a class="anchor" id="autotoc_md521"></a>
 Setup Requirements</h2>
-<h3><a class="anchor" id="autotoc_md517"></a>
+<h3><a class="anchor" id="autotoc_md522"></a>
 Hardware</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -393,7 +393,7 @@ Hardware</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">USB cable for board connection </td><td class="markdownTableBodyNone">Host PC to EV89U05A  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md518"></a>
+<h3><a class="anchor" id="autotoc_md523"></a>
 Software</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -409,7 +409,7 @@ Software</h3>
 </table>
 <p>Additional host tooling for the Windows gateway: <b>MPLAB X IDE v6.30+</b> with <b>XC32 v5.00+</b> (to build/flash the MCU). <b>MinGW GCC must be installed and available on <code>PATH</code></b> before running <code>build_gateway.bat</code> — without it the gateway build will fail.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md520"></a>
+<h2><a class="anchor" id="autotoc_md525"></a>
 Prerequisites</h2>
 <p>Before building or running this example, complete the following steps in the keySTREAM portal:</p>
 <table class="markdownTable">
@@ -421,8 +421,14 @@ Prerequisites</h2>
 <blockquote class="doxtable">
 <p>This step must be completed <b>before</b> configuring <code>App_Config.h</code> and building the project. </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md521"></a>
+<h3><a class="anchor" id="autotoc_md526"></a>
 Package Setup</h3>
+<h4><a class="anchor" id="autotoc_md527"></a>
+Note: Enable Long Path Support on Windows</h4>
+<p>When cloning this repository, you may encounter issues related to long file paths on Windows. To avoid this, ensure you clone the repository to a short path (e.g., directly under <code>C:\</code>).</p>
+<p>Before cloning, run the following command to enable support for long paths in Git:</p>
+<div class="fragment"><div class="line">git config --global core.longpaths true</div>
+</div><!-- fragment --><p>Once this is set, you can proceed to clone the repository without path length issues.</p>
 <p>Before building, clone the repository:</p>
 <div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning.git</div>
 </div><!-- fragment --><p>Then configure the firmware package using the provided script:</p>
@@ -441,7 +447,7 @@ Package Setup</h3>
 <div class="caption">
 Config.ps1 — Package Configuration</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md523"></a>
+<h2><a class="anchor" id="autotoc_md529"></a>
 Project Folder Structure</h2>
 <div class="fragment"><div class="line">SG41_UART_X/</div>
 <div class="line">├── build_gateway.bat               ← Builds the Windows UART gateway (MinGW GCC)</div>
@@ -462,7 +468,7 @@ Project Folder Structure</h2>
 <p><code>App_Config.h</code> at the project root is the <b>single source of truth</b> shared by both the SG41 firmware and the Windows gateway. Edit it once before building either side. After a successful gateway build, the executable is produced at <code>gateway\kta_gateway.exe</code>. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md525"></a>
+<h2><a class="anchor" id="autotoc_md531"></a>
 Configuration</h2>
 <p>Open <code>App_Config.h</code> and update the required values before building:</p>
 <table class="markdownTable">
@@ -476,38 +482,36 @@ Configuration</h2>
 <td class="markdownTableBodyNone"><code>UART_COM_PORT_STR</code> </td><td class="markdownTableBodyNone">COM port as a <b>narrow string</b> literal — <code>"COMx"</code>  </td></tr>
 </table>
 <p>Both macros must name the <b>same</b> physical COM port. <code>UART_COM_PORT</code> uses the wide-string form (<code>L"COMx"</code>) and <code>UART_COM_PORT_STR</code> uses the standard narrow-string form (<code>"COMx"</code>).</p>
-<h3><a class="anchor" id="autotoc_md526"></a>
+<h3><a class="anchor" id="autotoc_md532"></a>
 Step 1 — Find the COM port in Device Manager</h3>
 <ol type="1">
 <li>Connect the EV89U05A board to the host PC over USB.</li>
 <li>Press <code>Win + X</code> and open <b>Device Manager</b>.</li>
 <li>Expand <b>Ports (COM &amp; LPT)</b>.</li>
-<li>Locate the board's serial entry (for example, <em>USB Serial Device (COM6)</em>). The number in parentheses is your COM port — in this example, <b>6</b>.</li>
 </ol>
-<h3><a class="anchor" id="autotoc_md527"></a>
+<p>Depending on the board and installed drivers, Device Manager will show <b>one of the two cases</b> below — identify which one applies before moving to Step 2.</p>
+<p><b>Case A — PICkit virtual COM port is listed</b></p>
+<div class="image">
+<img src="Port.png" alt="" width="500px"/>
+<div class="caption">
+Device Manager — PICkit 4 On Board Virtual COM PORT</div></div>
+<p>If you see <b>PICkit 4 On Board Virtual COM PORT</b>, use that COM port.</p>
+<p><b>Case B — Only USB Serial Device is listed</b></p>
+<div class="image">
+<img src="port_usb.png" alt="" width="500px"/>
+<div class="caption">
+Device Manager — only USB Serial Device shown (no PICkit entry)</div></div>
+<p>If the board is connected but no PICkit entry appears, only a <b>USB Serial Device</b> port will be listed, as shown above. In that case, use the <b>USB Serial Device</b> COM port instead.</p>
+<h3><a class="anchor" id="autotoc_md533"></a>
 Step 2 — Map the port to both macros</h3>
 <p>If Device Manager shows <b>COM5</b>, set the macros as follows:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define UART_COM_PORT     L&quot;COM5&quot;   </span><span class="comment">/* wide-string port name */</span><span class="preprocessor"></span></div>
 <div class="line"><span class="preprocessor">#define UART_COM_PORT_STR  &quot;COM5&quot;   </span><span class="comment">/* narrow-string port name */</span><span class="preprocessor"></span></div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md528"></a>
-Example configurations</h3>
-<table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Device Manager shows </th><th class="markdownTableHeadNone"><code>UART_COM_PORT</code> </th><th class="markdownTableHeadNone"><code>UART_COM_PORT_STR</code>  </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">COM3 </td><td class="markdownTableBodyNone"><code>L"COM3"</code> </td><td class="markdownTableBodyNone"><code>"COM3"</code>  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">COM5 </td><td class="markdownTableBodyNone"><code>L"COM5"</code> </td><td class="markdownTableBodyNone"><code>"COM5"</code>  </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">COM6 </td><td class="markdownTableBodyNone"><code>L"COM6"</code> </td><td class="markdownTableBodyNone"><code>"COM6"</code>  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">COM11 </td><td class="markdownTableBodyNone"><code>L"COM11"</code> </td><td class="markdownTableBodyNone"><code>"COM11"</code>  </td></tr>
-</table>
-<blockquote class="doxtable">
+</div><!-- fragment --><blockquote class="doxtable">
 <p>Re-check Device Manager after reconnecting the board — Windows may assign a different COM port number. Update <b>both</b> macros whenever the port changes. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md530"></a>
+<h2><a class="anchor" id="autotoc_md535"></a>
 Integration Steps</h2>
 <ol type="1">
 <li>Open MPLAB X IDE and load <code>keystream_connect/keystream_connect.X</code>.</li>
@@ -519,7 +523,7 @@ Integration Steps</h2>
 <li>Monitor the console output until the device provisioning flow completes.</li>
 </ol>
 <hr  />
-<h2><a class="anchor" id="autotoc_md532"></a>
+<h2><a class="anchor" id="autotoc_md537"></a>
 Expected Output</h2>
 <p>After the gateway starts, it opens the configured COM port, reads the secure element UID, and drives the keySTREAM provisioning exchange. A successful run looks like:</p>
 <div class="fragment"><div class="line">[INFO] Scanning for SG41 device...</div>
@@ -530,7 +534,7 @@ Expected Output</h2>
 <div class="line">[INFO] Provisioning complete!</div>
 <div class="line">[INFO] Status: ONBOARDED</div>
 </div><!-- fragment --><p>After onboarding, the gateway enters a monitoring loop (periodic keep-alive to the cloud) and stays running until stopped with <code>Ctrl+C</code>.</p>
-<h2><a class="anchor" id="autotoc_md533"></a>
+<h2><a class="anchor" id="autotoc_md538"></a>
 Validation Checklist</h2>
 <ul>
 <li>[ ] <code>App_Config.h</code> has your <code>KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID</code> and the correct <code>UART_COM_PORT</code> / <code>UART_COM_PORT_STR</code>.</li>
@@ -541,7 +545,7 @@ Validation Checklist</h2>
 <li>[ ] The device shows as provisioned in the keySTREAM portal.</li>
 </ul>
 <hr  />
-<h2><a class="anchor" id="autotoc_md535"></a>
+<h2><a class="anchor" id="autotoc_md540"></a>
 Troubleshooting</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -560,7 +564,7 @@ Troubleshooting</h2>
 <td class="markdownTableBodyNone">Gateway stalls during exchange </td><td class="markdownTableBodyNone">The ATECC608 operation can take longer; allow up to 60 seconds before retrying  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md537"></a>
+<h2><a class="anchor" id="autotoc_md542"></a>
 Viewing KTA Debug Logs (MCU)</h2>
 <p>Two separate serial ports are used on this target:</p>
 <table class="markdownTable">
@@ -571,7 +575,7 @@ Viewing KTA Debug Logs (MCU)</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><b>USB-CDC console port</b> </td><td class="markdownTableBodyNone">All text logs: <code>[UART-Bridge]</code> status messages, KTA <code>[DEBUG]</code>/<code>[INFO]</code> output, hex dumps.  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md538"></a>
+<h3><a class="anchor" id="autotoc_md543"></a>
 Set the log level</h3>
 <p>Locate <b><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></b> — after running <code>Config.ps1</code>, the file is generated at:</p>
 <div class="fragment"><div class="line">SG41_UART_X/keystream_connect/src/config/default/library/kta_lib/SOURCE/include/ktaConfig.h</div>
@@ -595,17 +599,17 @@ Set the log level</h3>
 <td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_NONE</code> </td><td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">No logs  </td></tr>
 </table>
 <p><code>C_KTA_LOG_LEVEL_DEBUG</code> shows everything from DEBUG upwards. Rebuild and reflash the <code>keystream_connect</code> MCU firmware after changing the log level.</p>
-<h3><a class="anchor" id="autotoc_md539"></a>
+<h3><a class="anchor" id="autotoc_md544"></a>
 Find the USB-CDC debug port</h3>
 <ol type="1">
 <li>Open <b>Device Manager → Ports (COM &amp; LPT)</b>.</li>
 <li>Pick the port that is <b>not</b> COM4 (e.g. COM5 or COM6).</li>
 <li>Open it in a serial terminal (Tera Term / PuTTY) at <b>115200 baud, 8-N-1</b>.</li>
 </ol>
-<h3><a class="anchor" id="autotoc_md540"></a>
+<h3><a class="anchor" id="autotoc_md545"></a>
 Run the gateway at the same time</h3>
 <p>Launch the gateway <code>.exe</code> on COM4 simultaneously so the MCU executes KTA operations and produces log output.</p>
-<h3><a class="anchor" id="autotoc_md541"></a>
+<h3><a class="anchor" id="autotoc_md546"></a>
 Expected log output</h3>
 <div class="fragment"><div class="line">[DEBUG] [ktamgr:511] KTA initialization SUCCESS!!!</div>
 <div class="line">Chip Uid:, Public Key:, Secret: &lt;hex dumps&gt;</div>
@@ -613,7 +617,7 @@ Expected log output</h3>
 </div><!-- fragment --><blockquote class="doxtable">
 <p><b>Note:</b> KTA logs are printed via <code>SYS_CONSOLE</code> on the USB-CDC port — not <code>printf</code>, which is a no-op stub on this target because SERCOM6 is reserved for the UART bridge. </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md542"></a>
+<h3><a class="anchor" id="autotoc_md547"></a>
 Troubleshooting log output</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -743,7 +747,7 @@ Troubleshooting log output</h3>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

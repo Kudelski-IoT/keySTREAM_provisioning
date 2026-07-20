@@ -355,7 +355,7 @@ $(document).ready(function(){initNavTree('kta_esp32_cli.html',''); initResizable
 <div class="title">ESP32 BLE CLI (Python) — keySTREAM Provisioning </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md281"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md282"></a>
 Windows CLI Usage Guide — keySTREAM Provisioning</h1>
 <p>This guide covers how to onboard a device to keySTREAM using the <b>Windows CLI</b>.</p>
 <div class="image">
@@ -363,7 +363,7 @@ Windows CLI Usage Guide — keySTREAM Provisioning</h1>
 <div class="caption">
 Python CLI</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md283"></a>
+<h2><a class="anchor" id="autotoc_md284"></a>
 Pre-integrated Steps (Simple) - ESP32 BLE CLI (Python)</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -383,7 +383,7 @@ Pre-integrated Steps (Simple) - ESP32 BLE CLI (Python)</h2>
 </table>
 <dl class="section note"><dt>Note</dt><dd>Service Availability Notice: The Signing Key Service and Symmetric Key Service are currently under active development for the ESP32 MCU platform. Full support for these cryptographic services will be introduced in a forthcoming release.</dd></dl>
 <hr  />
-<h2><a class="anchor" id="autotoc_md285"></a>
+<h2><a class="anchor" id="autotoc_md286"></a>
 File Structure</h2>
 <blockquote class="doxtable">
 <p><b>Note:</b> Place the project in a short root path (e.g. <code>C:\ESP32_BLE_CLI_X\</code>) to avoid build issues caused by long file paths in ESP-IDF. </p>
@@ -423,10 +423,10 @@ File Structure</h2>
 <p>The CLI (<code>windows_ble_cli.py</code>) reads the Fleet Profile UID from <code>App_Config.h</code> at the project root, and the cloud URL from <code>firmware/main/kta_provisioning/SOURCE/include/ktaConfig.h</code>. Both files are the single source of truth — do <b>not</b> hardcode these values in the script. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md287"></a>
+<h2><a class="anchor" id="autotoc_md288"></a>
 Prerequisites</h2>
 <p>Before building and flashing:</p>
-<h3><a class="anchor" id="autotoc_md288"></a>
+<h3><a class="anchor" id="autotoc_md289"></a>
 keySTREAM Portal Requirements</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -437,7 +437,7 @@ keySTREAM Portal Requirements</h3>
 <blockquote class="doxtable">
 <p>This step must be completed <b>before</b> configuring <code>App_Config.h</code> and running the provisioning CLI. </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md289"></a>
+<h3><a class="anchor" id="autotoc_md290"></a>
 Required Hardware &amp; Software</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -462,7 +462,7 @@ Required Hardware &amp; Software</h3>
 <li>Add/claim your device using its <b>MAC address</b> (e.g. <code>1C:69:20:82:DC:E6</code>)</li>
 <li>Once claimed, it will show as "registered" in the portal</li>
 </ol>
-<h3><a class="anchor" id="autotoc_md290"></a>
+<h3><a class="anchor" id="autotoc_md291"></a>
 Install USB-to-Serial Driver</h3>
 <p>The ESP32 uses a <b>CP210x USB-to-UART chip</b>. Install the driver:</p>
 <ol type="1">
@@ -472,8 +472,14 @@ Install USB-to-Serial Driver</h3>
 <li>Verify in <b>Device Manager → Ports (COM &amp; LPT)</b>: device should appear as <code>Silicon Labs CP210x ... (COM4)</code></li>
 </ol>
 <p>If not visible, try the <b>CH340 driver</b> instead: <b><a href="http://www.wch-ic.com/downloads/CH341SER_EXE.html">http://www.wch-ic.com/downloads/CH341SER_EXE.html</a></b></p>
-<h3><a class="anchor" id="autotoc_md291"></a>
+<h3><a class="anchor" id="autotoc_md292"></a>
 Package Setup</h3>
+<h4><a class="anchor" id="autotoc_md293"></a>
+Note: Enable Long Path Support on Windows</h4>
+<p>When cloning this repository, you may encounter issues related to long file paths on Windows. To avoid this, ensure you clone the repository to a short path (e.g., directly under <code>C:\</code>).</p>
+<p>Before cloning, run the following command to enable support for long paths in Git:</p>
+<div class="fragment"><div class="line">git config --global core.longpaths true</div>
+</div><!-- fragment --><p>Once this is set, you can proceed to clone the repository without path length issues.</p>
 <p>Before building, clone the repository:</p>
 <div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning.git</div>
 </div><!-- fragment --><p>Then configure the firmware package using the provided script:</p>
@@ -492,7 +498,7 @@ Package Setup</h3>
 <div class="caption">
 Config.ps1 — Package Configuration</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md293"></a>
+<h2><a class="anchor" id="autotoc_md295"></a>
 Hardware Setup – ESP32 to ATECC608 Wiring</h2>
 <p>Connect the ATECC608 secure element to the ESP32 using the following I2C pins:</p>
 <table class="markdownTable">
@@ -512,13 +518,13 @@ Hardware Setup – ESP32 to ATECC608 Wiring</h2>
 <div class="caption">
 ESP32 to ATECC608 Wiring</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md295"></a>
+<h2><a class="anchor" id="autotoc_md297"></a>
 Firmware Setup &amp; Build</h2>
-<h3><a class="anchor" id="autotoc_md296"></a>
+<h3><a class="anchor" id="autotoc_md298"></a>
 Install ESP-IDF (One Time)</h3>
 <p>Download the <b>Offline Installer</b> for Windows from: <b><a href="https://dl.espressif.com/dl/esp-idf/">https://dl.espressif.com/dl/esp-idf/</a></b> <br  />
  Run installer, select <b>v5.3.1</b>, install to: <code>C:\Espressif\</code></p>
-<h3><a class="anchor" id="autotoc_md297"></a>
+<h3><a class="anchor" id="autotoc_md299"></a>
 Build Firmware</h3>
 <div class="fragment"><div class="line">cd C:\ESP32_BLE_CLI_X\firmware</div>
 <div class="line">C:\Espressif\frameworks\esp-idf-v5.3.1\export.ps1</div>
@@ -529,7 +535,7 @@ Build Firmware</h3>
 <div class="caption">
 ESP32 Firmware — Build Completed Successfully</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md299"></a>
+<h2><a class="anchor" id="autotoc_md301"></a>
 Flash &amp; Monitor</h2>
 <p>Find your COM port in <b>Device Manager → Ports (COM &amp; LPT)</b> and replace <code>COM4</code> below:</p>
 <div class="fragment"><div class="line"># Flash only</div>
@@ -547,9 +553,9 @@ Flash &amp; Monitor</h2>
 ESP32 Firmware — Flash Completed Successfully</div></div>
 <p>Press <b>Ctrl + ]</b> to exit monitor. Expected output: <code>Advertising started as ESP32-Keystream</code></p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md301"></a>
+<h2><a class="anchor" id="autotoc_md303"></a>
 Quick Setup &amp; Provisioning</h2>
-<h3><a class="anchor" id="autotoc_md302"></a>
+<h3><a class="anchor" id="autotoc_md304"></a>
 1. Verify Python and Install Dependencies</h3>
 <p>Make sure <b>Python 3.11+</b> is installed and available in your PATH (you can verify by running <code>python --version</code> in PowerShell).</p>
 <p>Open <b>PowerShell</b> and run:</p>
@@ -557,18 +563,18 @@ Quick Setup &amp; Provisioning</h2>
 <div class="line">pip install bleak pycryptodome requests</div>
 </div><!-- fragment --><p>If the above command does not work, try:</p>
 <div class="fragment"><div class="line">python -m pip install bleak pycryptodome requests</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md303"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md305"></a>
 2. Provision Your Device</h3>
 <p>Find your ESP32 MAC address (usually on device label, e.g. <code>1C:xx:xx:xx:xx:E6</code>), then run:</p>
 <div class="fragment"><div class="line">python windows_ble_cli.py 1C:xx:xx:xx:xx:E6 --init --auto-cloud --keepalive-sec 0 --cloud-timeout-sec 30</div>
 </div><!-- fragment --><p>Replace <code>1C:xx:xx:xx:xx:E6</code> with your actual MAC address. Press <b>Ctrl + C</b> to stop.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md305"></a>
+<h2><a class="anchor" id="autotoc_md307"></a>
 Advanced Options</h2>
-<h3><a class="anchor" id="autotoc_md306"></a>
+<h3><a class="anchor" id="autotoc_md308"></a>
 Find Device MAC (if unknown)</h3>
 <div class="fragment"><div class="line">python windows_ble_cli.py ESP32-Keystream --scan-timeout 10</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md307"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md309"></a>
 Set the Fleet Profile UID</h3>
 <p>The CLI reads the Fleet Profile UID at runtime from <code>App_Config.h</code> at the project root (<code>C:\ESP32_BLE_CLI_X\App_Config.h</code>). Open that file and set:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define KEYSTREAM_DEVICE_PUBLIC_PROFILE_UID  &quot;9S4F:esp32&quot;   // your fleet UID</span></div>
@@ -577,7 +583,7 @@ Set the Fleet Profile UID</h3>
 <p>The cloud URL is <b>not</b> set here — it is derived automatically from <code>C_KTA_APP__KEYSTREAM_HOST_HTTP_URL</code> in <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code>. Override it only for testing with the <code>--cloud-url</code> option. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md309"></a>
+<h2><a class="anchor" id="autotoc_md311"></a>
 Expected Output</h2>
 <div class="fragment"><div class="line">[BLE] Connecting to 1C:xx:xx:xx:xx:E6</div>
 <div class="line">[BLE] Connected</div>
@@ -587,7 +593,7 @@ Expected Output</h2>
 <div class="line">[POST] HTTP 200 received 117 bytes</div>
 </div><!-- fragment --><p>Provisioning is complete when exchanges stabilize and device returns empty payloads.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md311"></a>
+<h2><a class="anchor" id="autotoc_md313"></a>
 Troubleshooting</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -619,14 +625,14 @@ Troubleshooting</h2>
 <p><b>Note:</b> The CLI runs with standard Python — no virtual environment is needed. Simply run all commands using <code>python windows_ble_cli.py ...</code> directly. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md313"></a>
+<h2><a class="anchor" id="autotoc_md315"></a>
 Enabling KTA Debug Logs</h2>
 <p>KTA runtime logs (initialization, provisioning rounds, error codes) are controlled by the <code>LOG_KTA_ENABLE</code> macro in <b><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></b>.</p>
-<h3><a class="anchor" id="autotoc_md314"></a>
+<h3><a class="anchor" id="autotoc_md316"></a>
 Location of ktaConfig.h</h3>
 <p>After running <code>Config.ps1</code>, the file is generated at:</p>
 <div class="fragment"><div class="line">ESP32_BLE_CLI_X/firmware/main/kta_provisioning/SOURCE/include/ktaConfig.h</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md315"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md317"></a>
 Enable the logs</h3>
 <p>Open <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> and locate the <b>LOG LEVEL CONFIGURATION - USER SECTION</b>. Uncomment the <code>LOG_KTA_ENABLE</code> line and set the desired level:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_DEBUG   // enable DEBUG logs (most verbose)</span></div>
@@ -647,7 +653,7 @@ Enable the logs</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_NONE</code> </td><td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">No logs  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md316"></a>
+<h3><a class="anchor" id="autotoc_md318"></a>
 View the logs</h3>
 <ol type="1">
 <li>Rebuild and reflash the firmware after changing the log level: <div class="fragment"><div class="line">idf.py -p COM4 build flash monitor</div>
@@ -655,7 +661,7 @@ View the logs</h3>
 <li>The ESP-IDF monitor opens at <b>115200 baud</b> — KTA logs appear on the serial console as the BLE provisioning flow runs.</li>
 </ol>
 <hr  />
-<h2><a class="anchor" id="autotoc_md318"></a>
+<h2><a class="anchor" id="autotoc_md320"></a>
 References</h2>
 <ul>
 <li><a class="el" href="fleet_profile_creation.html">Fleet Profile Creation Guide</a> </li>
@@ -780,7 +786,7 @@ References</h2>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

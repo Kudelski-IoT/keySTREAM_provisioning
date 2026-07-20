@@ -362,7 +362,7 @@ $(document).ready(function(){initNavTree('kta_fota_integration.html',''); initRe
 <p><b>Note:</b> Fota Agent can be used as it is or integrator can also re-write Fota as per there need. </p>
 </blockquote>
 <hr  />
-<h2><a class="anchor" id="autotoc_md183"></a>
+<h2><a class="anchor" id="autotoc_md184"></a>
 Pre-integrated Steps (Simple) - SG41 with FOTA</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -383,7 +383,7 @@ Pre-integrated Steps (Simple) - SG41 with FOTA</h2>
 <td class="markdownTableBodyNone">Step 3 </td><td class="markdownTableBodyNone">Implement <code>fotaplatform.c</code> APIs and run campaign validation  </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md185"></a>
+<h2><a class="anchor" id="autotoc_md186"></a>
 Overview</h2>
 <p>Overview quick links:</p>
 <ul>
@@ -396,7 +396,7 @@ Overview</h2>
 <p>Note: Implement <code>fotaplatform.c</code> first, then validate using the sequence diagram. </p>
 </blockquote>
 <p><a class="anchor" id="fota-overview"></a> </p>
-<h2><a class="anchor" id="autotoc_md186"></a>
+<h2><a class="anchor" id="autotoc_md187"></a>
 FOTA Overview (keySTREAM &lt;-&gt; Device)</h2>
 <p>This section summarizes how the keySTREAM ecosystem and the device (running the Trusted Agent / KTA) collaborate across the full firmware update lifecycle.</p>
 <ol type="1">
@@ -411,17 +411,17 @@ FOTA Overview (keySTREAM &lt;-&gt; Device)</h2>
 <img src="overall.png" alt=""/>
 </div>
    <p><a class="anchor" id="fota-sequence"></a> </p>
-<h2><a class="anchor" id="autotoc_md187"></a>
+<h2><a class="anchor" id="autotoc_md188"></a>
 FOTA Sequence</h2>
 <p>Below is the sequence diagram illustrating how the FOTA storage APIs are used, detailing the process flow and interactions for each API:</p>
 <div class="image">
 <img src="fota_workflow.png" alt=""/>
 </div>
    <p><a class="anchor" id="fota-modules"></a> </p>
-<h3><a class="anchor" id="autotoc_md188"></a>
+<h3><a class="anchor" id="autotoc_md189"></a>
 FOTA Modules</h3>
 <p>The FOTA system consists of three core modules that handle different aspects of the firmware update process:</p>
-<h4><a class="anchor" id="autotoc_md189"></a>
+<h4><a class="anchor" id="autotoc_md190"></a>
 1. FOTA Agent</h4>
 <ul>
 <li>(Agent implementation) – part of KTA package (can be reused or rewritten)<ul>
@@ -432,7 +432,7 @@ FOTA Modules</h3>
 </ul>
 </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md190"></a>
+<h4><a class="anchor" id="autotoc_md191"></a>
 2. FOTA Process</h4>
 <ul>
 <li>(Process logic) – provided; integrator may rewrite<ul>
@@ -442,7 +442,7 @@ FOTA Modules</h3>
 </ul>
 </li>
 </ul>
-<h4><a class="anchor" id="autotoc_md191"></a>
+<h4><a class="anchor" id="autotoc_md192"></a>
 3. FOTA Platform</h4>
 <ul>
 <li><p class="startli"><b>Integrator Implementation Required</b></p>
@@ -470,14 +470,14 @@ FOTA Modules</h3>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md192"></a>
+<h2><a class="anchor" id="autotoc_md193"></a>
 API Details</h2>
 <p><b>Source File:</b> <br  />
  </p><blockquote class="doxtable">
 <p><code>Source Files\config\default\library\kta_lib\SOURCE\kta\modules\fotaservices\fotaplatform.c</code> </p>
 </blockquote>
 <p><a class="anchor" id="fotaPlatformGetComponents"></a> </p>
-<h3><a class="anchor" id="autotoc_md193"></a>
+<h3><a class="anchor" id="autotoc_md194"></a>
 1. fotaPlatformGetComponents()</h3>
 <div class="fragment"><div class="line"><span class="comment">// Get currently installed component versions.</span></div>
 <div class="line">TKFotaStatus fotaPlatformGetComponents(TComponent *xpComponents);</div>
@@ -488,7 +488,7 @@ API Details</h2>
 </ul>
 <hr  />
 <p><a class="anchor" id="fotaStartInstallation"></a> </p>
-<h3><a class="anchor" id="autotoc_md195"></a>
+<h3><a class="anchor" id="autotoc_md196"></a>
 2. fotaStartInstallation()</h3>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> fotaStartInstallation(<span class="keyword">const</span> <span class="keywordtype">void</span> *xpFotaMetadata,</div>
 <div class="line">                                        <span class="keywordtype">size_t</span> xFotaMetadataLen,</div>
@@ -501,7 +501,7 @@ API Details</h2>
 <li>Worker: download -&gt; install -&gt; call <code>fotaUpdateComponent()</code> after each.</li>
 </ol>
 <p><a class="anchor" id="fotaUpdateComponent"></a> </p>
-<h3><a class="anchor" id="autotoc_md196"></a>
+<h3><a class="anchor" id="autotoc_md197"></a>
 3. fotaUpdateComponent()</h3>
 <div class="fragment"><div class="line"><span class="comment">// Report per-component progress/state to agent.</span></div>
 <div class="line">TKFotaStatus fotaUpdateComponent(<span class="keyword">const</span> uint8_t *componentName,</div>
@@ -511,7 +511,7 @@ API Details</h2>
 <div class="line">                                                 TFotaState state);</div>
 </div><!-- fragment --><hr  />
 <p><a class="anchor" id="sal-fota-storage-requirements"></a> </p>
-<h3><a class="anchor" id="autotoc_md198"></a>
+<h3><a class="anchor" id="autotoc_md199"></a>
 SAL FOTA Storage Requirements</h3>
 <p>The platform must persist a small, well‑defined set of items so updates can resume after reset and the agent can always report an accurate state.</p>
 <p><b>Storage Access APIs:</b></p><ul>
@@ -538,7 +538,7 @@ SAL FOTA Storage Requirements</h3>
 <ul>
 <li>Access (read / write) is performed through the [FOTA Storage API]</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md199"></a>
+<h4><a class="anchor" id="autotoc_md200"></a>
 Implementation Guidelines</h4>
 <ol type="1">
 <li>Persist: state, target components, URL and metadata before starting installation logic. <br  />
@@ -560,7 +560,7 @@ Implementation Guidelines</h4>
 <blockquote class="doxtable">
 <p><b>Version String Note:</b> Version is free‑form. Select a fixed internal maximum suited to your MCU (e.g. 8, 12, 16 bytes). Enforce truncation or rejection rules consistently when packing installed / target snapshots. </p>
 </blockquote>
-<h2><a class="anchor" id="autotoc_md200"></a>
+<h2><a class="anchor" id="autotoc_md201"></a>
 API Details</h2>
 <p><b>Files:</b> <br  />
  </p><blockquote class="doxtable">
@@ -577,7 +577,7 @@ API Details</h2>
 <div class="line">                        uint8_t *xpData,</div>
 <div class="line">                        <span class="keywordtype">size_t</span> *xpDataLen);</div>
 </div><!-- fragment --><p><b>Purpose:</b> MCU‑specific persistence layer for FOTA metadata, state, target + installed version snapshots, URL and campaign metadata.</p>
-<h4><a class="anchor" id="autotoc_md201"></a>
+<h4><a class="anchor" id="autotoc_md202"></a>
 Integration Notes</h4>
 <ul>
 <li>All listed items must be implemented for reliable FOTA behavior.</li>
@@ -587,9 +587,9 @@ Integration Notes</h4>
 </ul>
 <hr  />
 <hr  />
-<h2><a class="anchor" id="autotoc_md203"></a>
+<h2><a class="anchor" id="autotoc_md204"></a>
 FOTA Integration Outcomes</h2>
-<h3><a class="anchor" id="autotoc_md204"></a>
+<h3><a class="anchor" id="autotoc_md205"></a>
 Success Case</h3>
 <p>After successful integration and execution of the FOTA workflow, you will observe the following result:</p>
 <div class="image">
@@ -600,7 +600,7 @@ Success Case</h3>
 <li>All components are updated and reported to keySTREAM.</li>
 <li>Device state and component information are accurately reflected in persistent storage.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md205"></a>
+<h3><a class="anchor" id="autotoc_md206"></a>
 Error Case</h3>
 <p>If the firmware download or installation fails, the following process occurs:</p>
 <div class="image">
@@ -731,7 +731,7 @@ Error Case</h3>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>

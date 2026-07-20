@@ -426,6 +426,12 @@ Prerequisites</h2>
 </blockquote>
 <h3><a class="anchor" id="autotoc_md56"></a>
 Package Setup</h3>
+<h4><a class="anchor" id="autotoc_md57"></a>
+Note: Enable Long Path Support on Windows</h4>
+<p>When cloning this repository, you may encounter issues related to long file paths on Windows. To avoid this, ensure you clone the repository to a short path (e.g., directly under <code>C:\</code>).</p>
+<p>Before cloning, run the following command to enable support for long paths in Git:</p>
+<div class="fragment"><div class="line">git config --global core.longpaths true</div>
+</div><!-- fragment --><p>Once this is set, you can proceed to clone the repository without path length issues.</p>
 <p>Before building, clone the repository:</p>
 <div class="fragment"><div class="line">git clone https://github.com/Kudelski-IoT/keySTREAM_provisioning.git</div>
 </div><!-- fragment --><p>Then configure the firmware package using the provided script:</p>
@@ -444,14 +450,14 @@ Package Setup</h3>
 <div class="caption">
 Config.ps1 — Package Configuration</div></div>
 <hr  />
-<h2><a class="anchor" id="autotoc_md58"></a>
+<h2><a class="anchor" id="autotoc_md59"></a>
 Enabling KTA Debug Logs</h2>
 <p>KTA runtime logs (initialization, provisioning rounds, error codes) are controlled by the <code>LOG_KTA_ENABLE</code> macro in <b><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></b>.</p>
-<h3><a class="anchor" id="autotoc_md59"></a>
+<h3><a class="anchor" id="autotoc_md60"></a>
 Location of ktaConfig.h</h3>
 <p>After running <code>Config.ps1</code>, the file is generated at:</p>
 <div class="fragment"><div class="line">D21_X/keystream_connect/firmware/common/kta_provisioning/SOURCE/include/ktaConfig.h</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md60"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md61"></a>
 Enable the logs</h3>
 <p>Open <code><a class="el" href="kta_config_8h_source.html" title="Configuration file for keySTREAM Trusted Agent.">ktaConfig.h</a></code> and locate the <b>LOG LEVEL CONFIGURATION - USER SECTION</b>. Uncomment the <code>LOG_KTA_ENABLE</code> line and set the desired level:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#define LOG_KTA_ENABLE C_KTA_LOG_LEVEL_DEBUG   // enable DEBUG logs (most verbose)</span></div>
@@ -472,7 +478,7 @@ Enable the logs</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>C_KTA_LOG_LEVEL_NONE</code> </td><td class="markdownTableBodyNone">6 </td><td class="markdownTableBodyNone">No logs  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md61"></a>
+<h3><a class="anchor" id="autotoc_md62"></a>
 View the logs</h3>
 <ol type="1">
 <li>Rebuild and reflash the firmware in MPLAB X IDE after changing the log level.</li>
@@ -480,7 +486,7 @@ View the logs</h3>
 <li>Reset the board — KTA logs appear as the provisioning flow runs.</li>
 </ol>
 <hr  />
-<h2><a class="anchor" id="autotoc_md63"></a>
+<h2><a class="anchor" id="autotoc_md64"></a>
 References</h2>
 <ul>
 <li><a href="https://www.microchip.com/en-us/development-tool/EV10E69A">EV10E69A Product Page</a></li>
@@ -609,7 +615,7 @@ References</h2>
   <ul>
     <li class="footer"><b></b>
     Copyright &copy; 2023-2024 Nagravision S&agrave;rl.
-	- Generated on Wed Jul 15 2026 18:44:20 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
+	- Generated on Mon Jul 20 2026 15:08:47 for keySTREAM Trusted Agent by <a href="https://www.doxygen.org/index.html" target="_new">doxygen</a> 1.8.17</li>
   </ul>
 </div>
 </body>
